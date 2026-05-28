@@ -38,6 +38,9 @@
   --color-orange-100: #ffdfb1;
   --color-orange-50: #fff3e0;
 
+  /* font */
+  --font-sans: "Pretendard", -apple-system, BlinkMacSystemFont, sans-serif;
+
   /* shadows 그림자 */
   --shadow-sm: 4px 4px 4px 0px rgba(0, 0, 0, 0.05);
   --shadow: 4px 4px 20px 0px rgba(0, 0, 0, 0.15);
