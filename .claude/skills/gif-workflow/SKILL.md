@@ -20,8 +20,8 @@ Before running any phase, determine the current state:
 git status
 git log --oneline -5
 git branch --show-current
-git branch -r | findstr $(git branch --show-current)
-gh pr list --head $(git branch --show-current) --json number,title,state 2>$null
+git branch -r --list "origin/$(git branch --show-current)"
+gh pr list --head $(git branch --show-current) --json number,title,state 2>/dev/null
 ```
 
 | Condition | Phases to run |
@@ -50,7 +50,7 @@ gh pr list --head $(git branch --show-current) --json number,title,state 2>$null
 
 ```bash
 # Check if upstream is set
-git branch --show-current | xargs -I{} git rev-parse --abbrev-ref {}@{upstream} 2>$null
+git branch --show-current | xargs -I{} git rev-parse --abbrev-ref {}@{upstream} 2>/dev/null
 
 # Push (set upstream if not set)
 git push origin $(git branch --show-current)
