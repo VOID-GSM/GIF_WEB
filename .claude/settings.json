@@ -29,7 +29,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "powershell -NonInteractive -File .claude\\hooks\\pre-commit-check.ps1"
+            "command": "node .claude/hooks/pre-commit-check.js"
           }
         ]
       }
