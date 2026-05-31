@@ -12,7 +12,7 @@ description: "Creates GitHub Pull Requests for the GIF project using the project
 
 Infer `{type}` from the most common commit type in the branch vs `develop`:
 ```bash
-git log develop..HEAD --oneline | grep -oP '^\w+(?=:)' | sort | uniq -c | sort -rn | head -1
+git log develop..HEAD --format=%s | grep ':' | cut -d: -f1 | sort | uniq -c | sort -rn | head -1
 ```
 
 ## Git Flow Branch Targets
