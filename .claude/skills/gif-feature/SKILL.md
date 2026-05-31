@@ -16,10 +16,10 @@ Both agents invoked via `Agent` tool with `model: "opus"`.
 1. Identify target app: **admin** or **client** (ask if ambiguous)
 2. Check existing files related to the feature:
    ```
-   apps/{app}/src/services/
-   apps/{app}/src/hooks/queries/
-   apps/{app}/src/types/
-   apps/{app}/src/components/
+   apps/{app}/src/entities/{domain}/
+   apps/{app}/src/features/{action}/
+   apps/{app}/src/views/{page}/
+   apps/{app}/src/widgets/{name}/
    apps/{app}/src/app/{route}/
    ```
 3. Determine run mode:
@@ -40,6 +40,7 @@ Before writing any code, establish:
 | Response shape | TypeScript interface fields |
 | Route path | Where in `app/` the page lives |
 | Role guard | Which admin role(s) can access (if admin app) |
+| FSD layers needed | Which of entities/features/widgets/views are required |
 | Component split | Which parts are Server vs Client |
 | Shared vs local | Types/components shared in packages/lib or packages/ui? |
 
@@ -55,10 +56,10 @@ Report the plan to the user as a table before proceeding. Proceed automatically 
 > 
 > API endpoints to implement: `{endpoint_list}`
 > Response types: `{type_spec}`
-> Target files:
-> - Types: `apps/{app}/src/types/{resource}.ts`
-> - Service: `apps/{app}/src/services/{resource}.ts`
-> - Hooks: `apps/{app}/src/hooks/queries/use{Resource}.ts`
+> Target files (FSD):
+> - Types: `apps/{app}/src/entities/{domain}/model/types.ts`
+> - Service: `apps/{app}/src/entities/{domain}/api/{domain}Api.ts`
+> - Hooks: `apps/{app}/src/entities/{domain}/api/use{Domain}.ts`
 >
 > Follow the GIF project API conventions: use `apiClient` from `@repo/lib`, TanStack Query v5 array queryKey, and Sonner for mutation feedback. Create all three files.
 
