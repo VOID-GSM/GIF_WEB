@@ -10,12 +10,12 @@ export default function ScoreButton({
   onClick,
 }: ScoreButtonProps) {
   return (
-    <div
+    <button
       className={`flex items-center w-fit py-[3px] px-4 rounded-full border cursor-pointer
       ${variant === "active" ? "bg-yellow-50 border-yellow-600" : "bg-gray-100 border-gray-200"}`}
       onClick={onClick}
     >
       <span className="font-medium text-[12px]">{score}</span>
-    </div>
+    </button>
   );
 }
