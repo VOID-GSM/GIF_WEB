@@ -1,12 +1,12 @@
 type SectionType = "major" | "report" | "social";
 type SectionVariant = "active" | "inactive";
 
-interface SectionBasdgeProps {
+interface SectionBadgeProps {
   status: SectionType;
   variant: SectionVariant;
 }
 
-export default function SectionBadge({ status, variant }: SectionBasdgeProps) {
+export default function SectionBadge({ status, variant }: SectionBadgeProps) {
   return (
     <div
       className={`flex items-center w-fit py-[1px] px-[21px] border rounded-full

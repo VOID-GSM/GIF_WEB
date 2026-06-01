@@ -1,6 +1,6 @@
-type StatuseState = "deadline" | "edit" | "write";
+type StatusState = "deadline" | "edit" | "write";
 interface StatusBadgeProps {
-  status: StatuseState;
+  status: StatusState;
 }
 
 const STATUS_MAP = {
