@@ -14,5 +14,8 @@
   "devDependencies": {
     "turbo": "^2.0.0",
     "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@fontsource/press-start-2p": "^5.2.7"
   }
 }
