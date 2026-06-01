@@ -10,7 +10,7 @@ interface NameBadgeProps {
 export default function NameBadge({
   id,
   name,
-  isEditable = false,
+  isEditable,
   onRemove,
 }: NameBadgeProps) {
   return (
