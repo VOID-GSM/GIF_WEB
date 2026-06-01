@@ -16,7 +16,7 @@ export default function Navbar() {
   return (
     <div>
       {/* Desktop Navbar */}
-      <div className="hidden lg:flex relative sticky items-center h-20 px-[42px] top-0 w-full bg-white border-b border-gray-300">
+      <div className="hidden lg:flex sticky items-center h-20 px-[42px] top-0 w-full bg-white border-b border-gray-300">
         <button
           className="flex items-center transition hover:opacity-80"
           onClick={() => router.push("/")}
@@ -24,11 +24,11 @@ export default function Navbar() {
           <Image src="/favicon.ico" alt="logo" width={75} height={50} />
         </button>
 
-        <div className="absolute inset-0 flex items-center justify-center">
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
           {NAV_ITEMS.map(({ label, path }) => (
             <button
               key={path}
-              className={`h-full w-[200px] text-[24px] font-medium border-b-3 transition-colors cursor-pointer
+              className={`h-full w-[200px] text-[24px] font-medium border-b-3 transition-colors cursor-pointer pointer-events-auto
               ${
                 pathname === path
                   ? "border-yellow-600"
@@ -43,7 +43,7 @@ export default function Navbar() {
       </div>
 
       {/* Mobile Navbar */}
-      <div className="lg:hidden flex flex-col relative w-40 sticky bg-white h-full border-r border-gray-300">
+      <div className="lg:hidden flex flex-col w-40 sticky bg-white h-full border-r border-gray-300">
         <button
           className="flex items-center transition hover:opacity-80 p-4"
           onClick={() => router.push("/")}
