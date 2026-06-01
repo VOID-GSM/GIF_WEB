@@ -1,4 +1,5 @@
 export { default as Button } from "./Button";
+export { default as SigninCard } from "./SigninCard";
 
 export { default as Chevron } from "./svg/Chevron";
 export { default as Close } from "./svg/Close";
