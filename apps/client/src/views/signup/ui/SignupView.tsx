@@ -3,16 +3,27 @@
 import Image from "next/image";
 import { useState } from "react";
 
-import { PositionSelect, type Position } from "@/entities/signup";
+import { useRouter } from "next/navigation";
+
+import {
+  PositionSelect,
+  usePatchClientInfo,
+  type ClientRole,
+} from "@/entities/signup";
 
 export default function SignupView() {
-  const [selectedPosition, setSelectedPosition] = useState<Position | null>(null);
+  const router = useRouter();
+  const [clientRole, setClientRole] = useState<ClientRole | null>(null);
+  const { mutate, isPending } = usePatchClientInfo();
 
-  const isActive = selectedPosition !== null;
+  const isActive = clientRole !== null;
 
   const handleNext = () => {
-    if (!isActive) return;
-    // TODO: API 연동
+    if (!clientRole) return;
+    mutate(
+      { clientRole },
+      { onSuccess: () => router.replace("/") },
+    );
   };
 
   return (
@@ -27,14 +38,14 @@ export default function SignupView() {
         />
 
         <div className="flex flex-col gap-[10px] w-[250px]">
-          <PositionSelect value={selectedPosition} onChange={setSelectedPosition} />
+          <PositionSelect value={clientRole} onChange={setClientRole} />
 
           <button
             type="button"
             onClick={handleNext}
-            disabled={!isActive}
+            disabled={!isActive || isPending}
             className={`w-full h-7 rounded text-[12px] text-white transition-colors ${
-              isActive
+              isActive && !isPending
                 ? "bg-[#ffee30] cursor-pointer"
                 : "bg-gray-400 cursor-not-allowed"
             }`}
