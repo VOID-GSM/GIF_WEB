@@ -15,8 +15,18 @@ export { default as Textarea } from "./components/Input/Textarea";
 
 export { default as StyleDropdown } from "./components/Dropdown/StyleDropdown";
 
+export { default as Navbar } from "./widgets/Navbar/Navbar";
+export { default as Header } from "./widgets/Navbar/Header";
+export { default as Sidebar } from "./widgets/Navbar/Sidebar";
+
 export { default as Chevron } from "./svg/Chevron";
 export { default as Close } from "./svg/Close";
 export { default as Logout } from "./svg/Logout";
+export { default as Menu } from "./svg/Menu";
 export { default as Plus } from "./svg/Plus";
 export { default as Upload } from "./svg/Upload";
+
+export type { NavItem } from "./widgets/Navbar/type";
+export type { NavbarProps } from "./widgets/Navbar/type";
+export type { HeaderProps } from "./widgets/Navbar/type";
+export type { SidebarProps } from "./widgets/Navbar/type";
