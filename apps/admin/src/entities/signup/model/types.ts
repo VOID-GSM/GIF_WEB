@@ -1,11 +1,6 @@
-export interface PostSignupRequest {
-  role: string;
-  teamName: string;
-}
+import type { AdminRole } from "./roles";
 
-export interface PostSignupResponse {
-  userId: number;
-  email: string;
-  name: string;
-  role: string;
+export interface PatchAdminInfoRequest {
+  adminRole: AdminRole;
+  adminTeam: string;
 }

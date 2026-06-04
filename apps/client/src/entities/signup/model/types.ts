@@ -1,11 +1,5 @@
-export interface PostSignupRequest {
-  position: string;
-}
+import type { ClientRole } from "./positions";
 
-export interface PostSignupResponse {
-  userId: number;
-  email: string;
-  name: string;
-  studentNumber: string;
-  role: string;
+export interface PatchClientInfoRequest {
+  clientRole: ClientRole;
 }
