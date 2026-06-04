@@ -3,17 +3,22 @@
 import Image from "next/image";
 import { useState } from "react";
 
-import { RoleSelect, type Role } from "@/entities/signup";
+import { useRouter } from "next/navigation";
+
+import { RoleSelect, type AdminRole } from "@/entities/signup";
 
 export default function SignupView() {
-  const [selectedRole, setSelectedRole] = useState<Role | null>(null);
-  const [teamName, setTeamName] = useState("");
+  const router = useRouter();
+  const [adminRole, setAdminRole] = useState<AdminRole | null>(null);
+  const [adminTeam, setAdminTeam] = useState("");
 
-  const isActive = selectedRole !== null;
+  const isActive = adminRole !== null;
 
+  // TODO: DataGSM에 admin role 추가되면 usePatchAdminInfo로 API 연동 복구
+  // mutate({ adminRole, adminTeam }, { onSuccess: () => router.replace("/") })
   const handleNext = () => {
-    if (!isActive) return;
-    // TODO: API 연동
+    if (!adminRole) return;
+    router.replace("/");
   };
 
   return (
@@ -30,15 +35,15 @@ export default function SignupView() {
 
           <div className="flex flex-col gap-5 w-full">
             <div className="flex flex-col gap-[10px] w-full">
-              <RoleSelect value={selectedRole} onChange={setSelectedRole} />
+              <RoleSelect value={adminRole} onChange={setAdminRole} />
 
               <input
                 type="text"
-                value={teamName}
-                onChange={(e) => setTeamName(e.target.value)}
+                value={adminTeam}
+                onChange={(e) => setAdminTeam(e.target.value)}
                 placeholder="담당 팀을 입력해주세요(없을 시 작성 X)"
                 className={`w-full h-7 px-[10px] rounded bg-white text-[12px] border outline-none transition-colors placeholder:text-gray-500 ${
-                  teamName
+                  adminTeam
                     ? "border-black text-black"
                     : "border-gray-500 text-gray-500"
                 }`}
