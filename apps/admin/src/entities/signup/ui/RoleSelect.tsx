@@ -4,16 +4,18 @@ import { useEffect, useRef, useState } from "react";
 
 import { Chevron } from "@repo/ui";
 
-import { ROLES, type Role } from "@/entities/signup";
+import { ROLES, type AdminRole } from "@/entities/signup";
 
 interface RoleSelectProps {
-  value: Role | null;
-  onChange: (role: Role) => void;
+  value: AdminRole | null;
+  onChange: (role: AdminRole) => void;
 }
 
 export default function RoleSelect({ value, onChange }: RoleSelectProps) {
   const [isOpen, setIsOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+
+  const selectedLabel = ROLES.find((role) => role.value === value)?.label;
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -34,7 +36,7 @@ export default function RoleSelect({ value, onChange }: RoleSelectProps) {
           value ? "border-black text-black" : "border-gray-500 text-gray-500"
         }`}
       >
-        <span>{value ?? "역할을 선택해 주세요"}</span>
+        <span>{selectedLabel ?? "역할을 선택해 주세요"}</span>
         <Chevron
           direction={isOpen ? "up" : "down"}
           width={12}
@@ -46,16 +48,16 @@ export default function RoleSelect({ value, onChange }: RoleSelectProps) {
       {isOpen && (
         <ul className="absolute top-full left-0 right-0 mt-0.5 bg-white border border-gray-300 rounded shadow-sm z-10">
           {ROLES.map((role) => (
-            <li key={role}>
+            <li key={role.value}>
               <button
                 type="button"
                 onClick={() => {
-                  onChange(role);
+                  onChange(role.value);
                   setIsOpen(false);
                 }}
                 className="w-full px-[10px] py-2 text-left text-[12px] text-black hover:bg-gray-100"
               >
-                {role}
+                {role.label}
               </button>
             </li>
           ))}
