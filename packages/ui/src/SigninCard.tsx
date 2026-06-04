@@ -6,21 +6,21 @@ interface SigninCardProps {
 
 export default function SigninCard({ onLogin }: SigninCardProps) {
   return (
-    <div className="flex shadow-new rounded-[20px] overflow-hidden">
+    <div className="flex flex-col md:flex-row shadow-new rounded-[20px] overflow-hidden w-full max-w-[360px] md:max-w-none md:w-auto">
       <div
-        className="w-[333px] flex flex-col justify-center px-10 py-[50px]"
+        className="flex flex-col justify-center px-8 py-8 md:w-[333px] md:px-10 md:py-[50px]"
         style={{
           background:
             "radial-gradient(ellipse at 110% 50%, #fff79e 0%, #fffac7 32%, #fffef1 65%)",
         }}
       >
-        <div className="flex flex-col gap-10 w-[253px]">
+        <div className="flex flex-col gap-6 md:gap-10 md:w-[253px]">
           <img
             src="/gif-logo.png"
             alt="GIF"
             className="w-[60px] h-10 object-contain"
           />
-          <div className="flex flex-col gap-5">
+          <div className="flex flex-col gap-3 md:gap-5">
             <p className="text-[12px] text-yellow-700">
               GSM IdeaFestival 관리 시스템
             </p>
@@ -29,7 +29,7 @@ export default function SigninCard({ onLogin }: SigninCardProps) {
               <br />
               원할하게 진행하세요!
             </p>
-            <p className="text-[12px] text-gray-600 leading-normal">
+            <p className="hidden md:block text-[12px] text-gray-600 leading-normal">
               프로젝트 보고서 제출부터 점수 관리, AI 요약 기능까지
               <br />
               아이디어 페스티벌 모든 진행을 GIF와 함께해요.
@@ -39,8 +39,8 @@ export default function SigninCard({ onLogin }: SigninCardProps) {
         </div>
       </div>
 
-      <div className="w-[333px] bg-white flex flex-col justify-center px-10 py-[50px]">
-        <div className="flex flex-col gap-4 w-[253px] h-[252px] justify-center">
+      <div className="bg-white flex flex-col justify-center px-8 py-8 md:w-[333px] md:px-10 md:py-[50px]">
+        <div className="flex flex-col gap-4 md:h-[252px] md:w-[253px] justify-center">
           <div className="flex flex-col gap-3">
             <p className="text-base text-black">로그인</p>
             <p className="text-[12px] text-gray-800">
@@ -50,7 +50,7 @@ export default function SigninCard({ onLogin }: SigninCardProps) {
           <button
             type="button"
             onClick={onLogin}
-            className="w-[250px] h-7 bg-black text-white rounded flex items-center justify-center gap-2.5 overflow-hidden cursor-pointer"
+            className="w-full md:w-[250px] h-7 bg-black text-white rounded flex items-center justify-center gap-2.5 overflow-hidden cursor-pointer"
           >
             <span className="datagsm-logo">D</span>
             <span className="text-[12px] font-medium">DataGsm으로 로그인</span>
