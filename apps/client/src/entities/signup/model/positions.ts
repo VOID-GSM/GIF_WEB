@@ -1,3 +1,6 @@
-export const POSITIONS = ["팀장", "팀원"] as const;
+export const POSITIONS = [
+  { label: "팀장", value: "LEADER" },
+  { label: "팀원", value: "MEMBER" },
+] as const;
 
-export type Position = (typeof POSITIONS)[number];
+export type ClientRole = (typeof POSITIONS)[number]["value"];
