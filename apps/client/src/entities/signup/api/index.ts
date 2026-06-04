@@ -1,6 +1,6 @@
 import { apiClient } from "@repo/lib";
 
-import type { PostSignupRequest, PostSignupResponse } from "../model/types";
+import type { PatchClientInfoRequest } from "../model/types";
 
-export const postSignup = (body: PostSignupRequest) =>
-  apiClient.post<PostSignupResponse>("/api/auth/signup", body);
+export const patchClientInfo = (body: PatchClientInfoRequest) =>
+  apiClient.patch("/api/additional-info/client", body);
