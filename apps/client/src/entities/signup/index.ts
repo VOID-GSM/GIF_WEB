@@ -1,5 +1,5 @@
-export { usePostSignup } from "./hooks/usePostSignup";
+export { usePatchClientInfo } from "./hooks/usePatchClientInfo";
 export { POSITIONS } from "./model/positions";
-export type { Position } from "./model/positions";
-export type { PostSignupRequest, PostSignupResponse } from "./model/types";
+export type { ClientRole } from "./model/positions";
+export type { PatchClientInfoRequest } from "./model/types";
 export { default as PositionSelect } from "./ui/PositionSelect";

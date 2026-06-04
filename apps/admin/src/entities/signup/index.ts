@@ -1,5 +1,5 @@
-export { usePostSignup } from "./hooks/usePostSignup";
+export { usePatchAdminInfo } from "./hooks/usePatchAdminInfo";
 export { ROLES } from "./model/roles";
-export type { Role } from "./model/roles";
-export type { PostSignupRequest, PostSignupResponse } from "./model/types";
+export type { AdminRole } from "./model/roles";
+export type { PatchAdminInfoRequest } from "./model/types";
 export { default as RoleSelect } from "./ui/RoleSelect";
