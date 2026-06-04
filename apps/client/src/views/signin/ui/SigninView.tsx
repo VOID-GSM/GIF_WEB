@@ -31,7 +31,7 @@ export default function SigninView() {
   };
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-background">
+    <main className="min-h-screen flex items-center justify-center bg-background p-4 md:p-0">
       <SigninCard onLogin={handleLogin} />
     </main>
   );
