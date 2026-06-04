@@ -44,7 +44,7 @@ export default function SigninCard({ onLogin }: SigninCardProps) {
           <div className="flex flex-col gap-3">
             <p className="text-base text-black">로그인</p>
             <p className="text-[12px] text-gray-800">
-              DataGsm으로 안전하게 로그인하세요!
+              DataGSM으로 안전하게 로그인하세요!
             </p>
           </div>
           <button
