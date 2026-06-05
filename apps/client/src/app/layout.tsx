@@ -1,7 +1,6 @@
 import { Providers } from "./providers";
 import "./globals.css";
-import { Navbar } from "@repo/ui";
-import { CLIENT_NAV_ITEMS } from "../shared/constants/nav";
+import { Navbar, CLIENT_NAV_ITEMS } from "@repo/ui";
 
 export default function RootLayout({
   children,
@@ -10,7 +9,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ko">
-      <body className="overflow-x-hidden h-screen">
+      <body className="overflow-x-hidden">
         <Navbar navItems={CLIENT_NAV_ITEMS} />
 
         <main className="pt-20">

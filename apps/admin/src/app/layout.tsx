@@ -1,7 +1,6 @@
 import { Providers } from "./providers";
 import "./globals.css";
-import { Navbar } from "@repo/ui";
-import { ADMIN_NAV_ITEMS } from "../shared/constants/nav";
+import { Navbar, ADMIN_NAV_ITEMS } from "@repo/ui";
 
 export default function RootLayout({
   children,
