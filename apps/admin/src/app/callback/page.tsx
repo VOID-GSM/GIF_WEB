@@ -17,6 +17,8 @@ const CallbackContent = () => {
   const hasRequested = useRef(false);
 
   useEffect(() => {
+    let timeoutId: ReturnType<typeof setTimeout>;
+
     const handleCallback = async () => {
       if (hasRequested.current) return;
       hasRequested.current = true;
@@ -38,16 +40,16 @@ const CallbackContent = () => {
         const message =
           axiosMessage ??
           (err instanceof Error ? err.message : "로그인 중 오류가 발생했습니다.");
-        console.error("[OAuth Callback Error]", {
-          status: (err as { response?: { status?: number } })?.response?.status,
-          data: (err as { response?: { data?: unknown } })?.response?.data,
-        });
         setError(message);
-        setTimeout(() => router.replace("/signin"), 3000);
+        timeoutId = setTimeout(() => router.replace("/signin"), 3000);
       }
     };
 
     void handleCallback();
+
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId);
+    };
   }, [router, searchParams, getDgCallback]);
 
   return (
