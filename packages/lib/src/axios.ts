@@ -9,10 +9,8 @@ export const apiClient = axios.create({
 
 apiClient.interceptors.request.use((config) => {
   if (typeof document !== "undefined") {
-    const token = document.cookie
-      .split("; ")
-      .find((row) => row.startsWith("access_token="))
-      ?.split("=")[1];
+    const match = document.cookie.match(/(^|;)\s*access_token\s*=\s*([^;]+)/);
+    const token = match ? match[2] : null;
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
