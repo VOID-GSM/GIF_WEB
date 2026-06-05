@@ -1,3 +1,5 @@
+import "@fontsource/press-start-2p";
+import "./globals.css";
 import { Providers } from "./providers";
 
 export default function RootLayout({

@@ -30,9 +30,18 @@ description: "Creates atomic git commits for the GIF project with proper commit 
 - Changes touch different layers (API service vs. UI component)
 - Changes target different pages or routes
 - A refactor is mixed with a new feature
+- admin and client have **different** implementations for the same layer (e.g., different signup pages, different role logic)
 
 **Keep in one commit when:**
 - A minimal feature requires its hook and component together to be meaningful
+- admin and client files are **identical or symmetric** in content — commit both together with scope `(client,admin)` or without scope
+  - e.g., `chore(client,admin): PKCE 유틸 추가` or `chore: PKCE 유틸 추가 (client, admin 공통)`
+
+## Monorepo (client/admin) Rule
+This project has two apps (`apps/client`, `apps/admin`) that often share identical logic.
+- **Same content** → one commit covering both apps. Use a combined scope like `(client,admin)` or describe it as 공통.
+- **Different content** → separate commits per app.
+- Do NOT create one commit per app just because they're different apps.
 
 ## Workflow
 1. `npm run lint` — if fails, report and STOP (no commits)
