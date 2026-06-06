@@ -1,3 +1,5 @@
+import "@fontsource/press-start-2p";
+import "./globals.css";
 import { Providers } from "./providers";
 import "./globals.css";
 import { Navbar, CLIENT_NAV_ITEMS } from "@repo/ui";
