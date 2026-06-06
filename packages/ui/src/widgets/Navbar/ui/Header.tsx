@@ -15,7 +15,7 @@ export default function Header({ onClick, navItems }: HeaderProps) {
           className="flex items-center transition hover:opacity-80 cursor-pointer"
           onClick={() => router.push("/")}
         >
-          <Image src="/favicon.ico" alt="logo" width={75} height={50} />
+          <Image src="/logo.png" alt="logo" width={75} height={50} />
         </button>
         <div>
           <button
