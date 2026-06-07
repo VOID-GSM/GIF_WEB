@@ -10,6 +10,8 @@ import {
   usePatchClientInfo,
   type ClientRole,
 } from "@/entities/signup";
+import { COOKIE_KEYS } from "@/shared/constants";
+import { setCookie } from "@/shared/utils";
 
 export default function SignupView() {
   const router = useRouter();
@@ -22,7 +24,12 @@ export default function SignupView() {
     if (!clientRole) return;
     mutate(
       { clientRole },
-      { onSuccess: () => router.replace("/") },
+      {
+        onSuccess: () => {
+          setCookie(COOKIE_KEYS.CLIENT_ROLE, clientRole);
+          router.replace("/");
+        },
+      },
     );
   };
 
