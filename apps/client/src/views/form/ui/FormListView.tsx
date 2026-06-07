@@ -8,12 +8,14 @@ import { useGetMyProjects } from "@/entities/project";
 export default function FormListView() {
   const router = useRouter();
 
-  const { data: projects } = useGetMyProjects();
-  const projectId = projects?.[0]?.id ?? 0;
+  const { data: projects, isLoading: isProjectsLoading } = useGetMyProjects();
+  const projectId = projects?.[0]?.id;
 
-  const { data: forms, isLoading } = useGetFormList(projectId);
+  const { data: forms, isLoading: isFormsLoading } = useGetFormList(projectId);
 
   const handleOpen = (id: number) => router.push(`/form/${id}`);
+
+  const isLoading = isProjectsLoading || (!!projectId && isFormsLoading);
 
   return (
     <div className="flex min-h-[calc(100vh-80px)] flex-col items-center justify-center px-4">
