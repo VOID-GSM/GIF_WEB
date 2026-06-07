@@ -21,7 +21,7 @@ export default function FormCard({
   const { id, title, deadline, announced } = form;
 
   return (
-    <div className="flex h-20 w-full items-center rounded-xl bg-white pr-6 pl-4 shadow">
+    <div className="flex h-20 w-[800px] shrink-0 items-center rounded-xl bg-white pr-6 pl-4 shadow">
       {announced ? (
         <span className="flex h-8 w-[88px] shrink-0 items-center justify-center rounded-xl border border-gray-200 bg-gray-100 font-medium">
           공지 함
