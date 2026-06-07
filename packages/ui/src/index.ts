@@ -18,6 +18,9 @@ export { default as Textarea } from "./components/Input/Textarea";
 
 export { default as StyleDropdown } from "./components/Dropdown/StyleDropdown";
 
+export { default as GradeSelector } from "./components/GradeSelector/GradeSelector";
+export type { Grade } from "./components/GradeSelector/GradeSelector";
+
 export { default as Navbar } from "./widgets/Navbar/ui/Navbar";
 export { default as Header } from "./widgets/Navbar/ui/Header";
 export { default as Sidebar } from "./widgets/Navbar/ui/Sidebar";
@@ -35,3 +38,5 @@ export type { HeaderProps } from "./widgets/Navbar/model/type";
 export type { SidebarProps } from "./widgets/Navbar/model/type";
 
 export { ADMIN_NAV_ITEMS, CLIENT_NAV_ITEMS } from "./widgets/Navbar/model/nav";
+
+export { default as RankView } from "./views/RankView";
