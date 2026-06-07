@@ -49,6 +49,9 @@
   /* font */
   --font-sans: "Pretendard", -apple-system, BlinkMacSystemFont, sans-serif;
 
+  /* gradients 그라데이션 */
+  --gradient-rank: linear-gradient(to bottom, var(--color-yellow-600), var(--color-orange-400));
+
   /* shadows 그림자 */
   --shadow-sm: 4px 4px 4px 0px rgba(0, 0, 0, 0.05);
   --shadow: 4px 4px 20px 0px rgba(0, 0, 0, 0.15);
