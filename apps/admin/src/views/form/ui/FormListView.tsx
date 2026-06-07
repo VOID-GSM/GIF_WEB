@@ -20,7 +20,7 @@ export default function FormListView() {
   const handleEdit = (id: number) => router.push(`/form/edit/${id}`);
 
   return (
-    <div className="flex flex-col items-center pt-20 pb-4 py-10">
+    <div className="flex flex-col items-center pt-20 pb-4">
       <div className="flex max-h-[calc(100vh-160px)] w-[848px] flex-col overflow-y-auto px-6 py-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         <div className="mb-6 flex justify-end">
           <button
