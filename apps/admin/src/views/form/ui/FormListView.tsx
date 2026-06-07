@@ -12,7 +12,7 @@ import {
 export default function FormListView() {
   const router = useRouter();
 
-  const { data: forms, isLoading } = useGetFormList();
+  const { data: forms, isLoading, isError } = useGetFormList();
   const { mutate: announce } = useAnnounceForm();
   const { mutate: remove } = useDeleteForm();
 
@@ -34,6 +34,10 @@ export default function FormListView() {
 
         {isLoading ? (
           <p className="py-20 text-center text-gray-500">불러오는 중...</p>
+        ) : isError ? (
+          <p className="py-20 text-center text-gray-500">
+            양식을 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.
+          </p>
         ) : !forms || forms.length === 0 ? (
           <p className="py-20 text-center text-gray-500">
             등록된 양식이 없습니다.
