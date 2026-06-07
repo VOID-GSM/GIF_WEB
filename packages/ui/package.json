@@ -8,6 +8,9 @@
     ".": "./src/index.ts",
     "./tokens.css": "./src/tokens.css"
   },
+  "dependencies": {
+    "@repo/lib": "*"
+  },
   "devDependencies": {
     "@repo/typescript-config": "*",
     "typescript": "^5.0.0"
