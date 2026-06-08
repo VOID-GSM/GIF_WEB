@@ -14,6 +14,7 @@ export interface SignInResponse {
   adminRole: string | null;
   adminTeam: string | null;
   clientRole: string | null;
+  clientTeam: string | null;
 }
 
 export type PostSignInResponse = SignInResponse;
@@ -24,3 +25,5 @@ export interface GetDgCallbackParams {
 }
 
 export type GetDgCallbackResponse = SignInResponse;
+
+export type GetMyInfoResponse = SignInResponse;
