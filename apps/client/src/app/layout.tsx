@@ -13,10 +13,7 @@ export default function RootLayout({
     <html lang="ko">
       <body className="overflow-x-hidden">
         <Navbar navItems={CLIENT_NAV_ITEMS} />
-
-        <main className="pt-20">
-          <Providers>{children}</Providers>
-        </main>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
