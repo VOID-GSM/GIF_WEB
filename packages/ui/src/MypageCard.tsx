@@ -1,6 +1,5 @@
 "use client";
-
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Logout from "./svg/Logout";
 import Chevron from "./svg/Chevron";
 
@@ -25,8 +24,8 @@ export default function MypageCard({
   const [isEditing, setIsEditing] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [editValues, setEditValues] = useState<Record<string, string>>({});
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // 백엔드 데이터 동기화
   useEffect(() => {
     const init: Record<string, string> = {};
     items.forEach((item) => {
@@ -35,11 +34,14 @@ export default function MypageCard({
     setEditValues(init);
   }, [items]);
 
-  // 외부 클릭 시 드롭다운 닫기
   useEffect(() => {
-    const close = () => setOpenDropdown(null);
-    document.addEventListener("click", close);
-    return () => document.removeEventListener("click", close);
+    const close = (e: MouseEvent) => {
+      if (dropdownRef.current && dropdownRef.current.contains(e.target as Node))
+        return;
+      setOpenDropdown(null);
+    };
+    document.addEventListener("mousedown", close);
+    return () => document.removeEventListener("mousedown", close);
   }, []);
 
   const handleEditSave = () => {
@@ -69,7 +71,7 @@ export default function MypageCard({
       const options = item.dropdownOptions ?? [];
 
       return (
-        <div className="relative w-full">
+        <div className="relative w-full cursor-pointer" ref={dropdownRef}>
           <button
             type="button"
             onClick={(e) => {
@@ -114,7 +116,6 @@ export default function MypageCard({
   return (
     <section className="w-full max-w-[720px] rounded-[20px] bg-white px-6 py-10 shadow-new md:px-[108px]">
       <div className="flex w-full flex-col items-center justify-center gap-[55px]">
-        {/* 헤더 */}
         <div className="flex w-full items-center justify-between">
           <h2 className="text-center text-[24px] font-medium leading-[1.2] tracking-[-0.6px] text-black">
             프로필 정보
@@ -122,7 +123,7 @@ export default function MypageCard({
           <button
             type="button"
             onClick={onLogout}
-            className="flex cursor-pointer items-center gap-[18px] text-gray-600 transition-colors hover:text-black"
+            className="flex cursor-pointer items-center gap-[18px] text-gray-600"
           >
             <span className="text-center text-[16px] font-medium leading-[1.2] tracking-[-0.4px]">
               로그아웃
@@ -131,7 +132,6 @@ export default function MypageCard({
           </button>
         </div>
 
-        {/* 정보 목록 */}
         <dl className="flex w-full flex-col text-[20px] font-medium leading-[1.2] tracking-[-0.5px] text-gray-700">
           {items.map((item) => (
             <div
@@ -146,11 +146,10 @@ export default function MypageCard({
           ))}
         </dl>
 
-        {/* 수정/저장 버튼 */}
         <button
           type="button"
           onClick={handleEditSave}
-          className="h-10 w-[120px] cursor-pointer rounded-[32px] bg-yellow-600 text-center text-[16px] font-semibold leading-[1.2] tracking-[-0.32px] text-black transition-colors hover:bg-yellow-700"
+          className="h-10 w-[120px] cursor-pointer rounded-[32px] bg-yellow-600 text-center text-[16px] font-semibold leading-[1.2] tracking-[-0.32px] text-black"
         >
           {isEditing ? "저장하기" : "수정하기"}
         </button>
