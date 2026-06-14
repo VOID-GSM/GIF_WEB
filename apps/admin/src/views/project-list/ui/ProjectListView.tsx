@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import {
   GRADES,
@@ -10,13 +10,27 @@ import {
 } from "@/entities/project";
 import GradeFilter from "@/features/project-filter/ui/GradeFilter";
 
+function parseGrade(value: string | null): Grade {
+  const parsed = Number(value);
+  return (GRADES as readonly number[]).includes(parsed)
+    ? (parsed as Grade)
+    : GRADES[0];
+}
+
 export default function ProjectListView() {
-  const [grade, setGrade] = useState<Grade>(GRADES[0]);
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const grade = parseGrade(searchParams.get("grade"));
   const { data: projects, isPending, isError } = useGetFilteredProjects(grade);
+
+  const handleChange = (next: Grade) => {
+    router.replace(`${pathname}?grade=${next}`, { scroll: false });
+  };
 
   return (
     <div className="flex flex-col items-center gap-12 px-4 py-10">
-      <GradeFilter value={grade} onChange={setGrade} />
+      <GradeFilter value={grade} onChange={handleChange} />
 
       {isPending ? (
         <p className="text-gray-600">불러오는 중...</p>
