@@ -1,5 +1,6 @@
 export { default as Button } from "./Button";
 export { default as SigninCard } from "./SigninCard";
+export { default as FormCard } from "./FormCard";
 
 export { default as NameBadge } from "./components/Badge/NameBadge";
 export { default as DeadlineBadge } from "./components/Badge/DeadlineBadge";
@@ -22,6 +23,8 @@ export { default as Navbar } from "./widgets/Navbar/ui/Navbar";
 export { default as Header } from "./widgets/Navbar/ui/Header";
 export { default as Sidebar } from "./widgets/Navbar/ui/Sidebar";
 
+export { default as DatePicker } from "./widgets/Calendar/ui/DatePicker";
+
 export { default as Chevron } from "./svg/Chevron";
 export { default as Close } from "./svg/Close";
 export { default as Logout } from "./svg/Logout";
@@ -35,3 +38,4 @@ export type { HeaderProps } from "./widgets/Navbar/model/type";
 export type { SidebarProps } from "./widgets/Navbar/model/type";
 
 export { ADMIN_NAV_ITEMS, CLIENT_NAV_ITEMS } from "./widgets/Navbar/model/nav";
+export type { StyleOption } from "./components/Dropdown/StyleDropdown";
