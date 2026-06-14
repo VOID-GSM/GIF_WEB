@@ -78,7 +78,7 @@ export function CreateProjectView() {
 
   return (
     <div className="flex min-h-[calc(100vh-5rem)] items-start justify-center px-4 py-8 sm:items-center">
-      <div className="flex w-full max-w-[830px] flex-col gap-14">
+      <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }} className="flex w-full max-w-[830px] flex-col gap-14">
         <section className="flex flex-col gap-6 sm:flex-row sm:gap-8">
           <FileUpload
             onChange={setThumbnail}
@@ -164,11 +164,11 @@ export function CreateProjectView() {
         </section>
 
         <div className="flex justify-center">
-          <SubmitButton onClick={handleSubmit} disabled={isPending || !me}>
+          <SubmitButton disabled={isPending || !me}>
             완료하기
           </SubmitButton>
         </div>
-      </div>
+      </form>
     </div>
   );
 }
