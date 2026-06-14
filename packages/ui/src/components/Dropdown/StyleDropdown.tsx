@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Chevron } from "../..";
 
-type StyleOption = "file" | "text" | "calendar";
+export type StyleOption = "file" | "text" | "calendar";
 
 interface StyleDropdownProps {
   onChange?: (option: StyleOption) => void;
@@ -43,7 +43,7 @@ export default function StyleDropdown({ onChange }: StyleDropdownProps) {
           {Object.entries(STYLE_MAP).map(([key, label]) => (
             <li key={key}>
               <button
-                className={`w-full text-left px-[10px] py-[12px] font-medium text-[12px] hover:bg-gray-200 cursor-pointer`}
+                className={`w-full text-left px-[10px] py-[12px] font-medium text-[12px] transition-colors hover:bg-gray-200 cursor-pointer`}
                 onClick={() => handleSelect(key as StyleOption)}
               >
                 {label}
