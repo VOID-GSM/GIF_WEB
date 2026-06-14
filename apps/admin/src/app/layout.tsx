@@ -14,9 +14,7 @@ export default function RootLayout({
       <body className="overflow-x-hidden">
         <Navbar navItems={ADMIN_NAV_ITEMS} />
 
-        <main className="pt-20">
-          <Providers>{children}</Providers>
-        </main>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
