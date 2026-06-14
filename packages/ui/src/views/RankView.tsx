@@ -16,12 +16,17 @@ const BAR_HEIGHTS = [
   "clamp(30px, 11vw, 80px)",
 ];
 
-export default function RankView() {
-  const [grade, setGrade] = useState<Grade>(1);
+interface RankViewProps {
+  grade?: Grade;
+  onGradeChange?: (grade: Grade) => void;
+}
+
+export default function RankView({ grade: propGrade, onGradeChange }: RankViewProps) {
+  const [localGrade, setLocalGrade] = useState<Grade>(1);
+  const grade = propGrade ?? localGrade;
+  const setGrade = onGradeChange ?? setLocalGrade;
   const { data: apiData, isPending, isError } = useGetRank({ grade });
-  const data = (
-    apiData && apiData.length > 0 ? apiData : RANK_MOCK_DATA[grade]
-  ) as RankItem[];
+  const data = (apiData ?? RANK_MOCK_DATA[grade]) as RankItem[];
 
   return (
     <div className="h-[calc(100vh-5rem)] relative flex items-center justify-center bg-white overflow-hidden">
@@ -36,6 +41,8 @@ export default function RankView() {
           <p className="text-center text-gray-500">
             등수 정보를 불러오지 못했습니다
           </p>
+        ) : data.length === 0 ? (
+          <p className="text-center text-gray-500">등록된 프로젝트가 없습니다</p>
         ) : (
           <RankChart items={data} />
         )}
