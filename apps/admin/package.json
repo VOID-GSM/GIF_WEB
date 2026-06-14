@@ -9,6 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@fontsource/press-start-2p": "^5.2.7",
     "@repo/lib": "*",
     "@repo/ui": "*",
     "@tanstack/react-query": "^5.0.0",
