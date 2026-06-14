@@ -17,9 +17,15 @@ interface MemberSearchInputProps {
 export function MemberSearchInput({ owner, value, onChange }: MemberSearchInputProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [keyword, setKeyword] = useState("");
+  const [debouncedKeyword, setDebouncedKeyword] = useState("");
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const { data: apiResults = [] } = useSearchUsers(keyword);
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedKeyword(keyword), 300);
+    return () => clearTimeout(timer);
+  }, [keyword]);
+
+  const { data: apiResults = [] } = useSearchUsers(debouncedKeyword);
   // TODO: 실데이터 연동 후 아래 목 폴백 로직 삭제 후 `const results = apiResults;` 로 교체
   const results = (apiResults.length > 0
     ? apiResults
@@ -29,6 +35,8 @@ export function MemberSearchInput({ owner, value, onChange }: MemberSearchInputP
   ).filter((u) => !value.some((m) => m.userId === u.userId) && u.userId !== owner?.userId);
 
   useEffect(() => {
+    if (!isOpen) return;
+
     const handleClickOutside = (e: MouseEvent) => {
       if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
         setIsOpen(false);
@@ -37,7 +45,7 @@ export function MemberSearchInput({ owner, value, onChange }: MemberSearchInputP
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  }, [isOpen]);
 
   const handleAdd = (user: UserSearchResult) => {
     if (value.some((m) => m.userId === user.userId)) return;
