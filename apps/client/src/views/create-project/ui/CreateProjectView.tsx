@@ -1,0 +1,174 @@
+"use client";
+
+import { useRouter } from "next/navigation";
+import { useState, type ChangeEvent } from "react";
+
+import { FileUpload, SubmitButton, Textarea } from "@repo/ui";
+import { toast } from "sonner";
+
+import { useGetMe } from "@/entities/auth";
+import { useCreateProject, uploadProjectLogo, type UserSearchResult } from "@/entities/project";
+import { MemberSearchInput } from "@/features/member-search/ui/MemberSearchInput";
+
+const MAX_DESCRIPTION_LENGTH = 500;
+
+export function CreateProjectView() {
+  const router = useRouter();
+  const { mutate, isPending } = useCreateProject();
+  const { data: me } = useGetMe();
+
+  const [thumbnail, setThumbnail] = useState<File | null>(null);
+  const [projectName, setProjectName] = useState("");
+  const [teamName, setTeamName] = useState("");
+  const [members, setMembers] = useState<UserSearchResult[]>([]);
+  const [description, setDescription] = useState("");
+  const [errors, setErrors] = useState({
+    projectName: false,
+    teamName: false,
+    members: false,
+    description: false,
+  });
+
+  const handleDescriptionChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
+    setDescription(e.target.value.slice(0, MAX_DESCRIPTION_LENGTH));
+    if (e.target.value.trim()) setErrors((prev) => ({ ...prev, description: false }));
+  };
+
+  const handleSubmit = () => {
+    const newErrors = {
+      projectName: !projectName.trim(),
+      teamName: !teamName.trim(),
+      members: members.length === 0,
+      description: !description.trim(),
+    };
+    setErrors(newErrors);
+    if (Object.values(newErrors).some(Boolean)) return;
+
+    mutate(
+      {
+        name: projectName,
+        teamName,
+        memberIds: [
+          ...(me ? [me.userId] : []),
+          ...members.map((m) => m.userId),
+        ],
+        description,
+      },
+      {
+        onSuccess: async (data) => {
+          if (thumbnail) {
+            try {
+              await uploadProjectLogo(data.projectId, thumbnail);
+            } catch {
+              toast.error("로고 업로드에 실패했습니다. 나중에 다시 시도해주세요.");
+            }
+          }
+          router.push("/");
+        },
+      },
+    );
+  };
+
+  const underlineInput = (hasError: boolean) =>
+    `w-full border-b bg-transparent pb-1 text-2xl outline-none transition-colors duration-200 ${
+      hasError
+        ? "border-red-500 focus:border-red-500"
+        : "border-gray-300 focus:border-gray-900"
+    }`;
+
+  return (
+    <div className="flex min-h-[calc(100vh-5rem)] items-start justify-center px-4 py-8 sm:items-center">
+      <div className="flex w-full max-w-[830px] flex-col gap-14">
+        <section className="flex flex-col gap-6 sm:flex-row sm:gap-8">
+          <FileUpload
+            onChange={setThumbnail}
+            className="mx-auto h-[160px] w-[240px]"
+          />
+
+          <div className="flex flex-1 flex-col gap-6">
+            <div className="flex flex-col gap-1">
+              <label className="flex items-center gap-4">
+                <span className="shrink-0 text-2xl font-medium text-gray-700">
+                  프로젝트명
+                </span>
+                <input
+                  type="text"
+                  value={projectName}
+                  onChange={(e) => {
+                    setProjectName(e.target.value);
+                    if (e.target.value) setErrors((prev) => ({ ...prev, projectName: false }));
+                  }}
+                  className={underlineInput(errors.projectName)}
+                />
+              </label>
+              {errors.projectName && (
+                <span className="text-right text-xs text-red-500">프로젝트명을 입력해주세요</span>
+              )}
+            </div>
+
+            <div className="flex flex-col gap-1">
+              <label className="flex items-center gap-4">
+                <span className="shrink-0 text-2xl font-medium text-gray-700">
+                  팀명
+                </span>
+                <input
+                  type="text"
+                  value={teamName}
+                  onChange={(e) => {
+                    setTeamName(e.target.value);
+                    if (e.target.value) setErrors((prev) => ({ ...prev, teamName: false }));
+                  }}
+                  className={underlineInput(errors.teamName)}
+                />
+              </label>
+              {errors.teamName && (
+                <span className="text-right text-xs text-red-500">팀명을 입력해주세요</span>
+              )}
+            </div>
+
+            <div className="flex flex-col gap-1">
+              <MemberSearchInput
+                owner={me ? { userId: me.userId, name: me.name, studentNumber: me.studentNumber } : undefined}
+                value={members}
+                onChange={(v) => {
+                  setMembers(v);
+                  if (v.length > 0) setErrors((prev) => ({ ...prev, members: false }));
+                }}
+              />
+              {errors.members && (
+                <span className="text-right text-xs text-red-500">팀원을 한 명 이상 추가해주세요</span>
+              )}
+            </div>
+          </div>
+        </section>
+
+        <section className="flex flex-col gap-3">
+          <span className="text-2xl font-medium text-gray-700">프로젝트 설명</span>
+          <Textarea
+            value={description}
+            onChange={handleDescriptionChange}
+            rows={8}
+            maxLength={MAX_DESCRIPTION_LENGTH}
+            title="500자 이내로 작성해주세요"
+            className={errors.description ? "border-red-500" : ""}
+          />
+          <div className="flex items-center justify-between">
+            {errors.description
+              ? <span className="text-xs text-red-500">프로젝트 설명을 입력해주세요</span>
+              : <span />
+            }
+            <span className="text-xs text-gray-700 font-medium">
+              {description.length}/{MAX_DESCRIPTION_LENGTH}
+            </span>
+          </div>
+        </section>
+
+        <div className="flex justify-center">
+          <SubmitButton onClick={handleSubmit} disabled={isPending || !me}>
+            완료하기
+          </SubmitButton>
+        </div>
+      </div>
+    </div>
+  );
+}
