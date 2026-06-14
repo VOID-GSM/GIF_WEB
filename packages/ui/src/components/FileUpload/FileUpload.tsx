@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useRef, useState, type ChangeEvent } from "react";
+import { useRef, useState, useEffect, type ChangeEvent } from "react";
 
 import Close from "../../svg/Close";
 import DashedBorder from "../../svg/DashedBorder";
@@ -17,20 +17,20 @@ export default function FileUpload({ onChange, className = "" }: FileUploadProps
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
 
+  useEffect(() => {
+    return () => {
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+    };
+  }, [previewUrl]);
+
   const applyFile = (file: File) => {
     if (!file.type.startsWith("image/")) return;
-    setPreviewUrl((prev) => {
-      if (prev) URL.revokeObjectURL(prev);
-      return URL.createObjectURL(file);
-    });
+    setPreviewUrl(URL.createObjectURL(file));
     onChange?.(file);
   };
 
   const handleRemove = () => {
-    setPreviewUrl((prev) => {
-      if (prev) URL.revokeObjectURL(prev);
-      return null;
-    });
+    setPreviewUrl(null);
     if (fileInputRef.current) fileInputRef.current.value = "";
     onChange?.(null);
   };
