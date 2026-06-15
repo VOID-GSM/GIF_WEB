@@ -7,7 +7,7 @@ export default function FormSubmissionsView() {
   const [selectedGrade, setSelectedGrade] = useState<1 | 2>(1);
   const { data, isLoading } = useAdminForms();
   const router = useRouter();
-  const filtered = data?.filter((form) => form.grade === selectedGrade);
+  const filtered = data?.filter((form) => form.targetGrade === selectedGrade);
 
   if (isLoading) return <div>로딩중...</div>;
 
