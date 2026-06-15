@@ -6,8 +6,6 @@ import { FormCard, Plus, DatePicker } from "@repo/ui";
 import { usePostForm, useAnnounceForm } from "@/entities/form-create";
 import type { PostFormRequestField } from "@/entities/form-create";
 
-import { AxiosError } from "axios";
-
 type FieldWithId = PostFormRequestField & { id: string };
 
 export default function FormCreateView() {
@@ -55,17 +53,7 @@ export default function FormCreateView() {
     );
   };
 
-  // 저장 (announced: false)
   const handleSave = () => {
-    if (!formTitle.trim()) {
-      alert("제목을 입력해주세요.");
-      return;
-    }
-
-    if (!deadline) {
-      alert("마감일을 선택해주세요.");
-      return;
-    }
     createForm(
       {
         title: formTitle,
@@ -75,7 +63,6 @@ export default function FormCreateView() {
       {
         onSuccess: (res) => {
           setSavedFormId(res.data);
-
           console.log("저장 성공");
         },
 
@@ -86,10 +73,9 @@ export default function FormCreateView() {
     );
   };
 
-  // 공지 — 저장 후 별도 announced 처리가 필요하다면 백엔드 확인 필요
   const handleAnnounce = () => {
     if (!savedFormId) {
-      alert("먼저 저장해주세요.");
+      console.error("저장 필요!");
       return;
     }
     announce(
@@ -107,7 +93,7 @@ export default function FormCreateView() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center pt-20">
+    <div className="min-h-screen flex flex-col items-center pt-20 bg-background">
       <span className="pt-20 pb-8 font-semibold text-[24px]">
         양식 생성하기
       </span>
