@@ -5,8 +5,8 @@ export interface AdminForm {
   deadline: string;
   announced: boolean;
   submitted: boolean;
-  grade: number; // 추가 구현
-  teamName: string; // 추가 구현
+  targetGrade: number;
+  teamName: string;
 }
 
 // GET /api/form/{formId} 응답
@@ -14,7 +14,7 @@ export interface FormField {
   id: number;
   title: string;
   description: string;
-  type: string;
+  type: "TEXT" | "FILE" | "CALENDAR";
   orderIndex: number;
 }
 
@@ -27,27 +27,24 @@ export interface FormDetail {
 }
 
 // GET /api/form/admin/submit 응답
-export interface CalendarEvent {
-  title: string;
-  startDate: string;
-  endDate: string;
-  color: string;
-} // 전체 추가 구현
-
 export interface SubmitAnswer {
   fieldId: number;
   fieldTitle: string;
   type: string;
   textAnswer: string | null;
   filePath: string | null;
-  fileSize: number | null; //추가 구현
+  fileSize: number | null;
   dateAnswer: string | null;
-  calendarEvents: CalendarEvent[] | null; // 추가 구현
+  eventName: string | null;
+  startDate: string | null;
+  endDate: string | null;
+  color: string | null;
 }
 
 export interface AdminSubmitDetail {
   submitId: number;
   projectId: number;
+  teamName: string;
   submittedByUserId: number;
   submittedAt: string;
   answers: SubmitAnswer[];
