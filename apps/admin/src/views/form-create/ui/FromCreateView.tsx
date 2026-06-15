@@ -14,7 +14,9 @@ export default function FormCreateView() {
   const { mutate: announce, isPending: isAnnouncing } = useAnnounceForm();
 
   const [formTitle, setFormTitle] = useState("");
+  const [description, setDescription] = useState("");
   const [deadline, setDeadline] = useState("");
+  const [targetGrade, setTargetGrade] = useState<1 | 2>(1);
 
   const [savedFormId, setSavedFormId] = useState<number | null>(null);
   const [fields, setFields] = useState<FieldWithId[]>([
@@ -57,7 +59,9 @@ export default function FormCreateView() {
     createForm(
       {
         title: formTitle,
+        description,
         deadline,
+        targetGrade,
         fields: fields.map(({ id, ...rest }) => rest),
       },
       {
@@ -107,6 +111,34 @@ export default function FormCreateView() {
             value={formTitle}
             onChange={(e) => setFormTitle(e.target.value)}
           />
+        </div>
+        <div className="flex flex-col text-[14px] font-medium text-gray-600 gap-1">
+          설명 입력하기
+          <input
+            className="w-full py-3 px-4 border border-gray-200 rounded-[10px] text-[16px] font-medium placeholder:text-gray-500 text-black outline-none bg-white"
+            placeholder="양식 설명을 입력하세요"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
+        </div>
+        <div className="flex flex-col text-[14px] font-medium text-gray-600 gap-1">
+          대상 학년 선택하기
+          <div className="flex gap-3">
+            {([1, 2] as const).map((grade) => (
+              <button
+                key={grade}
+                type="button"
+                onClick={() => setTargetGrade(grade)}
+                className={`flex-1 py-3 rounded-[10px] font-medium border cursor-pointer ${
+                  targetGrade === grade
+                    ? "border-yellow-600 bg-yellow-50"
+                    : "border-gray-200 bg-white"
+                }`}
+              >
+                {grade}학년
+              </button>
+            ))}
+          </div>
         </div>
         <div className="flex flex-col text-[14px] font-medium text-gray-600 gap-1">
           마감일 선택하기
