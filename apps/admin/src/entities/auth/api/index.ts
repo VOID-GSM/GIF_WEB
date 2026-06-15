@@ -1,14 +1,11 @@
 import { apiClient } from "@repo/lib";
 
 import type {
-  GetDgCallbackParams,
-  GetDgCallbackResponse,
-  PostSignInRequest,
-  PostSignInResponse,
+  GetGoogleCallbackParams,
+  GetGoogleCallbackResponse,
 } from "../model/types";
 
-export const postSignIn = (body: PostSignInRequest) =>
-  apiClient.post<PostSignInResponse>("/api/auth/signin", body);
-
-export const getDgCallback = (params: GetDgCallbackParams) =>
-  apiClient.get<GetDgCallbackResponse>("/api/auth/dg/callback", { params });
+export const getGoogleCallback = (params: GetGoogleCallbackParams) =>
+  apiClient.get<GetGoogleCallbackResponse>("/api/auth/google/callback", {
+    params,
+  });
