@@ -12,11 +12,13 @@ type Props = { formId: number };
 
 function AnswerField({
   field,
-  answer,
+  answers,
 }: {
   field: FormField;
-  answer: SubmitAnswer | undefined;
+  answers: SubmitAnswer[];
 }) {
+  const answer = answers[0];
+
   return (
     <div className="flex flex-col py-8 px-12 border-t-5 border-yellow-600 bg-white rounded-[10px]">
       <span className="text-[20px] font-semibold pb-2">{field.title}</span>
@@ -24,9 +26,9 @@ function AnswerField({
         {field.description}
       </span>
 
-      {field.type === "file" && <FileAnswer answer={answer} />}
-      {field.type === "text" && <TextAnswer answer={answer} />}
-      {field.type === "calendar" && <CalendarAnswer answer={answer} />}
+      {field.type === "FILE" && <FileAnswer answer={answer} />}
+      {field.type === "TEXT" && <TextAnswer answer={answer} />}
+      {field.type === "CALENDAR" && <CalendarAnswer answers={answers} />}
     </div>
   );
 }
@@ -34,7 +36,7 @@ function AnswerField({
 export default function FormDetailView({ formId }: Props) {
   const { data: formDetail, isLoading: formLoading } = useFormDetail(formId);
   const { data: submitDetail, isLoading: submitLoading } =
-    useAdminSubmitDetail(formId); // teamId → formId
+    useAdminSubmitDetail(formId);
 
   const submission = submitDetail?.[0];
 
@@ -63,11 +65,10 @@ export default function FormDetailView({ formId }: Props) {
           {formDetail.fields
             .sort((a, b) => a.orderIndex - b.orderIndex)
             .map((field) => {
-              const answer = submission?.answers.find(
-                (a) => a.fieldId === field.id,
-              );
+              const answers =
+                submission?.answers.filter((a) => a.fieldId === field.id) ?? [];
               return (
-                <AnswerField key={field.id} field={field} answer={answer} />
+                <AnswerField key={field.id} field={field} answers={answers} />
               );
             })}
         </div>
