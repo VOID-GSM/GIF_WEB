@@ -16,6 +16,7 @@ async function fetchWithAuth<T>(
   endpoint: string,
   options?: RequestInit,
 ): Promise<T> {
+  if (!BASE_URL) throw new Error("NEXT_PUBLIC_API_URL is not set");
   const res = await fetch(`${BASE_URL}${endpoint}`, {
     ...options,
     credentials: "include",
