@@ -1,5 +1,9 @@
 import { apiClient } from "@repo/lib";
-import type { UpdateAdminInfoRequest } from "@/entities/mypage/model/type";
+
+import type {
+  PatchMyInfoResponse,
+  UpdateAdminInfoRequest,
+} from "@/entities/mypage/model/type";
 
 export const updateAdminInfo = (body: UpdateAdminInfoRequest) =>
-  apiClient.patch("/api/auth/me", body);
+  apiClient.patch<PatchMyInfoResponse>("/api/auth/me", body);
