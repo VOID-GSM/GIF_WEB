@@ -9,7 +9,7 @@ import {
   mockFormDetail,
 } from "@/entities/from-management/model/mock";
 
-const USE_MOCK = "true";
+const USE_MOCK = process.env.NEXT_PUBLIC_USE_MOCK === "true";
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 async function fetchWithAuth<T>(
