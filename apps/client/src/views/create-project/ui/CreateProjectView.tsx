@@ -4,12 +4,12 @@ import { useRouter } from "next/navigation";
 import { useState, type ChangeEvent } from "react";
 
 import { FileUpload, SubmitButton, Textarea } from "@repo/ui";
-import { toast } from "sonner";
 
 import { useGetMe } from "@/entities/auth";
-import { useCreateProject, uploadProjectLogo, type UserSearchResult } from "@/entities/project";
+import { useCreateProject, type UserSearchResult } from "@/entities/project";
 import { MemberSearchInput } from "@/features/member-search/ui/MemberSearchInput";
 
+const MAX_NAME_LENGTH = 20;
 const MAX_DESCRIPTION_LENGTH = 500;
 
 export function CreateProjectView() {
@@ -53,16 +53,10 @@ export function CreateProjectView() {
           ...members.map((m) => m.userId),
         ],
         description,
+        logo: thumbnail ?? undefined,
       },
       {
-        onSuccess: async (data) => {
-          if (thumbnail) {
-            try {
-              await uploadProjectLogo(data.projectId, thumbnail);
-            } catch {
-              toast.error("로고 업로드에 실패했습니다. 나중에 다시 시도해주세요.");
-            }
-          }
+        onSuccess: () => {
           router.push("/");
         },
       },
@@ -95,15 +89,22 @@ export function CreateProjectView() {
                   type="text"
                   value={projectName}
                   onChange={(e) => {
-                    setProjectName(e.target.value);
-                    if (e.target.value) setErrors((prev) => ({ ...prev, projectName: false }));
+                    const val = e.target.value.slice(0, MAX_NAME_LENGTH);
+                    setProjectName(val);
+                    if (val) setErrors((prev) => ({ ...prev, projectName: false }));
                   }}
                   className={underlineInput(errors.projectName)}
                 />
               </label>
-              {errors.projectName && (
-                <span className="text-right text-xs text-red-500">프로젝트명을 입력해주세요</span>
-              )}
+              <div className="flex items-center justify-between">
+                {errors.projectName
+                  ? <span className="text-xs text-red-500">프로젝트명을 입력해주세요</span>
+                  : <span />
+                }
+                <span className={`text-xs font-medium ${projectName.length >= MAX_NAME_LENGTH ? "text-red-500" : "text-gray-400"}`}>
+                  {projectName.length}/{MAX_NAME_LENGTH}
+                </span>
+              </div>
             </div>
 
             <div className="flex flex-col gap-1">
@@ -115,15 +116,22 @@ export function CreateProjectView() {
                   type="text"
                   value={teamName}
                   onChange={(e) => {
-                    setTeamName(e.target.value);
-                    if (e.target.value) setErrors((prev) => ({ ...prev, teamName: false }));
+                    const val = e.target.value.slice(0, MAX_NAME_LENGTH);
+                    setTeamName(val);
+                    if (val) setErrors((prev) => ({ ...prev, teamName: false }));
                   }}
                   className={underlineInput(errors.teamName)}
                 />
               </label>
-              {errors.teamName && (
-                <span className="text-right text-xs text-red-500">팀명을 입력해주세요</span>
-              )}
+              <div className="flex items-center justify-between">
+                {errors.teamName
+                  ? <span className="text-xs text-red-500">팀명을 입력해주세요</span>
+                  : <span />
+                }
+                <span className={`text-xs font-medium ${teamName.length >= MAX_NAME_LENGTH ? "text-red-500" : "text-gray-400"}`}>
+                  {teamName.length}/{MAX_NAME_LENGTH}
+                </span>
+              </div>
             </div>
 
             <div className="flex flex-col gap-1">

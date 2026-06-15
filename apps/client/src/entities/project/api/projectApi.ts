@@ -5,18 +5,20 @@ import type { CreateProjectRequest, ProjectResponse, UserSearchResult } from "..
 export const createProject = async (
   data: CreateProjectRequest,
 ): Promise<ProjectResponse> => {
+  const formData = new FormData();
+  formData.append("name", data.name);
+  formData.append("teamName", data.teamName);
+  formData.append("description", data.description);
+  data.memberIds.forEach((id) => formData.append("memberIds", String(id)));
+  if (data.logo) formData.append("logo", data.logo);
+
   const { data: responseData } = await apiClient.post<ProjectResponse>(
     "/api/project",
-    data,
+    formData,
+    { headers: { "Content-Type": null } },
   );
 
   return responseData;
-};
-
-export const uploadProjectLogo = async (projectId: number, file: File): Promise<void> => {
-  const formData = new FormData();
-  formData.append("file", file);
-  await apiClient.post(`/api/project/${projectId}/logo`, formData);
 };
 
 export const getMyProject = async (): Promise<ProjectResponse> => {

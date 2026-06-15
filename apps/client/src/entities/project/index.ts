@@ -1,4 +1,4 @@
-export { createProject, getMyProject, searchUsers, uploadProjectLogo } from "./api/projectApi";
+export { createProject, getMyProject, searchUsers } from "./api/projectApi";
 export { useCreateProject } from "./api/useCreateProject";
 export { useGetMyProject } from "./api/useGetMyProject";
 export { useSearchUsers } from "./api/useSearchUsers";

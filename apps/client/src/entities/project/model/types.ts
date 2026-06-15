@@ -3,6 +3,7 @@ export interface CreateProjectRequest {
   teamName: string;
   memberIds: number[];
   description: string;
+  logo?: File;
 }
 
 export interface UserSearchResult {
