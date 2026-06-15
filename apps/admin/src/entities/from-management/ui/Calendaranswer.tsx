@@ -17,7 +17,7 @@ export const PRESET_COLOR_MAP = {
   green: "var(--color-green)",
   blue: "var(--color-blue)",
   purple: "var(--color-purple)",
-  pink: "var(--color-pink)",
+  gray: "var(--color-gray)",
 } as const;
 export function resolveColor(color: string) {
   return PRESET_COLOR_MAP[color as keyof typeof PRESET_COLOR_MAP] ?? color;
