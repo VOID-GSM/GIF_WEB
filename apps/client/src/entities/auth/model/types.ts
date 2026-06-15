@@ -24,3 +24,5 @@ export interface GetDgCallbackParams {
 }
 
 export type GetDgCallbackResponse = SignInResponse;
+
+export type GetMeResponse = Omit<SignInResponse, "accessToken">;
