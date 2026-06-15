@@ -26,7 +26,7 @@ export default function FormListView() {
           <button
             type="button"
             onClick={handleCreate}
-            className="rounded-xl bg-yellow-600 px-[46px] py-[10px] text-xl text-black font-medium shadow"
+            className="cursor-pointer rounded-xl bg-yellow-600 px-[46px] py-[10px] text-xl text-black font-medium shadow transition-all duration-150 hover:bg-yellow-700 hover:shadow-md active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-600/50"
           >
             생성하기
           </button>
