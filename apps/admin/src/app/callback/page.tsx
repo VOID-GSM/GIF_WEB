@@ -17,7 +17,8 @@ const CallbackContent = () => {
   const hasRequested = useRef(false);
 
   useEffect(() => {
-    let timeoutId: ReturnType<typeof setTimeout>;
+    let isMounted = true;
+    let timeoutId: ReturnType<typeof setTimeout> | null = null;
 
     const handleCallback = async () => {
       if (hasRequested.current) return;
@@ -31,9 +32,13 @@ const CallbackContent = () => {
 
         const { data } = await getGoogleCallback({ code, state });
 
+        if (!isMounted) return;
+
         setCookie(COOKIE_KEYS.ACCESS_TOKEN, data.accessToken);
         router.replace(data.adminRole ? "/" : "/signup");
       } catch (err) {
+        if (!isMounted) return;
+
         const axiosMessage =
           (err as { response?: { data?: { message?: string } } })?.response
             ?.data?.message;
@@ -41,13 +46,16 @@ const CallbackContent = () => {
           axiosMessage ??
           (err instanceof Error ? err.message : "로그인 중 오류가 발생했습니다.");
         setError(message);
-        timeoutId = setTimeout(() => router.replace("/signin"), 3000);
+        timeoutId = setTimeout(() => {
+          if (isMounted) router.replace("/signin");
+        }, 3000);
       }
     };
 
     void handleCallback();
 
     return () => {
+      isMounted = false;
       if (timeoutId) clearTimeout(timeoutId);
     };
   }, [router, searchParams, getGoogleCallback]);
