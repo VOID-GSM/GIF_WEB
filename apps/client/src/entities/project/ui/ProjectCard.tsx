@@ -6,7 +6,7 @@ interface ProjectCardProps {
 
 export default function ProjectCard({ project }: ProjectCardProps) {
   return (
-    <div className="flex h-[176px] w-[224px] shrink-0 flex-col overflow-hidden rounded-[12px] bg-white shadow-new">
+    <div className="flex h-[176px] w-[224px] shrink-0 cursor-pointer flex-col overflow-hidden rounded-[12px] bg-white shadow-new transition-all duration-200 ease-out hover:-translate-y-1 hover:shadow-lg">
       <div className="h-[112px] w-full">
         {/* logo는 외부 API에서 내려오는 동적 URL이라 next/image 대신 img 사용 */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -17,10 +17,10 @@ export default function ProjectCard({ project }: ProjectCardProps) {
         />
       </div>
       <div className="flex h-[64px] flex-col justify-center bg-yellow-50 pl-[20px] pr-[32px] leading-[1.4]">
-        <p className="text-[20px] font-semibold tracking-[-0.5px] text-black">
+        <p className="truncate text-[20px] font-semibold tracking-[-0.5px] text-black">
           {project.name}
         </p>
-        <p className="text-[16px] font-medium tracking-[-0.4px] text-gray-600">
+        <p className="truncate text-[16px] font-medium tracking-[-0.4px] text-gray-600">
           {project.teamName}
         </p>
       </div>
