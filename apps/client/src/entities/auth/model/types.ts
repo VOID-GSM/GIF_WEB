@@ -26,4 +26,13 @@ export interface GetDgCallbackParams {
 
 export type GetDgCallbackResponse = SignInResponse;
 
-export type GetMyInfoResponse = SignInResponse;
+export interface GetMyInfoResponse {
+  userId: number;
+  email: string;
+  name: string;
+  studentNumber: string;
+  role: string;
+  adminRole: string;
+  adminTeam: string;
+  clientRole: string;
+}
