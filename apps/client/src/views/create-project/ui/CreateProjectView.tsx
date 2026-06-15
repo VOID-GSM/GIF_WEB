@@ -6,7 +6,7 @@ import { useState, type ChangeEvent } from "react";
 import { FileUpload, SubmitButton, Textarea } from "@repo/ui";
 
 import { useGetMe } from "@/entities/auth";
-import { useCreateProject, type UserSearchResult } from "@/entities/project";
+import { useCreateProject, type Grade, type UserSearchResult } from "@/entities/project";
 import { MemberSearchInput } from "@/features/member-search/ui/MemberSearchInput";
 
 const MAX_NAME_LENGTH = 20;
@@ -16,6 +16,8 @@ export function CreateProjectView() {
   const router = useRouter();
   const { mutate, isPending } = useCreateProject();
   const { data: me } = useGetMe();
+
+  const grade = (me ? Number(me.studentNumber[0]) : 1) as Grade;
 
   const [thumbnail, setThumbnail] = useState<File | null>(null);
   const [projectName, setProjectName] = useState("");
@@ -48,11 +50,12 @@ export function CreateProjectView() {
       {
         name: projectName,
         teamName,
+        description,
+        grade,
         memberIds: [
           ...(me ? [me.userId] : []),
           ...members.map((m) => m.userId),
         ],
-        description,
         logo: thumbnail ?? undefined,
       },
       {

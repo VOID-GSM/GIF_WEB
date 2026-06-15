@@ -4,15 +4,16 @@ import type { CreateProjectRequest, ProjectResponse, UserSearchResult } from "..
 
 export const createProject = async (
   data: CreateProjectRequest,
-): Promise<ProjectResponse> => {
+): Promise<number> => {
   const formData = new FormData();
   formData.append("name", data.name);
   formData.append("teamName", data.teamName);
   formData.append("description", data.description);
+  formData.append("grade", String(data.grade));
   data.memberIds.forEach((id) => formData.append("memberIds", String(id)));
   if (data.logo) formData.append("logo", data.logo);
 
-  const { data: responseData } = await apiClient.post<ProjectResponse>(
+  const { data: responseData } = await apiClient.post<number>(
     "/api/project",
     formData,
     { headers: { "Content-Type": null } },

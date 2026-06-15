@@ -1,8 +1,9 @@
 export interface CreateProjectRequest {
   name: string;
   teamName: string;
-  memberIds: number[];
   description: string;
+  grade: Grade;
+  memberIds: number[];
   logo?: File;
 }
 
