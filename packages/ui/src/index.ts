@@ -1,4 +1,5 @@
 export { default as Button } from "./Button";
+export { default as NotFound } from "./NotFound";
 export { default as SigninCard } from "./SigninCard";
 export { default as MypageCard } from "./MypageCard";
 
