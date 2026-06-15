@@ -14,7 +14,7 @@ export default function FormSubmissionsView() {
   return (
     <div className="min-h-screen flex flex-col pt-40 bg-background">
       <div className="flex flex-col items-center gap-4">
-        <div className="flex gap-5 rounded-[32px] bg-white p-2">
+        <div className="flex gap-5 rounded-[32px] bg-white p-2 shadow-new">
           <button
             onClick={() => setSelectedGrade(1)}
             className={`flex rounded-[32px] py-2 px-[38px] text-5 font-medium border cursor-pointer ${
