@@ -1,4 +1,3 @@
-// packages/ui/DatePicker.tsx
 "use client";
 import { useState } from "react";
 import type { DatePickerProps } from "../model/type";
@@ -60,7 +59,7 @@ export default function DatePicker({ value, onChange }: DatePickerProps) {
             <button
               type="button"
               onClick={() => changeMonth(-1)}
-              className="p-1 rounded-md hover:bg-gray-100 text-gray-500 text-xl leading-none"
+              className="p-1 rounded-md text-gray-500 text-xl leading-none"
             >
               ‹
             </button>
@@ -70,7 +69,7 @@ export default function DatePicker({ value, onChange }: DatePickerProps) {
             <button
               type="button"
               onClick={() => changeMonth(1)}
-              className="p-1 rounded-md hover:bg-gray-100 text-gray-500 text-xl leading-none"
+              className="p-1 rounded-md text-gray-500 text-xl leading-none"
             >
               ›
             </button>
