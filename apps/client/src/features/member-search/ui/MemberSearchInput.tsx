@@ -67,7 +67,6 @@ export function MemberSearchInput({ owner, value, onChange }: MemberSearchInputP
       <div className="relative flex flex-1 flex-wrap items-center gap-2 min-h-9" ref={containerRef}>
         {owner && (
           <NameBadge
-            key={owner.userId}
             id={Number(owner.studentNumber)}
             name={owner.name}
             isEditable={false}
