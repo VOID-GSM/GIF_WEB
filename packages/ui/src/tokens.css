@@ -14,6 +14,7 @@
   --color-gray-200: #e9e9e9;
   --color-gray-100: #f5f5f5;
   --color-gray-80: #c8c8c8;
+  --color-gray-70: #bababa;
   --color-gray-40: #7f7f7f;
 
   /* yellow scale */
@@ -46,6 +47,15 @@
   --color-green-dark: #438700;
 
   --color-background: #fafafa;
+
+  /* calendar scale */
+  --color-red: var(--color-orange-900);
+  --color-orange: var(--color-orange-400);
+  --color-yellow: var(--color-yellow-500);
+  --color-green: var(--color-success);
+  --color-blue: #6db8ff;
+  --color-purple: #a991ff;
+  --color-gray: var(--color-gray-400);
 
   /* font */
   --font-sans: "Pretendard", -apple-system, BlinkMacSystemFont, sans-serif;
