@@ -62,7 +62,7 @@ export default function FormDetailView({ formId }: Props) {
         </div>
 
         <div className="flex flex-col gap-4 mb-20">
-          {formDetail.fields
+          {[...formDetail.fields]
             .sort((a, b) => a.orderIndex - b.orderIndex)
             .map((field) => {
               const answers =
