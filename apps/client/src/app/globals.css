@@ -3,8 +3,6 @@
 @import "@repo/ui/tokens.css";
 @source "../../../../packages/ui/src";
 
-@source "../../../../packages/ui/src/**/*.{ts,tsx}";
-
 body {
   font-family: var(--font-sans);
 }
