@@ -15,6 +15,7 @@ export interface FilteredProject {
   name: string;
   teamName: string;
   logo: string;
+  grade: Grade;
 }
 
 // GET /api/project/filter?grade= — 학년별 프로젝트 목록
