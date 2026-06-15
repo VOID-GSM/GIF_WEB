@@ -7,14 +7,13 @@ interface ProjectCardProps {
 export default function ProjectCard({ project }: ProjectCardProps) {
   return (
     <div className="flex h-[176px] w-[224px] shrink-0 flex-col overflow-hidden rounded-[12px] bg-white shadow-new">
-      <div className="flex h-[112px] items-center justify-center p-4">
-        {/* logoPath는 외부 API에서 내려오는 동적 URL이라 next/image 대신 img 사용 */}
-        {/* 이미지가 없으면 GIF 로고를 fallback으로 표시 */}
+      <div className="h-[112px] w-full">
+        {/* logo는 외부 API에서 내려오는 동적 URL이라 next/image 대신 img 사용 */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src={project.logoPath || "/gif-logo.png"}
+          src={project.logo}
           alt={project.name}
-          className="max-h-full max-w-full object-contain"
+          className="h-full w-full object-cover"
         />
       </div>
       <div className="flex h-[64px] flex-col justify-center bg-yellow-50 pl-[20px] pr-[32px] leading-[1.4]">
