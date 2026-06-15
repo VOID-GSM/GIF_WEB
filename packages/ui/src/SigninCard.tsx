@@ -1,5 +1,7 @@
 "use client";
 
+import { ReactNode } from "react";
+
 type SigninProvider = "datagsm" | "google";
 
 interface SigninCardProps {
@@ -40,7 +42,7 @@ const PROVIDER_CONFIG: Record<
     description: string;
     buttonLabel: string;
     buttonClassName: string;
-    logo: React.ReactNode;
+    logo: ReactNode;
   }
 > = {
   datagsm: {
