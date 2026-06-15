@@ -32,6 +32,7 @@ const CallbackContent = () => {
         const { data } = await getDgCallback({ code, state });
 
         setCookie(COOKIE_KEYS.ACCESS_TOKEN, data.accessToken);
+        if (data.clientRole) setCookie(COOKIE_KEYS.CLIENT_ROLE, data.clientRole);
         router.replace(data.clientRole ? "/" : "/signup");
       } catch (err) {
         const axiosMessage =

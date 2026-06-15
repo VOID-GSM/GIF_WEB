@@ -1,5 +1,5 @@
 import type { ClientRole } from "./positions";
 
-export interface PatchClientInfoRequest {
+export interface PostClientInfoRequest {
   clientRole: ClientRole;
 }

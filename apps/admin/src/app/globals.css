@@ -5,6 +5,8 @@
 
 @source "../../../../packages/ui/src/**/*.{ts,tsx}";
 
+@source "../../../../packages/ui/src/**/*.{ts,tsx}";
+
 body {
   font-family: var(--font-sans);
 }
