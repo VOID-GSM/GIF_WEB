@@ -1,10 +1,14 @@
 "use client";
 import { useState } from "react";
-import {
-  CalendarEvent,
-  SubmitAnswer,
-} from "@/entities/from-management/model/type";
+import { SubmitAnswer } from "@/entities/from-management/model/type";
 import { Close } from "@repo/ui";
+
+type CalendarEvent = {
+  title: string;
+  startDate: string;
+  endDate: string;
+  color: string;
+};
 
 export const PRESET_COLOR_MAP = {
   red: "var(--color-red)",
@@ -23,13 +27,11 @@ function getDateStr(year: number, month: number, day: number) {
   return `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
 }
 
-// 날짜를 "M/D" 형식으로 변환
 function formatMonthDay(dateStr: string) {
   const [, month, day] = dateStr.split("-");
   return `${Number(month)}/${Number(day)}`;
 }
 
-// 이벤트 상세 모달
 function EventModal({
   event,
   onClose,
@@ -151,9 +153,9 @@ function DayCell({
 }
 
 export default function CalendarAnswer({
-  answer,
+  answers,
 }: {
-  answer: SubmitAnswer | undefined;
+  answers: SubmitAnswer[];
 }) {
   const todayDate = new Date();
   const todayStr = getDateStr(
@@ -168,7 +170,15 @@ export default function CalendarAnswer({
     null,
   );
 
-  const events = answer?.calendarEvents ?? [];
+  const events: CalendarEvent[] = answers
+    .filter((a) => a.eventName && a.startDate && a.endDate)
+    .map((a) => ({
+      title: a.eventName!,
+      startDate: a.startDate!,
+      endDate: a.endDate!,
+      color: a.color ?? "gray",
+    }));
+
   const year = currentMonth.getFullYear();
   const month = currentMonth.getMonth();
   const firstDay = new Date(year, month, 1).getDay();
