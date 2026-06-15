@@ -2,15 +2,15 @@
 
 import { useMemo, useState } from "react";
 import { useQueries } from "@tanstack/react-query";
-import { useGetProjectsByGrade } from "@/entities/project";
+import { useGetFilteredProjects } from "@/entities/project";
+import type { Grade } from "@/entities/project";
 import { getSocialScore, getReportScore, getMajorScore } from "@/entities/score";
 import { GradeSelector, NoticeButton } from "@repo/ui";
-import type { Grade } from "@repo/ui";
 
 export default function ScoreView() {
   const [grade, setGrade] = useState<Grade>(1);
 
-  const { data: projects, isLoading: isProjectsLoading } = useGetProjectsByGrade(grade);
+  const { data: projects, isLoading: isProjectsLoading } = useGetFilteredProjects(grade);
 
   const scoreQueries = useQueries({
     queries: (projects ?? []).flatMap((project) => [
