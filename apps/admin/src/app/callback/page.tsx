@@ -4,14 +4,14 @@ import { Suspense, useEffect, useRef, useState } from "react";
 
 import { useRouter, useSearchParams } from "next/navigation";
 
-import { useGetDgCallback } from "@/entities/auth";
+import { useGetGoogleCallback } from "@/entities/auth";
 import { COOKIE_KEYS } from "@/shared/constants";
 import { setCookie } from "@/shared/utils";
 
 const CallbackContent = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { mutateAsync: getDgCallback } = useGetDgCallback();
+  const { mutateAsync: getGoogleCallback } = useGetGoogleCallback();
 
   const [error, setError] = useState<string | null>(null);
   const hasRequested = useRef(false);
@@ -29,7 +29,7 @@ const CallbackContent = () => {
 
         if (!code || !state) throw new Error("인가 코드가 누락되었습니다.");
 
-        const { data } = await getDgCallback({ code, state });
+        const { data } = await getGoogleCallback({ code, state });
 
         setCookie(COOKIE_KEYS.ACCESS_TOKEN, data.accessToken);
         router.replace(data.adminRole ? "/" : "/signup");
@@ -50,7 +50,7 @@ const CallbackContent = () => {
     return () => {
       if (timeoutId) clearTimeout(timeoutId);
     };
-  }, [router, searchParams, getDgCallback]);
+  }, [router, searchParams, getGoogleCallback]);
 
   return (
     <main className="min-h-screen flex items-center justify-center bg-background">
