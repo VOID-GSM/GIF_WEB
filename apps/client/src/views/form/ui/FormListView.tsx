@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 
 import { FormCard, useGetFormList } from "@/entities/form";
-import { useGetMyProjects } from "@/entities/project";
+import { useGetMyProject } from "@/entities/project";
 
 export default function FormListView() {
   const router = useRouter();
@@ -12,7 +12,7 @@ export default function FormListView() {
     data: projects,
     isLoading: isProjectsLoading,
     isError: isProjectsError,
-  } = useGetMyProjects();
+  } = useGetMyProject();
   const projectId = projects?.[0]?.id;
 
   const {

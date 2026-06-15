@@ -1,6 +1,6 @@
 import { apiClient } from "@repo/lib";
 
-import type { PatchClientInfoRequest } from "../model/types";
+import type { PostClientInfoRequest } from "../model/types";
 
-export const patchClientInfo = (body: PatchClientInfoRequest) =>
-  apiClient.patch("/api/additional-info/client", body);
+export const postClientInfo = (body: PostClientInfoRequest) =>
+  apiClient.post("/api/additional-info/client", body);
