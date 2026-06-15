@@ -15,15 +15,16 @@ export default function NameBadge({
 }: NameBadgeProps) {
   return (
     <div
-      className={`flex items-center w-fit px-4 py-1 rounded-full
-      ${isEditable ? "bg-gray-200" : "bg-yellow-200"}`}
+      className={`flex items-center w-fit h-9 rounded-full
+      ${isEditable ? "bg-gray-200 px-4" : "bg-yellow-200 px-[26.5px]"}`}
     >
       <span className="font-medium">
         {id} {name}
       </span>
       {isEditable && (
         <button
-          className="text-gray-40 pl-[10px] cursor-pointer"
+          type="button"
+          className="text-gray-400 pl-[10px] cursor-pointer"
           onClick={onRemove}
         >
           <Close />
