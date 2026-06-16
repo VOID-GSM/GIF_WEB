@@ -1,9 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
-
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { toast } from "sonner";
 
 import {
   PositionSelect,
@@ -29,6 +29,7 @@ export default function SignupView() {
           setCookie(COOKIE_KEYS.CLIENT_ROLE, clientRole);
           router.replace("/");
         },
+        onError: () => toast.error("회원가입에 실패했습니다. 다시 시도해주세요."),
       },
     );
   };
