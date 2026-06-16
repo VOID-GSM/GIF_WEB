@@ -42,7 +42,7 @@ export default function FormSubmissionsView() {
           <div
             key={form.id}
             className={`flex items-center justify-between h-20 w-200 pl-8 pr-17 bg-white rounded-[12px] shadow 
-              ${form.submitted ? "cursor-pointer" : "cursor-disable"}`}
+              ${form.submitted ? "cursor-pointer" : "cursor-not-allowed"}`}
             onClick={() => {
               if (!form.submitted) return;
               router.push(`/form/submissions/${form.id}`);
