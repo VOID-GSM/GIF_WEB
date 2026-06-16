@@ -10,6 +10,7 @@ export default async function ScoreAreaPage({ params, searchParams }: Props) {
   const { projectId, teamName }  = await searchParams;
   return (
     <ScoreAreaView
+      key={`${area}-${projectId}`}
       area={area}
       projectId={Number(projectId ?? 0)}
       teamName={decodeURIComponent(teamName ?? "")}
