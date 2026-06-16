@@ -1,3 +1,4 @@
+export { GRADES } from "@repo/ui";
 export type { Grade } from "@repo/ui";
 
 export interface FilteredProject {

@@ -1,6 +1,6 @@
 "use client";
 
-const GRADES = [1, 2] as const;
+export const GRADES = [1, 2] as const;
 
 export type Grade = (typeof GRADES)[number];
 

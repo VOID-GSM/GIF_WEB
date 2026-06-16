@@ -22,7 +22,7 @@ export { default as FileUpload } from "./components/FileUpload/FileUpload";
 
 export { default as StyleDropdown } from "./components/Dropdown/StyleDropdown";
 
-export { default as GradeSelector } from "./components/GradeSelector/GradeSelector";
+export { default as GradeSelector, GRADES } from "./components/GradeSelector/GradeSelector";
 export type { Grade } from "./components/GradeSelector/GradeSelector";
 
 export { default as Navbar } from "./widgets/Navbar/ui/Navbar";
