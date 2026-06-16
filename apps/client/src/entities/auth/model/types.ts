@@ -32,7 +32,8 @@ export interface GetMyInfoResponse {
   name: string;
   studentNumber: string;
   role: string;
-  adminRole: string;
-  adminTeam: string;
-  clientRole: string;
+  adminRole: string | null;
+  adminTeam: string | null;
+  clientRole: string | null;
+  clientTeam: string | null;
 }
