@@ -168,14 +168,15 @@ export default function ScoreAreaView({ area, projectId, teamName }: Props) {
 
   function handleSave() {
     const body = buildBody();
+    const onSuccess = () => { setLocalScores({}); setLocalComplete({}); };
     if (existingScore) {
-      if (area === "major")  updateMajor.mutate(body as CreateMajorScoreRequest);
-      else if (area === "report") updateReport.mutate(body as CreateReportScoreRequest);
-      else updateSocial.mutate(body as CreateSocialScoreRequest);
+      if (area === "major")  updateMajor.mutate(body as CreateMajorScoreRequest, { onSuccess });
+      else if (area === "report") updateReport.mutate(body as CreateReportScoreRequest, { onSuccess });
+      else updateSocial.mutate(body as CreateSocialScoreRequest, { onSuccess });
     } else {
-      if (area === "major")  createMajor.mutate(body as CreateMajorScoreRequest);
-      else if (area === "report") createReport.mutate(body as CreateReportScoreRequest);
-      else createSocial.mutate(body as CreateSocialScoreRequest);
+      if (area === "major")  createMajor.mutate(body as CreateMajorScoreRequest, { onSuccess });
+      else if (area === "report") createReport.mutate(body as CreateReportScoreRequest, { onSuccess });
+      else createSocial.mutate(body as CreateSocialScoreRequest, { onSuccess });
     }
   }
 
