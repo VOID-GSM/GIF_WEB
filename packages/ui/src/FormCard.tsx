@@ -1,9 +1,25 @@
 "use client";
 
 import Close from "./svg/Close";
-import { Input, Textarea, StyleDropdown } from "@repo/ui";
-import type { StyleOption } from "@repo/ui";
-import type { PostFormRequestField } from "@/entities/form-create";
+import Input from "./components/Input/Input";
+import Textarea from "./components/Input/Textarea";
+import StyleDropdown from "./components/Dropdown/StyleDropdown";
+import type { StyleOption } from "./components/Dropdown/StyleDropdown";
+
+interface PostFormRequestField {
+  title: string;
+  description: string;
+  type: "TEXT" | "FILE" | "CALENDAR";
+  orderIndex: number;
+}
+
+export interface PostFormRequest {
+  title: string;
+  description: string;
+  deadline: string;
+  targetGrade: number;
+  fields: PostFormRequestField[];
+}
 
 const STYLE_TO_TYPE: Record<StyleOption, PostFormRequestField["type"]> = {
   file: "FILE",
