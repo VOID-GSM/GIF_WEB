@@ -35,7 +35,7 @@ export default function MemoSection({ projectId }: MemoSectionProps) {
         value={memo}
         onChange={handleChange}
         placeholder="메모를 입력하세요"
-        className="h-[200px] w-full resize-none rounded-xl border border-transparent bg-white p-4 text-base font-medium leading-relaxed tracking-tight text-gray-900 shadow outline-none transition-colors placeholder:text-gray-600 focus:border-yellow-600 lg:w-[378px]"
+        className="h-[300px] w-full resize-none rounded-xl border border-transparent bg-white p-4 text-base font-medium leading-relaxed tracking-tight text-gray-900 shadow outline-none transition-colors placeholder:text-gray-600 focus:border-yellow-600 lg:w-[378px]"
       />
     </section>
   );
