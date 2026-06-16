@@ -15,6 +15,12 @@ interface FormListSectionProps {
 // "2026-08-12" -> "2026.08.12"
 const formatDeadline = (deadline: string) => deadline.replace(/-/g, ".");
 
+// 마감일이 오늘(0시 기준)보다 이전이면 마감됨
+const isOverdue = (deadline: string) => {
+  const now = new Date();
+  return new Date(deadline) < new Date(now.getFullYear(), now.getMonth(), now.getDate());
+};
+
 // 양식 제출 목록 (admin·client 공용)
 // 부모가 flex 컨테이너(lg:items-stretch + min-h-0)를 제공하면 우측 컬럼 높이에 맞춰
 // 끝점까지 채우고 넘치면 스크롤된다.
@@ -42,14 +48,22 @@ export default function FormListSection({ forms }: FormListSectionProps) {
                   <div className="flex flex-col gap-0.5">
                     <span className="flex items-center gap-1.5 text-base font-medium tracking-tight text-black">
                       {form.title}
-                      {/* 준수 여부 — 준수 초록 / 미준수 빨강 */}
+                      {/* 상태 점 — 준수 초록 / 마감 지난 미준수 빨강 / 마감 전 미제출(대기) 그레이 */}
                       <span
                         className={`size-2 shrink-0 rounded-full ${
                           form.deadlineComplied
                             ? "bg-success"
-                            : "bg-orange-900"
+                            : isOverdue(form.deadline)
+                              ? "bg-orange-900"
+                              : "bg-gray-400"
                         }`}
-                        aria-label={form.deadlineComplied ? "준수" : "미준수"}
+                        aria-label={
+                          form.deadlineComplied
+                            ? "준수"
+                            : isOverdue(form.deadline)
+                              ? "미준수"
+                              : "대기"
+                        }
                       />
                     </span>
                     <span className="text-xs font-medium tracking-tight text-gray-600">
