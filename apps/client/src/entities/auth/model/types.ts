@@ -37,3 +37,5 @@ export interface GetMyInfoResponse {
   clientRole: string | null;
   clientTeam: string | null;
 }
+
+export type GetMeResponse = Omit<SignInResponse, "accessToken">;

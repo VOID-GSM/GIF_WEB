@@ -7,14 +7,16 @@ import { useRouter } from "next/navigation";
 
 import {
   PositionSelect,
-  usePatchClientInfo,
+  usePostClientInfo,
   type ClientRole,
 } from "@/entities/signup";
+import { COOKIE_KEYS } from "@/shared/constants";
+import { setCookie } from "@/shared/utils";
 
 export default function SignupView() {
   const router = useRouter();
   const [clientRole, setClientRole] = useState<ClientRole | null>(null);
-  const { mutate, isPending } = usePatchClientInfo();
+  const { mutate, isPending } = usePostClientInfo();
 
   const isActive = clientRole !== null;
 
@@ -22,7 +24,12 @@ export default function SignupView() {
     if (!clientRole) return;
     mutate(
       { clientRole },
-      { onSuccess: () => router.replace("/") },
+      {
+        onSuccess: () => {
+          setCookie(COOKIE_KEYS.CLIENT_ROLE, clientRole);
+          router.replace("/");
+        },
+      },
     );
   };
 

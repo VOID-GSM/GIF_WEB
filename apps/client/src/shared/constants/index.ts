@@ -5,4 +5,5 @@ export const OAUTH_SESSION_KEYS = {
 
 export const COOKIE_KEYS = {
   ACCESS_TOKEN: "access_token",
+  CLIENT_ROLE: "client_role",
 } as const;

@@ -1,2 +1,1 @@
-export { usePostSignIn } from "./hooks/usePostSignIn";
-export { useGetDgCallback } from "./hooks/useGetDgCallback";
+export { useGetGoogleCallback } from "./hooks/useGetGoogleCallback";
