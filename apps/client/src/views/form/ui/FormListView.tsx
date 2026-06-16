@@ -26,10 +26,20 @@ export default function FormListView() {
   const isLoading = isProjectsLoading || (!!projectId && isFormsLoading);
   const isError = isProjectsError || isFormsError;
   const hasNoProject = !isProjectsLoading && !isProjectsError && !projectId;
+  const isEmpty = !forms || forms.length === 0;
+  const showMessage = isLoading || isError || hasNoProject || isEmpty;
 
   return (
-    <div className="flex min-h-[calc(100vh-80px)] flex-col items-center justify-center px-4">
-      <div className="flex max-h-[calc(100vh-160px)] w-[848px] flex-col gap-5 overflow-y-auto px-6 py-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+    <div
+      className={`flex min-h-[calc(100vh-80px)] flex-col items-center px-4 ${
+        showMessage ? "justify-center" : "justify-start"
+      }`}
+    >
+      <div
+        className={`flex max-h-[calc(100vh-160px)] w-full max-w-[848px] flex-col gap-5 overflow-y-auto px-2 py-6 sm:px-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden ${
+          showMessage ? "" : "pt-[60px] sm:pt-[100px]"
+        }`}
+      >
         {isLoading ? (
           <p className="py-20 text-center text-gray-500">불러오는 중...</p>
         ) : isError ? (
