@@ -26,14 +26,21 @@ export default function MypageView() {
     : "-";
 
   const mypageInfoItems = [
-    { label: "이름", value: data?.name ?? "-", type: "readonly" as const },
     {
+      key: "name",
+      label: "이름",
+      value: data?.name ?? "-",
+      type: "readonly" as const,
+    },
+    {
+      key: "clientRole",
       label: "역할",
       value: role,
       type: "dropdown" as const,
       dropdownOptions: ["팀장", "팀원"],
     },
     {
+      key: "clientTeam",
       label: "소속 팀",
       value: data?.clientTeam ?? "-",
       type: "readonly" as const,
@@ -49,7 +56,8 @@ export default function MypageView() {
   const handleEdit = (updatedValues: Record<string, string>) => {
     updateInfo({
       clientRole:
-        CLIENT_ROLE_VALUE[updatedValues["역할"]] ?? updatedValues["역할"],
+        CLIENT_ROLE_VALUE[updatedValues["clientRole"]] ??
+        updatedValues["clientRole"],
     });
   };
 

@@ -30,8 +30,14 @@ export default function MypageView() {
     : "-";
 
   const mypageInfoItems = [
-    { label: "이름", value: data?.name ?? "-", type: "readonly" as const },
     {
+      key: "name",
+      label: "이름",
+      value: data?.name ?? "-",
+      type: "readonly" as const,
+    },
+    {
+      key: "adminRole",
       label: "역할",
       value: role,
       type: "dropdown" as const,
@@ -43,6 +49,7 @@ export default function MypageView() {
       ],
     },
     {
+      key: "adminTeam",
       label: "담당 팀",
       value: data?.adminTeam ?? "담당하는 팀이 없습니다",
       type: "input" as const,
@@ -58,8 +65,9 @@ export default function MypageView() {
   const handleEdit = (updatedValues: Record<string, string>) => {
     updateInfo({
       adminRole:
-        ADMIN_ROLE_VALUE[updatedValues["역할"]] ?? updatedValues["역할"],
-      adminTeam: updatedValues["담당 팀"],
+        ADMIN_ROLE_VALUE[updatedValues["adminRole"]] ??
+        updatedValues["adminRole"],
+      adminTeam: updatedValues["adminTeam"],
     });
   };
 
