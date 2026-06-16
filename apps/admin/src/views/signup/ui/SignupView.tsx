@@ -1,24 +1,31 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
-
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { toast } from "sonner";
 
-import { RoleSelect, type AdminRole } from "@/entities/signup";
+import { RoleSelect, usePostAdminInfo, type AdminRole } from "@/entities/signup";
 
 export default function SignupView() {
   const router = useRouter();
+  const { mutate, isPending } = usePostAdminInfo();
   const [adminRole, setAdminRole] = useState<AdminRole | null>(null);
   const [adminTeam, setAdminTeam] = useState("");
 
   const isActive = adminRole !== null;
 
-  // TODO: DataGSM에 admin role 추가되면 usePatchAdminInfo로 API 연동 복구
-  // mutate({ adminRole, adminTeam }, { onSuccess: () => router.replace("/") })
   const handleNext = () => {
     if (!adminRole) return;
-    router.replace("/");
+    const team = adminTeam.trim();
+    mutate(
+      // 담당 팀이 비어있으면 필드를 생략 (빈 문자열 전송 시 400 방지)
+      { adminRole, ...(team ? { adminTeam: team } : {}) },
+      {
+        onSuccess: () => router.replace("/"),
+        onError: () => toast.error("회원가입에 실패했습니다. 다시 시도해주세요."),
+      },
+    );
   };
 
   return (
@@ -53,9 +60,9 @@ export default function SignupView() {
             <button
               type="button"
               onClick={handleNext}
-              disabled={!isActive}
+              disabled={!isActive || isPending}
               className={`w-full h-7 rounded text-[12px] text-white transition-colors ${
-                isActive
+                isActive && !isPending
                   ? "bg-[#ffee30] cursor-pointer"
                   : "bg-gray-400 cursor-not-allowed"
               }`}
