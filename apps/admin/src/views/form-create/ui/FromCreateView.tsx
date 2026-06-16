@@ -14,9 +14,7 @@ export default function FormCreateView() {
   const { mutate: announce, isPending: isAnnouncing } = useAnnounceForm();
 
   const [formTitle, setFormTitle] = useState("");
-  const [description, setDescription] = useState("");
   const [deadline, setDeadline] = useState("");
-  const [targetGrade, setTargetGrade] = useState<1 | 2>(1);
 
   const [savedFormId, setSavedFormId] = useState<number | null>(null);
   const [fields, setFields] = useState<FieldWithId[]>([
@@ -59,9 +57,7 @@ export default function FormCreateView() {
     createForm(
       {
         title: formTitle,
-        description,
         deadline,
-        targetGrade,
         fields: fields.map(({ id, ...rest }) => rest),
       },
       {
@@ -149,7 +145,7 @@ export default function FormCreateView() {
           <button
             className="flex w-full items-center justify-center py-3 font-medium bg-yellow-600 rounded-[10px] cursor-pointer disabled:opacity-50"
             onClick={handleAnnounce}
-            disabled={isAnnouncing}
+            disabled={isAnnouncing || !savedFormId}
           >
             공지하기
           </button>

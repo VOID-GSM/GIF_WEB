@@ -7,9 +7,9 @@ export interface PostFormRequestField {
 
 export interface PostFormRequest {
   title: string;
-  description: string;
+  description?: string;
   deadline: string;
-  targetGrade: number;
+  targetGrade?: number;
   fields: PostFormRequestField[];
 }
 
