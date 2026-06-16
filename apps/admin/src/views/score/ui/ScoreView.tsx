@@ -9,6 +9,7 @@ import {
   getSocialScore,
   getReportScore,
   getMajorScore,
+  useScoreNotice,
 } from "@/entities/score";
 import { GradeSelector, NoticeButton } from "@repo/ui";
 import { MOCK_SCORE_ROWS } from "../model/mockScoreRows";
@@ -25,6 +26,7 @@ const toNullOn404 =
 
 export default function ScoreView() {
   const [grade, setGrade] = useState<Grade>(1);
+  const { mutate: noticeScore, isPending: isNoticing } = useScoreNotice();
 
   const {
     data: projects,
@@ -76,14 +78,14 @@ export default function ScoreView() {
   return (
     <div className="min-h-[calc(100vh-5rem)] bg-background py-6 sm:py-10 px-4 sm:px-6 flex flex-col items-center gap-4 sm:gap-6">
       <div className="flex flex-col items-center gap-2 w-full max-w-[980px] mx-auto">
-        <nav className="flex gap-2 w-full">
+        <nav className="flex gap-6 w-full">
           <Link
             href="/score/assign"
             className="text-xl sm:text-2xl font-bold pb-1 text-gray-400 whitespace-nowrap"
           >
             점수 부여
           </Link>
-          <span className="text-xl sm:text-2xl font-bold pb-1 border-b-2 border-yellow-500 whitespace-nowrap">
+          <span className="text-xl sm:text-2xl font-bold pb-1 border-b-2 border-yellow-600 whitespace-nowrap">
             점수 합계
           </span>
         </nav>
@@ -117,7 +119,7 @@ export default function ScoreView() {
                   key={rank}
                   className="flex justify-between items-center py-3 sm:py-[14px] border-t border-gray-100"
                 >
-                  <div className="flex items-center">
+                  <div className="flex items-center gap-1.5">
                     <div className="w-12 sm:w-16 md:w-20 text-center font-medium text-sm sm:text-base">
                       {rank}
                     </div>
@@ -134,7 +136,7 @@ export default function ScoreView() {
           )}
         </div>
 
-        <NoticeButton onClick={() => {}} />
+        <NoticeButton onClick={() => noticeScore()} label={isNoticing ? "공지 중..." : "공지하기"} />
       </div>
     </div>
   );
