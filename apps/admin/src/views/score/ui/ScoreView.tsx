@@ -13,16 +13,9 @@ import {
 } from "@/entities/score";
 import { GradeSelector, NoticeButton } from "@repo/ui";
 import { MOCK_SCORE_ROWS } from "../model/mockScoreRows";
+import { toNullOn404 } from "@/shared/utils";
 
 const isDev = process.env.NODE_ENV === "development";
-
-const toNullOn404 =
-  <T,>(fn: () => Promise<T>) =>
-  () =>
-    fn().catch((err: { response?: { status?: number } }) => {
-      if (err.response?.status === 404) return null;
-      throw err;
-    });
 
 export default function ScoreView() {
   const [grade, setGrade] = useState<Grade>(1);
@@ -37,6 +30,7 @@ export default function ScoreView() {
   const scoreQueries = useQueries({
     queries: (projects ?? []).map((project) => ({
       queryKey: ["score", "all", project.id],
+      enabled: !isDev,
       queryFn: async () => {
         const [social, report, major] = await Promise.all([
           toNullOn404(() => getSocialScore(project.id).then((res) => res.data))(),
