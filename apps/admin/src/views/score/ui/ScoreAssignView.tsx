@@ -8,6 +8,7 @@ import type { Grade, GrantStatus } from "@repo/ui";
 import ScoreTabNav from "./ScoreTabNav";
 import { useGetFilteredProjects } from "@/entities/project";
 import { getMajorScore, getReportScore, getSocialScore } from "@/entities/score";
+import { toNullOn404 } from "@/shared/utils";
 
 type ScoreArea = "major" | "report" | "social";
 type SortOrder = "name" | "name-desc";
@@ -29,14 +30,6 @@ const SORT_LABELS: Record<SortOrder, string> = {
   name: "이름순",
   "name-desc": "이름역순",
 };
-
-const toNullOn404 =
-  <T,>(fn: () => Promise<T>) =>
-  () =>
-    fn().catch((err: { response?: { status?: number } }) => {
-      if (err.response?.status === 404) return null;
-      throw err;
-    });
 
 export default function ScoreAssignView() {
   const [grade, setGrade] = useState<Grade>(1);
@@ -72,16 +65,19 @@ export default function ScoreAssignView() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const sorted = [...projects]
+  const sorted = projects
+    .map((project, i) => ({
+      ...project,
+      isComplete: scoreQueries[i]?.data?.isComplete ?? false,
+    }))
     .sort((a, b) =>
       sortOrder === "name"
         ? a.teamName.localeCompare(b.teamName)
         : b.teamName.localeCompare(a.teamName),
     )
-    .filter((_, i) => {
+    .filter((project) => {
       if (scoreFilter === "all") return true;
-      const isComplete = scoreQueries[i]?.data?.isComplete ?? false;
-      return scoreFilter === "complete" ? isComplete : !isComplete;
+      return scoreFilter === "complete" ? project.isComplete : !project.isComplete;
     });
 
   return (
