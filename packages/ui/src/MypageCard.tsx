@@ -1,9 +1,10 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import Logout from "./svg/Logout";
 import Chevron from "./svg/Chevron";
 
 export interface MypageInfoItem {
+  key: string;
   label: string;
   value: string;
   type?: "readonly" | "input" | "dropdown";
@@ -24,20 +25,20 @@ export default function MypageCard({
   const [isEditing, setIsEditing] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [editValues, setEditValues] = useState<Record<string, string>>({});
-  const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const init: Record<string, string> = {};
-    items.forEach((item) => {
-      init[item.label] = item.value;
-    });
-    setEditValues(init);
-  }, [items]);
+    if (!isEditing) {
+      const init: Record<string, string> = {};
+      items.forEach((item) => {
+        init[item.key] = item.value;
+      });
+      setEditValues(init);
+    }
+  }, [items, isEditing]);
 
   useEffect(() => {
     const close = (e: MouseEvent) => {
-      if (dropdownRef.current && dropdownRef.current.contains(e.target as Node))
-        return;
+      if ((e.target as Element).closest(".dropdown-container")) return;
       setOpenDropdown(null);
     };
     document.addEventListener("mousedown", close);
@@ -51,36 +52,36 @@ export default function MypageCard({
 
   const renderValue = (item: MypageInfoItem) => {
     if (!isEditing || item.type === "readonly") {
-      return <span>{editValues[item.label] ?? item.value}</span>;
+      return <span>{editValues[item.key] ?? item.value}</span>;
     }
 
     if (item.type === "input") {
       return (
         <input
           className="w-full focus:outline-none"
-          value={editValues[item.label] ?? ""}
+          value={editValues[item.key] ?? ""}
           onChange={(e) =>
-            setEditValues((prev) => ({ ...prev, [item.label]: e.target.value }))
+            setEditValues((prev) => ({ ...prev, [item.key]: e.target.value }))
           }
         />
       );
     }
 
     if (item.type === "dropdown") {
-      const isOpen = openDropdown === item.label;
+      const isOpen = openDropdown === item.key;
       const options = item.dropdownOptions ?? [];
 
       return (
-        <div className="relative w-full cursor-pointer" ref={dropdownRef}>
+        <div className="relative w-full cursor-pointer dropdown-container">
           <button
             type="button"
             onClick={(e) => {
               e.stopPropagation();
-              setOpenDropdown(isOpen ? null : item.label);
+              setOpenDropdown(isOpen ? null : item.key);
             }}
             className="flex items-center justify-between w-full text-left text-[20px] font-medium leading-[1.2] tracking-[-0.5px] text-gray-700"
           >
-            {editValues[item.label] ?? ""}
+            {editValues[item.key] ?? ""}
             <Chevron
               direction={isOpen ? "up" : "down"}
               className="transition-transform duration-300"
@@ -96,7 +97,7 @@ export default function MypageCard({
                     onClick={() => {
                       setEditValues((prev) => ({
                         ...prev,
-                        [item.label]: option,
+                        [item.key]: option,
                       }));
                       setOpenDropdown(null);
                     }}
