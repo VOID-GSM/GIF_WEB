@@ -74,16 +74,16 @@ export default function ScoreView() {
           .map((row, i) => ({ ...row, rank: i + 1 }));
 
   return (
-    <div className="min-h-screen bg-background py-6 sm:py-10 px-4 sm:px-6 flex flex-col items-center gap-4 sm:gap-6">
+    <div className="min-h-[calc(100vh-5rem)] bg-background py-6 sm:py-10 px-4 sm:px-6 flex flex-col items-center gap-4 sm:gap-6">
       <div className="flex flex-col items-center gap-2 w-full max-w-[980px] mx-auto">
         <nav className="flex gap-2 w-full">
           <a
             href="/score/assign"
-            className="text-2xl sm:text-2xl font-bold pb-1 text-gray-400 whitespace-nowrap"
+            className="text-xl sm:text-2xl font-bold pb-1 text-gray-400 whitespace-nowrap"
           >
             점수 부여
           </a>
-          <span className="text-2xl sm:text-2xl font-bold pb-1 border-b-2 border-yellow-500 whitespace-nowrap">
+          <span className="text-xl sm:text-2xl font-bold pb-1 border-b-2 border-yellow-500 whitespace-nowrap">
             점수 합계
           </span>
         </nav>
