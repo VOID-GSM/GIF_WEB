@@ -24,6 +24,9 @@ export { default as StyleDropdown } from "./components/Dropdown/StyleDropdown";
 export { default as Navbar } from "./widgets/Navbar/ui/Navbar";
 export { default as Header } from "./widgets/Navbar/ui/Header";
 export { default as Sidebar } from "./widgets/Navbar/ui/Sidebar";
+export { default as ProjectInfo } from "./widgets/project-detail/ui/ProjectInfo";
+export { default as DeadlineStatusSection } from "./widgets/project-detail/ui/DeadlineStatusSection";
+export { default as FormListSection } from "./widgets/project-detail/ui/FormListSection";
 
 export { default as Chevron } from "./svg/Chevron";
 export { default as DashedBorder } from "./svg/DashedBorder";

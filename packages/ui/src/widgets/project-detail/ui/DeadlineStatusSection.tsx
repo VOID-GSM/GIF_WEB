@@ -1,4 +1,8 @@
-import type { DeadlineSummary } from "@/entities/form";
+interface DeadlineSummary {
+  total: number;
+  met: number;
+  notMet: number;
+}
 
 interface DeadlineStatusSectionProps {
   summary: DeadlineSummary;
@@ -10,7 +14,7 @@ interface StatCardProps {
   valueClassName: string;
 }
 
-// 디자인 698-5092 / 5103 / 5106 — 흰 카드, 라벨 좌측 / 숫자 우측
+// 흰 카드, 라벨 좌측 / 숫자 우측
 function StatCard({ label, value, valueClassName }: StatCardProps) {
   return (
     <div className="flex flex-1 items-center justify-between rounded-xl bg-white px-4 py-2.5 shadow-new">
@@ -24,7 +28,7 @@ function StatCard({ label, value, valueClassName }: StatCardProps) {
   );
 }
 
-// 마감 현황 — 전체 / 준수 / 미준수 (디자인 698-5109)
+// 마감 현황 — 전체 / 준수 / 미준수 (admin·client 공용)
 export default function DeadlineStatusSection({
   summary,
 }: DeadlineStatusSectionProps) {

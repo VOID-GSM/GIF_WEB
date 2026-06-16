@@ -2,12 +2,11 @@
 
 import { useRouter } from "next/navigation";
 
+import { DeadlineStatusSection, FormListSection, ProjectInfo } from "@repo/ui";
+
 import { getDeadlineSummary, useGetForms } from "@/entities/form";
 import { useGetMyProject, useGetProject } from "@/entities/project";
 
-import DeadlineStatusSection from "@/widgets/project-detail/ui/DeadlineStatusSection";
-import FormListSection from "@/widgets/project-detail/ui/FormListSection";
-import ProjectInfo from "@/widgets/project-detail/ui/ProjectInfo";
 import ScheduleSection from "@/widgets/project-detail/ui/ScheduleSection";
 
 interface ProjectDetailViewProps {

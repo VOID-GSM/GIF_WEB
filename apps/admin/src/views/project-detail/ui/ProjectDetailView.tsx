@@ -1,11 +1,10 @@
 "use client";
 
+import { DeadlineStatusSection, FormListSection, ProjectInfo } from "@repo/ui";
+
 import { getDeadlineSummary, useGetForms } from "@/entities/form";
 import { useGetProject } from "@/entities/project";
-import DeadlineStatusSection from "@/widgets/project-detail/ui/DeadlineStatusSection";
-import FormListSection from "@/widgets/project-detail/ui/FormListSection";
 import MemoSection from "@/widgets/project-detail/ui/MemoSection";
-import ProjectInfo from "@/widgets/project-detail/ui/ProjectInfo";
 
 interface ProjectDetailViewProps {
   projectId: number;
@@ -35,8 +34,9 @@ export default function ProjectDetailView({
         <ProjectInfo project={project} />
 
         {/* 마감현황 · 양식 목록 (좌) / 메모 (우) */}
-        <div className="mt-14 flex flex-col gap-8 lg:flex-row lg:gap-12">
-          <div className="flex flex-1 flex-col gap-8">
+        <div className="mt-14 flex flex-col gap-8 lg:flex-row lg:items-stretch lg:gap-12">
+          {/* 좌측: 메모(우측) 높이에 맞춰 늘어나고, 양식 목록이 남는 공간을 채우며 스크롤 */}
+          <div className="flex flex-1 flex-col gap-8 lg:min-h-0">
             <DeadlineStatusSection summary={getDeadlineSummary(forms ?? [])} />
             <FormListSection forms={forms ?? []} />
           </div>

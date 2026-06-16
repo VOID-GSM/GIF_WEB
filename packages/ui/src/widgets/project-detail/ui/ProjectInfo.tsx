@@ -1,12 +1,23 @@
-import { NameBadge } from "@repo/ui";
+import NameBadge from "../../../components/Badge/NameBadge";
 
-import type { ProjectDetail } from "@/entities/project";
-
-interface ProjectInfoProps {
-  project: ProjectDetail;
+interface ProjectInfoMember {
+  userId: number;
+  name: string;
+  studentNumber: string;
+  role: string;
 }
 
-// 읽기(잠금) 모드의 프로젝트 정보 영역 — 생성 페이지와 동일한 레이아웃
+interface ProjectInfoProps {
+  project: {
+    name: string;
+    teamName: string;
+    description: string;
+    logo: string;
+    members: ProjectInfoMember[];
+  };
+}
+
+// 읽기(잠금) 모드의 프로젝트 정보 영역 — 생성 페이지와 동일한 레이아웃 (admin·client 공용)
 export default function ProjectInfo({ project }: ProjectInfoProps) {
   const readonlyValue = "text-2xl text-gray-900 font-medium";
 
@@ -16,7 +27,6 @@ export default function ProjectInfo({ project }: ProjectInfoProps) {
         <div className="mx-auto h-[160px] w-[240px] shrink-0 overflow-hidden rounded-xl border border-gray-200 bg-gray-100">
           {project.logo && (
             // logo는 외부 API에서 내려오는 동적 URL이라 next/image 대신 img 사용
-            // eslint-disable-next-line @next/next/no-img-element
             <img
               src={project.logo}
               alt={project.name}
@@ -60,9 +70,7 @@ export default function ProjectInfo({ project }: ProjectInfoProps) {
       </section>
 
       <section className="flex flex-col gap-3">
-        <span className="text-2xl font-medium text-gray-700">
-          프로젝트 설명
-        </span>
+        <span className="text-2xl font-medium text-gray-700">프로젝트 설명</span>
         <p className="w-full break-words whitespace-pre-wrap font-medium leading-relaxed text-gray-700">
           {project.description}
         </p>
