@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { useQueries } from "@tanstack/react-query";
 import { useGetFilteredProjects } from "@/entities/project";
@@ -11,6 +12,8 @@ import {
 } from "@/entities/score";
 import { GradeSelector, NoticeButton } from "@repo/ui";
 import { MOCK_SCORE_ROWS } from "../model/mockScoreRows";
+
+const isDev = process.env.NODE_ENV === "development";
 
 const toNullOn404 =
   <T,>(fn: () => Promise<T>) =>
@@ -30,26 +33,21 @@ export default function ScoreView() {
   } = useGetFilteredProjects(grade);
 
   const scoreQueries = useQueries({
-    queries: (projects ?? []).flatMap((project) => [
-      {
-        queryKey: ["score", "social", project.id],
-        queryFn: toNullOn404(() =>
-          getSocialScore(project.id).then((res) => res.data),
-        ),
+    queries: (projects ?? []).map((project) => ({
+      queryKey: ["score", "all", project.id],
+      queryFn: async () => {
+        const [social, report, major] = await Promise.all([
+          toNullOn404(() => getSocialScore(project.id).then((res) => res.data))(),
+          toNullOn404(() => getReportScore(project.id).then((res) => res.data))(),
+          toNullOn404(() => getMajorScore(project.id).then((res) => res.data))(),
+        ]);
+        return {
+          social: social?.subTotalScore ?? 0,
+          report: report?.subTotalScore ?? 0,
+          major: major?.subTotalScore ?? 0,
+        };
       },
-      {
-        queryKey: ["score", "report", project.id],
-        queryFn: toNullOn404(() =>
-          getReportScore(project.id).then((res) => res.data),
-        ),
-      },
-      {
-        queryKey: ["score", "major", project.id],
-        queryFn: toNullOn404(() =>
-          getMajorScore(project.id).then((res) => res.data),
-        ),
-      },
-    ]),
+    })),
   });
 
   const isScoreLoading = scoreQueries.some((q) => q.isLoading);
@@ -62,27 +60,29 @@ export default function ScoreView() {
       ? []
       : projects
           .map((project, i) => {
-            const social = scoreQueries[i * 3]?.data?.subTotalScore ?? 0;
-            const report = scoreQueries[i * 3 + 1]?.data?.subTotalScore ?? 0;
-            const major = scoreQueries[i * 3 + 2]?.data?.subTotalScore ?? 0;
+            const scores = scoreQueries[i]?.data;
+            const totalScore =
+              (scores?.social ?? 0) + (scores?.report ?? 0) + (scores?.major ?? 0);
             return {
               teamName: project.teamName,
-              totalScore: social + report + major,
+              totalScore,
             };
           })
           .sort((a, b) => b.totalScore - a.totalScore)
           .map((row, i) => ({ ...row, rank: i + 1 }));
 
+  const displayRows = scoreRows.length > 0 ? scoreRows : isDev ? MOCK_SCORE_ROWS : [];
+
   return (
     <div className="min-h-[calc(100vh-5rem)] bg-background py-6 sm:py-10 px-4 sm:px-6 flex flex-col items-center gap-4 sm:gap-6">
       <div className="flex flex-col items-center gap-2 w-full max-w-[980px] mx-auto">
         <nav className="flex gap-2 w-full">
-          <a
+          <Link
             href="/score/assign"
             className="text-xl sm:text-2xl font-bold pb-1 text-gray-400 whitespace-nowrap"
           >
             점수 부여
-          </a>
+          </Link>
           <span className="text-xl sm:text-2xl font-bold pb-1 border-b-2 border-yellow-500 whitespace-nowrap">
             점수 합계
           </span>
@@ -112,26 +112,24 @@ export default function ScoreView() {
                   점수 수합
                 </div>
               </div>
-              {(scoreRows.length > 0 ? scoreRows : MOCK_SCORE_ROWS).map(
-                ({ rank, teamName, totalScore }) => (
-                  <div
-                    key={rank}
-                    className="flex justify-between items-center py-3 sm:py-[14px] border-t border-gray-100"
-                  >
-                    <div className="flex items-center">
-                      <div className="w-12 sm:w-16 md:w-20 text-center font-medium text-sm sm:text-base">
-                        {rank}
-                      </div>
-                      <div className="flex-1 text-center font-medium text-sm sm:text-base">
-                        {teamName}
-                      </div>
+              {displayRows.map(({ rank, teamName, totalScore }) => (
+                <div
+                  key={rank}
+                  className="flex justify-between items-center py-3 sm:py-[14px] border-t border-gray-100"
+                >
+                  <div className="flex items-center">
+                    <div className="w-12 sm:w-16 md:w-20 text-center font-medium text-sm sm:text-base">
+                      {rank}
                     </div>
-                    <div className="w-24 sm:w-32 md:w-40 text-center font-medium text-sm sm:text-base">
-                      {totalScore}
+                    <div className="flex-1 text-center font-medium text-sm sm:text-base">
+                      {teamName}
                     </div>
                   </div>
-                ),
-              )}
+                  <div className="w-24 sm:w-32 md:w-40 text-center font-medium text-sm sm:text-base">
+                    {totalScore}
+                  </div>
+                </div>
+              ))}
             </div>
           )}
         </div>
