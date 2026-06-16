@@ -12,10 +12,7 @@ import {
   useScoreNotice,
 } from "@/entities/score";
 import { GradeSelector, NoticeButton } from "@repo/ui";
-import { MOCK_SCORE_ROWS } from "../model/mockScoreRows";
 import { toNullOn404 } from "@/shared/utils";
-
-const isDev = process.env.NODE_ENV === "development";
 
 export default function ScoreView() {
   const [grade, setGrade] = useState<Grade>(1);
@@ -30,7 +27,7 @@ export default function ScoreView() {
   const scoreQueries = useQueries({
     queries: (projects ?? []).map((project) => ({
       queryKey: ["score", "all", project.id],
-      enabled: !isDev,
+
       queryFn: async () => {
         const [social, report, major] = await Promise.all([
           toNullOn404(() => getSocialScore(project.id).then((res) => res.data))(),
@@ -51,7 +48,7 @@ export default function ScoreView() {
   const isLoading = isProjectsLoading || isScoreLoading;
   const isError = isProjectsError || isScoreError;
 
-  const scoreRows =
+  const scoreRows: { rank: number; teamName: string; totalScore: number }[] =
     !projects || isScoreLoading
       ? []
       : projects
@@ -66,8 +63,6 @@ export default function ScoreView() {
           })
           .sort((a, b) => b.totalScore - a.totalScore)
           .map((row, i) => ({ ...row, rank: i + 1 }));
-
-  const displayRows = scoreRows.length > 0 ? scoreRows : isDev ? MOCK_SCORE_ROWS : [];
 
   return (
     <div className="min-h-[calc(100vh-5rem)] bg-background py-6 sm:py-10 px-4 sm:px-6 flex flex-col items-center gap-4 sm:gap-6">
@@ -108,7 +103,7 @@ export default function ScoreView() {
                   점수 수합
                 </div>
               </div>
-              {displayRows.map(({ rank, teamName, totalScore }) => (
+              {scoreRows.map(({ rank, teamName, totalScore }) => (
                 <div
                   key={rank}
                   className="flex justify-between items-center py-3 sm:py-[14px] border-t border-gray-100"
