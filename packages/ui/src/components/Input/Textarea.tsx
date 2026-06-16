@@ -2,12 +2,18 @@ interface TextareaProps {
   title?: string;
   value?: string;
   onChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  rows?: number;
+  maxLength?: number;
+  className?: string;
 }
 
 export default function Textarea({
   title = "내용을 입력하세요",
   value,
   onChange,
+  rows,
+  maxLength,
+  className = "",
 }: TextareaProps) {
   return (
     <textarea
@@ -16,6 +22,8 @@ export default function Textarea({
       placeholder={title}
       value={value}
       onChange={onChange}
+      rows={rows}
+      maxLength={maxLength}
     />
   );
 }
