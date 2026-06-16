@@ -13,5 +13,7 @@ export function useGetFormList() {
       const { data } = await getFormList();
       return data;
     },
+    // 최신 양식(id가 큰 순)이 위로, 오래된 양식이 아래로 정렬
+    select: (data) => [...data].sort((a, b) => b.id - a.id),
   });
 }
