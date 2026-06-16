@@ -3,6 +3,7 @@ import { apiClient } from "@repo/lib";
 import type {
   GetDgCallbackParams,
   GetDgCallbackResponse,
+  GetMeResponse,
   PostSignInRequest,
   PostSignInResponse,
 } from "../model/types";
@@ -12,3 +13,6 @@ export const postSignIn = (body: PostSignInRequest) =>
 
 export const getDgCallback = (params: GetDgCallbackParams) =>
   apiClient.get<GetDgCallbackResponse>("/api/auth/dg/callback", { params });
+
+export const getMe = () =>
+  apiClient.get<GetMeResponse>("/api/auth/me");
