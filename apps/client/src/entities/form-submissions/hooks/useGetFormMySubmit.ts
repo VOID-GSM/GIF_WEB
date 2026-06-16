@@ -2,7 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 
-import { getFormMySubmit } from "../api";
+import { getFormMySubmit } from "../api/api";
 import type { GetFormMySubmitParams } from "../model/types";
 
 export function useGetFormMySubmit(params: GetFormMySubmitParams) {
