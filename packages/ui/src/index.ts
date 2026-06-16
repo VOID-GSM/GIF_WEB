@@ -23,12 +23,17 @@ export { default as Navbar } from "./widgets/Navbar/ui/Navbar";
 export { default as Header } from "./widgets/Navbar/ui/Header";
 export { default as Sidebar } from "./widgets/Navbar/ui/Sidebar";
 
+export { default as EventFormModal } from "./widgets/Modal/ui/EventFormModal";
+export { default as EventViewModal } from "./widgets/Modal/ui/EventViewModal";
+
 export { default as Chevron } from "./svg/Chevron";
 export { default as Close } from "./svg/Close";
 export { default as Logout } from "./svg/Logout";
 export { default as Menu } from "./svg/Menu";
 export { default as Plus } from "./svg/Plus";
 export { default as Upload } from "./svg/Upload";
+export { default as File } from "./svg/File";
+export { default as Color } from "./svg/Color";
 
 export type { NavItem } from "./widgets/Navbar/model/type";
 export type { NavbarProps } from "./widgets/Navbar/model/type";
