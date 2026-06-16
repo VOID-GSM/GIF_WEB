@@ -11,6 +11,7 @@ export { default as SectionBadge } from "./components/Badge/SectionBadge";
 export { default as SubmitButton } from "./components/Button/SubmitButton";
 export { default as ScoreButton } from "./components/Button/ScoreButton";
 export { default as GrantButton } from "./components/Button/GrantButton";
+export type { GrantStatus } from "./components/Button/GrantButton";
 export { default as MemberButton } from "./components/Button/MemberButton";
 export { default as NextButton } from "./components/Button/NextButton";
 export { default as PageButton } from "./components/Button/PageButton";
