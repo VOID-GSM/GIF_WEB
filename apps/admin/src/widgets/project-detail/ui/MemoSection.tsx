@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type ChangeEvent } from "react";
 
 interface MemoSectionProps {
   projectId: number;
@@ -19,7 +19,7 @@ export default function MemoSection({ projectId }: MemoSectionProps) {
       : (localStorage.getItem(storageKey) ?? ""),
   );
 
-  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     const next = e.target.value;
     setMemo(next);
     localStorage.setItem(storageKey, next);
