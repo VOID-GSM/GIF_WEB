@@ -44,3 +44,32 @@ export interface FilteredProject {
 
 // GET /api/project/filter?grade= — 학년별 프로젝트 목록
 export type GetFilteredProjectsResponse = FilteredProject[];
+
+export interface ProjectMember {
+  userId: number;
+  name: string;
+  studentNumber: string;
+  role: string;
+}
+
+// GET /api/project/{projectId} — 프로젝트 상세
+export interface ProjectDetail {
+  id: number;
+  name: string;
+  teamName: string;
+  description: string;
+  logo: string;
+  grade: number;
+  members: ProjectMember[];
+}
+
+// PUT /api/project/{projectId}/update — 멤버는 추가/삭제 델타로 전달
+export interface UpdateProjectRequest {
+  name: string;
+  teamName: string;
+  description: string;
+  grade: number;
+  addMemberIds: number[];
+  removeMemberIds: number[];
+  logo?: File;
+}
