@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 
+import { useGetMe } from "@/entities/auth";
 import { useGetProject } from "@/entities/project";
 
 import ProjectEditForm from "@/widgets/project-detail/ui/ProjectEditForm";
@@ -15,8 +16,10 @@ export default function ProjectEditView({ projectId }: ProjectEditViewProps) {
   const router = useRouter();
 
   const { data: project, isPending, isError } = useGetProject(projectId);
+  // me가 로드된 후에만 폼을 렌더 — 오너가 팀원 목록 초기값에 섞이지 않도록 (캐시되어 하위에서 즉시 사용)
+  const { data: me, isPending: isMePending } = useGetMe();
 
-  if (isPending || isError || !project) {
+  if (isPending || isMePending || isError || !project || !me) {
     return (
       <div className="flex min-h-[calc(100dvh-80px)] items-center justify-center px-4">
         <p className="text-[14px] text-gray-600">
