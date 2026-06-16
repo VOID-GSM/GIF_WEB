@@ -5,8 +5,6 @@ import { useState, useRef, useEffect } from "react";
 import { NameBadge, Plus } from "@repo/ui";
 
 import { useSearchUsers, type UserSearchResult } from "@/entities/project";
-// TODO: 실데이터 연동 후 아래 import 및 관련 로직 삭제
-import { MOCK_USERS } from "@/entities/project/model/mockUsers";
 
 interface MemberSearchInputProps {
   owner?: UserSearchResult;
@@ -26,13 +24,9 @@ export function MemberSearchInput({ owner, value, onChange }: MemberSearchInputP
   }, [keyword]);
 
   const { data: apiResults = [] } = useSearchUsers(debouncedKeyword);
-  // TODO: 실데이터 연동 후 아래 목 폴백 로직 삭제 후 `const results = apiResults;` 로 교체
-  const results = (apiResults.length > 0
-    ? apiResults
-    : MOCK_USERS.filter(
-        (u) => u.name.includes(keyword) || u.studentNumber.includes(keyword),
-      )
-  ).filter((u) => !value.some((m) => m.userId === u.userId) && u.userId !== owner?.userId);
+  const results = apiResults.filter(
+    (u) => !value.some((m) => m.userId === u.userId) && u.userId !== owner?.userId,
+  );
 
   useEffect(() => {
     if (!isOpen) return;
