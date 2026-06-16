@@ -20,11 +20,15 @@ export default function ScheduleSection({ forms = [] }: ScheduleSectionProps) {
   const daysInMonth = new Date(year, month + 1, 0).getDate();
 
   // 이번 달에 해당하는 마감일(일자)들의 집합
+  // "YYYY-MM-DD"를 직접 분리 — new Date 파싱의 UTC 오프셋으로 인한 날짜 오차 방지
   const deadlineDays = new Set(
     forms
-      .map((form) => new Date(form.deadline))
-      .filter((d) => d.getFullYear() === year && d.getMonth() === month)
-      .map((d) => d.getDate()),
+      .map((form) => {
+        const [y, m, d] = form.deadline.split("-").map(Number);
+        return { year: y, month: m - 1, day: d };
+      })
+      .filter((item) => item.year === year && item.month === month)
+      .map((item) => item.day),
   );
 
   const cells: (number | null)[] = [
