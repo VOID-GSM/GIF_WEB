@@ -5,5 +5,5 @@ type PageProps = { params: Promise<{ formId: string }> };
 export default async function Page({ params }: PageProps) {
   const { formId } = await params;
 
-  return <FormSubmitView formId={Number(formId)} projectId={1} />;
+  return <FormSubmitView formId={Number(formId)} />;
 }

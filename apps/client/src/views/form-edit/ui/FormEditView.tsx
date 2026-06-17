@@ -13,8 +13,9 @@ import {
   useGetFormDetail,
 } from "@/entities/form-submissions/index";
 import type { SubmitAnswerItem } from "@/entities/form-submissions/model/types";
+import { useGetMyInfo } from "@/entities/mypage/index";
 
-type Props = { formId: number; projectId: number };
+type Props = { formId: number };
 
 function toCalendarEvents(
   answers: SubmitAnswerItem[],
@@ -31,7 +32,10 @@ function toCalendarEvents(
     }));
 }
 
-export default function FormMySubmitView({ formId, projectId }: Props) {
+export default function FormMySubmitView({ formId }: Props) {
+  const { data: myInfo } = useGetMyInfo();
+  const projectId = myInfo?.projectId ?? 1;
+
   const router = useRouter();
 
   const { data: formDetail, isLoading: detailLoading } =

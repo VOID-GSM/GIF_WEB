@@ -10,10 +10,14 @@ import {
 import { usePostFormSubmit } from "@/entities/form-submissions/hooks/usePostFormSubmit";
 import { useGetFormDetail } from "@/entities/form-submissions/hooks/useGetFormDetail";
 import type { FormAnswerItem } from "@/entities/form-submissions/model/types";
+import { useGetMyInfo } from "@/entities/mypage/index";
 
-type Props = { formId: number; projectId: number };
+type Props = { formId: number };
 
-export default function FormSubmitView({ formId, projectId }: Props) {
+export default function FormSubmitView({ formId }: Props) {
+  const { data: myInfo } = useGetMyInfo();
+  const projectId = myInfo?.projectId ?? 1;
+
   const router = useRouter();
 
   const { data: formDetail, isLoading: detailLoading } =

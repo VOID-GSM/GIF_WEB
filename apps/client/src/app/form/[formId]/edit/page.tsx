@@ -5,5 +5,5 @@ type PageProps = { params: Promise<{ formId: string }> };
 export default async function Page({ params }: PageProps) {
   const { formId } = await params;
 
-  return <FormEditView formId={Number(formId)} projectId={1} />;
+  return <FormEditView formId={Number(formId)} />;
 }
