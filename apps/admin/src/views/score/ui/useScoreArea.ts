@@ -77,6 +77,15 @@ export function useScoreArea({ area, projectId }: Params) {
   const pending   = rows.filter((r) => !r.isComplete).length;
   const allScored = rows.every((r) => r.selectedScore !== null);
 
+  // 해당 영역의 점수가 실제로 서버에 저장되어 있는지 확인
+  // (다른 영역 점수만 있는 경우 existingScore가 non-null이어도 이 영역은 미채점 상태)
+  const isAreaScored = existingScore !== null && criteria.every((c) => {
+    const responseKey =
+      Object.keys(existingScore).find((k) => (RESPONSE_TO_REQUEST_KEY[k] ?? k) === c.key) ?? c.key;
+    const raw = (existingScore as unknown as Record<string, number>)[responseKey] ?? 0;
+    return raw === 40 || raw === 32 || raw === 24;
+  });
+
   function selectScore(key: string, score: ScoreValue) {
     setLocalScores((prev) => ({ ...prev, [key]: prev[key] === score ? null : score }));
   }
@@ -119,7 +128,8 @@ export function useScoreArea({ area, projectId }: Params) {
   function handleSave() {
     const body = buildBody();
     const onSuccess = () => { setLocalScores({}); setLocalComplete({}); };
-    if (existingScore) {
+    // 레코드가 하나이므로: 서버에 데이터가 있으면(다른 영역이라도) PATCH, 없으면 POST
+    if (existingScore !== null) {
       if (area === "major")        updateMajor.mutate(body as CreateMajorScoreRequest,   { onSuccess });
       else if (area === "report")  updateReport.mutate(body as CreateReportScoreRequest, { onSuccess });
       else                         updateSocial.mutate(body as CreateSocialScoreRequest, { onSuccess });
@@ -135,6 +145,7 @@ export function useScoreArea({ area, projectId }: Params) {
     completed,
     pending,
     allScored,
+    isAreaScored,
     isQueryLoading,
     isMutating,
     existingScore,

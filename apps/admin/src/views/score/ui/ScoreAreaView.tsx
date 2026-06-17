@@ -19,9 +19,9 @@ export default function ScoreAreaView({ area, projectId, teamName }: Props) {
     completed,
     pending,
     allScored,
+    isAreaScored,
     isQueryLoading,
     isMutating,
-    existingScore,
     selectScore,
     toggleComplete,
     handleSave,
@@ -48,7 +48,7 @@ export default function ScoreAreaView({ area, projectId, teamName }: Props) {
               disabled={!allScored || isMutating}
               className="px-6 py-2.5 rounded-xl text-sm font-semibold bg-yellow-600 hover:bg-yellow-700 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed transition-colors cursor-pointer"
             >
-              {isMutating ? "저장 중..." : existingScore ? "수정 저장" : "점수 저장"}
+              {isMutating ? "저장 중..." : isAreaScored ? "점수 수정" : "점수 부여"}
             </button>
           </div>
         )}
