@@ -30,7 +30,7 @@ export default function RankView({ grade: propGrade, onGradeChange }: RankViewPr
 
   return (
     <div className="h-[calc(100vh-5rem)] relative flex items-center justify-center bg-white overflow-hidden">
-      <div className="absolute top-20 w-full flex justify-center">
+      <div className="absolute top-20 w-full flex justify-center py-10">
         <GradeSelector grade={grade} onGradeChange={setGrade} />
       </div>
 
@@ -59,7 +59,7 @@ const barStyle = {
 
 function RankChart({ items }: { items: RankItem[] }) {
   return (
-    <div className="flex flex-row items-end justify-center" style={{ gap: barStyle.gap }}>
+    <div className="flex w-full flex-row items-end justify-center" style={{ gap: barStyle.gap }}>
       {items.slice(0, 5).map((item, index) => (
         <div key={item.rank} className="flex flex-col items-center">
           <div
