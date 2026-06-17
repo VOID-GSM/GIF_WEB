@@ -16,4 +16,16 @@ export interface GetGoogleCallbackParams {
   state: string;
 }
 
+export interface GetMyInfoResponse {
+  userId: number;
+  email: string;
+  name: string;
+  studentNumber: string;
+  role: string;
+  adminRole: string | null;
+  adminTeam: string | null;
+  clientRole: string | null;
+  clientTeam: string | null;
+}
+
 export type GetGoogleCallbackResponse = SignInResponse;
