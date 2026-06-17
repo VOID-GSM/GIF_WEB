@@ -9,7 +9,7 @@ import type { StyleOption } from "./components/Dropdown/StyleDropdown";
 interface PostFormRequestField {
   title: string;
   description: string;
-  type: "TEXT" | "FILE" | "CALENDAR";
+  type: "TEXT" | "FILE" | "CALENDAR" | "";
   orderIndex: number;
 }
 
@@ -21,16 +21,17 @@ export interface PostFormRequest {
   fields: PostFormRequestField[];
 }
 
-const STYLE_TO_TYPE: Record<StyleOption, PostFormRequestField["type"]> = {
+const STYLE_TO_TYPE: Record<StyleOption, "TEXT" | "FILE" | "CALENDAR"> = {
   file: "FILE",
   text: "TEXT",
   calendar: "CALENDAR",
 };
 
-const TYPE_TO_STYLE: Record<PostFormRequestField["type"], StyleOption> = {
+const TYPE_TO_STYLE: Record<string, StyleOption | null> = {
   TEXT: "text",
   FILE: "file",
   CALENDAR: "calendar",
+  "": null,
 };
 
 const STYLE_LABEL: Record<StyleOption, string> = {
@@ -46,7 +47,8 @@ interface FormCardProps {
 }
 
 export default function FormCard({ field, onChange, onDelete }: FormCardProps) {
-  const selectedStyle = TYPE_TO_STYLE[field.type];
+  const selectedStyle =
+    field.type === "" ? null : (TYPE_TO_STYLE[field.type] ?? null);
 
   const handleStyleChange = (style: StyleOption) => {
     onChange(field.id, {
@@ -68,7 +70,7 @@ export default function FormCard({ field, onChange, onDelete }: FormCardProps) {
               onChange(field.id, { description: e.target.value })
             }
           />
-          <StyleDropdown onChange={handleStyleChange} />
+          <StyleDropdown value={selectedStyle} onChange={handleStyleChange} />
           {selectedStyle && (
             <div className="px-4 py-[14px] border-b border-gray-200 text-gray-500">
               <span>{STYLE_LABEL[selectedStyle]}</span>

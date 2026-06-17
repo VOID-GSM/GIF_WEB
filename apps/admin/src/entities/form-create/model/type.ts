@@ -1,7 +1,7 @@
 export interface PostFormRequestField {
   title: string;
   description: string;
-  type: "TEXT" | "FILE" | "CALENDAR";
+  type: "TEXT" | "FILE" | "CALENDAR" | "";
   orderIndex: number;
 }
 

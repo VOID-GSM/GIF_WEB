@@ -6,7 +6,15 @@ import { FormCard, Plus, DatePicker } from "@repo/ui";
 import { usePostForm, useAnnounceForm } from "@/entities/form-create";
 import type { PostFormRequestField } from "@/entities/form-create";
 
-type FieldWithId = PostFormRequestField & { id: string };
+type FieldType = "TEXT" | "FILE" | "CALENDAR" | "";
+
+type FieldWithId = {
+  id: string;
+  title: string;
+  description: string;
+  type: FieldType;
+  orderIndex: number;
+};
 
 export default function FormCreateView() {
   const router = useRouter();
@@ -15,8 +23,8 @@ export default function FormCreateView() {
 
   const [formTitle, setFormTitle] = useState("");
   const [deadline, setDeadline] = useState("");
-
   const [savedFormId, setSavedFormId] = useState<number | null>(null);
+
   const [fields, setFields] = useState<FieldWithId[]>([
     {
       id: crypto.randomUUID(),
@@ -34,7 +42,7 @@ export default function FormCreateView() {
         id: crypto.randomUUID(),
         title: "",
         description: "",
-        type: "TEXT",
+        type: "",
         orderIndex: prev.length,
       },
     ]);
@@ -58,14 +66,15 @@ export default function FormCreateView() {
       {
         title: formTitle,
         deadline,
-        fields: fields.map(({ id, ...rest }) => rest),
+        fields: fields
+          .filter((f) => f.type !== "") // 타입 미선택 필드 제외
+          .map(({ id, ...rest }) => rest as PostFormRequestField),
       },
       {
         onSuccess: (res) => {
           setSavedFormId(res.data);
           console.log("저장 성공");
         },
-
         onError: (error) => {
           console.error("저장 실패", error);
         },
@@ -84,7 +93,6 @@ export default function FormCreateView() {
         onSuccess: () => {
           router.push("/");
         },
-
         onError: (error) => {
           console.error("공지 실패", error);
         },
