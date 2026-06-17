@@ -1,16 +1,29 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
 import { Header } from "@repo/ui";
 import { Sidebar } from "@repo/ui";
 import { NavbarProps } from "@repo/ui";
+import { getCookieValue } from "@repo/lib";
 
 export default function Navbar({ navItems }: NavbarProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isRankPublished, setIsRankPublished] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    setIsRankPublished(getCookieValue("rank_announced") === "1");
+  }, []);
+
+  const filteredNavItems = navItems.filter((item) => {
+    if (item.path !== "/rank") return true;
+    return isRankPublished === true;
+  });
+
   return (
     <div>
       <Header
         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-        navItems={navItems}
+        navItems={filteredNavItems}
       />
       <div>
         {isSidebarOpen && (
@@ -20,7 +33,7 @@ export default function Navbar({ navItems }: NavbarProps) {
           />
         )}
         <Sidebar
-          navItems={navItems}
+          navItems={filteredNavItems}
           isOpen={isSidebarOpen}
           onClose={() => setIsSidebarOpen(false)}
         />

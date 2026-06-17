@@ -25,7 +25,10 @@ export { default as FileUpload } from "./components/FileUpload/FileUpload";
 
 export { default as StyleDropdown } from "./components/Dropdown/StyleDropdown";
 
-export { default as GradeSelector, GRADES } from "./components/GradeSelector/GradeSelector";
+export {
+  default as GradeSelector,
+  GRADES,
+} from "./components/GradeSelector/GradeSelector";
 export type { Grade } from "./components/GradeSelector/GradeSelector";
 
 export { default as Navbar } from "./widgets/Navbar/ui/Navbar";
@@ -50,3 +53,5 @@ export type { SidebarProps } from "./widgets/Navbar/model/type";
 
 export { ADMIN_NAV_ITEMS, CLIENT_NAV_ITEMS } from "./widgets/Navbar/model/nav";
 export type { StyleOption } from "./components/Dropdown/StyleDropdown";
+
+export { default as RankView } from "./views/RankView";
