@@ -57,7 +57,7 @@ export default function FormCard({ field, onChange, onDelete }: FormCardProps) {
   };
 
   return (
-    <div className="flex flex-col justify-center w-140 shadow-new border-t-[5px] border-t-yellow-600 rounded-[10px] bg-white p-4 pt-9">
+    <div className="flex flex-col justify-center w-full shadow-new border-t-[5px] border-t-yellow-600 rounded-[10px] bg-white p-4 pt-9">
       <div className="flex flex-col gap-3">
         <div className="flex flex-col gap-2 px-8">
           <Input

@@ -101,12 +101,11 @@ export default function FormCreateView() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center pt-20 bg-background">
+    <div className="min-h-screen flex flex-col items-center pt-20 bg-background px-5">
       <span className="pt-20 pb-8 font-semibold text-[24px]">
         양식 생성하기
       </span>
-
-      <div className="w-[560px] flex flex-col pb-6 gap-4">
+      <div className="w-full max-w-[560px] flex flex-col pb-6 gap-4">
         <div className="flex flex-col text-[14px] font-medium text-gray-600 gap-1">
           제목 입력하기
           <input
@@ -123,8 +122,7 @@ export default function FormCreateView() {
           </div>
         </div>
       </div>
-
-      <div className="w-[560px] flex flex-col gap-5">
+      <div className="w-full max-w-[560px] flex flex-col gap-5">
         {fields.map((field) => (
           <FormCard
             key={field.id}
@@ -142,7 +140,7 @@ export default function FormCreateView() {
           추가하기
         </button>
 
-        <div className="w-full flex gap-5 pb-20">
+        <div className="w-full flex flex-col sm:flex-row gap-5 pb-20">
           <button
             className="flex w-full items-center justify-center py-3 font-medium border border-yellow-700 bg-white rounded-[10px] cursor-pointer disabled:opacity-50"
             onClick={handleSave}
