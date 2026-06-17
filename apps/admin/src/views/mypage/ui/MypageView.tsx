@@ -68,7 +68,7 @@ export default function MypageView() {
       adminRole:
         ADMIN_ROLE_VALUE[updatedValues["adminRole"]] ??
         updatedValues["adminRole"],
-      adminTeam: updatedValues["adminTeam"],
+      adminTeam: updatedValues["adminTeam"].trim(),
     });
   };
 

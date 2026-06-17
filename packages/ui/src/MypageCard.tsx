@@ -53,7 +53,7 @@ export default function MypageCard({
 
   const renderValue = (item: MypageInfoItem) => {
     if (!isEditing || item.type === "readonly") {
-      return <span>{editValues[item.key] ?? item.value}</span>;
+      return <span>{editValues[item.key] || item.value}</span>;
     }
 
     if (item.type === "input") {
