@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
 import { useQueries } from "@tanstack/react-query";
 import { useGetFilteredProjects } from "@/entities/project";
+import { useGetMyInfo } from "@/entities/mypage";
 import type { Grade } from "@/entities/project";
 import {
   getMajorScore,
@@ -74,6 +75,8 @@ export default function ScoreView() {
           .sort((a, b) => b.totalScore - a.totalScore)
           .map((row, i) => ({ ...row, rank: i + 1 }));
 
+  const { data: myInfo } = useGetMyInfo();
+  const canNotice = myInfo?.adminRole === "MASTER";
   const selectedLabel = GRADE_OPTIONS.find((o) => o.value === grade)?.label ?? "1학년";
 
   return (
@@ -119,13 +122,15 @@ export default function ScoreView() {
               </ul>
             )}
           </div>
-          <button
-            type="button"
-            onClick={() => noticeScore()}
-            className="py-[6.5px] px-[20px] rounded-[8px] text-[12px] bg-yellow-600 hover:bg-yellow-700 text-black font-semibold cursor-pointer transition-colors"
-          >
-            {isNoticing ? "공지 중..." : "공지하기"}
-          </button>
+          {canNotice && (
+            <button
+              type="button"
+              onClick={() => noticeScore()}
+              className="py-[6.5px] px-[20px] rounded-[8px] text-[12px] bg-yellow-600 hover:bg-yellow-700 text-black font-semibold cursor-pointer transition-colors"
+            >
+              {isNoticing ? "공지 중..." : "공지하기"}
+            </button>
+          )}
         </div>
 
         {isLoading ? (
