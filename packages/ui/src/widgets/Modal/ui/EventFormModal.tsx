@@ -44,6 +44,12 @@ export default function EventFormModal({
   const isSameDay = startDate === endDate;
   const colorVar = resolveColor(color);
 
+  const handleRandomColor = () => {
+    const others = PRESET_COLOR_KEYS.filter((k) => k !== color);
+    const random = others[Math.floor(Math.random() * others.length)];
+    setColor(random);
+  };
+
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/30"
@@ -63,16 +69,15 @@ export default function EventFormModal({
 
           <div>
             {/* 색상 선택 — PRESET_COLOR_MAP 키 기반 */}
-            <div className="flex gap-[15px] flex-wrap items-center h-[30px] mb-2">
+            <div className="flex justify-between flex-wrap items-center h-[30px] mb-2">
               {PRESET_COLOR_KEYS.map((key) => {
                 const isSelected = color === key;
-
                 return (
                   <button
                     key={key}
                     type="button"
                     onClick={() => setColor(key)}
-                    className="w-6 h-6 rounded-full transition"
+                    className="w-6 h-6 rounded-full transition flex-shrink-0"
                     style={{
                       backgroundColor: resolveColor(key),
                       outline: isSelected
@@ -83,7 +88,17 @@ export default function EventFormModal({
                   />
                 );
               })}
-              <Color />
+
+              <button
+                type="button"
+                onClick={handleRandomColor}
+                className="w-6 h-6 rounded-full flex-shrink-0 cursor-pointer"
+                style={{
+                  outline: "2px solid transparent",
+                }}
+              >
+                <Color className="w-6 h-6" />
+              </button>
             </div>
 
             <input
