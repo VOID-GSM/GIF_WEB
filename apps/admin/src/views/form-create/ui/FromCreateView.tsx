@@ -83,21 +83,36 @@ export default function FormCreateView() {
   };
 
   const handleAnnounce = () => {
-    if (!savedFormId) {
-      console.error("저장 필요!");
-      return;
+    const doAnnounce = (formId: number) => {
+      announce(
+        { formId },
+        {
+          onSuccess: () => router.push("/"),
+          onError: (error) => console.error("공지 실패", error),
+        },
+      );
+    };
+
+    if (savedFormId) {
+      doAnnounce(savedFormId);
+    } else {
+      createForm(
+        {
+          title: formTitle,
+          deadline,
+          fields: fields
+            .filter((f) => f.type !== "")
+            .map(({ id, ...rest }) => rest as PostFormRequestField),
+        },
+        {
+          onSuccess: (res) => {
+            setSavedFormId(res.data);
+            doAnnounce(res.data);
+          },
+          onError: (error) => console.error("저장 실패", error),
+        },
+      );
     }
-    announce(
-      { formId: savedFormId },
-      {
-        onSuccess: () => {
-          router.push("/");
-        },
-        onError: (error) => {
-          console.error("공지 실패", error);
-        },
-      },
-    );
   };
 
   return (
@@ -151,7 +166,7 @@ export default function FormCreateView() {
           <button
             className="flex w-full items-center justify-center py-3 font-medium bg-yellow-600 rounded-[10px] cursor-pointer disabled:opacity-50"
             onClick={handleAnnounce}
-            disabled={isAnnouncing || !savedFormId}
+            disabled={isAnnouncing || isSaving}
           >
             공지하기
           </button>
