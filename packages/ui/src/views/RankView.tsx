@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
-import { RANK_MOCK_DATA, useGetRank } from "@repo/lib";
+import { getCookieValue, useGetRank } from "@repo/lib";
 import type { RankItem } from "@repo/lib";
 
 import GradeSelector from "../components/GradeSelector/GradeSelector";
@@ -21,15 +22,33 @@ interface RankViewProps {
   onGradeChange?: (grade: Grade) => void;
 }
 
-export default function RankView({ grade: propGrade, onGradeChange }: RankViewProps) {
+export default function RankView({
+  grade: propGrade,
+  onGradeChange,
+}: RankViewProps) {
   const [localGrade, setLocalGrade] = useState<Grade>(1);
   const grade = propGrade ?? localGrade;
   const setGrade = onGradeChange ?? setLocalGrade;
-  const { data: apiData, isPending, isError } = useGetRank({ grade });
-  const data = (apiData ?? RANK_MOCK_DATA[grade]) as RankItem[];
+  const router = useRouter();
+  const [isPublished, setIsPublished] = useState<boolean | null>(null);
+  const { data, isPending, isError } = useGetRank({ grade });
+
+  useEffect(() => {
+    setIsPublished(getCookieValue("rank_announced") === "1");
+  }, []);
+
+  useEffect(() => {
+    if (isPublished === false) {
+      router.replace("/");
+    }
+  }, [isPublished, router]);
+
+  if (isPublished === null) {
+    return null;
+  }
 
   return (
-    <div className="h-[calc(100vh-5rem)] relative flex items-center justify-center bg-white overflow-hidden">
+    <div className="min-h-screen w-full relative flex items-center justify-center bg-background overflow-hidden">
       <div className="absolute top-20 w-full flex justify-center py-10">
         <GradeSelector grade={grade} onGradeChange={setGrade} />
       </div>
@@ -42,7 +61,9 @@ export default function RankView({ grade: propGrade, onGradeChange }: RankViewPr
             등수 정보를 불러오지 못했습니다
           </p>
         ) : data.length === 0 ? (
-          <p className="text-center text-gray-500">등록된 프로젝트가 없습니다</p>
+          <p className="text-center text-gray-500">
+            아직 등수를 공지하지 않았습니다
+          </p>
         ) : (
           <RankChart items={data} />
         )}
@@ -59,7 +80,10 @@ const barStyle = {
 
 function RankChart({ items }: { items: RankItem[] }) {
   return (
-    <div className="flex w-full flex-row items-end justify-center" style={{ gap: barStyle.gap }}>
+    <div
+      className="flex w-full flex-row items-end justify-center"
+      style={{ gap: barStyle.gap }}
+    >
       {items.slice(0, 5).map((item, index) => (
         <div key={item.rank} className="flex flex-col items-center">
           <div
@@ -98,12 +122,19 @@ function RankChart({ items }: { items: RankItem[] }) {
 
 function RankSkeleton() {
   return (
-    <div className="flex flex-row items-end justify-center" style={{ gap: barStyle.gap }}>
+    <div
+      className="flex flex-row items-end justify-center"
+      style={{ gap: barStyle.gap }}
+    >
       {BAR_HEIGHTS.map((height, index) => (
         <div key={index} className="flex flex-col items-center">
           <div
             className="animate-pulse bg-gray-200"
-            style={{ width: barStyle.width, height, borderRadius: barStyle.borderRadius }}
+            style={{
+              width: barStyle.width,
+              height,
+              borderRadius: barStyle.borderRadius,
+            }}
           />
           <span
             className="animate-pulse rounded bg-gray-200"
