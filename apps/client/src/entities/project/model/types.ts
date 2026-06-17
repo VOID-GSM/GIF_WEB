@@ -25,6 +25,9 @@ export interface ProjectResponse {
 export interface Project {
   id: number;
   name: string;
+  teamName: string;
+  logo: string;
+  grade: number;
 }
 
 // GET /api/project/me — 참여(생성)한 프로젝트 목록. 없으면 빈 배열 []
