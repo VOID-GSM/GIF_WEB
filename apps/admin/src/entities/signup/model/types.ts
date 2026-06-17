@@ -1,6 +1,6 @@
 import type { AdminRole } from "./roles";
 
-export interface PatchAdminInfoRequest {
+export interface PostAdminInfoRequest {
   adminRole: AdminRole;
-  adminTeam: string;
+  adminTeam?: string;
 }

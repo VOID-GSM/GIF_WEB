@@ -1,7 +1,6 @@
 import "@fontsource/press-start-2p";
 import "./globals.css";
 import { Providers } from "./providers";
-import "./globals.css";
 import { Navbar, CLIENT_NAV_ITEMS } from "@repo/ui";
 
 export default function RootLayout({
@@ -13,10 +12,7 @@ export default function RootLayout({
     <html lang="ko">
       <body className="overflow-x-hidden">
         <Navbar navItems={CLIENT_NAV_ITEMS} />
-
-        <main className="pt-20">
-          <Providers>{children}</Providers>
-        </main>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

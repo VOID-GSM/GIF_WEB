@@ -1,11 +1,24 @@
-export interface PostSignInRequest {
-  authCode: string;
-  redirectUri: string;
-  codeVerifier: string;
-}
-
 export interface SignInResponse {
   accessToken: string;
+  userId: number;
+  email: string;
+  name: string;
+  studentNumber: string;
+  grade: string;
+  role: string;
+  adminRole: string | null;
+  adminTeam: string | null;
+  clientRole: string | null;
+}
+
+export interface GetGoogleCallbackParams {
+  code: string;
+  state: string;
+}
+
+export type GetDgCallbackResponse = SignInResponse;
+
+export interface GetMyInfoResponse {
   userId: number;
   email: string;
   name: string;
@@ -14,13 +27,7 @@ export interface SignInResponse {
   adminRole: string | null;
   adminTeam: string | null;
   clientRole: string | null;
+  clientTeam: string | null;
 }
 
-export type PostSignInResponse = SignInResponse;
-
-export interface GetDgCallbackParams {
-  code: string;
-  state: string;
-}
-
-export type GetDgCallbackResponse = SignInResponse;
+export type GetGoogleCallbackResponse = SignInResponse;

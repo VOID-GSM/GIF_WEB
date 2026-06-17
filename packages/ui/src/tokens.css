@@ -48,6 +48,7 @@
 
   /* font */
   --font-sans: "Pretendard", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-righteous: "Righteous", cursive;
 
   /* gradients 그라데이션 */
   --gradient-rank: linear-gradient(to bottom, var(--color-yellow-600), var(--color-orange-400));
