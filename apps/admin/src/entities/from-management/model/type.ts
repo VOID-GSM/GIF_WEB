@@ -5,25 +5,18 @@ export interface AdminForm {
   deadline: string;
   announced: boolean;
   submitted: boolean;
+  deadlineComplied: boolean;
   targetGrade: number;
   teamName: string;
 }
 
-// GET /api/form/{formId} 응답
+// GET /api/form/admin/submit 응답에서 개별 필드 타입
 export interface FormField {
   id: number;
   title: string;
   description: string;
   type: "TEXT" | "FILE" | "CALENDAR";
   orderIndex: number;
-}
-
-export interface FormDetail {
-  id: number;
-  title: string;
-  deadline: string;
-  announced: boolean;
-  fields: FormField[];
 }
 
 // GET /api/form/admin/submit 응답

@@ -1,12 +1,11 @@
 export {
   useAdminForms,
   useAdminSubmitDetail,
-  useFormDetail,
 } from "./api/query";
 
 export type {
+  AdminForm,
   FormField,
-  FormDetail,
   SubmitAnswer,
   AdminSubmitDetail,
 } from "./model/type";

@@ -1,13 +1,5 @@
-import {
-  AdminForm,
-  AdminSubmitDetail,
-  FormDetail,
-} from "@/entities/from-management/model/type";
-import {
-  mockAdminForms,
-  mockSubmitDetailMap,
-  mockFormDetail,
-} from "@/entities/from-management/model/mock";
+import { AdminForm, AdminSubmitDetail } from "@/entities/from-management/model/type";
+import { mockAdminForms, mockSubmitDetailMap } from "@/entities/from-management/model/mock";
 
 const USE_MOCK = process.env.NEXT_PUBLIC_USE_MOCK === "true";
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -26,19 +18,16 @@ async function fetchWithAuth<T>(
   return res.json();
 }
 
-// 학년별 팀 목록
-export const getAdminForms = async (): Promise<AdminForm[]> => {
-  if (USE_MOCK) return mockAdminForms;
-  return fetchWithAuth<AdminForm[]>("/api/form/admin");
+// 학년별 양식 목록
+export const getAdminForms = async (grade?: number): Promise<AdminForm[]> => {
+  if (USE_MOCK) {
+    return grade ? mockAdminForms.filter((f) => f.targetGrade === grade) : mockAdminForms;
+  }
+  const query = grade ? `?grade=${grade}` : "";
+  return fetchWithAuth<AdminForm[]>(`/api/form/admin${query}`);
 };
 
-// 양식 상세
-export const getFormDetail = async (formId: number): Promise<FormDetail> => {
-  if (USE_MOCK) return mockFormDetail[formId];
-  return fetchWithAuth<FormDetail>(`/api/form/${formId}`);
-};
-
-// 팀 제출 답변
+// 양식별 전체 제출 답변 (formId = 템플릿 ID)
 export const getAdminSubmitDetail = async (
   formId: number,
 ): Promise<AdminSubmitDetail[]> => {

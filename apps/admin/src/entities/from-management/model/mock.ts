@@ -1,8 +1,4 @@
-import {
-  AdminForm,
-  AdminSubmitDetail,
-  FormDetail,
-} from "@/entities/from-management/model/type";
+import { AdminForm, AdminSubmitDetail } from "@/entities/from-management/model/type";
 
 // GET /api/form/admin 응답 mock
 export const mockAdminForms: AdminForm[] = [
@@ -12,6 +8,7 @@ export const mockAdminForms: AdminForm[] = [
     deadline: "2026-12-21",
     announced: true,
     submitted: true,
+    deadlineComplied: false,
     targetGrade: 1,
     teamName: "VOID",
   },
@@ -21,6 +18,7 @@ export const mockAdminForms: AdminForm[] = [
     deadline: "2026-12-21",
     announced: true,
     submitted: false,
+    deadlineComplied: false,
     targetGrade: 1,
     teamName: "GIF",
   },
@@ -30,6 +28,7 @@ export const mockAdminForms: AdminForm[] = [
     deadline: "2026-12-21",
     announced: true,
     submitted: true,
+    deadlineComplied: false,
     targetGrade: 1,
     teamName: "NOVA",
   },
@@ -39,6 +38,7 @@ export const mockAdminForms: AdminForm[] = [
     deadline: "2026-12-21",
     announced: true,
     submitted: true,
+    deadlineComplied: false,
     targetGrade: 1,
     teamName: "PIXEL",
   },
@@ -48,6 +48,7 @@ export const mockAdminForms: AdminForm[] = [
     deadline: "2026-12-31",
     announced: true,
     submitted: true,
+    deadlineComplied: false,
     targetGrade: 2,
     teamName: "ALPHA",
   },
@@ -57,6 +58,7 @@ export const mockAdminForms: AdminForm[] = [
     deadline: "2026-12-31",
     announced: true,
     submitted: false,
+    deadlineComplied: false,
     targetGrade: 2,
     teamName: "BETA",
   },
@@ -66,157 +68,16 @@ export const mockAdminForms: AdminForm[] = [
     deadline: "2026-12-31",
     announced: true,
     submitted: true,
+    deadlineComplied: false,
     targetGrade: 2,
     teamName: "GAMMA",
   },
 ];
 
-// GET /api/form/{formId} 응답 mock
-export const mockFormDetail: Record<number, FormDetail> = {
-  1: {
-    id: 1,
-    title: "아이디어 페스티벌 보고서",
-    deadline: "2026-12-21",
-    announced: true,
-    fields: [
-      {
-        id: 1,
-        title: "팀 관련 사이트 QR코드",
-        description: "없으면 비워둘 것 (깃허브나 다른 사이트 등)",
-        type: "FILE",
-        orderIndex: 0,
-      },
-      {
-        id: 2,
-        title: "프로젝트 이름",
-        description: "프로젝트 이름을 작성해 주세요",
-        type: "TEXT",
-        orderIndex: 1,
-      },
-      {
-        id: 3,
-        title: "프로젝트 추진 일정",
-        description: "아이디어 계획서, 재료 신청, 기능 구현을 추가해 주세요",
-        type: "CALENDAR",
-        orderIndex: 2,
-      },
-    ],
-  },
-  3: {
-    id: 3,
-    title: "아이디어 페스티벌 보고서",
-    deadline: "2026-12-21",
-    announced: true,
-    fields: [
-      {
-        id: 1,
-        title: "프로젝트 소개",
-        description: "프로젝트를 간단히 소개해 주세요",
-        type: "TEXT",
-        orderIndex: 0,
-      },
-      {
-        id: 2,
-        title: "결과 보고서 파일",
-        description: "PDF 형식으로 업로드해 주세요",
-        type: "FILE",
-        orderIndex: 1,
-      },
-    ],
-  },
-  4: {
-    id: 4,
-    title: "아이디어 페스티벌 보고서",
-    deadline: "2026-12-21",
-    announced: true,
-    fields: [
-      {
-        id: 1,
-        title: "팀 관련 사이트 QR코드",
-        description: "없으면 비워둘 것",
-        type: "FILE",
-        orderIndex: 0,
-      },
-      {
-        id: 2,
-        title: "프로젝트 이름",
-        description: "프로젝트 이름을 작성해 주세요",
-        type: "TEXT",
-        orderIndex: 1,
-      },
-      {
-        id: 3,
-        title: "개발 일정",
-        description: "개발 일정을 추가해 주세요",
-        type: "CALENDAR",
-        orderIndex: 2,
-      },
-      {
-        id: 4,
-        title: "팀원 역할 정리",
-        description: "각 팀원의 역할을 작성해 주세요",
-        type: "TEXT",
-        orderIndex: 3,
-      },
-    ],
-  },
-  5: {
-    id: 5,
-    title: "아이디어 페스티벌 배너",
-    deadline: "2026-12-31",
-    announced: true,
-    fields: [
-      {
-        id: 1,
-        title: "배너 이미지",
-        description: "PNG 또는 JPG로 업로드해 주세요",
-        type: "FILE",
-        orderIndex: 0,
-      },
-      {
-        id: 2,
-        title: "배너 설명 문구",
-        description: "배너에 들어갈 문구를 작성해 주세요",
-        type: "TEXT",
-        orderIndex: 1,
-      },
-    ],
-  },
-  7: {
-    id: 7,
-    title: "아이디어 페스티벌 배너",
-    deadline: "2026-12-31",
-    announced: true,
-    fields: [
-      {
-        id: 1,
-        title: "배너 파일",
-        description: "완성된 배너 파일을 업로드해 주세요",
-        type: "FILE",
-        orderIndex: 0,
-      },
-      {
-        id: 2,
-        title: "제작 의도",
-        description: "배너 제작 의도를 작성해 주세요",
-        type: "TEXT",
-        orderIndex: 1,
-      },
-      {
-        id: 3,
-        title: "제작 일정",
-        description: "배너 제작 일정을 추가해 주세요",
-        type: "CALENDAR",
-        orderIndex: 2,
-      },
-    ],
-  },
-};
-
 // GET /api/form/admin/submit?formId={formId} 응답 mock
-// 캘린더 필드는 이벤트 하나당 별도 answer 객체로 반환
+// 키는 form 템플릿 ID — 해당 양식에 제출한 전체 팀 목록
 export const mockSubmitDetailMap: Record<number, AdminSubmitDetail[]> = {
-  // VOID - file + text + calendar(3 events)
+  // formId=1: 아이디어 페스티벌 보고서 — VOID, NOVA, PIXEL
   1: [
     {
       submitId: 1,
@@ -292,10 +153,6 @@ export const mockSubmitDetailMap: Record<number, AdminSubmitDetail[]> = {
         },
       ],
     },
-  ],
-
-  // NOVA - text + file
-  3: [
     {
       submitId: 3,
       projectId: 3,
@@ -305,20 +162,7 @@ export const mockSubmitDetailMap: Record<number, AdminSubmitDetail[]> = {
       answers: [
         {
           fieldId: 1,
-          fieldTitle: "프로젝트 소개",
-          type: "TEXT",
-          textAnswer: "NOVA는 별자리를 활용한 앱 서비스입니다.",
-          filePath: null,
-          fileSize: null,
-          dateAnswer: null,
-          eventName: null,
-          startDate: null,
-          endDate: null,
-          color: null,
-        },
-        {
-          fieldId: 2,
-          fieldTitle: "결과 보고서 파일",
+          fieldTitle: "팀 관련 사이트 QR코드",
           type: "FILE",
           textAnswer: null,
           filePath: "/mock/nova_report.pdf",
@@ -329,12 +173,21 @@ export const mockSubmitDetailMap: Record<number, AdminSubmitDetail[]> = {
           endDate: null,
           color: null,
         },
+        {
+          fieldId: 2,
+          fieldTitle: "프로젝트 이름",
+          type: "TEXT",
+          textAnswer: "NOVA는 별자리를 활용한 앱 서비스입니다.",
+          filePath: null,
+          fileSize: null,
+          dateAnswer: null,
+          eventName: null,
+          startDate: null,
+          endDate: null,
+          color: null,
+        },
       ],
     },
-  ],
-
-  // PIXEL - file + text + calendar(2 events) + text
-  4: [
     {
       submitId: 4,
       projectId: 4,
@@ -370,7 +223,7 @@ export const mockSubmitDetailMap: Record<number, AdminSubmitDetail[]> = {
         },
         {
           fieldId: 3,
-          fieldTitle: "개발 일정",
+          fieldTitle: "프로젝트 추진 일정",
           type: "CALENDAR",
           textAnswer: null,
           filePath: null,
@@ -383,7 +236,7 @@ export const mockSubmitDetailMap: Record<number, AdminSubmitDetail[]> = {
         },
         {
           fieldId: 3,
-          fieldTitle: "개발 일정",
+          fieldTitle: "프로젝트 추진 일정",
           type: "CALENDAR",
           textAnswer: null,
           filePath: null,
@@ -394,25 +247,12 @@ export const mockSubmitDetailMap: Record<number, AdminSubmitDetail[]> = {
           endDate: "2026-06-25",
           color: "green",
         },
-        {
-          fieldId: 4,
-          fieldTitle: "팀원 역할 정리",
-          type: "TEXT",
-          textAnswer: "김민준: 프론트엔드\n이서연: 백엔드\n박지호: 디자인",
-          filePath: null,
-          fileSize: null,
-          dateAnswer: null,
-          eventName: null,
-          startDate: null,
-          endDate: null,
-          color: null,
-        },
       ],
     },
   ],
 
-  // ALPHA - file + text
-  5: [
+  // formId=2: 아이디어 페스티벌 배너 — ALPHA, GAMMA
+  2: [
     {
       submitId: 5,
       projectId: 5,
@@ -448,10 +288,6 @@ export const mockSubmitDetailMap: Record<number, AdminSubmitDetail[]> = {
         },
       ],
     },
-  ],
-
-  // GAMMA - file + text + calendar(3 events)
-  7: [
     {
       submitId: 7,
       projectId: 7,
@@ -461,7 +297,7 @@ export const mockSubmitDetailMap: Record<number, AdminSubmitDetail[]> = {
       answers: [
         {
           fieldId: 1,
-          fieldTitle: "배너 파일",
+          fieldTitle: "배너 이미지",
           type: "FILE",
           textAnswer: null,
           filePath: "/mock/gamma_banner.pdf",
@@ -474,10 +310,9 @@ export const mockSubmitDetailMap: Record<number, AdminSubmitDetail[]> = {
         },
         {
           fieldId: 2,
-          fieldTitle: "제작 의도",
+          fieldTitle: "배너 설명 문구",
           type: "TEXT",
-          textAnswer:
-            "팀의 개성을 담은 배너로 관람객의 시선을 사로잡고자 했습니다.",
+          textAnswer: "팀의 개성을 담은 배너로 관람객의 시선을 사로잡고자 했습니다.",
           filePath: null,
           fileSize: null,
           dateAnswer: null,
