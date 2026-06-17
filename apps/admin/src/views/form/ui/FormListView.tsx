@@ -52,7 +52,7 @@ export default function FormListView() {
                 onAnnounce={announce}
                 onEdit={handleEdit}
                 onDelete={remove}
-                onClick={handleView}
+                onView={handleView}
               />
             ))}
           </div>

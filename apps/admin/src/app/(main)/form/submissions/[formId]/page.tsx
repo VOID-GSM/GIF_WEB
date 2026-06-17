@@ -1,11 +1,11 @@
-import FormDetailView from "@/views/form-detail/ui/FormDetailView";
+import FormSubmissionsView from "@/views/form-submissions/ui/FormSubmissionsView";
 
-export default async function FormCreate({
+export default async function FormSubmissionsPage({
   params,
 }: {
   params: Promise<{ formId: string }>;
 }) {
   const { formId } = await params;
 
-  return <FormDetailView formId={Number(formId)} />; // teamId 제거
+  return <FormSubmissionsView formId={Number(formId)} />;
 }

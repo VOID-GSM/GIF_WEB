@@ -10,7 +10,7 @@ interface FormCardProps {
   onAnnounce: (id: number) => void;
   onEdit: (id: number) => void;
   onDelete: (id: number) => void;
-  onClick?: (id: number) => void;
+  onView?: (id: number) => void;
 }
 
 export default function FormCard({
@@ -18,14 +18,14 @@ export default function FormCard({
   onAnnounce,
   onEdit,
   onDelete,
-  onClick,
+  onView,
 }: FormCardProps) {
   const { id, title, deadline, announced } = form;
 
   return (
     <div
-      className="flex h-20 w-full shrink-0 items-center rounded-xl bg-white pr-4 pl-4 shadow transition-shadow duration-200 hover:shadow-md sm:pr-6 cursor-pointer"
-      onClick={() => onClick?.(id)}
+      className={`flex h-20 w-full shrink-0 items-center rounded-xl bg-white pr-4 pl-4 shadow transition-shadow duration-200 hover:shadow-md sm:pr-6 ${announced ? "cursor-pointer" : ""}`}
+      onClick={announced ? () => onView?.(id) : undefined}
     >
       {announced ? (
         <span className="flex h-8 w-[88px] shrink-0 items-center justify-center rounded-xl border border-gray-200 bg-gray-100 font-medium">
