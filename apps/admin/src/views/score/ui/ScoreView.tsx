@@ -6,8 +6,6 @@ import { useQueries } from "@tanstack/react-query";
 import { useGetFilteredProjects } from "@/entities/project";
 import type { Grade } from "@/entities/project";
 import {
-  getSocialScore,
-  getReportScore,
   getMajorScore,
   useScoreNotice,
 } from "@/entities/score";
@@ -29,16 +27,9 @@ export default function ScoreView() {
       queryKey: ["score", "all", project.id],
 
       queryFn: async () => {
-        const [social, report, major] = await Promise.all([
-          toNullOn404(() => getSocialScore(project.id).then((res) => res.data))(),
-          toNullOn404(() => getReportScore(project.id).then((res) => res.data))(),
-          toNullOn404(() => getMajorScore(project.id).then((res) => res.data))(),
-        ]);
-        return {
-          social: social?.subTotalScore ?? 0,
-          report: report?.subTotalScore ?? 0,
-          major: major?.subTotalScore ?? 0,
-        };
+        // 서버는 major/social/report GET 모두 동일한 레코드를 반환하므로 한 번만 조회
+        const data = await toNullOn404(() => getMajorScore(project.id).then((res) => res.data))();
+        return data?.subTotalScore ?? 0;
       },
     })),
   });
@@ -53,9 +44,7 @@ export default function ScoreView() {
       ? []
       : projects
           .map((project, i) => {
-            const scores = scoreQueries[i]?.data;
-            const totalScore =
-              (scores?.social ?? 0) + (scores?.report ?? 0) + (scores?.major ?? 0);
+            const totalScore = scoreQueries[i]?.data ?? 0;
             return {
               teamName: project.teamName,
               totalScore,
