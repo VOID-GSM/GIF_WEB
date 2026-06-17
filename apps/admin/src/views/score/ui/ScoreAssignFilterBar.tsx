@@ -2,9 +2,13 @@
 
 import { useState, useRef, useEffect } from "react";
 import { Chevron, GrantButton } from "@repo/ui";
-import type { GrantStatus } from "@repo/ui";
-import { SORT_LABELS } from "./constants";
-import type { SortOrder, ScoreFilter } from "./constants";
+import type { GrantStatus, Grade } from "@repo/ui";
+import type { ScoreFilter } from "./constants";
+
+const GRADE_OPTIONS: { value: Grade; label: string }[] = [
+  { value: 1, label: "1학년" },
+  { value: 2, label: "2학년" },
+];
 
 const LEGEND = [
   { dot: "bg-green-50 border-green-500",   label: "점수 부여 완료" },
@@ -13,48 +17,50 @@ const LEGEND = [
 ];
 
 interface Props {
-  sortOrder: SortOrder;
-  onSortChange: (order: SortOrder) => void;
+  grade: Grade;
+  onGradeChange: (grade: Grade) => void;
   scoreFilter: ScoreFilter;
   onFilterChange: (filter: ScoreFilter) => void;
 }
 
 export default function ScoreAssignFilterBar({
-  sortOrder,
-  onSortChange,
+  grade,
+  onGradeChange,
   scoreFilter,
   onFilterChange,
 }: Props) {
-  const [sortOpen, setSortOpen] = useState(false);
-  const sortRef = useRef<HTMLDivElement>(null);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
-      if (sortRef.current && !sortRef.current.contains(e.target as Node))
-        setSortOpen(false);
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node))
+        setDropdownOpen(false);
     }
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  const selectedLabel = GRADE_OPTIONS.find((o) => o.value === grade)?.label ?? "1학년";
+
   return (
     <div className="flex flex-wrap items-center gap-2 mb-5 w-full">
-      <div className="relative" ref={sortRef}>
+      <div className="relative" ref={dropdownRef}>
         <button
-          onClick={() => setSortOpen((prev) => !prev)}
+          onClick={() => setDropdownOpen((prev) => !prev)}
           className="flex items-center gap-1 w-fit py-[6.5px] px-[10px] rounded-[8px] text-[12px] border border-gray-500 text-gray-500 bg-white cursor-pointer"
         >
-          {SORT_LABELS[sortOrder]}
-          <Chevron className={`w-3 h-3 transition-transform ${sortOpen ? "rotate-180" : ""}`} />
+          {selectedLabel}
+          <Chevron className={`w-3 h-3 transition-transform ${dropdownOpen ? "rotate-180" : ""}`} />
         </button>
-        {sortOpen && (
+        {dropdownOpen && (
           <ul className="absolute top-full mt-1 left-0 z-10 bg-white rounded-lg shadow-[var(--shadow-new)] overflow-hidden min-w-[100px]">
-            {(Object.entries(SORT_LABELS) as [SortOrder, string][]).map(([key, label]) => (
-              <li key={key}>
+            {GRADE_OPTIONS.map(({ value, label }) => (
+              <li key={value}>
                 <button
-                  onClick={() => { onSortChange(key); setSortOpen(false); }}
+                  onClick={() => { onGradeChange(value); setDropdownOpen(false); }}
                   className={`w-full text-left px-4 py-2 text-xs font-medium hover:bg-[var(--color-gray-100)] cursor-pointer ${
-                    sortOrder === key ? "text-[var(--color-gray-900)]" : "text-[var(--color-gray-600)]"
+                    grade === value ? "text-[var(--color-gray-900)]" : "text-[var(--color-gray-600)]"
                   }`}
                 >
                   {label}

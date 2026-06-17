@@ -1,5 +1,4 @@
 export type ScoreArea = "major" | "report" | "social";
-export type SortOrder = "name" | "name-desc";
 export type ScoreFilter = "all" | "incomplete" | "complete";
 export type ScoreValue = 40 | 32 | 24;
 
@@ -22,10 +21,6 @@ export const AREA_LABELS_SHORT: Record<ScoreArea, string> = {
   social: "사회",
 };
 
-export const SORT_LABELS: Record<SortOrder, string> = {
-  name: "이름순",
-  "name-desc": "이름역순",
-};
 
 export const SCORES: ScoreValue[] = [40, 32, 24];
 
