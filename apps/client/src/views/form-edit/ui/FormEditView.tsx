@@ -158,6 +158,9 @@ export default function FormMySubmitView({ formId }: Props) {
     );
   };
 
+  const getFileValue = (fieldId: number) =>
+    fileAnswers[fieldId] !== undefined ? fileAnswers[fieldId] : null;
+
   if (detailLoading || submitLoading) return <div>로딩중...</div>;
   if (!formDetail) return <div>양식 정보를 불러올 수 없습니다.</div>;
   if (!mySubmit) return <div>제출 정보를 불러올 수 없습니다.</div>;
@@ -199,7 +202,7 @@ export default function FormMySubmitView({ formId }: Props) {
               {answer.type === "FILE" && (
                 <FileField
                   fieldId={answer.fieldId}
-                  file={fileAnswers[answer.fieldId] ?? null}
+                  file={getFileValue(answer.fieldId)}
                   readOnly={!isEditing}
                   onChange={handleFileChange}
                 />

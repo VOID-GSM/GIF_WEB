@@ -36,7 +36,7 @@ export interface GetMyInfoResponse {
   adminTeam: string | null;
   clientRole: string | null;
   clientTeam: string | null;
-  projectId?: number; // 백엔드 수정 후 필수로 변경 예정
+  projectId: number;
 }
 
 export type GetMeResponse = Omit<SignInResponse, "accessToken">;

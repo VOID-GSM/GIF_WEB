@@ -15,8 +15,8 @@ import { useGetMyInfo } from "@/entities/mypage/index";
 type Props = { formId: number };
 
 export default function FormSubmitView({ formId }: Props) {
-  const { data: myInfo } = useGetMyInfo();
-  const projectId = myInfo?.projectId ?? 1;
+  const { data: myInfo, isLoading: myInfoLoading } = useGetMyInfo();
+  const projectId = myInfo?.projectId;
 
   const router = useRouter();
 
@@ -43,7 +43,7 @@ export default function FormSubmitView({ formId }: Props) {
     setCalendarAnswers((prev) => ({ ...prev, [fieldId]: events }));
 
   const handleSubmit = () => {
-    if (!formDetail?.fields) return;
+    if (!formDetail?.fields || !projectId) return;
 
     const answers: FormAnswerItem[] = formDetail.fields.flatMap((field) => {
       if (field.type === "FILE") return [];
@@ -94,7 +94,8 @@ export default function FormSubmitView({ formId }: Props) {
     );
   };
 
-  if (detailLoading) return <div>로딩중...</div>;
+  if (myInfoLoading || detailLoading) return <div>로딩중...</div>;
+  if (!projectId) return <div>프로젝트 정보를 불러올 수 없습니다.</div>;
   if (!formDetail) return <div>양식 정보를 불러올 수 없습니다.</div>;
 
   return (
