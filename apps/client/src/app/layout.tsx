@@ -12,7 +12,6 @@ export default function RootLayout({
     <html lang="ko">
       <body className="overflow-x-hidden">
         <Navbar navItems={CLIENT_NAV_ITEMS} />
-
         <Providers>{children}</Providers>
       </body>
     </html>
