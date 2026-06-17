@@ -2,17 +2,10 @@ export interface GetRankParams {
   grade: 1 | 2;
 }
 
-export interface ListProjectResponse {
-  id: number;
-  name: string;
-  teamName: string;
-  logoPath: string;
-}
-
-export interface DetailScoreResponse {
-  id: number;
-  subTotalScore: number;
+export interface ScoreRankResponse {
   rank: number;
+  teamName: string;
+  totalScore: number;
 }
 
 export interface RankItem {

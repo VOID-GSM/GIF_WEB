@@ -1,22 +1,7 @@
 import { apiClient } from "../axios";
-import type { DetailScoreResponse, ListProjectResponse } from "./types";
+import type { ScoreRankResponse } from "./types";
 
-export const getProjectsByGrade = (grade: 1 | 2) =>
-  apiClient.get<ListProjectResponse[]>("/api/project/filter", {
+export const getRank = (grade: 1 | 2) =>
+  apiClient.get<ScoreRankResponse[]>("/api/score/rank", {
     params: { grade },
-  });
-
-export const getSocialScore = (projectId: number) =>
-  apiClient.get<DetailScoreResponse>("/api/score/social", {
-    params: { projectId },
-  });
-
-export const getReportScore = (projectId: number) =>
-  apiClient.get<DetailScoreResponse>("/api/score/report", {
-    params: { projectId },
-  });
-
-export const getMajorScore = (projectId: number) =>
-  apiClient.get<DetailScoreResponse>("/api/score/major", {
-    params: { projectId },
   });
