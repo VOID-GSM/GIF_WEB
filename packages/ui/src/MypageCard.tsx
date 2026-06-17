@@ -7,6 +7,7 @@ export interface MypageInfoItem {
   key: string;
   label: string;
   value: string;
+  editValue?: string;
   type?: "readonly" | "input" | "dropdown";
   dropdownOptions?: string[];
 }
@@ -30,7 +31,7 @@ export default function MypageCard({
     if (!isEditing) {
       const init: Record<string, string> = {};
       items.forEach((item) => {
-        init[item.key] = item.value;
+        init[item.key] = item.editValue ?? item.value;
       });
       setEditValues(init);
     }

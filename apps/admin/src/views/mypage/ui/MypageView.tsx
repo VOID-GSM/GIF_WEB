@@ -51,7 +51,8 @@ export default function MypageView() {
     {
       key: "adminTeam",
       label: "담당 팀",
-      value: data?.adminTeam ?? "담당하는 팀이 없습니다",
+      value: data?.adminTeam || "담당하는 팀이 없습니다",
+      editValue: data?.adminTeam ?? "",
       type: "input" as const,
     },
   ];
