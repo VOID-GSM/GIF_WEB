@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useQueries } from "@tanstack/react-query";
-import { GradeSelector } from "@repo/ui";
 import type { Grade } from "@repo/ui";
 import ScoreTabNav from "./ScoreTabNav";
 import ScoreAssignFilterBar from "./ScoreAssignFilterBar";
@@ -11,13 +10,21 @@ import { useGetFilteredProjects } from "@/entities/project";
 import { getMajorScore } from "@/entities/score";
 import { useGetMyInfo } from "@/entities/mypage";
 import { toNullOn404 } from "@/shared/utils";
-import type { SortOrder, ScoreFilter, ScoreArea } from "./constants";
+import type { ScoreFilter, ScoreArea } from "./constants";
 import { ROLE_ALLOWED_AREAS } from "./constants";
 
+const GRADE_STORAGE_KEY = "score_assign_grade";
+
 export default function ScoreAssignView() {
-  const [grade, setGrade] = useState<Grade>(1);
-  const [sortOrder, setSortOrder] = useState<SortOrder>("name");
+  const [grade, setGrade] = useState<Grade>(() =>
+    typeof window !== "undefined" && localStorage.getItem(GRADE_STORAGE_KEY) === "2" ? 2 : 1,
+  );
   const [scoreFilter, setScoreFilter] = useState<ScoreFilter>("all");
+
+  function handleGradeChange(g: Grade) {
+    setGrade(g);
+    localStorage.setItem(GRADE_STORAGE_KEY, String(g));
+  }
 
   const { data: myInfo } = useGetMyInfo();
   const allowedAreas: ScoreArea[] =
@@ -53,11 +60,7 @@ export default function ScoreAssignView() {
       isComplete:  scoreQueries[i]?.data?.isComplete  ?? false,
       scoredAreas: scoreQueries[i]?.data?.scoredAreas ?? [] as ScoreArea[],
     }))
-    .sort((a, b) =>
-      sortOrder === "name"
-        ? a.teamName.localeCompare(b.teamName)
-        : b.teamName.localeCompare(a.teamName),
-    )
+    .sort((a, b) => a.teamName.localeCompare(b.teamName))
     .filter((project) => {
       if (scoreFilter === "all") return true;
       return scoreFilter === "complete" ? project.isComplete : !project.isComplete;
@@ -67,13 +70,12 @@ export default function ScoreAssignView() {
     <div className="min-h-[calc(100vh-5rem)] bg-background py-6 sm:py-10 px-4 sm:px-6 flex flex-col items-center gap-4 sm:gap-6">
       <div className="flex flex-col items-center gap-2 w-full max-w-[980px] mx-auto">
         <ScoreTabNav />
-        <GradeSelector grade={grade} onGradeChange={setGrade} />
       </div>
 
       <div className="w-full max-w-[980px] mx-auto bg-white rounded-2xl border border-gray-200 shadow-new overflow-hidden p-4 sm:p-7 md:p-10">
         <ScoreAssignFilterBar
-          sortOrder={sortOrder}
-          onSortChange={setSortOrder}
+          grade={grade}
+          onGradeChange={handleGradeChange}
           scoreFilter={scoreFilter}
           onFilterChange={setScoreFilter}
         />
