@@ -5,7 +5,6 @@ import type {
   GetFormMySubmitParams,
   GetFormMySubmitResponse,
   PostFormUploadResponse,
-  PatchFormUpdateRequest,
   GetFormDetailResponse,
 } from "../model/types";
 import { mockMySubmit, mockFormDetail } from "../model/mock";
@@ -77,13 +76,4 @@ export const deleteFormUpload = async (params: DeleteFormUploadParams) => {
     `/api/form/upload?submitId=${params.submitId}&fieldId=${params.fieldId}`,
     { method: "DELETE" },
   );
-};
-
-export const patchFormUpdate = async (body: PatchFormUpdateRequest) => {
-  if (USE_MOCK) return { success: true };
-  return fetchWithAuth(`/api/form/update`, {
-    method: "PATCH",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  });
 };

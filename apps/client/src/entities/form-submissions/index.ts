@@ -14,7 +14,6 @@ export { usePostFormSubmit } from "./hooks/usePostFormSubmit";
 export { usePostFormUpload } from "./hooks/usePostFormUpload";
 export { useDeleteFormUpload } from "./hooks/useDeleteFormUpload";
 export { usePatchFormSubmit } from "./hooks/usePatchFormSubmit";
-export { usePatchFormUpdate } from "./hooks/usePatchFormUpdate";
 export { useGetFormMySubmit } from "./hooks/useGetFormMySubmit";
 export { useGetFormDetail } from "./hooks/useGetFormDetail";
 
@@ -25,8 +24,6 @@ export type {
   DeleteFormUploadParams,
   PatchFormSubmitAnswerItem,
   PatchFormSubmitRequest,
-  FormFieldItem,
-  PatchFormUpdateRequest,
   GetFormMySubmitParams,
   SubmitAnswerItem,
   GetFormMySubmitResponse,

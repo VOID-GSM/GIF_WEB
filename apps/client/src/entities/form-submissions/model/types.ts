@@ -48,27 +48,15 @@ export interface PatchFormSubmitAnswerItem {
   fieldId: number;
   textAnswer: string;
   dateAnswer: string;
+  eventName: string;
+  startDate: string;
+  endDate: string;
+  color: string;
 }
 
 export interface PatchFormSubmitRequest {
   submitId: number;
   answers: PatchFormSubmitAnswerItem[];
-}
-
-// PATCH /api/form/update
-export interface FormFieldItem {
-  title: string;
-  description: string;
-  type: "TEXT" | "FILE" | "DATE";
-  orderIndex: number;
-}
-
-export interface PatchFormUpdateRequest {
-  title: string;
-  description: string;
-  deadline: string;
-  targetGrade: number;
-  fields: FormFieldItem[];
 }
 
 // GET /api/form/my-submit
