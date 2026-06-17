@@ -8,7 +8,7 @@ export default function MainLayout({
   return (
     <>
       <Navbar navItems={ADMIN_NAV_ITEMS} />
-      <main>{children}</main>
+      <main className="pt-20">{children}</main>
     </>
   );
 }

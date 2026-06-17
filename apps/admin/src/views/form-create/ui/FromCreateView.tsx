@@ -101,7 +101,7 @@ export default function FormCreateView() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center pt-20 bg-background px-5">
+    <div className="min-h-screen flex flex-col items-center bg-background px-5">
       <span className="pt-20 pb-8 font-semibold text-[24px]">
         양식 생성하기
       </span>

@@ -12,7 +12,7 @@ export default function FormSubmissionsView() {
   if (isLoading) return <div>로딩중...</div>;
 
   return (
-    <div className="min-h-screen flex flex-col pt-40 bg-background">
+    <div className="min-h-screen flex flex-col pt-20 bg-background">
       <div className="flex flex-col items-center gap-4">
         <div className="flex gap-5 rounded-[32px] bg-white p-2 shadow-new">
           <button

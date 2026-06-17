@@ -44,7 +44,7 @@ export default function FormDetailView({ formId }: Props) {
   if (!formDetail) return <div>양식 정보를 불러올 수 없습니다.</div>;
 
   return (
-    <div className="min-h-screen flex flex-col items-center pt-40 bg-background">
+    <div className="min-h-screen flex flex-col items-center pt-20 bg-background">
       <div className="mx-auto flex flex-col w-full max-w-[560px] gap-6">
         <div className="flex flex-col gap-2">
           <span className="flex justify-center text-[24px] font-semibold">
