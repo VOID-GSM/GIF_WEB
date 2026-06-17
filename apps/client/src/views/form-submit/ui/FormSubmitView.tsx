@@ -95,7 +95,7 @@ export default function FormSubmitView({ formId, projectId }: Props) {
 
   return (
     <div className="min-h-screen flex flex-col items-center pt-40 bg-background">
-      <div className="mx-auto flex flex-col w-full max-w-[560px] gap-6">
+      <div className="mx-auto flex flex-col w-full max-w-[560px] gap-4">
         <div className="flex flex-col gap-2">
           <span className="flex justify-center text-[24px] font-semibold">
             {formDetail.title}
@@ -105,13 +105,13 @@ export default function FormSubmitView({ formId, projectId }: Props) {
           </span>
         </div>
 
-        <div className="flex flex-col gap-4 mb-6">
+        <div className="flex flex-col gap-4">
           {(formDetail.fields ?? [])
             .sort((a, b) => a.orderIndex - b.orderIndex)
             .map((field) => (
               <div
                 key={field.fieldId}
-                className="flex flex-col py-8 px-12 border-t-5 border-yellow-600 bg-white rounded-[10px]"
+                className="flex flex-col py-8 px-12 border-t-5 border-yellow-600 bg-white rounded-[10px] shadow-new"
               >
                 <span className="text-[20px] font-semibold pb-2">
                   {field.title}
