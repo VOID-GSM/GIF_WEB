@@ -1,5 +1,5 @@
-import ScoreView from "@/views/score/ui/ScoreView";
+import ScoreAssignView from "@/views/score/ui/ScoreAssignView";
 
 export default function ScorePage() {
-  return <ScoreView />;
+  return <ScoreAssignView />;
 }

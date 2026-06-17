@@ -4,15 +4,16 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const TABS = [
-  { label: "점수 부여", href: "/score/assign" },
-  { label: "점수 합계", href: "/score" },
+  { label: "점수 부여", href: "/score" },
+  { label: "점수 합계", href: "/score/collection" },
 ] as const;
 
 export default function ScoreTabNav() {
   const pathname = usePathname();
 
   function isActive(href: string) {
-    if (href === "/score") return pathname === "/score";
+    if (href === "/score/collection") return pathname.startsWith("/score/collection");
+    if (href === "/score") return pathname === "/score" || (pathname.startsWith("/score/") && !pathname.startsWith("/score/collection"));
     return pathname === href || pathname.startsWith(href + "/");
   }
 

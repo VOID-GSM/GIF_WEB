@@ -58,7 +58,7 @@ export default function ScoreView() {
       <div className="flex flex-col items-center gap-2 w-full max-w-[980px] mx-auto">
         <nav className="flex gap-6 w-full">
           <Link
-            href="/score/assign"
+            href="/score"
             className="text-xl sm:text-2xl font-bold pb-1 text-gray-400 whitespace-nowrap"
           >
             점수 부여

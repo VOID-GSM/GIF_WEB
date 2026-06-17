@@ -60,7 +60,7 @@ export default function ScoreAssignTable({ isLoading, teams, allowedAreas }: Pro
                       key={area}
                       onClick={() =>
                         router.push(
-                          `/score/assign/${area}?projectId=${team.id}&teamName=${encodeURIComponent(team.teamName)}`,
+                          `/score/${area}?projectId=${team.id}&teamName=${encodeURIComponent(team.teamName)}`,
                         )
                       }
                       className="cursor-pointer"
