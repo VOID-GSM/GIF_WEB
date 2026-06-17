@@ -5,12 +5,10 @@ import { toast } from "sonner";
 import { getMajorScore, postMajorScore, patchMajorScore } from "../api";
 import type { CreateMajorScoreRequest } from "../model/types";
 
-const isDev = process.env.NODE_ENV === "development";
-
 export function useGetMajorScore(projectId: number) {
   return useQuery({
     queryKey: ["score", "major", projectId],
-    enabled: !isDev && projectId > 0,
+    enabled: projectId > 0,
     queryFn: async () => {
       try {
         return (await getMajorScore(projectId)).data;

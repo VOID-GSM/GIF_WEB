@@ -5,12 +5,10 @@ import { toast } from "sonner";
 import { getReportScore, postReportScore, patchReportScore } from "../api";
 import type { CreateReportScoreRequest } from "../model/types";
 
-const isDev = process.env.NODE_ENV === "development";
-
 export function useGetReportScore(projectId: number) {
   return useQuery({
     queryKey: ["score", "report", projectId],
-    enabled: !isDev && projectId > 0,
+    enabled: projectId > 0,
     queryFn: async () => {
       try {
         return (await getReportScore(projectId)).data;

@@ -5,12 +5,10 @@ import { toast } from "sonner";
 import { getSocialScore, postSocialScore, patchSocialScore } from "../api";
 import type { CreateSocialScoreRequest } from "../model/types";
 
-const isDev = process.env.NODE_ENV === "development";
-
 export function useGetSocialScore(projectId: number) {
   return useQuery({
     queryKey: ["score", "social", projectId],
-    enabled: !isDev && projectId > 0,
+    enabled: projectId > 0,
     queryFn: async () => {
       try {
         return (await getSocialScore(projectId)).data;
