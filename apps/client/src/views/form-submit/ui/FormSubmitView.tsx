@@ -138,6 +138,7 @@ export default function FormSubmitView({ formId, projectId }: Props) {
                   <CalendarField
                     fieldId={field.fieldId}
                     mode="write"
+                    editable={true}
                     onChange={handleCalendarChange}
                   />
                 )}
