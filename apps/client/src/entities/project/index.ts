@@ -11,6 +11,7 @@ export { useGetProject } from "./api/useGetProject";
 export { useUpdateProject } from "./api/useUpdateProject";
 export { useGetMyProject } from "./hooks/useGetMyProject";
 export { useGetFilteredProjects } from "./hooks/useGetFilteredProjects";
+export { useStoredGrade } from "./hooks/useStoredGrade";
 export { default as ProjectCard } from "./ui/ProjectCard";
 export { GRADES } from "./model/types";
 export type {

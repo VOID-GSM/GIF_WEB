@@ -5,9 +5,10 @@ import { useQuery } from "@tanstack/react-query";
 import { getFilteredProjects } from "../api";
 import type { Grade } from "../model/types";
 
-export function useGetFilteredProjects(grade: Grade) {
+export function useGetFilteredProjects(grade: Grade, enabled = true) {
   return useQuery({
     queryKey: ["project", "filter", grade],
     queryFn: async () => (await getFilteredProjects(grade)).data,
+    enabled,
   });
 }

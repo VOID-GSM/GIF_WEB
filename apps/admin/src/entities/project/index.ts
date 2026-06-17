@@ -1,4 +1,5 @@
 export { useGetFilteredProjects } from "./hooks/useGetFilteredProjects";
+export { useStoredGrade } from "./hooks/useStoredGrade";
 export { useGetProject } from "./hooks/useGetProject";
 export { default as ProjectCard } from "./ui/ProjectCard";
 export { GRADES } from "./model/types";
