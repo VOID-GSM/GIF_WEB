@@ -209,9 +209,10 @@ export default function CalendarField({
 
   const handleFormSubmit = (title: string, color: string) => {
     if (!formTarget) return;
-    const updated = formTarget.event
+    const targetEvent = formTarget.event;
+    const updated = targetEvent
       ? events.map((e) =>
-          e.id === formTarget.event!.id ? { ...e, title, color } : e,
+          e.id === targetEvent.id ? { ...e, title, color } : e,
         )
       : [
           ...events,
@@ -236,11 +237,6 @@ export default function CalendarField({
   };
 
   const handleFormClose = () => {
-    if (formTarget?.isEditing && formTarget.event) {
-      const updated = events.filter((e) => e.id !== formTarget.event!.id);
-      setEvents(updated);
-      onChange?.(fieldId, updated);
-    }
     setFormTarget(null);
     setSelectStart(null);
     setSelectEnd(null);
