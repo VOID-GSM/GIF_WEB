@@ -18,6 +18,7 @@ export default function FormListView() {
 
   const handleCreate = () => router.push("/form/create");
   const handleEdit = (id: number) => router.push(`/form/edit/${id}`);
+  const handleView = (id: number) => router.push(`/form/submissions/${id}`);
 
   return (
     <div className="flex flex-col items-center px-4 pt-12 pb-4 sm:pt-20">
@@ -51,6 +52,7 @@ export default function FormListView() {
                 onAnnounce={announce}
                 onEdit={handleEdit}
                 onDelete={remove}
+                onClick={handleView}
               />
             ))}
           </div>
