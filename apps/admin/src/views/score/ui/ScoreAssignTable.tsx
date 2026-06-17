@@ -2,18 +2,20 @@
 
 import { Fragment } from "react";
 import { useRouter } from "next/navigation";
-import { AREA_LABELS, AREA_LABELS_SHORT } from "./constants";
+import { SectionBadge } from "@repo/ui";
 import type { ScoreArea } from "./constants";
 
 interface TeamRow {
   id: number;
   teamName: string;
   name: string;
+  scoredAreas?: ScoreArea[];
 }
 
 interface Props {
   isLoading: boolean;
   teams: TeamRow[];
+  allowedAreas: ScoreArea[];
 }
 
 const AREAS: ScoreArea[] = ["major", "report", "social"];
@@ -21,7 +23,7 @@ const AREAS: ScoreArea[] = ["major", "report", "social"];
 const headerCellCx =
   "px-3 sm:px-4 py-2.5 bg-[var(--color-yellow-50)] border-y border-[var(--color-yellow-600)] text-xs font-semibold text-[var(--color-gray-700)]";
 
-export default function ScoreAssignTable({ isLoading, teams }: Props) {
+export default function ScoreAssignTable({ isLoading, teams, allowedAreas }: Props) {
   const router = useRouter();
 
   return (
@@ -49,20 +51,28 @@ export default function ScoreAssignTable({ isLoading, teams }: Props) {
                 {team.name}
               </span>
               <div className="border-t border-[var(--color-gray-100)] px-3 sm:px-4 py-3 flex flex-wrap items-center gap-1.5 sm:gap-2">
-                {AREAS.map((area) => (
-                  <button
-                    key={area}
-                    onClick={() =>
-                      router.push(
-                        `/score/assign/${area}?projectId=${team.id}&teamName=${encodeURIComponent(team.teamName)}`,
-                      )
-                    }
-                    className="px-2.5 sm:px-3 py-1 rounded-full text-xs font-medium border bg-[var(--color-gray-100)] border-[var(--color-gray-200)] text-[var(--color-gray-600)] cursor-pointer hover:bg-[var(--color-gray-200)] transition-colors"
-                  >
-                    <span className="sm:hidden">{AREA_LABELS_SHORT[area]}</span>
-                    <span className="hidden sm:inline">{AREA_LABELS[area]}</span>
-                  </button>
-                ))}
+                {AREAS.map((area) => {
+                  const isAllowed = allowedAreas.includes(area);
+                  const isScored  = team.scoredAreas?.includes(area) ?? false;
+                  const variant   = isAllowed ? (isScored ? "active" : "unscored") : "inactive";
+                  return isAllowed ? (
+                    <button
+                      key={area}
+                      onClick={() =>
+                        router.push(
+                          `/score/assign/${area}?projectId=${team.id}&teamName=${encodeURIComponent(team.teamName)}`,
+                        )
+                      }
+                      className="cursor-pointer"
+                    >
+                      <SectionBadge status={area} variant={variant} />
+                    </button>
+                  ) : (
+                    <div key={area} className="cursor-not-allowed">
+                      <SectionBadge status={area} variant="inactive" />
+                    </div>
+                  );
+                })}
               </div>
             </Fragment>
           ))

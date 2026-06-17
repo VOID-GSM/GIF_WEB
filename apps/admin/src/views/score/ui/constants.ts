@@ -29,6 +29,13 @@ export const SORT_LABELS: Record<SortOrder, string> = {
 
 export const SCORES: ScoreValue[] = [40, 32, 24];
 
+export const ROLE_ALLOWED_AREAS: Record<string, ScoreArea[]> = {
+  MAJOR_TEACHER:   ["major"],
+  GENERAL_TEACHER: ["social"],
+  GRADE_HEAD:      ["major", "report", "social"],
+  MASTER:          ["report"],
+};
+
 export const AREA_CRITERIA: Record<string, { key: string; label: string }[]> = {
   major: [
     { key: "technicalCompleteness", label: "기술 완성도" },
