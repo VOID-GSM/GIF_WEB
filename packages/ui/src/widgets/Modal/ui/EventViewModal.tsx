@@ -28,7 +28,7 @@ export default function EventViewModal({
       onClick={onClose}
     >
       <div
-        className="relative w-[336px] bg-white rounded-[16px] border-t-5 overflow-hidden shadow-new"
+        className="relative w-[336px] bg-white rounded-[10px] border-t-5 overflow-hidden shadow-new"
         style={{ borderColor: colorVar }}
         onClick={(e) => e.stopPropagation()}
       >
@@ -58,8 +58,7 @@ export default function EventViewModal({
             <button
               type="button"
               onClick={onEdit}
-              className="mt-4 w-full py-2 rounded-[8px] text-[13px] font-semibold text-white"
-              style={{ backgroundColor: colorVar }}
+              className="mt-4 w-full py-[7px] rounded-[4px] text-[12px] font-semibold text-black border border-yellow-600 cursor-pointer"
             >
               수정
             </button>

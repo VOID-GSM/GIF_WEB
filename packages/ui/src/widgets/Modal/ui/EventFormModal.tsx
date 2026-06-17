@@ -32,7 +32,6 @@ export default function EventFormModal({
   endDate,
   initialTitle,
   initialColor,
-  submitLabel,
   showCancel = false,
   onSubmit,
   onCancel,
@@ -107,7 +106,7 @@ export default function EventFormModal({
               <button
                 type="button"
                 onClick={onCancel}
-                className="flex-1 items-center py-[7px] rounded-[4px] text-[12px] font-semibold border border-yellow-600 text-gray-500"
+                className="flex-1 items-center py-[7px] rounded-[4px] text-[12px] font-semibold border border-yellow-600 text-black cursor-pointer"
               >
                 취소
               </button>
