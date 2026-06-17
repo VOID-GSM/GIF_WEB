@@ -22,7 +22,8 @@ async function fetchWithAuth<T>(
     credentials: "include",
   });
   if (!res.ok) throw new Error(`API Error: ${res.status}`);
-  return res.json();
+  const text = await res.text();
+  return text ? JSON.parse(text) : ({} as T);
 }
 
 export const getFormDetail = async (
