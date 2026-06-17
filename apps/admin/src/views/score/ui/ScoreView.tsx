@@ -103,7 +103,11 @@ export default function ScoreView() {
                   점수 수합
                 </div>
               </div>
-              {scoreRows.map(({ rank, teamName, totalScore }) => (
+              {scoreRows.length === 0 ? (
+                <p className="py-10 text-center text-gray-400 text-sm">
+                  해당 학년에 등록된 팀이 없습니다.
+                </p>
+              ) : scoreRows.map(({ rank, teamName, totalScore }) => (
                 <div
                   key={rank}
                   className="flex justify-between items-center py-3 sm:py-[14px] border-t border-gray-100"
