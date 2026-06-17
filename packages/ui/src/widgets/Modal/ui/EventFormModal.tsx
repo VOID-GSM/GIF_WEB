@@ -42,7 +42,6 @@ export default function EventFormModal({
     (initialColor as PresetColorKey) ?? "blue",
   );
   const isSameDay = startDate === endDate;
-  const colorVar = resolveColor(color);
 
   const handleRandomColor = () => {
     const others = PRESET_COLOR_KEYS.filter((k) => k !== color);
