@@ -17,9 +17,9 @@ export default function SignupView() {
 
   const handleNext = () => {
     if (!adminRole) return;
-    const trimmedTeam = adminTeam.trim();
+    const team = adminTeam.trim();
     mutate(
-      { adminRole, ...(trimmedTeam && { adminTeam: trimmedTeam }) },
+      { adminRole, adminTeam: team || undefined },
       {
         onSuccess: () => router.replace("/"),
       },
