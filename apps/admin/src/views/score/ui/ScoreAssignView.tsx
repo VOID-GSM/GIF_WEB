@@ -29,6 +29,7 @@ export default function ScoreAssignView() {
     queries: projects.map((project) => ({
       queryKey: ["score", "status", project.id],
       enabled: projects.length > 0,
+      staleTime: 5 * 60 * 1000,
       queryFn: async () => {
         const data = await toNullOn404(() => getMajorScore(project.id).then((r) => r.data))();
         if (!data) return { isComplete: false, scoredAreas: [] as ScoreArea[] };
