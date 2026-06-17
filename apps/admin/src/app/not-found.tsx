@@ -5,6 +5,7 @@ const righteous = Righteous({
   weight: "400",
   variable: "--font-righteous",
   subsets: ["latin"],
+  preload: false,
 });
 
 export default function AdminNotFound() {

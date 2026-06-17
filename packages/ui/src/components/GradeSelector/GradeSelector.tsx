@@ -1,6 +1,6 @@
 "use client";
 
-const GRADES = [1, 2] as const;
+export const GRADES = [1, 2] as const;
 
 export type Grade = (typeof GRADES)[number];
 
@@ -10,10 +10,10 @@ interface GradeSelectorProps {
 }
 
 const containerClass =
-  "inline-flex gap-2 sm:gap-3 md:gap-5 rounded-full p-1 sm:p-1.5 md:p-2 shadow-new";
+  "inline-flex gap-2 sm:gap-3 md:gap-5 rounded-full p-1 sm:p-1.5 md:p-2 bg-white shadow-new";
 
 const buttonBaseClass =
-  "rounded-full px-4 sm:px-6 md:px-8 py-1 sm:py-1.5 md:py-2 text-sm sm:text-base md:text-xl font-medium transition-colors";
+  "rounded-full px-4 sm:px-6 md:px-8 py-1 sm:py-1.5 md:py-2 text-sm sm:text-base md:text-xl font-medium transition-colors cursor-pointer";
 
 const buttonActiveClass = "border border-yellow-400 bg-yellow-50";
 const buttonInactiveClass = "border border-transparent";
@@ -25,6 +25,7 @@ export default function GradeSelector({ grade, onGradeChange }: GradeSelectorPro
         <button
           key={g}
           type="button"
+          aria-pressed={grade === g}
           onClick={() => onGradeChange(g)}
           className={`${buttonBaseClass} ${grade === g ? buttonActiveClass : buttonInactiveClass}`}
         >
