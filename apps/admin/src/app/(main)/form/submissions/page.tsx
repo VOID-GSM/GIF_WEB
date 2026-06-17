@@ -1,5 +1,5 @@
-import FormSubmissionsView from "@/views/form-submissions/ui/FormSubmissionsView";
+import { redirect } from "next/navigation";
 
-export default function FormCreate() {
-  return <FormSubmissionsView />;
+export default function FormSubmissionsRedirectPage() {
+  redirect("/form");
 }

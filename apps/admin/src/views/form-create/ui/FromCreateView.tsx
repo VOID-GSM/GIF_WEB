@@ -87,7 +87,7 @@ export default function FormCreateView() {
       announce(
         { formId },
         {
-          onSuccess: () => router.push("/"),
+          onSuccess: () => router.push("/form"),
           onError: (error) => console.error("공지 실패", error),
         },
       );
