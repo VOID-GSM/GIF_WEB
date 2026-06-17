@@ -1,10 +1,13 @@
+import { ChangeEvent } from "react";
 import { Upload, File, Close } from "@repo/ui";
 import { usePostFormUpload } from "../hooks/usePostFormUpload";
 import { useDeleteFormUpload } from "../hooks/useDeleteFormUpload";
 
 interface FileFieldProps {
   fieldId: number;
-  file: File | null;
+  file: { name: string; size: number } | null;
+  filePath?: string;
+  fileSize?: number;
   readOnly?: boolean;
   onChange: (fieldId: number, file: File | null) => void;
 }
@@ -12,6 +15,8 @@ interface FileFieldProps {
 export default function FileField({
   fieldId,
   file,
+  filePath,
+  fileSize,
   readOnly = false,
   onChange,
 }: FileFieldProps) {
@@ -23,7 +28,7 @@ export default function FileField({
     return `${(bytes / (1024 * 1024)).toFixed(1)}MB`;
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const selected = e.target.files?.[0];
     if (!selected) return;
     const formData = new FormData();
@@ -37,15 +42,18 @@ export default function FileField({
     deleteUpload({ fieldId }, { onSuccess: () => onChange(fieldId, null) });
   };
 
-  if (file) {
+  if (file || filePath) {
+    const fileName = file?.name ?? filePath?.split("/").pop() ?? "첨부파일";
+    const size = file?.size ?? fileSize ?? 0;
+
     return (
       <div className="flex items-center justify-between rounded-[10px] border border-gray-80 pl-[24px] pr-[30px] py-[15px]">
         <div className="flex gap-[22px]">
           <File />
           <div className="flex flex-col">
-            <span className="text-[14px] font-semibold">{file.name}</span>
+            <span className="text-[14px] font-semibold">{fileName}</span>
             <span className="text-[11px] text-gray-400">
-              {formatFileSize(file.size)}
+              {formatFileSize(size)}
             </span>
           </div>
         </div>
