@@ -45,3 +45,5 @@ export type { HeaderProps } from "./widgets/Navbar/model/type";
 export type { SidebarProps } from "./widgets/Navbar/model/type";
 
 export { ADMIN_NAV_ITEMS, CLIENT_NAV_ITEMS } from "./widgets/Navbar/model/nav";
+
+export { default as RankView } from "./views/RankView";
