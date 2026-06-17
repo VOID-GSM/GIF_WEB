@@ -6,6 +6,12 @@ import type { GrantStatus } from "@repo/ui";
 import { SORT_LABELS } from "./constants";
 import type { SortOrder, ScoreFilter } from "./constants";
 
+const LEGEND = [
+  { dot: "bg-green-50 border-green-500",   label: "점수 부여 완료" },
+  { dot: "bg-orange-50 border-orange-400", label: "점수 미부여"   },
+  { dot: "bg-gray-100 border-gray-300",    label: "해당 없음"     },
+];
+
 interface Props {
   sortOrder: SortOrder;
   onSortChange: (order: SortOrder) => void;
@@ -32,7 +38,7 @@ export default function ScoreAssignFilterBar({
   }, []);
 
   return (
-    <div className="flex items-center gap-2 mb-5">
+    <div className="flex flex-wrap items-center gap-2 mb-5 w-full">
       <div className="relative" ref={sortRef}>
         <button
           onClick={() => setSortOpen((prev) => !prev)}
@@ -69,6 +75,14 @@ export default function ScoreAssignFilterBar({
           />
         );
       })}
+      <div className="w-full sm:w-auto sm:ml-auto flex items-center gap-x-4 text-xs text-gray-500">
+        {LEGEND.map(({ dot, label }) => (
+          <span key={label} className="flex items-center gap-1.5">
+            <span className={`w-2.5 h-2.5 rounded-full border inline-block ${dot}`} />
+            {label}
+          </span>
+        ))}
+      </div>
     </div>
   );
 }
