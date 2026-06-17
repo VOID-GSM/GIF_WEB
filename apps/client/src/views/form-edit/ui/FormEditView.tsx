@@ -195,7 +195,6 @@ export default function FormMySubmitView({ formId, projectId }: Props) {
               {answer.type === "FILE" && (
                 <FileField
                   fieldId={answer.fieldId}
-                  submitId={mySubmit.submitId}
                   file={fileAnswers[answer.fieldId] ?? null}
                   readOnly={!isEditing}
                   onChange={handleFileChange}

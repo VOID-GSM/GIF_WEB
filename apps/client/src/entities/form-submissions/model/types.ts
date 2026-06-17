@@ -39,7 +39,6 @@ export interface PostFormUploadResponse {
 
 // DELETE /api/form/upload
 export interface DeleteFormUploadParams {
-  submitId: number;
   fieldId: number;
 }
 

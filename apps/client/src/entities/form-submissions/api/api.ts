@@ -66,14 +66,12 @@ export const postFormUpload = async (
   return fetchWithAuth<PostFormUploadResponse>(`/api/form/upload`, {
     method: "POST",
     body: formData,
-    // Content-Type 헤더 제거 — FormData는 브라우저가 자동으로 설정
   });
 };
 
 export const deleteFormUpload = async (params: DeleteFormUploadParams) => {
   if (USE_MOCK) return { success: true };
-  return fetchWithAuth(
-    `/api/form/upload?submitId=${params.submitId}&fieldId=${params.fieldId}`,
-    { method: "DELETE" },
-  );
+  return fetchWithAuth(`/api/form/upload?fieldId=${params.fieldId}`, {
+    method: "DELETE",
+  });
 };

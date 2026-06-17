@@ -4,7 +4,6 @@ import { useDeleteFormUpload } from "../hooks/useDeleteFormUpload";
 
 interface FileFieldProps {
   fieldId: number;
-  submitId?: number; //백엔드 문의
   file: File | null;
   readOnly?: boolean;
   onChange: (fieldId: number, file: File | null) => void;
@@ -12,7 +11,6 @@ interface FileFieldProps {
 
 export default function FileField({
   fieldId,
-  submitId,
   file,
   readOnly = false,
   onChange,
@@ -36,14 +34,7 @@ export default function FileField({
   };
 
   const handleDelete = () => {
-    if (submitId) {
-      deleteUpload(
-        { submitId, fieldId },
-        { onSuccess: () => onChange(fieldId, null) },
-      );
-    } else {
-      onChange(fieldId, null);
-    }
+    deleteUpload({ fieldId }, { onSuccess: () => onChange(fieldId, null) });
   };
 
   if (file) {
