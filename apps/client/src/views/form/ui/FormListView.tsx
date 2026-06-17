@@ -31,7 +31,7 @@ export default function FormListView() {
 
   return (
     <div
-      className={`flex min-h-[calc(100vh-80px)] flex-col items-center px-4 ${
+      className={`flex min-h-[calc(100vh-80px)] flex-col items-center bg-background px-4 ${
         showMessage ? "justify-center" : "justify-start"
       }`}
     >

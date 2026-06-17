@@ -21,7 +21,7 @@ export default function ProjectEditView({ projectId }: ProjectEditViewProps) {
 
   if (isPending || isMePending || isError || !project || !me) {
     return (
-      <div className="flex min-h-[calc(100dvh-80px)] items-center justify-center px-4">
+      <div className="flex min-h-[calc(100dvh-80px)] items-center justify-center bg-background px-4">
         <p className="text-[14px] text-gray-600">
           {isError ? "프로젝트를 불러오지 못했습니다." : "불러오는 중..."}
         </p>
@@ -30,7 +30,7 @@ export default function ProjectEditView({ projectId }: ProjectEditViewProps) {
   }
 
   return (
-    <div className="flex min-h-[calc(100vh-5rem)] items-start justify-center px-4 py-8 sm:items-center">
+    <div className="flex min-h-[calc(100vh-5rem)] items-start justify-center bg-background px-4 py-8 sm:items-center">
       <ProjectEditForm
         project={project}
         onDone={() => router.push(`/projects/${projectId}`)}

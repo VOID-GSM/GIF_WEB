@@ -17,7 +17,7 @@ export default function ProjectListView() {
   // 아직 참여(생성)한 프로젝트가 없으면 빈 상태, 있으면 메인 브라우즈 화면
   if (isPending || isError || !myProjects || myProjects.length === 0) {
     return (
-      <div className="flex min-h-[calc(100dvh-80px)] flex-col items-center justify-center px-4">
+      <div className="flex min-h-[calc(100dvh-80px)] flex-col items-center justify-center bg-background px-4">
         {isPending ? (
           <p className="text-[14px] text-gray-600">불러오는 중...</p>
         ) : isError ? (
