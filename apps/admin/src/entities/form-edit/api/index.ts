@@ -3,7 +3,17 @@ import type { UpdateFormRequest, FormByIdResponse } from "../model/type";
 import { mockFormByIdMap, DEFAULT_MOCK_FORM } from "../model/mock";
 
 const USE_MOCK = process.env.NEXT_PUBLIC_USE_MOCK === "true";
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
+async function fetchWithAuth<T>(endpoint: string): Promise<T> {
+  if (!BASE_URL) throw new Error("NEXT_PUBLIC_API_URL is not set");
+  const res = await fetch(`${BASE_URL}${endpoint}`, { credentials: "include" });
+  if (!res.ok) throw new Error(`API Error: ${res.status}`);
+  return res.json();
+}
+
+// TODO: GET /api/form/{formId} 는 ROLE_STUDENT 전용으로 admin 접근 시 403
+// 백엔드에서 ROLE_ADMIN 권한 추가 또는 별도 admin 엔드포인트 제공 후 아래 mock 제거
 export const getFormById = async (
   formId: number,
 ): Promise<{ data: FormByIdResponse }> => {
@@ -13,9 +23,10 @@ export const getFormById = async (
   }
 
   try {
-    return await apiClient.get<FormByIdResponse>(`/api/form/${formId}`);
+    const data = await fetchWithAuth<FormByIdResponse>(`/api/form/${formId}`);
+    return { data };
   } catch {
-    // API 실패 시 mock으로 fallback
+    // 403/404 등 실패 시 mock fallback (백엔드 권한 정비 전 임시)
     const data = mockFormByIdMap[formId] ?? DEFAULT_MOCK_FORM;
     return { data };
   }
@@ -26,10 +37,5 @@ export const updateForm = async (
   body: UpdateFormRequest,
 ): Promise<void> => {
   if (USE_MOCK) return;
-
-  try {
-    await apiClient.patch(`/api/form/update`, body, { params: { formId } });
-  } catch {
-    // mock 환경에서는 저장 실패를 무시하고 성공으로 처리
-  }
+  await apiClient.patch(`/api/form/update`, body, { params: { formId } });
 };
