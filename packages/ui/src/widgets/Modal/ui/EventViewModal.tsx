@@ -11,6 +11,7 @@ interface EventViewModalProps {
   editable?: boolean;
   onClose: () => void;
   onEdit: () => void;
+  onDelete?: () => void;
 }
 
 export default function EventViewModal({
@@ -18,6 +19,7 @@ export default function EventViewModal({
   editable = false,
   onClose,
   onEdit,
+  onDelete,
 }: EventViewModalProps) {
   const colorVar = resolveColor(event.color);
   const isSameDay = event.startDate === event.endDate;
@@ -55,13 +57,22 @@ export default function EventViewModal({
           </div>
 
           {editable && (
-            <button
-              type="button"
-              onClick={onEdit}
-              className="mt-4 w-full py-[7px] rounded-[4px] text-[12px] font-semibold text-black border border-yellow-600 cursor-pointer"
-            >
-              수정
-            </button>
+            <div className="mt-4 flex gap-2">
+              <button
+                type="button"
+                onClick={onDelete}
+                className="flex-1 py-[7px] rounded-[4px] text-[12px] font-semibold text-red-500 border border-red-500 cursor-pointer"
+              >
+                삭제
+              </button>
+              <button
+                type="button"
+                onClick={onEdit}
+                className="flex-1 py-[7px] rounded-[4px] text-[12px] font-semibold text-black border border-yellow-600 cursor-pointer"
+              >
+                수정
+              </button>
+            </div>
           )}
         </div>
       </div>

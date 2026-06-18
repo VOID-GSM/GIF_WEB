@@ -206,6 +206,13 @@ export default function CalendarField({
     setViewTarget(null);
   };
 
+  const handleDeleteRequest = () => {
+    if (!viewTarget) return;
+    const updated = initialEvents.filter((e) => e.id !== viewTarget.id);
+    onChange?.(fieldId, updated);
+    setViewTarget(null);
+  };
+
   const handleFormSubmit = (title: string, color: string) => {
     if (!formTarget) return;
     const targetEvent = formTarget.event;
@@ -248,6 +255,7 @@ export default function CalendarField({
           editable={editable}
           onClose={() => setViewTarget(null)}
           onEdit={handleEditRequest}
+          onDelete={handleDeleteRequest}
         />
       )}
 
