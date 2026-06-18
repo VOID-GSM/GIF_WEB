@@ -25,8 +25,7 @@ function toCalendarEvents(
 ): CalendarEvent[] {
   return answers
     .filter(
-      (a) =>
-        a.fieldId === fieldId && (a.type === "DATE" || a.type === "CALENDAR"),
+      (a) => a.fieldId === fieldId && (a.type === "DATE" || a.type === "CALENDAR"),
     )
     .flatMap((a) =>
       (a.dateAnswer ?? []).map((ca, i) => ({
@@ -45,8 +44,7 @@ export default function FormMySubmitView({ formId }: Props) {
 
   const router = useRouter();
 
-  const { data: formDetail, isLoading: detailLoading } =
-    useGetFormDetail(formId);
+  const { data: formDetail, isLoading: detailLoading } = useGetFormDetail(formId);
   const { data: mySubmit, isLoading: submitLoading } = useGetFormMySubmit(
     { formId, projectId: projectId ?? 0 },
     { enabled: !!projectId },
@@ -56,11 +54,20 @@ export default function FormMySubmitView({ formId }: Props) {
 
   const [isEditing, setIsEditing] = useState(false);
 
-  // ─── 서버 데이터 기반 초기값 ─────────────────────────────────────────────
+  // fieldId → SubmitAnswerItem lookup (first occurrence wins)
+  const answerMap = useMemo(() => {
+    const map: Record<number, SubmitAnswerItem> = {};
+    mySubmit?.answers.forEach((a) => {
+      if (!(a.fieldId in map)) map[a.fieldId] = a;
+    });
+    return map;
+  }, [mySubmit]);
+
+  // Initial values from server response
   const initialTexts = useMemo(() => {
     const texts: Record<number, string> = {};
     mySubmit?.answers.forEach((a) => {
-      if (a.type === "TEXT") texts[a.fieldId] = a.textAnswer;
+      if (a.type === "TEXT") texts[a.fieldId] = a.textAnswer ?? "";
     });
     return texts;
   }, [mySubmit]);
@@ -80,118 +87,116 @@ export default function FormMySubmitView({ formId }: Props) {
     return calendars;
   }, [mySubmit]);
 
-  // ─── 사용자 수정분만 별도 관리 ───────────────────────────────────────────
+  // User edits: undefined = unchanged, null = deleted, File = new file
   const [textEdits, setTextEdits] = useState<Record<number, string>>({});
-  const [calendarEdits, setCalendarEdits] = useState<
-    Record<number, CalendarEvent[]>
-  >({});
-  const [fileAnswers, setFileAnswers] = useState<Record<number, File | null>>(
-    {},
-  );
+  const [calendarEdits, setCalendarEdits] = useState<Record<number, CalendarEvent[]>>({});
+  const [fileAnswers, setFileAnswers] = useState<Record<number, File | null>>({});
+  const [fieldErrors, setFieldErrors] = useState<Record<number, string>>({});
 
-  // 수정분 우선, 없으면 초기값
   const getTextValue = (fieldId: number) =>
     textEdits[fieldId] ?? initialTexts[fieldId] ?? "";
   const getCalendarValue = (fieldId: number) =>
     calendarEdits[fieldId] ?? initialCalendars[fieldId] ?? EMPTY_EVENTS;
 
-  const handleTextChange = (fieldId: number, value: string) =>
+  const handleTextChange = (fieldId: number, value: string) => {
     setTextEdits((prev) => ({ ...prev, [fieldId]: value }));
-
-  const handleFileChange = (fieldId: number, file: File | null) =>
-    setFileAnswers((prev) => ({ ...prev, [fieldId]: file }));
-
-  const handleCalendarChange = (
-    fieldId: number,
-    updatedEvents: CalendarEvent[],
-  ) => {
-    setCalendarEdits((prev) => {
-      const existing =
-        prev[fieldId] ?? initialCalendars[fieldId] ?? EMPTY_EVENTS;
-      const eventMap = new Map(existing.map((e) => [e.id, e]));
-      updatedEvents.forEach((e) => eventMap.set(e.id, e));
-      return { ...prev, [fieldId]: Array.from(eventMap.values()) };
-    });
+    if (value.trim()) setFieldErrors((prev) => ({ ...prev, [fieldId]: "" }));
   };
 
-  // 취소 시 수정분 초기화
+  const handleFileChange = (fieldId: number, file: File | null) => {
+    setFileAnswers((prev) => ({ ...prev, [fieldId]: file }));
+    if (file) setFieldErrors((prev) => ({ ...prev, [fieldId]: "" }));
+  };
+
+  const handleCalendarChange = (fieldId: number, updatedEvents: CalendarEvent[]) => {
+    setCalendarEdits((prev) => ({ ...prev, [fieldId]: updatedEvents }));
+  };
+
   const handleCancel = () => {
     setTextEdits({});
     setCalendarEdits({});
     setFileAnswers({});
+    setFieldErrors({});
     setIsEditing(false);
   };
 
   const handlePatch = async () => {
-    if (!mySubmit) return;
+    if (!mySubmit || !formDetail?.fields) return;
 
-    const seenFields = new Set<number>();
-    const answers = mySubmit.answers
-      .filter((a) => {
-        if (seenFields.has(a.fieldId)) return false;
-        seenFields.add(a.fieldId);
-        return true;
-      })
-      .flatMap((a) => {
-        if (a.type === "DATE" || a.type === "CALENDAR") {
-          const events =
-            calendarEdits[a.fieldId] ??
-            initialCalendars[a.fieldId] ??
-            EMPTY_EVENTS;
-          return [
-            {
-              fieldId: a.fieldId,
-              textAnswer: "",
-              dateAnswer: events.map((e) => ({
-                eventName: e.title,
-                startDate: e.startDate,
-                endDate: e.endDate,
-                color: e.color,
-              })),
-            },
-          ];
+    // Validate
+    const errors: Record<number, string> = {};
+    formDetail.fields.forEach((field) => {
+      const fId = field.fieldId ?? field.id ?? 0;
+      if (field.type === "TEXT" && !getTextValue(fId).trim()) {
+        errors[fId] = "필수 항목입니다.";
+      }
+      if (field.type === "FILE") {
+        const hasNewFile = fileAnswers[fId] instanceof File;
+        const isDeleted = fileAnswers[fId] === null;
+        const hasOriginalFile = !!(answerMap[fId]?.filePath);
+        if (isDeleted || (!hasNewFile && !hasOriginalFile)) {
+          errors[fId] = "파일을 첨부해주세요.";
         }
+      }
+    });
 
-        return [
-          {
-            fieldId: a.fieldId,
-            textAnswer: textEdits[a.fieldId] ?? a.textAnswer,
-            dateAnswer: [],
-          },
-        ];
-      });
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors);
+      toast.error("모든 항목을 작성해주세요.");
+      return;
+    }
+
+    // Build answers from formDetail.fields (not mySubmit.answers)
+    const answers = (formDetail.fields ?? []).flatMap((field) => {
+      const fId = field.fieldId ?? field.id ?? 0;
+      if (field.type === "FILE") return [];
+
+      if (field.type === "DATE" || field.type === "CALENDAR") {
+        return [{
+          fieldId: fId,
+          textAnswer: "",
+          dateAnswer: getCalendarValue(fId).map((e) => ({
+            eventName: e.title,
+            startDate: e.startDate,
+            endDate: e.endDate,
+            color: e.color,
+          })),
+        }];
+      }
+
+      return [{
+        fieldId: fId,
+        textAnswer: getTextValue(fId),
+        dateAnswer: [],
+      }];
+    });
 
     try {
       await patchSubmit({ submitId: mySubmit.submitId, answers });
 
       const fileEntries = Object.entries(fileAnswers).filter(
-        ([, f]) => f !== null,
+        ([, f]) => f instanceof File,
       ) as [string, File][];
 
-      await Promise.all(
-        fileEntries.map(([fieldIdStr, file]) => {
-          const fd = new FormData();
-          fd.append("file", file);
-          return uploadFile({
-            formData: fd,
-            fieldId: Number(fieldIdStr),
-            submitId: mySubmit.submitId,
-          });
-        }),
-      );
+      if (fileEntries.length > 0) {
+        await Promise.all(
+          fileEntries.map(([fieldIdStr, file]) => {
+            const fd = new FormData();
+            fd.append("file", file);
+            return uploadFile({
+              formData: fd,
+              fieldId: Number(fieldIdStr),
+              submitId: mySubmit.submitId,
+            });
+          }),
+        );
+      }
 
       router.push("/form");
     } catch {
-      toast.error("수정에 실패했습니다.");
+      toast.error("수정에 실패했습니다. 다시 시도해주세요.");
     }
   };
-
-  const getFileValue = (fieldId: number) =>
-    fileAnswers[fieldId] !== undefined ? fileAnswers[fieldId] : null;
-
-  const uniqueAnswers = (mySubmit?.answers ?? []).filter(
-    (a, idx, arr) => arr.findIndex((b) => b.fieldId === a.fieldId) === idx,
-  );
 
   return (
     <div className="min-h-screen flex flex-col items-center pt-20 px-5 bg-background">
@@ -219,45 +224,77 @@ export default function FormMySubmitView({ formId }: Props) {
           </div>
 
           <div className="flex flex-col gap-4">
-            {uniqueAnswers.map((answer: SubmitAnswerItem) => (
-              <div
-                key={answer.fieldId}
-                className="flex flex-col py-8 px-12 border-t-5 border-yellow-600 bg-white rounded-[10px] shadow-new"
-              >
-                <span className="text-[20px] font-semibold pb-2">
-                  {answer.fieldTitle}
-                </span>
+            {(formDetail.fields ?? [])
+              .slice()
+              .sort((a, b) => a.orderIndex - b.orderIndex)
+              .map((field, index) => {
+                const fId = field.fieldId ?? field.id ?? index;
+                const existingAnswer = answerMap[fId];
+                const error = fieldErrors[fId];
 
-                {answer.type === "TEXT" && (
-                  <TextField
-                    fieldId={answer.fieldId}
-                    value={getTextValue(answer.fieldId)}
-                    readOnly={!isEditing}
-                    onChange={handleTextChange}
-                  />
-                )}
-                {answer.type === "FILE" && (
-                  <FileField
-                    fieldId={answer.fieldId}
-                    file={getFileValue(answer.fieldId)}
-                    filePath={answer.filePath || undefined}
-                    fileSize={answer.fileSize || undefined}
-                    submitId={mySubmit.submitId}
-                    readOnly={!isEditing}
-                    onChange={handleFileChange}
-                  />
-                )}
-                {(answer.type === "DATE" || answer.type === "CALENDAR") && (
-                  <CalendarField
-                    fieldId={answer.fieldId}
-                    mode={isEditing ? "write" : "view"}
-                    editable={isEditing}
-                    events={getCalendarValue(answer.fieldId)}
-                    onChange={handleCalendarChange}
-                  />
-                )}
-              </div>
-            ))}
+                // Compute filePath: hide when deleted or replaced with new file
+                const isFileDeleted = fileAnswers[fId] === null;
+                const hasNewFile = fileAnswers[fId] instanceof File;
+                const serverFilePath =
+                  isFileDeleted || hasNewFile
+                    ? undefined
+                    : existingAnswer?.filePath || undefined;
+
+                return (
+                  <div
+                    key={fId}
+                    className="flex flex-col py-8 px-12 border-t-5 border-yellow-600 bg-white rounded-[10px] shadow-new"
+                  >
+                    <span className="text-[20px] font-semibold pb-2">
+                      {field.title}
+                    </span>
+                    {field.description && (
+                      <span className="font-medium text-gray-500 pb-4">
+                        {field.description}
+                      </span>
+                    )}
+
+                    {field.type === "TEXT" && (
+                      <>
+                        <TextField
+                          fieldId={fId}
+                          value={getTextValue(fId)}
+                          readOnly={!isEditing}
+                          onChange={handleTextChange}
+                        />
+                        {error && (
+                          <span className="mt-1 text-[12px] text-red-500">{error}</span>
+                        )}
+                      </>
+                    )}
+                    {field.type === "FILE" && (
+                      <>
+                        <FileField
+                          fieldId={fId}
+                          file={hasNewFile ? (fileAnswers[fId] as File) : null}
+                          filePath={serverFilePath}
+                          fileSize={existingAnswer?.fileSize || undefined}
+                          submitId={mySubmit.submitId}
+                          readOnly={!isEditing}
+                          onChange={handleFileChange}
+                        />
+                        {error && (
+                          <span className="mt-1 text-[12px] text-red-500">{error}</span>
+                        )}
+                      </>
+                    )}
+                    {(field.type === "DATE" || field.type === "CALENDAR") && (
+                      <CalendarField
+                        fieldId={fId}
+                        mode={isEditing ? "write" : "view"}
+                        editable={isEditing}
+                        events={getCalendarValue(fId)}
+                        onChange={handleCalendarChange}
+                      />
+                    )}
+                  </div>
+                );
+              })}
           </div>
 
           <div className="flex gap-5 pb-20">

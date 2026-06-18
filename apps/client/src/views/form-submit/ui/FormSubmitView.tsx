@@ -22,25 +22,24 @@ export default function FormSubmitView({ formId }: Props) {
 
   const router = useRouter();
 
-  const { data: formDetail, isLoading: detailLoading } =
-    useGetFormDetail(formId);
+  const { data: formDetail, isLoading: detailLoading } = useGetFormDetail(formId);
   const { mutateAsync: submitForm, isPending } = usePostFormSubmit();
   const { mutateAsync: uploadFile } = usePostFormUpload();
 
   const [textAnswers, setTextAnswers] = useState<Record<number, string>>({});
-  const [fileAnswers, setFileAnswers] = useState<Record<number, File | null>>(
-    {},
-  );
-  const [calendarAnswers, setCalendarAnswers] = useState<
-    Record<number, CalendarEvent[]>
-  >({});
+  const [fileAnswers, setFileAnswers] = useState<Record<number, File | null>>({});
+  const [calendarAnswers, setCalendarAnswers] = useState<Record<number, CalendarEvent[]>>({});
+  const [fieldErrors, setFieldErrors] = useState<Record<number, string>>({});
 
-  const handleTextChange = (fieldId: number, value: string) =>
+  const handleTextChange = (fieldId: number, value: string) => {
     setTextAnswers((prev) => ({ ...prev, [fieldId]: value }));
+    if (value.trim()) setFieldErrors((prev) => ({ ...prev, [fieldId]: "" }));
+  };
 
-  // FILE은 FileField 내부에서 usePostFormUpload로 처리
-  const handleFileChange = (fieldId: number, file: File | null) =>
+  const handleFileChange = (fieldId: number, file: File | null) => {
     setFileAnswers((prev) => ({ ...prev, [fieldId]: file }));
+    if (file) setFieldErrors((prev) => ({ ...prev, [fieldId]: "" }));
+  };
 
   const handleCalendarChange = (fieldId: number, events: CalendarEvent[]) =>
     setCalendarAnswers((prev) => ({ ...prev, [fieldId]: events }));
@@ -48,60 +47,74 @@ export default function FormSubmitView({ formId }: Props) {
   const handleSubmit = async () => {
     if (!formDetail?.fields || !projectId) return;
 
+    const errors: Record<number, string> = {};
+    formDetail.fields.forEach((field) => {
+      const fId = field.fieldId ?? field.id ?? 0;
+      if (field.type === "TEXT" && !textAnswers[fId]?.trim()) {
+        errors[fId] = "필수 항목입니다.";
+      }
+      if (field.type === "FILE" && !fileAnswers[fId]) {
+        errors[fId] = "파일을 첨부해주세요.";
+      }
+    });
+
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors);
+      toast.error("모든 항목을 작성해주세요.");
+      return;
+    }
+
     const answers: FormAnswerItem[] = formDetail.fields.flatMap((field) => {
       const fId = field.fieldId ?? field.id ?? 0;
       if (field.type === "FILE") return [];
 
       if (field.type === "DATE" || field.type === "CALENDAR") {
         const events = calendarAnswers[fId] ?? [];
-        return [
-          {
-            fieldId: fId,
-            textAnswer: "",
-            dateAnswer: events.map((e) => ({
-              eventName: e.title,
-              startDate: e.startDate,
-              endDate: e.endDate,
-              color: e.color,
-            })),
-          },
-        ];
+        return [{
+          fieldId: fId,
+          textAnswer: "",
+          dateAnswer: events.map((e) => ({
+            eventName: e.title,
+            startDate: e.startDate,
+            endDate: e.endDate,
+            color: e.color,
+          })),
+        }];
       }
 
-      return [
-        {
-          fieldId: fId,
-          textAnswer: textAnswers[fId] ?? "",
-          dateAnswer: [],
-        },
-      ];
+      return [{
+        fieldId: fId,
+        textAnswer: textAnswers[fId] ?? "",
+        dateAnswer: [],
+      }];
     });
 
     try {
-      // 1. 폼 제출 → submitId 획득
       const submitId = await submitForm({ formId, projectId, answers });
 
-      // 2. 선택된 파일을 submitId와 함께 업로드
       const fileEntries = Object.entries(fileAnswers).filter(
-        ([, file]) => file !== null,
+        ([, file]) => file instanceof File,
       ) as [string, File][];
 
-      await Promise.all(
-        fileEntries.map(([fieldIdStr, file]) => {
-          const fd = new FormData();
-          fd.append("file", file);
-          return uploadFile({
-            formData: fd,
-            fieldId: Number(fieldIdStr),
-            submitId,
-          });
-        }),
-      );
+      if (fileEntries.length > 0) {
+        try {
+          await Promise.all(
+            fileEntries.map(([fieldIdStr, file]) => {
+              const fd = new FormData();
+              fd.append("file", file);
+              return uploadFile({ formData: fd, fieldId: Number(fieldIdStr), submitId });
+            }),
+          );
+        } catch {
+          toast.error("파일 업로드에 실패했습니다. 수정 페이지에서 파일을 다시 업로드해주세요.");
+          router.push(`/form/${formId}/edit`);
+          return;
+        }
+      }
 
       router.push("/form");
-    } catch (e) {
-      const message = e instanceof Error ? e.message : String(e);
-      toast.error(`제출에 실패했습니다: ${message}`);
+    } catch {
+      toast.error("제출에 실패했습니다. 다시 시도해주세요.");
     }
   };
 
@@ -136,6 +149,7 @@ export default function FormSubmitView({ formId }: Props) {
               .sort((a, b) => a.orderIndex - b.orderIndex)
               .map((field, index) => {
                 const fId = field.fieldId ?? field.id ?? index;
+                const error = fieldErrors[fId];
                 return (
                   <div
                     key={fId}
@@ -149,18 +163,28 @@ export default function FormSubmitView({ formId }: Props) {
                     </span>
 
                     {field.type === "TEXT" && (
-                      <TextField
-                        fieldId={fId}
-                        value={textAnswers[fId] ?? ""}
-                        onChange={handleTextChange}
-                      />
+                      <>
+                        <TextField
+                          fieldId={fId}
+                          value={textAnswers[fId] ?? ""}
+                          onChange={handleTextChange}
+                        />
+                        {error && (
+                          <span className="mt-1 text-[12px] text-red-500">{error}</span>
+                        )}
+                      </>
                     )}
                     {field.type === "FILE" && (
-                      <FileField
-                        fieldId={fId}
-                        file={fileAnswers[fId] ?? null}
-                        onChange={handleFileChange}
-                      />
+                      <>
+                        <FileField
+                          fieldId={fId}
+                          file={fileAnswers[fId] instanceof File ? (fileAnswers[fId] as File) : null}
+                          onChange={handleFileChange}
+                        />
+                        {error && (
+                          <span className="mt-1 text-[12px] text-red-500">{error}</span>
+                        )}
+                      </>
                     )}
                     {(field.type === "DATE" || field.type === "CALENDAR") && (
                       <CalendarField
@@ -180,7 +204,7 @@ export default function FormSubmitView({ formId }: Props) {
             <button
               className="flex w-full items-center justify-center py-3 font-medium bg-yellow-600 rounded-[10px] cursor-pointer disabled:opacity-50"
               onClick={handleSubmit}
-              disabled={isPending || !formDetail}
+              disabled={isPending}
             >
               {isPending ? "제출 중..." : "완료하기"}
             </button>
