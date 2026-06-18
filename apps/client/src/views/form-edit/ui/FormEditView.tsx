@@ -22,10 +22,10 @@ function toCalendarEvents(
   fieldId: number,
 ): CalendarEvent[] {
   return answers
-    .filter((a) => a.fieldId === fieldId && a.type === "DATE" && a.eventName)
+    .filter((a) => a.fieldId === fieldId && (a.type === "DATE" || a.type === "CALENDAR"))
     .map((a) => ({
       id: `${a.fieldId}-${a.startDate}`,
-      title: a.eventName,
+      title: a.eventName ?? "",
       startDate: a.startDate,
       endDate: a.endDate,
       color: a.color || "gray",
@@ -61,7 +61,7 @@ export default function FormMySubmitView({ formId }: Props) {
     const calendars: Record<number, CalendarEvent[]> = {};
     const processed = new Set<number>();
     mySubmit?.answers.forEach((a) => {
-      if (a.type === "DATE" && !processed.has(a.fieldId)) {
+      if ((a.type === "DATE" || a.type === "CALENDAR") && !processed.has(a.fieldId)) {
         calendars[a.fieldId] = toCalendarEvents(mySubmit.answers, a.fieldId);
         processed.add(a.fieldId);
       }
@@ -90,8 +90,14 @@ export default function FormMySubmitView({ formId }: Props) {
   const handleFileChange = (fieldId: number, file: File | null) =>
     setFileAnswers((prev) => ({ ...prev, [fieldId]: file }));
 
-  const handleCalendarChange = (fieldId: number, events: CalendarEvent[]) =>
-    setCalendarEdits((prev) => ({ ...prev, [fieldId]: events }));
+  const handleCalendarChange = (fieldId: number, updatedEvents: CalendarEvent[]) => {
+    setCalendarEdits((prev) => {
+      const existing = prev[fieldId] ?? initialCalendars[fieldId] ?? [];
+      const eventMap = new Map(existing.map((e) => [e.id, e]));
+      updatedEvents.forEach((e) => eventMap.set(e.id, e));
+      return { ...prev, [fieldId]: Array.from(eventMap.values()) };
+    });
+  };
 
   // 취소 시 수정분 초기화
   const handleCancel = () => {
@@ -112,7 +118,7 @@ export default function FormMySubmitView({ formId }: Props) {
         return true;
       })
       .flatMap((a) => {
-        if (a.type === "DATE") {
+        if (a.type === "DATE" || a.type === "CALENDAR") {
           const events =
             calendarEdits[a.fieldId] ?? initialCalendars[a.fieldId] ?? [];
           if (events.length === 0) {
@@ -207,7 +213,7 @@ export default function FormMySubmitView({ formId }: Props) {
                   onChange={handleFileChange}
                 />
               )}
-              {answer.type === "DATE" && (
+              {(answer.type === "DATE" || answer.type === "CALENDAR") && (
                 <CalendarField
                   fieldId={answer.fieldId}
                   mode="view"
