@@ -8,4 +8,5 @@ export type {
   FormField,
   SubmitAnswer,
   AdminSubmitDetail,
+  CalendarEventAnswer,
 } from "./model/type";

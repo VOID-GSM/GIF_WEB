@@ -2,7 +2,7 @@ export interface FormByIdField {
   id: number;
   title: string;
   description: string;
-  type: "TEXT" | "FILE" | "DATE";
+  type: "TEXT" | "FILE" | "CALENDAR";
   orderIndex: number;
 }
 

@@ -27,7 +27,7 @@ function AnswerField({
 
       {field.type === "FILE" && <FileAnswer answer={answer} />}
       {field.type === "TEXT" && <TextAnswer answer={answer} />}
-      {field.type === "DATE" && <CalendarAnswer answers={answers} />}
+      {field.type === "CALENDAR" && <CalendarAnswer answers={answers} />}
     </div>
   );
 }

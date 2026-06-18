@@ -1,3 +1,10 @@
+export interface CalendarEventAnswer {
+  eventName: string;
+  startDate: string;
+  endDate: string;
+  color: string;
+}
+
 // GET /api/form/admin 응답
 export interface AdminForm {
   id: number;
@@ -27,11 +34,7 @@ export interface SubmitAnswer {
   textAnswer: string | null;
   filePath: string | null;
   fileSize: number | null;
-  dateAnswer: string | null;
-  eventName: string | null;
-  startDate: string | null;
-  endDate: string | null;
-  color: string | null;
+  dateAnswer: CalendarEventAnswer[];
 }
 
 export interface AdminSubmitDetail {
