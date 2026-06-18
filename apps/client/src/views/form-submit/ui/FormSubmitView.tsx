@@ -49,14 +49,15 @@ export default function FormSubmitView({ formId }: Props) {
     if (!formDetail?.fields || !projectId) return;
 
     const answers: FormAnswerItem[] = formDetail.fields.flatMap((field) => {
+      const fId = field.fieldId ?? field.id ?? 0;
       if (field.type === "FILE") return [];
 
       if (field.type === "DATE") {
-        const events = calendarAnswers[field.fieldId] ?? [];
+        const events = calendarAnswers[fId] ?? [];
         if (events.length === 0) {
           return [
             {
-              fieldId: field.fieldId,
+              fieldId: fId,
               textAnswer: "",
               dateAnswer: "",
               eventName: "",
@@ -67,7 +68,7 @@ export default function FormSubmitView({ formId }: Props) {
           ];
         }
         return events.map((e) => ({
-          fieldId: field.fieldId,
+          fieldId: fId,
           textAnswer: "",
           dateAnswer: e.startDate,
           eventName: e.title,
@@ -79,8 +80,8 @@ export default function FormSubmitView({ formId }: Props) {
 
       return [
         {
-          fieldId: field.fieldId,
-          textAnswer: textAnswers[field.fieldId] ?? "",
+          fieldId: fId,
+          textAnswer: textAnswers[fId] ?? "",
           dateAnswer: "",
           eventName: "",
           startDate: "",
@@ -147,9 +148,11 @@ export default function FormSubmitView({ formId }: Props) {
             {(formDetail.fields ?? [])
               .slice()
               .sort((a, b) => a.orderIndex - b.orderIndex)
-              .map((field) => (
+              .map((field, index) => {
+                const fId = field.fieldId ?? field.id ?? index;
+                return (
                 <div
-                  key={field.fieldId}
+                  key={fId}
                   className="flex flex-col py-8 px-12 border-t-5 border-yellow-600 bg-white rounded-[10px] shadow-new"
                 >
                   <span className="text-[20px] font-semibold pb-2">
@@ -161,28 +164,29 @@ export default function FormSubmitView({ formId }: Props) {
 
                   {field.type === "TEXT" && (
                     <TextField
-                      fieldId={field.fieldId}
-                      value={textAnswers[field.fieldId] ?? ""}
+                      fieldId={fId}
+                      value={textAnswers[fId] ?? ""}
                       onChange={handleTextChange}
                     />
                   )}
                   {field.type === "FILE" && (
                     <FileField
-                      fieldId={field.fieldId}
-                      file={fileAnswers[field.fieldId] ?? null}
+                      fieldId={fId}
+                      file={fileAnswers[fId] ?? null}
                       onChange={handleFileChange}
                     />
                   )}
                   {field.type === "DATE" && (
                     <CalendarField
-                      fieldId={field.fieldId}
+                      fieldId={fId}
                       mode="write"
                       editable={true}
                       onChange={handleCalendarChange}
                     />
                   )}
                 </div>
-              ))}
+              );
+              })}
           </div>
 
           <div className="pb-20">

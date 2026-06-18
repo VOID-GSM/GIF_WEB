@@ -1,5 +1,6 @@
 export interface FormDetailField {
   fieldId: number;
+  id?: number; // 일부 API 응답이 fieldId 대신 id를 반환하는 경우 대비
   title: string;
   description: string;
   type: "TEXT" | "FILE" | "DATE";
