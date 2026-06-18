@@ -59,10 +59,10 @@ export const postFormSubmit = async (body: PostFormSubmitRequest) => {
 
 export const patchFormSubmit = async (body: PatchFormSubmitRequest) => {
   if (USE_MOCK) return { success: true };
-  return fetchWithAuth(`/api/form/submit`, {
+  return fetchWithAuth(`/api/form/submit?submitId=${body.submitId}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body),
+    body: JSON.stringify({ answers: body.answers }),
   });
 };
 
