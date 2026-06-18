@@ -2,16 +2,9 @@ import { useMutation } from "@tanstack/react-query";
 import { downloadFile } from "../api/api";
 import { toast } from "sonner";
 
-// hooks/useDownloadFile.ts
 export function useDownloadFile() {
   return useMutation({
-    mutationFn: ({
-      fileUrl,
-      fileName,
-    }: {
-      fileUrl: string;
-      fileName: string;
-    }) => {
+    mutationFn: ({ fileUrl }: { fileUrl: string; fileName: string }) => {
       // 상대경로면 BASE_URL 붙이기
       const fullUrl = fileUrl.startsWith("http")
         ? fileUrl
