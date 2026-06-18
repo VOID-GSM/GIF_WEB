@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  gif-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: gif-monorepo
+    restart: always
+    ports:
+      - "3000:3000"
+      - "3001:3001"
+    command: ["turbo", "run", "dev", "--", "--hostname", "0.0.0.0"]
