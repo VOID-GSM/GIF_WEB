@@ -28,13 +28,15 @@ function toCalendarEvents(
       (a) =>
         a.fieldId === fieldId && (a.type === "DATE" || a.type === "CALENDAR"),
     )
-    .map((a) => ({
-      id: `${a.fieldId}-${a.startDate}`,
-      title: a.eventName ?? "",
-      startDate: a.startDate,
-      endDate: a.endDate,
-      color: a.color || "gray",
-    }));
+    .flatMap((a) =>
+      (a.dateAnswer ?? []).map((ca, i) => ({
+        id: `${fieldId}-${ca.startDate}-${i}`,
+        title: ca.eventName,
+        startDate: ca.startDate,
+        endDate: ca.endDate,
+        color: ca.color || "gray",
+      })),
+    );
 }
 
 export default function FormMySubmitView({ formId }: Props) {

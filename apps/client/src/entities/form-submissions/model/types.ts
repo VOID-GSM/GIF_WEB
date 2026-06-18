@@ -70,11 +70,7 @@ export interface SubmitAnswerItem {
   textAnswer: string;
   filePath: string;
   fileSize: number;
-  dateAnswer: string;
-  eventName: string;
-  startDate: string;
-  endDate: string;
-  color: string;
+  dateAnswer: CalendarEventAnswer[] | null;
 }
 
 export interface GetFormMySubmitResponse {
