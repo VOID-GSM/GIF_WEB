@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { FormCard, Plus, DatePicker } from "@repo/ui";
+import { toast } from "sonner";
+
 import { usePostForm, useAnnounceForm } from "@/entities/form-create";
 import type { PostFormRequestField } from "@/entities/form-create";
 
@@ -73,11 +75,9 @@ export default function FormCreateView() {
       {
         onSuccess: (res) => {
           setSavedFormId(res.data);
-          console.log("저장 성공");
+          toast.success("양식이 저장되었습니다.");
         },
-        onError: (error) => {
-          console.error("저장 실패", error);
-        },
+        onError: () => toast.error("양식 저장에 실패했습니다."),
       },
     );
   };
@@ -86,10 +86,7 @@ export default function FormCreateView() {
     const doAnnounce = (formId: number) => {
       announce(
         { formId },
-        {
-          onSuccess: () => router.push("/form"),
-          onError: (error) => console.error("공지 실패", error),
-        },
+        { onSuccess: () => router.push("/form") },
       );
     };
 
@@ -109,7 +106,7 @@ export default function FormCreateView() {
             setSavedFormId(res.data);
             doAnnounce(res.data);
           },
-          onError: (error) => console.error("저장 실패", error),
+          onError: () => toast.error("양식 저장에 실패했습니다."),
         },
       );
     }
