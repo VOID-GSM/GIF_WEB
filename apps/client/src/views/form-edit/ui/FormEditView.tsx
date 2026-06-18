@@ -216,7 +216,7 @@ export default function FormMySubmitView({ formId }: Props) {
               {(answer.type === "DATE" || answer.type === "CALENDAR") && (
                 <CalendarField
                   fieldId={answer.fieldId}
-                  mode="view"
+                  mode={isEditing ? "write" : "view"}
                   editable={isEditing}
                   events={getCalendarValue(answer.fieldId)}
                   onChange={handleCalendarChange}
