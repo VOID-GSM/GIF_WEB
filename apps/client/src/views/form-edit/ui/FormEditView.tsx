@@ -104,7 +104,8 @@ export default function FormMySubmitView({ formId }: Props) {
     updatedEvents: CalendarEvent[],
   ) => {
     setCalendarEdits((prev) => {
-      const existing = prev[fieldId] ?? initialCalendars[fieldId] ?? EMPTY_EVENTS;
+      const existing =
+        prev[fieldId] ?? initialCalendars[fieldId] ?? EMPTY_EVENTS;
       const eventMap = new Map(existing.map((e) => [e.id, e]));
       updatedEvents.forEach((e) => eventMap.set(e.id, e));
       return { ...prev, [fieldId]: Array.from(eventMap.values()) };
@@ -132,7 +133,9 @@ export default function FormMySubmitView({ formId }: Props) {
       .flatMap((a) => {
         if (a.type === "DATE" || a.type === "CALENDAR") {
           const events =
-            calendarEdits[a.fieldId] ?? initialCalendars[a.fieldId] ?? EMPTY_EVENTS;
+            calendarEdits[a.fieldId] ??
+            initialCalendars[a.fieldId] ??
+            EMPTY_EVENTS;
           return [
             {
               fieldId: a.fieldId,
@@ -184,95 +187,105 @@ export default function FormMySubmitView({ formId }: Props) {
   const getFileValue = (fieldId: number) =>
     fileAnswers[fieldId] !== undefined ? fileAnswers[fieldId] : null;
 
-  if (detailLoading || submitLoading) return <div>로딩중...</div>;
-  if (!formDetail) return <div>양식 정보를 불러올 수 없습니다.</div>;
-  if (!mySubmit) return <div>제출 정보를 불러올 수 없습니다.</div>;
-
-  const uniqueAnswers = mySubmit.answers.filter(
+  const uniqueAnswers = (mySubmit?.answers ?? []).filter(
     (a, idx, arr) => arr.findIndex((b) => b.fieldId === a.fieldId) === idx,
   );
 
   return (
     <div className="min-h-screen flex flex-col items-center pt-20 px-5 bg-background">
-      <div className="mx-auto flex flex-col w-full max-w-[560px] gap-4">
-        <div className="flex flex-col gap-2">
-          <span className="flex justify-center text-[24px] font-semibold">
-            {formDetail.title}
-          </span>
-          <span className="text-[14px] font-medium">
-            마감일: {formDetail.deadline}
-          </span>
+      {detailLoading || submitLoading ? (
+        <div className="flex w-full justify-center pt-20 text-gray-500 font-medium">
+          로딩중...
         </div>
-
-        <div className="flex flex-col gap-4">
-          {uniqueAnswers.map((answer: SubmitAnswerItem) => (
-            <div
-              key={answer.fieldId}
-              className="flex flex-col py-8 px-12 border-t-5 border-yellow-600 bg-white rounded-[10px] shadow-new"
-            >
-              <span className="text-[20px] font-semibold pb-2">
-                {answer.fieldTitle}
-              </span>
-
-              {answer.type === "TEXT" && (
-                <TextField
-                  fieldId={answer.fieldId}
-                  value={getTextValue(answer.fieldId)}
-                  readOnly={!isEditing}
-                  onChange={handleTextChange}
-                />
-              )}
-              {answer.type === "FILE" && (
-                <FileField
-                  fieldId={answer.fieldId}
-                  file={getFileValue(answer.fieldId)}
-                  filePath={answer.filePath || undefined}
-                  fileSize={answer.fileSize || undefined}
-                  submitId={mySubmit.submitId}
-                  readOnly={!isEditing}
-                  onChange={handleFileChange}
-                />
-              )}
-              {(answer.type === "DATE" || answer.type === "CALENDAR") && (
-                <CalendarField
-                  fieldId={answer.fieldId}
-                  mode={isEditing ? "write" : "view"}
-                  editable={isEditing}
-                  events={getCalendarValue(answer.fieldId)}
-                  onChange={handleCalendarChange}
-                />
-              )}
-            </div>
-          ))}
+      ) : !mySubmit ? (
+        <div className="flex w-full justify-center pt-20 text-gray-500 font-medium">
+          제출 정보를 불러올 수 없습니다.
         </div>
+      ) : !formDetail ? (
+        <div className="flex w-full justify-center pt-20 text-gray-500 font-medium">
+          양식 정보를 불러올 수 없습니다.
+        </div>
+      ) : (
+        <div className="mx-auto flex flex-col w-full max-w-[560px] gap-4">
+          <div className="flex flex-col gap-2">
+            <span className="flex justify-center text-[24px] font-semibold">
+              {formDetail.title}
+            </span>
+            <span className="text-[14px] font-medium">
+              마감일: {formDetail.deadline}
+            </span>
+          </div>
 
-        <div className="flex gap-5 pb-20">
-          {isEditing ? (
-            <>
-              <button
-                className="flex w-full items-center justify-center py-3 font-medium border border-yellow-600 bg-white rounded-[10px] cursor-pointer"
-                onClick={handleCancel}
+          <div className="flex flex-col gap-4">
+            {uniqueAnswers.map((answer: SubmitAnswerItem) => (
+              <div
+                key={answer.fieldId}
+                className="flex flex-col py-8 px-12 border-t-5 border-yellow-600 bg-white rounded-[10px] shadow-new"
               >
-                취소
-              </button>
+                <span className="text-[20px] font-semibold pb-2">
+                  {answer.fieldTitle}
+                </span>
+
+                {answer.type === "TEXT" && (
+                  <TextField
+                    fieldId={answer.fieldId}
+                    value={getTextValue(answer.fieldId)}
+                    readOnly={!isEditing}
+                    onChange={handleTextChange}
+                  />
+                )}
+                {answer.type === "FILE" && (
+                  <FileField
+                    fieldId={answer.fieldId}
+                    file={getFileValue(answer.fieldId)}
+                    filePath={answer.filePath || undefined}
+                    fileSize={answer.fileSize || undefined}
+                    submitId={mySubmit.submitId}
+                    readOnly={!isEditing}
+                    onChange={handleFileChange}
+                  />
+                )}
+                {(answer.type === "DATE" || answer.type === "CALENDAR") && (
+                  <CalendarField
+                    fieldId={answer.fieldId}
+                    mode={isEditing ? "write" : "view"}
+                    editable={isEditing}
+                    events={getCalendarValue(answer.fieldId)}
+                    onChange={handleCalendarChange}
+                  />
+                )}
+              </div>
+            ))}
+          </div>
+
+          <div className="flex gap-5 pb-20">
+            {isEditing ? (
+              <>
+                <button
+                  className="flex w-full items-center justify-center py-3 font-medium border border-yellow-600 bg-white rounded-[10px] cursor-pointer"
+                  onClick={handleCancel}
+                >
+                  취소
+                </button>
+                <button
+                  className="flex w-full items-center justify-center py-3 font-medium bg-yellow-600 rounded-[10px] cursor-pointer disabled:opacity-50"
+                  onClick={handlePatch}
+                  disabled={isPending}
+                >
+                  {isPending ? "저장 중..." : "완료하기"}
+                </button>
+              </>
+            ) : (
               <button
-                className="flex w-full items-center justify-center py-3 font-medium bg-yellow-600 rounded-[10px] cursor-pointer disabled:opacity-50"
-                onClick={handlePatch}
-                disabled={isPending}
+                className="flex w-full items-center justify-center py-3 font-medium bg-yellow-600 rounded-[10px] cursor-pointer"
+                onClick={() => setIsEditing(true)}
               >
-                {isPending ? "저장 중..." : "완료하기"}
+                수정하기
               </button>
-            </>
-          ) : (
-            <button
-              className="flex w-full items-center justify-center py-3 font-medium bg-yellow-600 rounded-[10px] cursor-pointer"
-              onClick={() => setIsEditing(true)}
-            >
-              수정하기
-            </button>
-          )}
+            )}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
