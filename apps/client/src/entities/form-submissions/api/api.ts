@@ -1,3 +1,4 @@
+import { getCookieValue } from "@repo/lib";
 import type {
   PostFormSubmitRequest,
   PatchFormSubmitRequest,
@@ -17,9 +18,14 @@ async function fetchWithAuth<T>(
   options?: RequestInit,
 ): Promise<T> {
   if (!BASE_URL) throw new Error("NEXT_PUBLIC_API_URL is not set");
+  const token = getCookieValue("access_token");
   const res = await fetch(`${BASE_URL}${endpoint}`, {
     ...options,
     credentials: "include",
+    headers: {
+      ...(options?.headers ?? {}),
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
   });
   if (!res.ok) throw new Error(`API Error: ${res.status}`);
   const text = await res.text();
@@ -60,14 +66,22 @@ export const patchFormSubmit = async (body: PatchFormSubmitRequest) => {
   });
 };
 
-export const postFormUpload = async (
-  formData: FormData,
-): Promise<PostFormUploadResponse> => {
-  if (USE_MOCK) return { fileUrl: "/mock/uploaded-file.pdf" };
-  return fetchWithAuth<PostFormUploadResponse>(`/api/form/upload`, {
-    method: "POST",
-    body: formData,
-  });
+export const postFormUpload = async ({
+  formData,
+  fieldId,
+  submitId,
+}: {
+  formData: FormData;
+  fieldId: number;
+  submitId?: number;
+}): Promise<PostFormUploadResponse> => {
+  if (USE_MOCK) return "/mock/uploaded-file.pdf";
+  const params = new URLSearchParams({ fieldId: String(fieldId) });
+  if (submitId !== undefined) params.append("submitId", String(submitId));
+  return fetchWithAuth<PostFormUploadResponse>(
+    `/api/form/upload?${params.toString()}`,
+    { method: "POST", body: formData },
+  );
 };
 
 export const deleteFormUpload = async (params: DeleteFormUploadParams) => {

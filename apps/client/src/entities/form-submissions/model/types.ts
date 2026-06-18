@@ -32,10 +32,8 @@ export interface PostFormSubmitRequest {
   answers: FormAnswerItem[];
 }
 
-// POST /api/form/upload
-export interface PostFormUploadResponse {
-  fileUrl: string;
-}
+// POST /api/form/upload — 응답은 파일 URL 문자열
+export type PostFormUploadResponse = string;
 
 // DELETE /api/form/upload
 export interface DeleteFormUploadParams {
