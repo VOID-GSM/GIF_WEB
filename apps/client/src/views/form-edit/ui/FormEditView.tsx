@@ -6,23 +6,28 @@ import {
   FileField,
   TextField,
   type CalendarEvent,
-} from "@/entities/form-submissions/index";
-import {
   useGetFormMySubmit,
   usePatchFormSubmit,
+  usePostFormUpload,
   useGetFormDetail,
 } from "@/entities/form-submissions/index";
 import type { SubmitAnswerItem } from "@/entities/form-submissions/model/types";
 import { useGetMyInfo } from "@/entities/mypage/index";
+import { toast } from "sonner";
 
 type Props = { formId: number };
+
+const EMPTY_EVENTS: CalendarEvent[] = [];
 
 function toCalendarEvents(
   answers: SubmitAnswerItem[],
   fieldId: number,
 ): CalendarEvent[] {
   return answers
-    .filter((a) => a.fieldId === fieldId && (a.type === "DATE" || a.type === "CALENDAR"))
+    .filter(
+      (a) =>
+        a.fieldId === fieldId && (a.type === "DATE" || a.type === "CALENDAR"),
+    )
     .map((a) => ({
       id: `${a.fieldId}-${a.startDate}`,
       title: a.eventName ?? "",
@@ -44,7 +49,8 @@ export default function FormMySubmitView({ formId }: Props) {
     formId,
     projectId,
   });
-  const { mutate: patchSubmit, isPending } = usePatchFormSubmit();
+  const { mutateAsync: patchSubmit, isPending } = usePatchFormSubmit();
+  const { mutateAsync: uploadFile } = usePostFormUpload();
 
   const [isEditing, setIsEditing] = useState(false);
 
@@ -61,7 +67,10 @@ export default function FormMySubmitView({ formId }: Props) {
     const calendars: Record<number, CalendarEvent[]> = {};
     const processed = new Set<number>();
     mySubmit?.answers.forEach((a) => {
-      if ((a.type === "DATE" || a.type === "CALENDAR") && !processed.has(a.fieldId)) {
+      if (
+        (a.type === "DATE" || a.type === "CALENDAR") &&
+        !processed.has(a.fieldId)
+      ) {
         calendars[a.fieldId] = toCalendarEvents(mySubmit.answers, a.fieldId);
         processed.add(a.fieldId);
       }
@@ -82,7 +91,7 @@ export default function FormMySubmitView({ formId }: Props) {
   const getTextValue = (fieldId: number) =>
     textEdits[fieldId] ?? initialTexts[fieldId] ?? "";
   const getCalendarValue = (fieldId: number) =>
-    calendarEdits[fieldId] ?? initialCalendars[fieldId] ?? [];
+    calendarEdits[fieldId] ?? initialCalendars[fieldId] ?? EMPTY_EVENTS;
 
   const handleTextChange = (fieldId: number, value: string) =>
     setTextEdits((prev) => ({ ...prev, [fieldId]: value }));
@@ -90,9 +99,12 @@ export default function FormMySubmitView({ formId }: Props) {
   const handleFileChange = (fieldId: number, file: File | null) =>
     setFileAnswers((prev) => ({ ...prev, [fieldId]: file }));
 
-  const handleCalendarChange = (fieldId: number, updatedEvents: CalendarEvent[]) => {
+  const handleCalendarChange = (
+    fieldId: number,
+    updatedEvents: CalendarEvent[],
+  ) => {
     setCalendarEdits((prev) => {
-      const existing = prev[fieldId] ?? initialCalendars[fieldId] ?? [];
+      const existing = prev[fieldId] ?? initialCalendars[fieldId] ?? EMPTY_EVENTS;
       const eventMap = new Map(existing.map((e) => [e.id, e]));
       updatedEvents.forEach((e) => eventMap.set(e.id, e));
       return { ...prev, [fieldId]: Array.from(eventMap.values()) };
@@ -107,7 +119,7 @@ export default function FormMySubmitView({ formId }: Props) {
     setIsEditing(false);
   };
 
-  const handlePatch = () => {
+  const handlePatch = async () => {
     if (!mySubmit) return;
 
     const seenFields = new Set<number>();
@@ -120,48 +132,53 @@ export default function FormMySubmitView({ formId }: Props) {
       .flatMap((a) => {
         if (a.type === "DATE" || a.type === "CALENDAR") {
           const events =
-            calendarEdits[a.fieldId] ?? initialCalendars[a.fieldId] ?? [];
-          if (events.length === 0) {
-            return [
-              {
-                fieldId: a.fieldId,
-                textAnswer: "",
-                dateAnswer: "",
-                eventName: "",
-                startDate: "",
-                endDate: "",
-                color: "",
-              },
-            ];
-          }
-          return events.map((e) => ({
-            fieldId: a.fieldId,
-            textAnswer: "",
-            dateAnswer: e.startDate,
-            eventName: e.title,
-            startDate: e.startDate,
-            endDate: e.endDate,
-            color: e.color,
-          }));
+            calendarEdits[a.fieldId] ?? initialCalendars[a.fieldId] ?? EMPTY_EVENTS;
+          return [
+            {
+              fieldId: a.fieldId,
+              textAnswer: "",
+              dateAnswer: events.map((e) => ({
+                eventName: e.title,
+                startDate: e.startDate,
+                endDate: e.endDate,
+                color: e.color,
+              })),
+            },
+          ];
         }
 
         return [
           {
             fieldId: a.fieldId,
             textAnswer: textEdits[a.fieldId] ?? a.textAnswer,
-            dateAnswer: a.dateAnswer,
-            eventName: "",
-            startDate: "",
-            endDate: "",
-            color: "",
+            dateAnswer: [],
           },
         ];
       });
 
-    patchSubmit(
-      { submitId: mySubmit.submitId, answers },
-      { onSuccess: () => router.push("/form") },
-    );
+    try {
+      await patchSubmit({ submitId: mySubmit.submitId, answers });
+
+      const fileEntries = Object.entries(fileAnswers).filter(
+        ([, f]) => f !== null,
+      ) as [string, File][];
+
+      await Promise.all(
+        fileEntries.map(([fieldIdStr, file]) => {
+          const fd = new FormData();
+          fd.append("file", file);
+          return uploadFile({
+            formData: fd,
+            fieldId: Number(fieldIdStr),
+            submitId: mySubmit.submitId,
+          });
+        }),
+      );
+
+      router.push("/form");
+    } catch {
+      toast.error("수정에 실패했습니다.");
+    }
   };
 
   const getFileValue = (fieldId: number) =>
@@ -176,7 +193,7 @@ export default function FormMySubmitView({ formId }: Props) {
   );
 
   return (
-    <div className="min-h-screen flex flex-col items-center pt-40 bg-background">
+    <div className="min-h-screen flex flex-col items-center pt-20 px-5 bg-background">
       <div className="mx-auto flex flex-col w-full max-w-[560px] gap-4">
         <div className="flex flex-col gap-2">
           <span className="flex justify-center text-[24px] font-semibold">
@@ -209,6 +226,9 @@ export default function FormMySubmitView({ formId }: Props) {
                 <FileField
                   fieldId={answer.fieldId}
                   file={getFileValue(answer.fieldId)}
+                  filePath={answer.filePath || undefined}
+                  fileSize={answer.fileSize || undefined}
+                  submitId={mySubmit.submitId}
                   readOnly={!isEditing}
                   onChange={handleFileChange}
                 />

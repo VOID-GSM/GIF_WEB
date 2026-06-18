@@ -8,6 +8,7 @@ interface FileFieldProps {
   filePath?: string;
   fileSize?: number;
   readOnly?: boolean;
+  submitId?: number; // 추가
   onChange: (fieldId: number, file: File | null) => void;
 }
 
@@ -17,9 +18,21 @@ export default function FileField({
   filePath,
   fileSize,
   readOnly = false,
+  submitId,
   onChange,
 }: FileFieldProps) {
   const { mutate: deleteUpload, isPending: isDeleting } = useDeleteFormUpload();
+
+  const handleDelete = () => {
+    if (filePath && submitId) {
+      deleteUpload(
+        { fieldId, submitId }, // submitId 추가
+        { onSuccess: () => onChange(fieldId, null) },
+      );
+    } else {
+      onChange(fieldId, null);
+    }
+  };
 
   const formatFileSize = (bytes: number) => {
     if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)}KB`;
@@ -30,15 +43,6 @@ export default function FileField({
     const selected = e.target.files?.[0];
     if (!selected) return;
     onChange(fieldId, selected);
-  };
-
-  // 이미 업로드된 파일(filePath 있음)은 API로 삭제, 로컬 선택 파일은 상태만 초기화
-  const handleDelete = () => {
-    if (filePath) {
-      deleteUpload({ fieldId }, { onSuccess: () => onChange(fieldId, null) });
-    } else {
-      onChange(fieldId, null);
-    }
   };
 
   if (file || filePath) {
@@ -79,11 +83,7 @@ export default function FileField({
 
   return (
     <label className="flex items-center justify-center w-full border-2 border-dashed border-gray-600 bg-gray-100 rounded-[10px] cursor-pointer hover:border-gray-600/60 hover:bg-gray-100/60 transition-colors">
-      <input
-        type="file"
-        className="hidden"
-        onChange={handleFileChange}
-      />
+      <input type="file" className="hidden" onChange={handleFileChange} />
       <div className="flex flex-col items-center gap-6 my-[30px]">
         <Upload className="text-gray-50" />
         <span className="text-gray-50 font-regular">

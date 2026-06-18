@@ -73,11 +73,13 @@ export const postFormUpload = async ({
 }: {
   formData: FormData;
   fieldId: number;
-  submitId?: number;
+  submitId: number; // optional → 필수로 변경
 }): Promise<PostFormUploadResponse> => {
   if (USE_MOCK) return "/mock/uploaded-file.pdf";
-  const params = new URLSearchParams({ fieldId: String(fieldId) });
-  if (submitId !== undefined) params.append("submitId", String(submitId));
+  const params = new URLSearchParams({
+    fieldId: String(fieldId),
+    submitId: String(submitId), // 항상 포함
+  });
   return fetchWithAuth<PostFormUploadResponse>(
     `/api/form/upload?${params.toString()}`,
     { method: "POST", body: formData },
@@ -86,7 +88,8 @@ export const postFormUpload = async ({
 
 export const deleteFormUpload = async (params: DeleteFormUploadParams) => {
   if (USE_MOCK) return { success: true };
-  return fetchWithAuth(`/api/form/upload?fieldId=${params.fieldId}`, {
-    method: "DELETE",
-  });
+  return fetchWithAuth(
+    `/api/form/upload?fieldId=${params.fieldId}&submitId=${params.submitId}`, // submitId 추가
+    { method: "DELETE" },
+  );
 };
