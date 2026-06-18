@@ -52,7 +52,7 @@ export default function FormSubmitView({ formId }: Props) {
       const fId = field.fieldId ?? field.id ?? 0;
       if (field.type === "FILE") return [];
 
-      if (field.type === "DATE") {
+      if (field.type === "DATE" || field.type === "CALENDAR") {
         const events = calendarAnswers[fId] ?? [];
         if (events.length === 0) {
           return [
@@ -176,7 +176,7 @@ export default function FormSubmitView({ formId }: Props) {
                       onChange={handleFileChange}
                     />
                   )}
-                  {field.type === "DATE" && (
+                  {(field.type === "DATE" || field.type === "CALENDAR") && (
                     <CalendarField
                       fieldId={fId}
                       mode="write"
