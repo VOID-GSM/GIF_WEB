@@ -1,6 +1,5 @@
 import { ChangeEvent } from "react";
 import { Upload, File, Close } from "@repo/ui";
-import { usePostFormUpload } from "../hooks/usePostFormUpload";
 import { useDeleteFormUpload } from "../hooks/useDeleteFormUpload";
 
 interface FileFieldProps {
@@ -20,7 +19,6 @@ export default function FileField({
   readOnly = false,
   onChange,
 }: FileFieldProps) {
-  const { mutate: upload, isPending: isUploading } = usePostFormUpload();
   const { mutate: deleteUpload, isPending: isDeleting } = useDeleteFormUpload();
 
   const formatFileSize = (bytes: number) => {
@@ -31,15 +29,16 @@ export default function FileField({
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const selected = e.target.files?.[0];
     if (!selected) return;
-    const formData = new FormData();
-    formData.append("file", selected);
-    upload(formData, {
-      onSuccess: () => onChange(fieldId, selected),
-    });
+    onChange(fieldId, selected);
   };
 
+  // 이미 업로드된 파일(filePath 있음)은 API로 삭제, 로컬 선택 파일은 상태만 초기화
   const handleDelete = () => {
-    deleteUpload({ fieldId }, { onSuccess: () => onChange(fieldId, null) });
+    if (filePath) {
+      deleteUpload({ fieldId }, { onSuccess: () => onChange(fieldId, null) });
+    } else {
+      onChange(fieldId, null);
+    }
   };
 
   if (file || filePath) {
@@ -84,16 +83,11 @@ export default function FileField({
         type="file"
         className="hidden"
         onChange={handleFileChange}
-        disabled={isUploading}
       />
       <div className="flex flex-col items-center gap-6 my-[30px]">
-        <Upload
-          className={
-            isUploading ? "text-gray-30 animate-pulse" : "text-gray-50"
-          }
-        />
+        <Upload className="text-gray-50" />
         <span className="text-gray-50 font-regular">
-          {isUploading ? "업로드 중..." : "클릭하거나 파일을 드래그하여 업로드"}
+          클릭하거나 파일을 드래그하여 업로드
         </span>
       </div>
     </label>
