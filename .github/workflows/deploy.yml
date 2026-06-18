@@ -1,0 +1,13 @@
+name: Deploy to School Ubuntu Server
+
+on:
+  push:
+    branches:
+      - infra/deploy
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Notification
+        run: echo "CI/CD 구조 파일 생성 완료"
