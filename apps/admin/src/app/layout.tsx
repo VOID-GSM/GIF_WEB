@@ -11,9 +11,10 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body className="overflow-x-hidden">
-        <Navbar navItems={ADMIN_NAV_ITEMS} />
-
-        <Providers>{children}</Providers>
+        <Providers>
+          <Navbar navItems={ADMIN_NAV_ITEMS} />
+          {children}
+        </Providers>
       </body>
     </html>
   );
