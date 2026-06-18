@@ -1,18 +1,17 @@
 export interface FormByIdField {
-  id: number;
+  fieldId: number;
   title: string;
   description: string;
-  type: "TEXT" | "FILE" | "CALENDAR";
+  type: "TEXT" | "FILE" | "DATE";
   orderIndex: number;
 }
 
 export interface FormByIdResponse {
-  id: number;
+  formId: number;
   title: string;
   description: string;
   deadline: string;
-  announced: boolean;
-  deadlineComplied: boolean;
+  targetGrade: number;
   fields: FormByIdField[];
 }
 

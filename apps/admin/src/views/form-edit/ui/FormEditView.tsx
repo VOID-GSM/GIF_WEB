@@ -15,6 +15,13 @@ type FieldWithId = {
   orderIndex: number;
 };
 
+// API는 "DATE"를 반환하지만 FormCard UI는 "CALENDAR"를 사용
+function toUiType(apiType: string): "TEXT" | "FILE" | "CALENDAR" | "" {
+  if (apiType === "DATE") return "CALENDAR";
+  if (apiType === "TEXT" || apiType === "FILE" || apiType === "CALENDAR") return apiType;
+  return "";
+}
+
 function FormEditor({
   formId,
   formDetail,
@@ -32,10 +39,10 @@ function FormEditor({
       .slice()
       .sort((a, b) => a.orderIndex - b.orderIndex)
       .map((f) => ({
-        id: String(f.id),
+        id: String(f.fieldId),
         title: f.title,
         description: f.description,
-        type: f.type,
+        type: toUiType(f.type),
         orderIndex: f.orderIndex,
       })),
   );

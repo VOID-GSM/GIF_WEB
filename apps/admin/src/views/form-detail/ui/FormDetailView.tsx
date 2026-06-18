@@ -27,17 +27,22 @@ function AnswerField({
 
       {field.type === "FILE" && <FileAnswer answer={answer} />}
       {field.type === "TEXT" && <TextAnswer answer={answer} />}
-      {field.type === "CALENDAR" && <CalendarAnswer answers={answers} />}
+      {field.type === "DATE" && <CalendarAnswer answers={answers} />}
     </div>
   );
 }
 
 export default function FormDetailView({ formId, submitId }: Props) {
-  const { data: formDetail, isLoading: formLoading } = useGetFormById(formId);
   const { data: submissions, isLoading: submitLoading } =
     useAdminSubmitDetail(formId);
 
   const submission = submissions?.find((s) => s.submitId === submitId);
+  const projectId = submission?.projectId;
+
+  const { data: formDetail, isLoading: formLoading } = useGetFormById(
+    formId,
+    projectId,
+  );
 
   return (
     <div className="min-h-screen flex flex-col items-center pt-20 bg-background">
@@ -69,10 +74,15 @@ export default function FormDetailView({ formId, submitId }: Props) {
               .sort((a, b) => a.orderIndex - b.orderIndex)
               .map((field) => {
                 const answers =
-                  submission?.answers.filter((a) => a.fieldId === field.id) ??
-                  [];
+                  submission?.answers.filter(
+                    (a) => a.fieldId === field.fieldId,
+                  ) ?? [];
                 return (
-                  <AnswerField key={field.id} field={field} answers={answers} />
+                  <AnswerField
+                    key={field.fieldId}
+                    field={field}
+                    answers={answers}
+                  />
                 );
               })}
           </div>
