@@ -41,16 +41,16 @@ function toCalendarEvents(
 
 export default function FormMySubmitView({ formId }: Props) {
   const { data: myInfo } = useGetMyInfo();
-  const projectId = myInfo?.projectId ?? 1;
+  const projectId = myInfo?.projectId;
 
   const router = useRouter();
 
   const { data: formDetail, isLoading: detailLoading } =
     useGetFormDetail(formId);
-  const { data: mySubmit, isLoading: submitLoading } = useGetFormMySubmit({
-    formId,
-    projectId,
-  });
+  const { data: mySubmit, isLoading: submitLoading } = useGetFormMySubmit(
+    { formId, projectId: projectId ?? 0 },
+    { enabled: !!projectId },
+  );
   const { mutateAsync: patchSubmit, isPending } = usePatchFormSubmit();
   const { mutateAsync: uploadFile } = usePostFormUpload();
 

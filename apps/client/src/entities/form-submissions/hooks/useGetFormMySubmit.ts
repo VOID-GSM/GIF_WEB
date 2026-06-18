@@ -1,7 +1,6 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-
 import { getFormMySubmit } from "../api/api";
 import type { GetFormMySubmitParams } from "../model/types";
 
@@ -12,6 +11,7 @@ export function useGetFormMySubmit(
   return useQuery({
     queryKey: ["form", "my-submit", params.formId, params.projectId],
     queryFn: () => getFormMySubmit(params),
-    enabled: options?.enabled ?? true,
+    enabled:
+      !!params.formId && !!params.projectId && (options?.enabled ?? true),
   });
 }
