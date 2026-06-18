@@ -1,5 +1,5 @@
 export interface FormByIdField {
-  fieldId: number;
+  id: number;
   title: string;
   description: string;
   type: "TEXT" | "FILE" | "DATE";
@@ -7,11 +7,12 @@ export interface FormByIdField {
 }
 
 export interface FormByIdResponse {
-  formId: number;
+  id: number;
   title: string;
   description: string;
   deadline: string;
-  targetGrade: number;
+  announced: boolean;
+  deadlineComplied: boolean;
   fields: FormByIdField[];
 }
 

@@ -39,7 +39,7 @@ function FormEditor({
       .slice()
       .sort((a, b) => a.orderIndex - b.orderIndex)
       .map((f) => ({
-        id: String(f.fieldId),
+        id: String(f.id),
         title: f.title,
         description: f.description,
         type: toUiType(f.type),

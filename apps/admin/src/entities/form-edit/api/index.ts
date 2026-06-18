@@ -5,12 +5,10 @@ const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export const getFormById = async (
   formId: number,
-  projectId?: number,
 ): Promise<FormByIdResponse> => {
   if (!BASE_URL) throw new Error("NEXT_PUBLIC_API_URL is not set");
   const token = getCookieValue("access_token");
-  const query = projectId ? `?projectId=${projectId}` : "";
-  const res = await fetch(`${BASE_URL}/api/form/${formId}${query}`, {
+  const res = await fetch(`${BASE_URL}/api/form/admin/draft/${formId}`, {
     credentials: "include",
     headers: {
       ...(token ? { Authorization: `Bearer ${token}` } : {}),

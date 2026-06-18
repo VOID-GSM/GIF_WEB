@@ -37,12 +37,8 @@ export default function FormDetailView({ formId, submitId }: Props) {
     useAdminSubmitDetail(formId);
 
   const submission = submissions?.find((s) => s.submitId === submitId);
-  const projectId = submission?.projectId;
 
-  const { data: formDetail, isLoading: formLoading } = useGetFormById(
-    formId,
-    projectId,
-  );
+  const { data: formDetail, isLoading: formLoading } = useGetFormById(formId);
 
   return (
     <div className="min-h-screen flex flex-col items-center pt-20 bg-background">
@@ -75,11 +71,11 @@ export default function FormDetailView({ formId, submitId }: Props) {
               .map((field) => {
                 const answers =
                   submission?.answers.filter(
-                    (a) => a.fieldId === field.fieldId,
+                    (a) => a.fieldId === field.id,
                   ) ?? [];
                 return (
                   <AnswerField
-                    key={field.fieldId}
+                    key={field.id}
                     field={field}
                     answers={answers}
                   />
