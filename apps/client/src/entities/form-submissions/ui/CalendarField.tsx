@@ -159,7 +159,6 @@ export default function CalendarField({
   const [currentMonth, setCurrentMonth] = useState(
     new Date(todayDate.getFullYear(), todayDate.getMonth()),
   );
-  const [events, setEvents] = useState<CalendarEvent[]>(initialEvents);
   const [selectStart, setSelectStart] = useState<string | null>(null);
   const [selectEnd, setSelectEnd] = useState<string | null>(null);
   const [viewTarget, setViewTarget] = useState<CalendarEvent | null>(null);
@@ -211,11 +210,11 @@ export default function CalendarField({
     if (!formTarget) return;
     const targetEvent = formTarget.event;
     const updated = targetEvent
-      ? events.map((e) =>
+      ? initialEvents.map((e) =>
           e.id === targetEvent.id ? { ...e, title, color } : e,
         )
       : [
-          ...events,
+          ...initialEvents,
           {
             id: generateId(),
             title,
@@ -225,7 +224,6 @@ export default function CalendarField({
           },
         ];
 
-    setEvents(updated);
     onChange?.(fieldId, updated);
     setFormTarget(null);
     setSelectStart(null);
@@ -316,7 +314,7 @@ export default function CalendarField({
               day={day}
               year={year}
               month={month}
-              events={events}
+              events={initialEvents}
               today={todayStr}
               selectStart={selectStart}
               selectEnd={selectEnd}

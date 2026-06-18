@@ -16,15 +16,18 @@ export interface GetFormDetailResponse {
   fields: FormDetailField[];
 }
 
-// POST /api/form/submit
-export interface FormAnswerItem {
-  fieldId: number;
-  textAnswer: string;
-  dateAnswer: string;
+export interface CalendarEventAnswer {
   eventName: string;
   startDate: string;
   endDate: string;
   color: string;
+}
+
+// POST /api/form/submit
+export interface FormAnswerItem {
+  fieldId: number;
+  textAnswer: string;
+  dateAnswer: CalendarEventAnswer[];
 }
 
 export interface PostFormSubmitRequest {
@@ -39,17 +42,14 @@ export type PostFormUploadResponse = string;
 // DELETE /api/form/upload
 export interface DeleteFormUploadParams {
   fieldId: number;
+  submitId: number;
 }
 
 // PATCH /api/form/submit
 export interface PatchFormSubmitAnswerItem {
   fieldId: number;
   textAnswer: string;
-  dateAnswer: string;
-  eventName: string;
-  startDate: string;
-  endDate: string;
-  color: string;
+  dateAnswer: CalendarEventAnswer[];
 }
 
 export interface PatchFormSubmitRequest {

@@ -54,39 +54,25 @@ export default function FormSubmitView({ formId }: Props) {
 
       if (field.type === "DATE" || field.type === "CALENDAR") {
         const events = calendarAnswers[fId] ?? [];
-        if (events.length === 0) {
-          return [
-            {
-              fieldId: fId,
-              textAnswer: "",
-              dateAnswer: "",
-              eventName: "",
-              startDate: "",
-              endDate: "",
-              color: "",
-            },
-          ];
-        }
-        return events.map((e) => ({
-          fieldId: fId,
-          textAnswer: "",
-          dateAnswer: e.startDate,
-          eventName: e.title,
-          startDate: e.startDate,
-          endDate: e.endDate,
-          color: e.color,
-        }));
+        return [
+          {
+            fieldId: fId,
+            textAnswer: "",
+            dateAnswer: events.map((e) => ({
+              eventName: e.title,
+              startDate: e.startDate,
+              endDate: e.endDate,
+              color: e.color,
+            })),
+          },
+        ];
       }
 
       return [
         {
           fieldId: fId,
           textAnswer: textAnswers[fId] ?? "",
-          dateAnswer: "",
-          eventName: "",
-          startDate: "",
-          endDate: "",
-          color: "",
+          dateAnswer: [],
         },
       ];
     });
@@ -120,7 +106,7 @@ export default function FormSubmitView({ formId }: Props) {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center pt-40 bg-background">
+    <div className="min-h-screen flex flex-col items-center pt-20 px-5 bg-background">
       {myInfoLoading || detailLoading ? (
         <div className="flex w-full justify-center pt-20 text-gray-500 font-medium">
           로딩중...
@@ -151,41 +137,42 @@ export default function FormSubmitView({ formId }: Props) {
               .map((field, index) => {
                 const fId = field.fieldId ?? field.id ?? index;
                 return (
-                <div
-                  key={fId}
-                  className="flex flex-col py-8 px-12 border-t-5 border-yellow-600 bg-white rounded-[10px] shadow-new"
-                >
-                  <span className="text-[20px] font-semibold pb-2">
-                    {field.title}
-                  </span>
-                  <span className="font-medium text-gray-500 pb-4">
-                    {field.description}
-                  </span>
+                  <div
+                    key={fId}
+                    className="flex flex-col py-8 px-12 border-t-5 border-yellow-600 bg-white rounded-[10px] shadow-new"
+                  >
+                    <span className="text-[20px] font-semibold pb-2">
+                      {field.title}
+                    </span>
+                    <span className="font-medium text-gray-500 pb-4">
+                      {field.description}
+                    </span>
 
-                  {field.type === "TEXT" && (
-                    <TextField
-                      fieldId={fId}
-                      value={textAnswers[fId] ?? ""}
-                      onChange={handleTextChange}
-                    />
-                  )}
-                  {field.type === "FILE" && (
-                    <FileField
-                      fieldId={fId}
-                      file={fileAnswers[fId] ?? null}
-                      onChange={handleFileChange}
-                    />
-                  )}
-                  {(field.type === "DATE" || field.type === "CALENDAR") && (
-                    <CalendarField
-                      fieldId={fId}
-                      mode="write"
-                      editable={true}
-                      onChange={handleCalendarChange}
-                    />
-                  )}
-                </div>
-              );
+                    {field.type === "TEXT" && (
+                      <TextField
+                        fieldId={fId}
+                        value={textAnswers[fId] ?? ""}
+                        onChange={handleTextChange}
+                      />
+                    )}
+                    {field.type === "FILE" && (
+                      <FileField
+                        fieldId={fId}
+                        file={fileAnswers[fId] ?? null}
+                        onChange={handleFileChange}
+                      />
+                    )}
+                    {(field.type === "DATE" || field.type === "CALENDAR") && (
+                      <CalendarField
+                        fieldId={fId}
+                        mode="write"
+                        editable={true}
+                        events={calendarAnswers[fId] ?? []}
+                        onChange={handleCalendarChange}
+                      />
+                    )}
+                  </div>
+                );
               })}
           </div>
 
