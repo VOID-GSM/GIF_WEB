@@ -43,8 +43,12 @@ export default function FormSubmissionsView({ formId }: Props) {
           <div className="flex w-full justify-center pt-20 text-gray-500 font-medium">
             로딩중...
           </div>
+        ) : !filtered || filtered.length === 0 ? (
+          <div className="flex w-full justify-center pt-20 text-gray-500 font-medium">
+            등록된 팀이 없습니다.
+          </div>
         ) : (
-          filtered?.map((form) => (
+          filtered.map((form) => (
             <div
               key={form.id}
               className={`flex items-center justify-between h-20 w-200 pl-8 pr-17 bg-white rounded-[12px] shadow
