@@ -1,4 +1,4 @@
-import { apiClient } from "@repo/lib";
+import { apiClient, getCookieValue } from "@repo/lib";
 import type { UpdateFormRequest, FormByIdResponse } from "../model/type";
 import { mockFormByIdMap, DEFAULT_MOCK_FORM } from "../model/mock";
 
@@ -7,13 +7,20 @@ const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 async function fetchWithAuth<T>(endpoint: string): Promise<T> {
   if (!BASE_URL) throw new Error("NEXT_PUBLIC_API_URL is not set");
-  const res = await fetch(`${BASE_URL}${endpoint}`, { credentials: "include" });
+  const token = getCookieValue("access_token");
+  const res = await fetch(`${BASE_URL}${endpoint}`, {
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+  });
   if (!res.ok) throw new Error(`API Error: ${res.status}`);
   return res.json();
 }
 
-// TODO: GET /api/form/{formId} 는 ROLE_STUDENT 전용으로 admin 접근 시 403
-// 백엔드에서 ROLE_ADMIN 권한 추가 또는 별도 admin 엔드포인트 제공 후 아래 mock 제거
+// TODO: GET /api/form/{formId} 는 ROLE_STUDENT 전용일 수 있음
+// 백엔드에서 ROLE_ADMIN 권한 추가 후 아래 mock fallback 제거
 export const getFormById = async (
   formId: number,
 ): Promise<{ data: FormByIdResponse }> => {
