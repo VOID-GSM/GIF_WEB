@@ -1,6 +1,7 @@
 import { ChangeEvent } from "react";
 import { Upload, File, Close } from "@repo/ui";
 import { useDeleteFormUpload } from "../hooks/useDeleteFormUpload";
+import { useDownloadFile } from "../hooks/useDownloadFile";
 
 interface FileFieldProps {
   fieldId: number;
@@ -22,6 +23,7 @@ export default function FileField({
   onChange,
 }: FileFieldProps) {
   const { mutate: deleteUpload, isPending: isDeleting } = useDeleteFormUpload();
+  const { mutate: download, isPending: isDownloading } = useDownloadFile();
 
   const handleDelete = () => {
     if (filePath && submitId) {
@@ -50,7 +52,16 @@ export default function FileField({
     const size = file?.size ?? fileSize ?? 0;
 
     return (
-      <div className="flex items-center justify-between rounded-[10px] border border-gray-80 pl-[24px] pr-[30px] py-[15px]">
+      <div
+        className={`flex items-center justify-between rounded-[10px] border border-gray-80 pl-[24px] pr-[30px] py-[15px] ${
+          filePath ? "cursor-pointer" : ""
+        }`}
+        onClick={() => {
+          if (filePath && !isDownloading) {
+            download({ fileUrl: filePath, fileName });
+          }
+        }}
+      >
         <div className="flex gap-[22px]">
           <File />
           <div className="flex flex-col">
@@ -63,7 +74,11 @@ export default function FileField({
 
         {!readOnly && (
           <Close
-            onClick={isDeleting ? undefined : handleDelete}
+            onClick={(e: React.MouseEvent) => {
+              e.stopPropagation();
+              e.preventDefault();
+              if (!isDeleting) handleDelete();
+            }}
             width={15}
             height={15}
             className="text-gray-40 hover:text-gray-40/60 transition-colors cursor-pointer"

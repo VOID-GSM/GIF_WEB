@@ -93,3 +93,13 @@ export const deleteFormUpload = async (params: DeleteFormUploadParams) => {
     { method: "DELETE" },
   );
 };
+
+export const downloadFile = async (fileUrl: string): Promise<Blob> => {
+  const token = getCookieValue("access_token");
+  const res = await fetch(fileUrl, {
+    credentials: "include",
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+  });
+  if (!res.ok) throw new Error(`Download failed: ${res.status}`);
+  return res.blob();
+};
