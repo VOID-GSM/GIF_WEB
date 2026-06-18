@@ -70,7 +70,7 @@ export default function FormCreateView() {
         deadline,
         fields: fields
           .filter((f) => f.type !== "") // 타입 미선택 필드 제외
-          .map(({ id, ...rest }) => rest as PostFormRequestField),
+          .map(({ ...rest }) => rest as PostFormRequestField),
       },
       {
         onSuccess: (res) => {
@@ -84,10 +84,7 @@ export default function FormCreateView() {
 
   const handleAnnounce = () => {
     const doAnnounce = (formId: number) => {
-      announce(
-        { formId },
-        { onSuccess: () => router.push("/form") },
-      );
+      announce({ formId }, { onSuccess: () => router.push("/form") });
     };
 
     if (savedFormId) {
@@ -99,7 +96,7 @@ export default function FormCreateView() {
           deadline,
           fields: fields
             .filter((f) => f.type !== "")
-            .map(({ id, ...rest }) => rest as PostFormRequestField),
+            .map(({ ...rest }) => rest as PostFormRequestField),
         },
         {
           onSuccess: (res) => {
