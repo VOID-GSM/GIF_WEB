@@ -72,7 +72,7 @@ export default function FormSubmitView({ formId }: Props) {
         const events = calendarAnswers[fId] ?? [];
         return [{
           fieldId: fId,
-          textAnswer: "",
+          textAnswer: null,
           dateAnswer: events.map((e) => ({
             eventName: e.title,
             startDate: e.startDate,
@@ -85,7 +85,7 @@ export default function FormSubmitView({ formId }: Props) {
       return [{
         fieldId: fId,
         textAnswer: textAnswers[fId] ?? "",
-        dateAnswer: [],
+        dateAnswer: null,
       }];
     });
 

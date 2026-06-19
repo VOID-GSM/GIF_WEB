@@ -62,7 +62,7 @@ export const patchFormSubmit = async (body: PatchFormSubmitRequest) => {
   return fetchWithAuth(`/api/form/submit?submitId=${body.submitId}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ answers: body.answers }),
+    body: JSON.stringify(body),
   });
 };
 
