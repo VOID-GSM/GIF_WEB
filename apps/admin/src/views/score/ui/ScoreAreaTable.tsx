@@ -40,7 +40,7 @@ export default function ScoreAreaTable({ isLoading, rows, onSelectScore }: Props
 
       {/* sm 이상: 그리드 테이블 레이아웃 */}
       <div className="hidden sm:block w-full overflow-x-auto">
-        <div className="grid grid-cols-[1fr_180px] gap-4 px-4 py-2.5 bg-orange-50 border-b border-t border-orange-400 min-w-[340px]">
+        <div className="grid grid-cols-[1fr_180px] gap-4 px-4 py-2.5 bg-orange-50 border-b border-t border-orange-400 min-w-[340px] sticky top-0 z-10">
           {TABLE_HEADERS.map((h) => (
             <span key={h} className="font-semibold text-gray-700 text-sm">{h}</span>
           ))}

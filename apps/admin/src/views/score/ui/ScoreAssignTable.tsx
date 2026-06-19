@@ -21,7 +21,7 @@ interface Props {
 const AREAS: ScoreArea[] = ["major", "report", "social"];
 
 const headerCellCx =
-  "px-4 py-2.5 bg-[var(--color-yellow-50)] border-y border-[var(--color-yellow-600)] text-xs font-semibold text-[var(--color-gray-700)]";
+  "px-4 py-2.5 bg-[var(--color-yellow-50)] border-y border-[var(--color-yellow-600)] text-xs font-semibold text-[var(--color-gray-700)] sticky top-0 z-10";
 
 export default function ScoreAssignTable({ isLoading, teams, allowedAreas }: Props) {
   const router = useRouter();

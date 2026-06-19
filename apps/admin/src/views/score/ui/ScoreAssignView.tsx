@@ -71,7 +71,7 @@ export default function ScoreAssignView() {
 
   return (
     <div className="h-[calc(100vh-5rem)] bg-background relative">
-      <div className="absolute top-14 sm:top-16 left-0 right-0 px-4 sm:px-6 z-10">
+      <div className="absolute top-16 sm:top-20 left-0 right-0 px-4 sm:px-6 z-10">
         <div className="max-w-[980px] mx-auto">
           <ScoreTabNav />
         </div>
@@ -85,7 +85,9 @@ export default function ScoreAssignView() {
             scoreFilter={scoreFilter}
             onFilterChange={setScoreFilter}
           />
-          <ScoreAssignTable isLoading={isLoading} teams={teams} allowedAreas={allowedAreas} />
+          <div className="overflow-y-auto max-h-[440px]">
+            <ScoreAssignTable isLoading={isLoading} teams={teams} allowedAreas={allowedAreas} />
+          </div>
         </div>
       </div>
     </div>

@@ -84,7 +84,7 @@ export default function ScoreView() {
 
   return (
     <div className="h-[calc(100vh-5rem)] bg-background relative">
-      <div className="absolute top-14 sm:top-16 left-0 right-0 px-4 sm:px-6 z-10">
+      <div className="absolute top-16 sm:top-20 left-0 right-0 px-4 sm:px-6 z-10">
         <nav className="flex gap-6 max-w-[980px] mx-auto">
           <Link
             href="/score"
@@ -156,28 +156,30 @@ export default function ScoreView() {
                   점수 수합
                 </div>
               </div>
-              {scoreRows.length === 0 ? (
-                <p className="py-10 text-center text-gray-400 text-sm">
-                  해당 학년에 등록된 팀이 없습니다.
-                </p>
-              ) : scoreRows.map(({ rank, teamName, totalScore }) => (
-                <div
-                  key={rank}
-                  className="flex justify-between items-center py-3 sm:py-[14px] border-t border-gray-100"
-                >
-                  <div className="flex items-center gap-1.5">
-                    <div className="w-12 sm:w-16 md:w-20 text-center font-medium text-sm sm:text-base">
-                      {rank}
+              <div className="overflow-y-auto max-h-[440px]">
+                {scoreRows.length === 0 ? (
+                  <p className="py-10 text-center text-gray-400 text-sm">
+                    해당 학년에 등록된 팀이 없습니다.
+                  </p>
+                ) : scoreRows.map(({ rank, teamName, totalScore }) => (
+                  <div
+                    key={rank}
+                    className="flex justify-between items-center py-3 sm:py-[14px] border-t border-gray-100"
+                  >
+                    <div className="flex items-center gap-1.5">
+                      <div className="w-12 sm:w-16 md:w-20 text-center font-medium text-sm sm:text-base">
+                        {rank}
+                      </div>
+                      <div className="flex-1 text-center font-medium text-sm sm:text-base">
+                        {teamName}
+                      </div>
                     </div>
-                    <div className="flex-1 text-center font-medium text-sm sm:text-base">
-                      {teamName}
+                    <div className="w-24 sm:w-32 md:w-40 text-center font-medium text-sm sm:text-base">
+                      {totalScore}
                     </div>
                   </div>
-                  <div className="w-24 sm:w-32 md:w-40 text-center font-medium text-sm sm:text-base">
-                    {totalScore}
-                  </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           )}
         </div>

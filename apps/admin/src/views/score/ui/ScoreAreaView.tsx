@@ -40,17 +40,19 @@ export default function ScoreAreaView({ area, projectId }: Props) {
 
   return (
     <div className="h-[calc(100vh-5rem)] bg-background relative">
-      <div className="absolute top-14 sm:top-16 left-0 right-0 px-4 sm:px-6 z-10">
+      <div className="absolute top-16 sm:top-20 left-0 right-0 px-4 sm:px-6 z-10">
         <ScoreAreaHeader onBack={() => router.back()} />
       </div>
 
       <div className="h-full flex items-center justify-center px-4 sm:px-6">
       <div className="w-full max-w-[980px] mx-auto bg-white rounded-2xl border border-gray-200 shadow-new overflow-hidden p-4 sm:p-7 md:p-10">
-        <ScoreAreaTable
-          isLoading={isQueryLoading}
-          rows={rows}
-          onSelectScore={selectScore}
-        />
+        <div className="overflow-y-auto max-h-[440px]">
+          <ScoreAreaTable
+            isLoading={isQueryLoading}
+            rows={rows}
+            onSelectScore={selectScore}
+          />
+        </div>
 
         {!isQueryLoading && (
           <div className="flex justify-end mt-6">
