@@ -39,33 +39,29 @@ export default function ScoreAreaView({ area, projectId }: Props) {
   }
 
   return (
-    <div className="h-[calc(100vh-5rem)] bg-background relative">
-      <div className="absolute top-16 sm:top-20 left-0 right-0 px-4 sm:px-6 z-10">
+    <div className="h-[calc(100vh-5rem)] bg-background flex flex-col items-center justify-center px-4 sm:px-6">
+      <div className="w-full max-w-[980px] flex flex-col gap-5">
         <ScoreAreaHeader onBack={() => router.back()} />
-      </div>
-
-      <div className="h-full flex items-center justify-center px-4 sm:px-6">
-      <div className="w-full max-w-[980px] mx-auto bg-white rounded-2xl border border-gray-200 shadow-new overflow-hidden p-4 sm:p-7 md:p-10">
-        <div className="overflow-y-auto max-h-[440px]">
-          <ScoreAreaTable
-            isLoading={isQueryLoading}
-            rows={rows}
-            onSelectScore={selectScore}
-          />
-        </div>
-
-        {!isQueryLoading && (
-          <div className="flex justify-end mt-6">
-            <button
-              onClick={handleSaveClick}
-              disabled={!allScored || isMutating}
-              className="px-6 py-2.5 rounded-xl text-sm font-semibold bg-yellow-600 hover:bg-yellow-700 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed transition-colors cursor-pointer"
-            >
-              {isMutating ? "저장 중..." : isAreaScored ? "점수 수정" : "점수 부여"}
-            </button>
+        <div className="bg-white rounded-2xl border border-gray-200 shadow-new overflow-hidden p-4 sm:p-7 md:p-10 flex flex-col">
+          <div className="flex flex-col min-h-[400px]">
+            <ScoreAreaTable
+              isLoading={isQueryLoading}
+              rows={rows}
+              onSelectScore={selectScore}
+            />
           </div>
-        )}
-      </div>
+          {!isQueryLoading && (
+            <div className="flex justify-end mt-6">
+              <button
+                onClick={handleSaveClick}
+                disabled={!allScored || isMutating}
+                className="px-6 py-2.5 rounded-xl text-sm font-semibold bg-yellow-600 hover:bg-yellow-700 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed transition-colors cursor-pointer"
+              >
+                {isMutating ? "저장 중..." : isAreaScored ? "점수 수정" : "점수 부여"}
+              </button>
+            </div>
+          )}
+        </div>
       </div>
 
       {showConfirm && (
