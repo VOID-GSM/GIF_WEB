@@ -70,25 +70,26 @@ export default function FormSubmitView({ formId }: Props) {
 
       if (field.type === "DATE" || field.type === "CALENDAR") {
         const events = calendarAnswers[fId] ?? [];
+        const mapped = events.map((e) => ({
+          eventName: e.title,
+          startDate: e.startDate,
+          endDate: e.endDate,
+          color: e.color,
+        }));
         return [{
           fieldId: fId,
-          textAnswer: null,
-          dateAnswer: events.map((e) => ({
-            eventName: e.title,
-            startDate: e.startDate,
-            endDate: e.endDate,
-            color: e.color,
-          })),
+          textAnswer: "",
+          ...(mapped.length > 0 ? { dateAnswer: mapped } : {}),
         }];
       }
 
       return [{
         fieldId: fId,
         textAnswer: textAnswers[fId] ?? "",
-        dateAnswer: null,
       }];
     });
 
+    console.log("[handleSubmit] request body:", JSON.stringify({ formId, projectId, answers }, null, 2));
     try {
       const submitId = await submitForm({ formId, projectId, answers });
 

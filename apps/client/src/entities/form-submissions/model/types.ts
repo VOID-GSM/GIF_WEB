@@ -26,8 +26,8 @@ export interface CalendarEventAnswer {
 // POST /api/form/submit
 export interface FormAnswerItem {
   fieldId: number;
-  textAnswer: string | null;
-  dateAnswer: CalendarEventAnswer[] | null;
+  textAnswer?: string;
+  dateAnswer?: CalendarEventAnswer[];
 }
 
 export interface PostFormSubmitRequest {
@@ -48,8 +48,8 @@ export interface DeleteFormUploadParams {
 // PATCH /api/form/submit
 export interface PatchFormSubmitAnswerItem {
   fieldId: number;
-  textAnswer: string | null;
-  dateAnswer: CalendarEventAnswer[] | null;
+  textAnswer?: string;
+  dateAnswer?: CalendarEventAnswer[];
 }
 
 export interface PatchFormSubmitRequest {

@@ -154,22 +154,23 @@ export default function FormMySubmitView({ formId }: Props) {
       if (type === "FILE") return [];
 
       if (type === "DATE" || type === "CALENDAR") {
+        const calEvents = getCalendarValue(fId);
+        const mapped = calEvents.map((e) => ({
+          eventName: e.title,
+          startDate: e.startDate,
+          endDate: e.endDate,
+          color: e.color,
+        }));
         return [{
           fieldId: fId,
-          textAnswer: null,
-          dateAnswer: getCalendarValue(fId).map((e) => ({
-            eventName: e.title,
-            startDate: e.startDate,
-            endDate: e.endDate,
-            color: e.color,
-          })),
+          textAnswer: "",
+          ...(mapped.length > 0 ? { dateAnswer: mapped } : {}),
         }];
       }
 
       return [{
         fieldId: fId,
         textAnswer: getTextValue(fId),
-        dateAnswer: null,
       }];
     });
 
