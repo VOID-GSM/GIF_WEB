@@ -1,26 +1,17 @@
 @import "tailwindcss";
-
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+@import "pretendard/dist/web/static/pretendard.css";
+@import "@repo/ui/tokens.css";
+@source "../../../../packages/ui/src";
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+}
+
+.datagsm-logo {
+  font-family: "Press Start 2P", cursive;
+  font-size: 16px;
+  line-height: 14px;
+  display: inline-block;
+  transform: scaleY(-1);
+  flex-shrink: 0;
 }

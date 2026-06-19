@@ -1,0 +1,38 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git add*)",
+      "Bash(git status*)",
+      "Bash(git diff*)",
+      "Bash(git log*)",
+      "Bash(git commit*)",
+      "Bash(git push*)",
+      "Bash(git checkout*)",
+      "Bash(git branch*)",
+      "Bash(git merge*)",
+      "Bash(git pull*)",
+      "Bash(git stash*)",
+      "Bash(git show*)",
+      "Bash(git fetch*)",
+      "Bash(gh pr*)",
+      "Bash(gh api*)",
+      "Bash(gh repo*)",
+      "Bash(npm run lint*)",
+      "Bash(npm run build*)",
+      "Bash(npm run type-check*)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node .claude/hooks/pre-commit-check.js"
+          }
+        ]
+      }
+    ]
+  }
+}
