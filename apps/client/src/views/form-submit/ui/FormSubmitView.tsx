@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 import {
   CalendarField,
   FileField,
@@ -12,6 +13,7 @@ import { usePostFormUpload } from "@/entities/form-submissions/hooks/usePostForm
 import { useGetFormDetail } from "@/entities/form-submissions/hooks/useGetFormDetail";
 import type { FormAnswerItem } from "@/entities/form-submissions/model/types";
 import { useGetMyInfo } from "@/entities/mypage/index";
+import { FORM_QUERY_KEY } from "@/entities/form";
 import { toast } from "sonner";
 
 type Props = { formId: number };
@@ -21,6 +23,7 @@ export default function FormSubmitView({ formId }: Props) {
   const projectId = myInfo?.projectId;
 
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   const { data: formDetail, isLoading: detailLoading } = useGetFormDetail(formId);
   const { mutateAsync: submitForm, isPending } = usePostFormSubmit();
@@ -112,6 +115,7 @@ export default function FormSubmitView({ formId }: Props) {
         }
       }
 
+      await queryClient.invalidateQueries({ queryKey: FORM_QUERY_KEY });
       toast.success("답변이 제출되었습니다.");
       router.push("/form");
     } catch {
