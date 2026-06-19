@@ -127,10 +127,11 @@ export default function FormMySubmitView({ formId }: Props) {
     const errors: Record<number, string> = {};
     formDetail.fields.forEach((field) => {
       const fId = field.fieldId ?? field.id ?? 0;
-      if (field.type === "TEXT" && !getTextValue(fId).trim()) {
+      const type = field.type?.toUpperCase();
+      if (type === "TEXT" && !getTextValue(fId).trim()) {
         errors[fId] = "필수 항목입니다.";
       }
-      if (field.type === "FILE") {
+      if (type === "FILE") {
         const hasNewFile = fileAnswers[fId] instanceof File;
         const isDeleted = fileAnswers[fId] === null;
         const hasOriginalFile = !!(answerMap[fId]?.filePath);
@@ -146,15 +147,16 @@ export default function FormMySubmitView({ formId }: Props) {
       return;
     }
 
-    // Build answers from formDetail.fields (not mySubmit.answers)
+    // Build answers from formDetail.fields
     const answers = (formDetail.fields ?? []).flatMap((field) => {
       const fId = field.fieldId ?? field.id ?? 0;
-      if (field.type === "FILE") return [];
+      const type = field.type?.toUpperCase();
+      if (type === "FILE") return [];
 
-      if (field.type === "DATE" || field.type === "CALENDAR") {
+      if (type === "DATE" || type === "CALENDAR") {
         return [{
           fieldId: fId,
-          textAnswer: "",
+          textAnswer: null,
           dateAnswer: getCalendarValue(fId).map((e) => ({
             eventName: e.title,
             startDate: e.startDate,
@@ -167,35 +169,37 @@ export default function FormMySubmitView({ formId }: Props) {
       return [{
         fieldId: fId,
         textAnswer: getTextValue(fId),
-        dateAnswer: [],
+        dateAnswer: null,
       }];
     });
 
     try {
       await patchSubmit({ submitId: mySubmit.submitId, answers });
-
-      const fileEntries = Object.entries(fileAnswers).filter(
-        ([, f]) => f instanceof File,
-      ) as [string, File][];
-
-      if (fileEntries.length > 0) {
-        await Promise.all(
-          fileEntries.map(([fieldIdStr, file]) => {
-            const fd = new FormData();
-            fd.append("file", file);
-            return uploadFile({
-              formData: fd,
-              fieldId: Number(fieldIdStr),
-              submitId: mySubmit.submitId,
-            });
-          }),
-        );
-      }
-
-      router.push("/form");
     } catch {
       toast.error("수정에 실패했습니다. 다시 시도해주세요.");
+      return;
     }
+
+    const fileEntries = Object.entries(fileAnswers).filter(
+      ([, f]) => f instanceof File,
+    ) as [string, File][];
+
+    if (fileEntries.length > 0) {
+      await Promise.all(
+        fileEntries.map(([fieldIdStr, file]) => {
+          const fd = new FormData();
+          fd.append("file", file);
+          return uploadFile({
+            formData: fd,
+            fieldId: Number(fieldIdStr),
+            submitId: mySubmit.submitId,
+          }).catch(() => {});
+        }),
+      );
+    }
+
+    toast.success("답변이 수정되었습니다.");
+    router.push("/form");
   };
 
   return (
