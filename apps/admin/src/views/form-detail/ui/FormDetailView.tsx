@@ -1,11 +1,15 @@
 "use client";
-import { useGetFormById } from "@/entities/form-edit";
-import { useAdminSubmitDetail } from "@/entities/from-management/api/query";
+import {
+  useAdminFormDetail,
+  useAdminSubmitDetail,
+} from "@/entities/from-management/api/query";
 import FileAnswer from "@/entities/from-management/ui/Fileanswer";
 import TextAnswer from "@/entities/from-management/ui/Textanswer";
 import CalendarAnswer from "@/entities/from-management/ui/Calendaranswer";
-import type { SubmitAnswer } from "@/entities/from-management/model/type";
-import type { FormByIdField } from "@/entities/form-edit";
+import type {
+  FormField,
+  SubmitAnswer,
+} from "@/entities/from-management/model/type";
 
 type Props = { formId: number; submitId: number };
 
@@ -13,7 +17,7 @@ function AnswerField({
   field,
   answers,
 }: {
-  field: FormByIdField;
+  field: FormField;
   answers: SubmitAnswer[];
 }) {
   const answer = answers[0];
@@ -38,7 +42,8 @@ export default function FormDetailView({ formId, submitId }: Props) {
 
   const submission = submissions?.find((s) => s.submitId === submitId);
 
-  const { data: formDetail, isLoading: formLoading } = useGetFormById(formId);
+  const { data: formDetail, isLoading: formLoading } =
+    useAdminFormDetail(formId);
 
   return (
     <div className="min-h-screen flex flex-col items-center pt-20 bg-background">
