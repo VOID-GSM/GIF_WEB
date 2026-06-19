@@ -1,34 +1,76 @@
+"use client";
+import { useState } from "react";
 import { SubmitAnswer } from "@/entities/from-management/model/type";
 import { File } from "@repo/ui";
+
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+
+// 상대 경로면 API 주소를 붙여 절대 URL로 만든다
+function resolveFileUrl(filePath: string) {
+  if (/^https?:\/\//.test(filePath)) return filePath;
+  return `${BASE_URL ?? ""}${filePath.startsWith("/") ? "" : "/"}${filePath}`;
+}
 
 export default function FileAnswer({
   answer,
 }: {
   answer: SubmitAnswer | undefined;
 }) {
-  const fileName = answer?.filePath?.split("/").pop() ?? "";
+  const [downloading, setDownloading] = useState(false);
 
-  if (!answer?.filePath) {
+  const filePath = answer?.filePath;
+  if (!filePath) {
     return <span className="text-gray-400">파일 없음</span>;
   }
 
+  const fileName = filePath.split("/").pop() || "file";
+  const fileUrl = resolveFileUrl(filePath);
+
+  const handleDownload = async () => {
+    if (downloading) return;
+    setDownloading(true);
+    try {
+      // a[download]는 교차 출처에서 무시되므로 blob으로 받아 강제 저장
+      const res = await fetch(fileUrl);
+      if (!res.ok) throw new Error(`다운로드 실패: ${res.status}`);
+
+      const blob = await res.blob();
+      const objectUrl = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = objectUrl;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(objectUrl);
+    } catch {
+      // blob 다운로드 실패 시(CORS 등) 새 탭으로 열기
+      window.open(fileUrl, "_blank", "noopener,noreferrer");
+    } finally {
+      setDownloading(false);
+    }
+  };
+
   return (
-    <a
-      href={answer.filePath}
-      download
-      className="flex items-center justify-between rounded-[10px] border border-gray-80 pl-[24px] pr-[30px] py-[15px]"
+    <button
+      type="button"
+      onClick={handleDownload}
+      disabled={downloading}
+      className="flex w-full items-center justify-between rounded-[10px] border border-gray-80 pl-[24px] pr-[30px] py-[15px] text-left cursor-pointer transition-colors hover:bg-gray-50 disabled:cursor-default disabled:opacity-60"
     >
       <div className="flex gap-[22px]">
         <File />
         <div className="flex flex-col">
           <span className="text-[14px] font-semibold">{fileName}</span>
           <span className="text-[11px] text-gray-400">
-            {answer.fileSize
-              ? `${(answer.fileSize / 1024 / 1024).toFixed(1)}MB`
-              : ""}
+            {downloading
+              ? "다운로드 중..."
+              : answer.fileSize
+                ? `${(answer.fileSize / 1024 / 1024).toFixed(1)}MB`
+                : ""}
           </span>
         </div>
       </div>
-    </a>
+    </button>
   );
 }
