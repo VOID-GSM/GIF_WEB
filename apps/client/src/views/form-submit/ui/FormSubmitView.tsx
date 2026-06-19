@@ -112,6 +112,7 @@ export default function FormSubmitView({ formId }: Props) {
         }
       }
 
+      toast.success("답변이 제출되었습니다.");
       router.push("/form");
     } catch {
       toast.error("제출에 실패했습니다. 다시 시도해주세요.");
