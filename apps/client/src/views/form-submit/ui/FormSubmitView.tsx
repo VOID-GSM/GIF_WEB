@@ -89,7 +89,6 @@ export default function FormSubmitView({ formId }: Props) {
       }];
     });
 
-    console.log("[handleSubmit] request body:", JSON.stringify({ formId, projectId, answers }, null, 2));
     try {
       const submitId = await submitForm({ formId, projectId, answers });
 
