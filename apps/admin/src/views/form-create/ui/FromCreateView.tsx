@@ -83,6 +83,21 @@ export default function FormCreateView() {
   };
 
   const handleAnnounce = () => {
+    const isEmpty = (value: string) => value.trim() === "";
+
+    const hasEmptyValue =
+      isEmpty(formTitle) ||
+      isEmpty(deadline) ||
+      fields.some(
+        (f) =>
+          isEmpty(f.title) || isEmpty(f.description) || f.type === "",
+      );
+
+    if (hasEmptyValue) {
+      toast.error("입력하지 않은 값이 있어 공지할 수 없습니다.");
+      return;
+    }
+
     const doAnnounce = (formId: number) => {
       announce({ formId }, { onSuccess: () => router.push("/form") });
     };
