@@ -39,9 +39,12 @@ export default function ScoreAreaView({ area, projectId }: Props) {
   }
 
   return (
-    <div className="min-h-[calc(100vh-5rem)] bg-background py-6 sm:py-10 px-4 sm:px-6 flex flex-col items-center gap-4 sm:gap-6">
-      <ScoreAreaHeader onBack={() => router.back()} />
+    <div className="h-[calc(100vh-5rem)] bg-background relative">
+      <div className="absolute top-14 sm:top-16 left-0 right-0 px-4 sm:px-6 z-10">
+        <ScoreAreaHeader onBack={() => router.back()} />
+      </div>
 
+      <div className="h-full flex items-center justify-center px-4 sm:px-6">
       <div className="w-full max-w-[980px] mx-auto bg-white rounded-2xl border border-gray-200 shadow-new overflow-hidden p-4 sm:p-7 md:p-10">
         <ScoreAreaTable
           isLoading={isQueryLoading}
@@ -60,6 +63,7 @@ export default function ScoreAreaView({ area, projectId }: Props) {
             </button>
           </div>
         )}
+      </div>
       </div>
 
       {showConfirm && (
