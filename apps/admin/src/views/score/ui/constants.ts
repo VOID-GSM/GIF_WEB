@@ -6,7 +6,6 @@ export interface CriterionRow {
   key: string;
   label: string;
   selectedScore: ScoreValue | null;
-  isComplete: boolean;
 }
 
 export const AREA_LABELS: Record<ScoreArea, string> = {
