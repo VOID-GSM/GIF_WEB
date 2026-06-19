@@ -1,16 +1,35 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useAdminForms } from "@/entities/from-management/api/query";
+import { useGetFilteredProjects } from "@/entities/project";
+import type { Grade } from "@/entities/project";
+import { useAdminSubmitDetail } from "@/entities/from-management/api/query";
+import { useGetFormById } from "@/entities/form-edit";
 
 type Props = { formId: number };
 
 export default function FormSubmissionsView({ formId }: Props) {
-  const [selectedGrade, setSelectedGrade] = useState<1 | 2>(1);
-  const { data, isLoading } = useAdminForms(selectedGrade);
+  const [selectedGrade, setSelectedGrade] = useState<Grade>(1);
   const router = useRouter();
 
-  const filtered = data?.filter((form) => form.targetGrade === selectedGrade);
+  const { data: projects, isLoading: projectsLoading } =
+    useGetFilteredProjects(selectedGrade);
+  const { data: submissions, isLoading: submissionsLoading } =
+    useAdminSubmitDetail(formId);
+  const { data: form } = useGetFormById(formId);
+
+  const isLoading = projectsLoading || submissionsLoading;
+
+  // 학년별 팀 목록에 양식 제출 내역을 합쳐 팀별 제출 여부를 만든다
+  const rows = (projects ?? []).map((project) => {
+    const submission = submissions?.find((s) => s.projectId === project.id);
+    return {
+      projectId: project.id,
+      teamName: project.teamName,
+      submitId: submission?.submitId ?? null,
+      submitted: !!submission,
+    };
+  });
 
   return (
     <div className="min-h-screen flex flex-col pt-20 bg-background">
@@ -43,36 +62,36 @@ export default function FormSubmissionsView({ formId }: Props) {
           <div className="flex w-full justify-center pt-20 text-gray-500 font-medium">
             로딩중...
           </div>
-        ) : !filtered || filtered.length === 0 ? (
+        ) : rows.length === 0 ? (
           <div className="flex w-full justify-center pt-20 text-gray-500 font-medium">
             등록된 팀이 없습니다.
           </div>
         ) : (
-          filtered.map((form) => (
+          rows.map((row) => (
             <div
-              key={form.id}
+              key={row.projectId}
               className={`flex items-center justify-between h-20 w-200 pl-8 pr-17 bg-white rounded-[12px] shadow
-              ${form.submitted ? "cursor-pointer" : "cursor-not-allowed"}`}
+              ${row.submitted ? "cursor-pointer" : "cursor-not-allowed"}`}
               onClick={() => {
-                if (!form.submitted) return;
-                router.push(`/form/submissions/${formId}/${form.id}`);
+                if (!row.submitted || row.submitId == null) return;
+                router.push(`/form/submissions/${formId}/${row.submitId}`);
               }}
             >
               <div className="flex gap-8 text-5 font-medium">
-                <span>{form.teamName}</span>
-                <span>{form.title}</span>
+                <span>{row.teamName}</span>
+                <span>{form?.title}</span>
               </div>
 
               <div className="flex items-center gap-16 text-5 font-medium">
-                <span>{form.deadline}</span>
+                <span>{form?.deadline}</span>
                 <span
                   className={`flex items-center justify-center w-20 py-[5px] border rounded-[12px] text-4 ${
-                    form.submitted
+                    row.submitted
                       ? "border-yellow-600 bg-yellow-50"
                       : "border-gray-200 bg-gray-100"
                   }`}
                 >
-                  {form.submitted ? "제출" : "미제출"}
+                  {row.submitted ? "제출" : "미제출"}
                 </span>
               </div>
             </div>
