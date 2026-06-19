@@ -29,7 +29,12 @@ async function fetchWithAuth<T>(
   });
   if (!res.ok) throw new Error(`API Error: ${res.status}`);
   const text = await res.text();
-  return text ? JSON.parse(text) : ({} as T);
+  if (!text) return {} as T;
+  try {
+    return JSON.parse(text) as T;
+  } catch {
+    return text as unknown as T;
+  }
 }
 
 export const getFormDetail = async (
