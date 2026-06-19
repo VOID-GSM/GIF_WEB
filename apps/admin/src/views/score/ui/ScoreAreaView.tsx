@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import ScoreAreaHeader from "./ScoreAreaHeader";
-import ScoreAreaStats from "./ScoreAreaStats";
 import ScoreAreaTable from "./ScoreAreaTable";
 import { useScoreArea } from "./useScoreArea";
 
@@ -18,8 +17,6 @@ export default function ScoreAreaView({ area, projectId }: Props) {
 
   const {
     rows,
-    completed,
-    pending,
     allScored,
     isAreaScored,
     isQueryLoading,
@@ -44,8 +41,6 @@ export default function ScoreAreaView({ area, projectId }: Props) {
   return (
     <div className="min-h-[calc(100vh-5rem)] bg-background py-6 sm:py-10 px-4 sm:px-6 flex flex-col items-center gap-4 sm:gap-6">
       <ScoreAreaHeader onBack={() => router.back()} />
-
-      <ScoreAreaStats total={rows.length} completed={completed} pending={pending} />
 
       <div className="w-full max-w-[980px] mx-auto bg-white rounded-2xl border border-gray-200 shadow-new overflow-hidden p-4 sm:p-7 md:p-10">
         <ScoreAreaTable
