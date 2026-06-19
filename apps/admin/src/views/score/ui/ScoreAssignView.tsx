@@ -2,11 +2,11 @@
 
 import { useState, useEffect } from "react";
 import { useQueries } from "@tanstack/react-query";
-import type { Grade } from "@repo/ui";
 import ScoreTabNav from "./ScoreTabNav";
 import ScoreAssignFilterBar from "./ScoreAssignFilterBar";
 import ScoreAssignTable from "./ScoreAssignTable";
 import { useGetFilteredProjects } from "@/entities/project";
+import type { Grade } from "@/entities/project";
 import { getMajorScore } from "@/entities/score";
 import { useGetMyInfo } from "@/entities/mypage";
 import { toNullOn404 } from "@/shared/utils";
@@ -33,7 +33,7 @@ export default function ScoreAssignView() {
   const allowedAreas: ScoreArea[] =
     ROLE_ALLOWED_AREAS[myInfo?.adminRole ?? ""] ?? (["major", "report", "social"] as ScoreArea[]);
 
-  const { data: projects = [], isLoading } = useGetFilteredProjects(grade);
+  const { data: projects = [], isLoading: isProjectsLoading } = useGetFilteredProjects(grade);
 
   const scoreQueries = useQueries({
     queries: projects.map((project) => ({
@@ -57,28 +57,27 @@ export default function ScoreAssignView() {
     })),
   });
 
-  const teams = projects
-    .map((project, i) => ({
-      ...project,
-      isComplete:  scoreQueries[i]?.data?.isComplete  ?? false,
-      scoredAreas: scoreQueries[i]?.data?.scoredAreas ?? [] as ScoreArea[],
-    }))
-    .sort((a, b) => a.teamName.localeCompare(b.teamName))
-    .filter((project) => {
-      if (scoreFilter === "all") return true;
-      return scoreFilter === "complete" ? project.isComplete : !project.isComplete;
-    });
+  const isScoreLoading = scoreQueries.some((q) => q.isPending);
+  const isLoading = isProjectsLoading || isScoreLoading;
+
+  const teamsWithScores = projects.map((project, i) => ({
+    id: project.id,
+    teamName: project.teamName,
+    name: project.name,
+    scoredAreas: scoreQueries[i]?.data?.scoredAreas ?? [] as ScoreArea[],
+    isComplete: scoreQueries[i]?.data?.isComplete ?? false,
+  }));
+
+  const teams = teamsWithScores.filter((t) => {
+    if (scoreFilter === "all") return true;
+    return scoreFilter === "complete" ? t.isComplete : !t.isComplete;
+  });
 
   return (
-    <div className="h-[calc(100vh-5rem)] bg-background relative">
-      <div className="absolute top-16 sm:top-20 left-0 right-0 px-4 sm:px-6 z-10">
-        <div className="max-w-[980px] mx-auto">
-          <ScoreTabNav />
-        </div>
-      </div>
-
-      <div className="h-full flex items-center justify-center px-4 sm:px-6">
-        <div className="w-full max-w-[980px] mx-auto bg-white rounded-2xl border border-gray-200 shadow-new overflow-hidden p-4 sm:p-7 md:p-10">
+    <div className="h-[calc(100vh-5rem)] bg-background flex flex-col items-center justify-center px-4 sm:px-6">
+      <div className="w-full max-w-[980px] flex flex-col gap-5">
+        <ScoreTabNav />
+        <div className="bg-white rounded-2xl border border-gray-200 shadow-new overflow-hidden p-4 sm:p-7 md:p-10">
           <ScoreAssignFilterBar
             grade={grade}
             onGradeChange={handleGradeChange}

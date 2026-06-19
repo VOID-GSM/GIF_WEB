@@ -67,25 +67,22 @@ export default function ScoreView() {
   const isLoading = isProjectsLoading || isScoreLoading;
   const isError = isProjectsError || isScoreError;
 
-  const scoreRows: { rank: number; teamName: string; totalScore: number }[] =
-    !projects || isScoreLoading
-      ? []
-      : projects
-          .map((project, i) => ({
-            teamName: project.teamName,
-            totalScore: scoreQueries[i]?.data ?? 0,
-          }))
-          .sort((a, b) => b.totalScore - a.totalScore)
-          .map((row, i) => ({ ...row, rank: i + 1 }));
+  const scoreRows = (projects ?? [])
+    .map((project, i) => ({
+      teamName: project.teamName,
+      totalScore: scoreQueries[i]?.data ?? 0,
+    }))
+    .sort((a, b) => b.totalScore - a.totalScore)
+    .map((row, i) => ({ ...row, rank: i + 1 }));
 
   const { data: myInfo } = useGetMyInfo();
   const canNotice = myInfo?.adminRole === "MASTER";
   const selectedLabel = GRADE_OPTIONS.find((o) => o.value === grade)?.label ?? "1학년";
 
   return (
-    <div className="h-[calc(100vh-5rem)] bg-background relative">
-      <div className="absolute top-16 sm:top-20 left-0 right-0 px-4 sm:px-6 z-10">
-        <nav className="flex gap-6 max-w-[980px] mx-auto">
+    <div className="h-[calc(100vh-5rem)] bg-background flex flex-col items-center justify-center px-4 sm:px-6">
+      <div className="w-full max-w-[980px] flex flex-col gap-5">
+        <nav className="flex gap-6">
           <Link
             href="/score"
             className="text-xl sm:text-2xl font-bold pb-1 text-gray-400 whitespace-nowrap"
@@ -96,10 +93,7 @@ export default function ScoreView() {
             점수 합계
           </span>
         </nav>
-      </div>
-
-      <div className="h-full flex items-center justify-center px-4 sm:px-6">
-        <div className="w-full max-w-2xl mx-auto bg-white rounded-2xl border border-gray-200 shadow-new overflow-hidden p-4 sm:p-7 md:p-10">
+        <div className="max-w-2xl mx-auto w-full bg-white rounded-2xl border border-gray-200 shadow-new overflow-hidden p-4 sm:p-7 md:p-10">
           <div className="flex items-center justify-between mb-4 sm:mb-5">
             <div className="relative" ref={dropdownRef}>
               <button
@@ -142,8 +136,8 @@ export default function ScoreView() {
           ) : isError ? (
             <p className="py-10 text-center text-red-400">점수를 불러오는 데 실패했습니다.</p>
           ) : (
-            <div className="flex flex-col">
-              <div className="flex justify-between bg-orange-50 py-3 sm:py-4">
+            <div className="overflow-y-auto max-h-[440px]">
+              <div className="flex justify-between bg-orange-50 py-3 sm:py-4 sticky top-0 z-10">
                 <div className="flex gap-1.5">
                   <div className="w-12 sm:w-16 md:w-20 text-center font-medium text-sm sm:text-base">
                     등수
@@ -156,30 +150,28 @@ export default function ScoreView() {
                   점수 수합
                 </div>
               </div>
-              <div className="overflow-y-auto max-h-[440px]">
-                {scoreRows.length === 0 ? (
-                  <p className="py-10 text-center text-gray-400 text-sm">
-                    해당 학년에 등록된 팀이 없습니다.
-                  </p>
-                ) : scoreRows.map(({ rank, teamName, totalScore }) => (
-                  <div
-                    key={rank}
-                    className="flex justify-between items-center py-3 sm:py-[14px] border-t border-gray-100"
-                  >
-                    <div className="flex items-center gap-1.5">
-                      <div className="w-12 sm:w-16 md:w-20 text-center font-medium text-sm sm:text-base">
-                        {rank}
-                      </div>
-                      <div className="flex-1 text-center font-medium text-sm sm:text-base">
-                        {teamName}
-                      </div>
+              {scoreRows.length === 0 ? (
+                <p className="py-10 text-center text-gray-400 text-sm">
+                  해당 학년에 등록된 팀이 없습니다.
+                </p>
+              ) : scoreRows.map(({ rank, teamName, totalScore }) => (
+                <div
+                  key={rank}
+                  className="flex justify-between items-center py-3 sm:py-[14px] border-t border-gray-100"
+                >
+                  <div className="flex items-center gap-1.5">
+                    <div className="w-12 sm:w-16 md:w-20 text-center font-medium text-sm sm:text-base">
+                      {rank}
                     </div>
-                    <div className="w-24 sm:w-32 md:w-40 text-center font-medium text-sm sm:text-base">
-                      {totalScore}
+                    <div className="flex-1 text-center font-medium text-sm sm:text-base">
+                      {teamName}
                     </div>
                   </div>
-                ))}
-              </div>
+                  <div className="w-24 sm:w-32 md:w-40 text-center font-medium text-sm sm:text-base">
+                    {totalScore}
+                  </div>
+                </div>
+              ))}
             </div>
           )}
         </div>
