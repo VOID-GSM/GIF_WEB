@@ -1,0 +1,18 @@
+services:
+  client:
+    build:
+      context: .
+      dockerfile: apps/client/Dockerfile
+    image: gif-client:latest
+    container_name: gif-client
+    ports:
+      - "3000:3000"
+
+  admin:
+    build:
+      context: .
+      dockerfile: apps/admin/Dockerfile
+    image: gif-admin:latest
+    container_name: gif-admin
+    ports:
+      - "3001:3001"
