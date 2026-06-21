@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import ScoreAreaHeader from "./ScoreAreaHeader";
-import ScoreAreaStats from "./ScoreAreaStats";
 import ScoreAreaTable from "./ScoreAreaTable";
 import { useScoreArea } from "./useScoreArea";
 
@@ -18,8 +17,6 @@ export default function ScoreAreaView({ area, projectId }: Props) {
 
   const {
     rows,
-    completed,
-    pending,
     allScored,
     isAreaScored,
     isQueryLoading,
@@ -42,29 +39,29 @@ export default function ScoreAreaView({ area, projectId }: Props) {
   }
 
   return (
-    <div className="min-h-[calc(100vh-5rem)] bg-background py-6 sm:py-10 px-4 sm:px-6 flex flex-col items-center gap-4 sm:gap-6">
-      <ScoreAreaHeader onBack={() => router.back()} />
-
-      <ScoreAreaStats total={rows.length} completed={completed} pending={pending} />
-
-      <div className="w-full max-w-[980px] mx-auto bg-white rounded-2xl border border-gray-200 shadow-new overflow-hidden p-4 sm:p-7 md:p-10">
-        <ScoreAreaTable
-          isLoading={isQueryLoading}
-          rows={rows}
-          onSelectScore={selectScore}
-        />
-
-        {!isQueryLoading && (
-          <div className="flex justify-end mt-6">
-            <button
-              onClick={handleSaveClick}
-              disabled={!allScored || isMutating}
-              className="px-6 py-2.5 rounded-xl text-sm font-semibold bg-yellow-600 hover:bg-yellow-700 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed transition-colors cursor-pointer"
-            >
-              {isMutating ? "저장 중..." : isAreaScored ? "점수 수정" : "점수 부여"}
-            </button>
+    <div className="h-[calc(100vh-5rem)] bg-background flex flex-col items-center justify-center px-4 sm:px-6">
+      <div className="w-full max-w-[980px] flex flex-col gap-5">
+        <ScoreAreaHeader onBack={() => router.back()} />
+        <div className="bg-white rounded-2xl border border-gray-200 shadow-new overflow-hidden p-4 sm:p-7 md:p-10 flex flex-col">
+          <div className="flex flex-col min-h-[400px]">
+            <ScoreAreaTable
+              isLoading={isQueryLoading}
+              rows={rows}
+              onSelectScore={selectScore}
+            />
           </div>
-        )}
+          {!isQueryLoading && (
+            <div className="flex justify-end mt-6">
+              <button
+                onClick={handleSaveClick}
+                disabled={!allScored || isMutating}
+                className="px-6 py-2.5 rounded-xl text-sm font-semibold bg-yellow-600 hover:bg-yellow-700 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed transition-colors cursor-pointer"
+              >
+                {isMutating ? "저장 중..." : isAreaScored ? "점수 수정" : "점수 부여"}
+              </button>
+            </div>
+          )}
+        </div>
       </div>
 
       {showConfirm && (

@@ -39,15 +39,15 @@ export default function ScoreAreaTable({ isLoading, rows, onSelectScore }: Props
       </div>
 
       {/* sm 이상: 그리드 테이블 레이아웃 */}
-      <div className="hidden sm:block w-full overflow-x-auto">
+      <div className="hidden sm:flex sm:flex-col w-full overflow-x-auto h-full">
         <div className="grid grid-cols-[1fr_180px] gap-4 px-4 py-2.5 bg-orange-50 border-b border-t border-orange-400 min-w-[340px]">
           {TABLE_HEADERS.map((h) => (
             <span key={h} className="font-semibold text-gray-700 text-sm">{h}</span>
           ))}
         </div>
-        <div className="divide-y divide-[var(--color-gray-100)] min-w-[340px]">
+        <div className="flex-1 flex flex-col divide-y divide-[var(--color-gray-100)] min-w-[340px]">
           {rows.map((row) => (
-            <div key={row.key} className="grid grid-cols-[1fr_180px] gap-4 px-4 py-3 items-center">
+            <div key={row.key} className="flex-1 grid grid-cols-[1fr_180px] gap-4 px-4 items-center">
               <span className="text-sm font-medium text-gray-800">{row.label}</span>
               <div className="flex gap-1.5">
                 {SCORES.map((score) => (
