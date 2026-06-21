@@ -63,14 +63,35 @@ export default function FormCreateView() {
     );
   };
 
+  const validate = () => {
+    if (!formTitle.trim()) {
+      toast.error("제목을 입력해주세요.");
+      return false;
+    }
+    if (!deadline) {
+      toast.error("마감일을 선택해주세요.");
+      return false;
+    }
+    for (const f of fields) {
+      if (!f.type) {
+        toast.error("모든 필드의 유형을 선택해주세요.");
+        return false;
+      }
+      if (!f.title.trim()) {
+        toast.error("모든 필드의 제목을 입력해주세요.");
+        return false;
+      }
+    }
+    return true;
+  };
+
   const handleSave = () => {
+    if (!validate()) return;
     createForm(
       {
         title: formTitle,
         deadline,
-        fields: fields
-          .filter((f) => f.type !== "") // 타입 미선택 필드 제외
-          .map(({ ...rest }) => rest as PostFormRequestField),
+        fields: fields.map(({ ...rest }) => rest as PostFormRequestField),
       },
       {
         onSuccess: (res) => {
@@ -83,6 +104,8 @@ export default function FormCreateView() {
   };
 
   const handleAnnounce = () => {
+    if (!validate()) return;
+
     const doAnnounce = (formId: number) => {
       announce({ formId }, { onSuccess: () => router.push("/form") });
     };
@@ -94,9 +117,7 @@ export default function FormCreateView() {
         {
           title: formTitle,
           deadline,
-          fields: fields
-            .filter((f) => f.type !== "")
-            .map(({ ...rest }) => rest as PostFormRequestField),
+          fields: fields.map(({ ...rest }) => rest as PostFormRequestField),
         },
         {
           onSuccess: (res) => {
