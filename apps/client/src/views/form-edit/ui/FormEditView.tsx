@@ -163,8 +163,8 @@ export default function FormMySubmitView({ formId }: Props) {
         }));
         return [{
           fieldId: fId,
-          textAnswer: "",
-          ...(mapped.length > 0 ? { dateAnswer: mapped } : {}),
+          textAnswer: "-",
+          dateAnswer: mapped,
         }];
       }
 
