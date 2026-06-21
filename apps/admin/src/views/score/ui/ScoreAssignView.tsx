@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useMemo, useSyncExternalStore } from "react";
 import { useQueries } from "@tanstack/react-query";
 import ScoreTabNav from "./ScoreTabNav";
 import ScoreAssignFilterBar from "./ScoreAssignFilterBar";
@@ -16,17 +16,20 @@ import { ROLE_ALLOWED_AREAS } from "./constants";
 const GRADE_STORAGE_KEY = "score_assign_grade";
 
 export default function ScoreAssignView() {
-  const [grade, setGrade] = useState<Grade>(1);
+  const subscribe = useMemo(() => (callback: () => void) => {
+    window.addEventListener("storage", callback);
+    return () => window.removeEventListener("storage", callback);
+  }, []);
+  const grade = useSyncExternalStore(
+    subscribe,
+    () => (localStorage.getItem(GRADE_STORAGE_KEY) === "2" ? 2 : 1) as Grade,
+    () => 1 as Grade,
+  );
   const [scoreFilter, setScoreFilter] = useState<ScoreFilter>("all");
 
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    if (localStorage.getItem(GRADE_STORAGE_KEY) === "2") setGrade(2);
-  }, []);
-
   function handleGradeChange(g: Grade) {
-    setGrade(g);
     localStorage.setItem(GRADE_STORAGE_KEY, String(g));
+    window.dispatchEvent(new Event("storage"));
   }
 
   const { data: myInfo } = useGetMyInfo();

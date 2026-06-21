@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo, useSyncExternalStore } from "react";
 import { useQueries } from "@tanstack/react-query";
 import { useGetFilteredProjects } from "@/entities/project";
 import { useGetMyInfo } from "@/entities/mypage";
@@ -21,15 +21,18 @@ const GRADE_OPTIONS: { value: Grade; label: string }[] = [
 ];
 
 export default function ScoreView() {
-  const [grade, setGrade] = useState<Grade>(1);
+  const subscribe = useMemo(() => (callback: () => void) => {
+    window.addEventListener("storage", callback);
+    return () => window.removeEventListener("storage", callback);
+  }, []);
+  const grade = useSyncExternalStore(
+    subscribe,
+    () => (localStorage.getItem(GRADE_STORAGE_KEY) === "2" ? 2 : 1) as Grade,
+    () => 1 as Grade,
+  );
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const { mutate: noticeScore, isPending: isNoticing } = useScoreNotice();
-
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    if (localStorage.getItem(GRADE_STORAGE_KEY) === "2") setGrade(2);
-  }, []);
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -41,8 +44,8 @@ export default function ScoreView() {
   }, []);
 
   function handleGradeChange(g: Grade) {
-    setGrade(g);
     localStorage.setItem(GRADE_STORAGE_KEY, String(g));
+    window.dispatchEvent(new Event("storage"));
     setDropdownOpen(false);
   }
 
