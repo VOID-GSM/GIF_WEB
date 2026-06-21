@@ -1,5 +1,7 @@
+import type { Grade } from "@repo/ui";
+
 export { GRADES } from "@repo/ui";
-export type { Grade } from "@repo/ui";
+export type { Grade };
 
 export interface FilteredProject {
   id: number;

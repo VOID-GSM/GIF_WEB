@@ -21,7 +21,7 @@ interface Props {
 const AREAS: ScoreArea[] = ["major", "report", "social"];
 
 const headerCellCx =
-  "px-4 py-2.5 bg-[var(--color-yellow-50)] border-y border-[var(--color-yellow-600)] text-xs font-semibold text-[var(--color-gray-700)]";
+  "px-4 py-2.5 bg-[var(--color-yellow-50)] border-y border-[var(--color-yellow-600)] text-xs font-semibold text-[var(--color-gray-700)] sticky top-0 z-10";
 
 export default function ScoreAssignTable({ isLoading, teams, allowedAreas }: Props) {
   const router = useRouter();
@@ -87,7 +87,7 @@ export default function ScoreAssignTable({ isLoading, teams, allowedAreas }: Pro
       </div>
 
       {/* 데스크탑: 테이블 레이아웃 (>= sm) */}
-      <div className="hidden sm:block w-full overflow-x-auto">
+      <div className="hidden sm:block w-full max-h-[440px] overflow-y-auto">
         <div className="grid grid-cols-[100px_1fr_minmax(200px,auto)] min-w-[520px]">
           <span className={headerCellCx}>팀명</span>
           <span className={headerCellCx}>프로젝트명</span>
