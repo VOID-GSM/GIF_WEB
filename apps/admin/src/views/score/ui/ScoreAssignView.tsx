@@ -63,13 +63,15 @@ export default function ScoreAssignView() {
   const isScoreLoading = scoreQueries.some((q) => q.isPending);
   const isLoading = isProjectsLoading || isScoreLoading;
 
-  const teamsWithScores = projects.map((project, i) => ({
-    id: project.id,
-    teamName: project.teamName,
-    name: project.name,
-    scoredAreas: scoreQueries[i]?.data?.scoredAreas ?? [] as ScoreArea[],
-    isComplete: scoreQueries[i]?.data?.isComplete ?? false,
-  }));
+  const teamsWithScores = projects
+    .map((project, i) => ({
+      id: project.id,
+      teamName: project.teamName,
+      name: project.name,
+      scoredAreas: scoreQueries[i]?.data?.scoredAreas ?? [] as ScoreArea[],
+      isComplete: scoreQueries[i]?.data?.isComplete ?? false,
+    }))
+    .sort((a, b) => a.teamName.localeCompare(b.teamName));
 
   const teams = teamsWithScores.filter((t) => {
     if (scoreFilter === "all") return true;
