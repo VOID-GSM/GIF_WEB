@@ -1,12 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQueries } from "@tanstack/react-query";
-import type { Grade } from "@repo/ui";
 import ScoreTabNav from "./ScoreTabNav";
 import ScoreAssignFilterBar from "./ScoreAssignFilterBar";
 import ScoreAssignTable from "./ScoreAssignTable";
 import { useGetFilteredProjects } from "@/entities/project";
+import type { Grade } from "@/entities/project";
 import { getMajorScore } from "@/entities/score";
 import { useGetMyInfo } from "@/entities/mypage";
 import { toNullOn404 } from "@/shared/utils";
@@ -16,10 +16,13 @@ import { ROLE_ALLOWED_AREAS } from "./constants";
 const GRADE_STORAGE_KEY = "score_assign_grade";
 
 export default function ScoreAssignView() {
-  const [grade, setGrade] = useState<Grade>(() =>
-    typeof window !== "undefined" && localStorage.getItem(GRADE_STORAGE_KEY) === "2" ? 2 : 1,
-  );
+  const [grade, setGrade] = useState<Grade>(1);
   const [scoreFilter, setScoreFilter] = useState<ScoreFilter>("all");
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (localStorage.getItem(GRADE_STORAGE_KEY) === "2") setGrade(2);
+  }, []);
 
   function handleGradeChange(g: Grade) {
     setGrade(g);
@@ -30,7 +33,7 @@ export default function ScoreAssignView() {
   const allowedAreas: ScoreArea[] =
     ROLE_ALLOWED_AREAS[myInfo?.adminRole ?? ""] ?? (["major", "report", "social"] as ScoreArea[]);
 
-  const { data: projects = [], isLoading } = useGetFilteredProjects(grade);
+  const { data: projects = [], isLoading: isProjectsLoading } = useGetFilteredProjects(grade);
 
   const scoreQueries = useQueries({
     queries: projects.map((project) => ({
@@ -54,32 +57,37 @@ export default function ScoreAssignView() {
     })),
   });
 
-  const teams = projects
-    .map((project, i) => ({
-      ...project,
-      isComplete:  scoreQueries[i]?.data?.isComplete  ?? false,
-      scoredAreas: scoreQueries[i]?.data?.scoredAreas ?? [] as ScoreArea[],
-    }))
-    .sort((a, b) => a.teamName.localeCompare(b.teamName))
-    .filter((project) => {
-      if (scoreFilter === "all") return true;
-      return scoreFilter === "complete" ? project.isComplete : !project.isComplete;
-    });
+  const isScoreLoading = scoreQueries.some((q) => q.isPending);
+  const isLoading = isProjectsLoading || isScoreLoading;
+
+  const teamsWithScores = projects.map((project, i) => ({
+    id: project.id,
+    teamName: project.teamName,
+    name: project.name,
+    scoredAreas: scoreQueries[i]?.data?.scoredAreas ?? [] as ScoreArea[],
+    isComplete: scoreQueries[i]?.data?.isComplete ?? false,
+  }));
+
+  const teams = teamsWithScores.filter((t) => {
+    if (scoreFilter === "all") return true;
+    return scoreFilter === "complete" ? t.isComplete : !t.isComplete;
+  });
 
   return (
-    <div className="min-h-[calc(100vh-5rem)] bg-background py-6 sm:py-10 px-4 sm:px-6 flex flex-col items-center gap-4 sm:gap-6">
-      <div className="flex flex-col items-center gap-2 w-full max-w-[980px] mx-auto">
+    <div className="h-[calc(100vh-5rem)] bg-background flex flex-col items-center justify-center px-4 sm:px-6">
+      <div className="w-full max-w-[980px] flex flex-col gap-5">
         <ScoreTabNav />
-      </div>
-
-      <div className="w-full max-w-[980px] mx-auto bg-white rounded-2xl border border-gray-200 shadow-new overflow-hidden p-4 sm:p-7 md:p-10">
-        <ScoreAssignFilterBar
-          grade={grade}
-          onGradeChange={handleGradeChange}
-          scoreFilter={scoreFilter}
-          onFilterChange={setScoreFilter}
-        />
-        <ScoreAssignTable isLoading={isLoading} teams={teams} allowedAreas={allowedAreas} />
+        <div className="bg-white rounded-2xl border border-gray-200 shadow-new overflow-hidden p-4 sm:p-7 md:p-10">
+          <ScoreAssignFilterBar
+            grade={grade}
+            onGradeChange={handleGradeChange}
+            scoreFilter={scoreFilter}
+            onFilterChange={setScoreFilter}
+          />
+          <div className="overflow-y-auto max-h-[440px]">
+            <ScoreAssignTable isLoading={isLoading} teams={teams} allowedAreas={allowedAreas} />
+          </div>
+        </div>
       </div>
     </div>
   );
