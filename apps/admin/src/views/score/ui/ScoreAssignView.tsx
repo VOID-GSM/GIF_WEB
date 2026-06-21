@@ -89,9 +89,7 @@ export default function ScoreAssignView() {
             scoreFilter={scoreFilter}
             onFilterChange={setScoreFilter}
           />
-          <div className="overflow-y-auto max-h-[440px]">
-            <ScoreAssignTable isLoading={isLoading} teams={teams} allowedAreas={allowedAreas} />
-          </div>
+          <ScoreAssignTable isLoading={isLoading} teams={teams} allowedAreas={allowedAreas} />
         </div>
       </div>
     </div>
