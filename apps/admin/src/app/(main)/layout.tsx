@@ -1,5 +1,4 @@
 import { Navbar, ADMIN_NAV_ITEMS } from "@repo/ui";
-import { Providers } from "../providers";
 
 export default function MainLayout({
   children,
@@ -7,9 +6,9 @@ export default function MainLayout({
   children: React.ReactNode;
 }) {
   return (
-    <Providers>
+    <>
       <Navbar navItems={ADMIN_NAV_ITEMS} />
       <main className="pt-20">{children}</main>
-    </Providers>
+    </>
   );
 }

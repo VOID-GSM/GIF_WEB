@@ -1,10 +1,12 @@
 import { getCookieValue } from "@repo/lib";
 import {
   AdminForm,
+  AdminFormDetail,
   AdminSubmitDetail,
 } from "@/entities/from-management/model/type";
 import {
   mockAdminForms,
+  mockFormDetailMap,
   mockSubmitDetailMap,
 } from "@/entities/from-management/model/mock";
 
@@ -40,6 +42,18 @@ export const getAdminForms = async (grade?: number): Promise<AdminForm[]> => {
   }
   const query = grade ? `?grade=${grade}` : "";
   return fetchWithAuth<AdminForm[]>(`/api/form/admin${query}`);
+};
+
+// 양식 단건 조회 (제출 상세보기용 — announced 양식도 조회 가능)
+export const getAdminFormDetail = async (
+  formId: number,
+): Promise<AdminFormDetail> => {
+  if (USE_MOCK) {
+    const detail = mockFormDetailMap[formId];
+    if (!detail) throw new Error(`Mock form ${formId} not found`);
+    return detail;
+  }
+  return fetchWithAuth<AdminFormDetail>(`/api/form/${formId}`);
 };
 
 // 양식별 전체 제출 답변 (formId = 템플릿 ID)

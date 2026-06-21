@@ -63,30 +63,7 @@ export default function FormCreateView() {
     );
   };
 
-  const validate = () => {
-    if (!formTitle.trim()) {
-      toast.error("제목을 입력해주세요.");
-      return false;
-    }
-    if (!deadline) {
-      toast.error("마감일을 선택해주세요.");
-      return false;
-    }
-    for (const f of fields) {
-      if (!f.type) {
-        toast.error("모든 필드의 유형을 선택해주세요.");
-        return false;
-      }
-      if (!f.title.trim()) {
-        toast.error("모든 필드의 제목을 입력해주세요.");
-        return false;
-      }
-    }
-    return true;
-  };
-
   const handleSave = () => {
-    if (!validate()) return;
     createForm(
       {
         title: formTitle,
@@ -104,7 +81,19 @@ export default function FormCreateView() {
   };
 
   const handleAnnounce = () => {
-    if (!validate()) return;
+    const isEmpty = (value: string) => value.trim() === "";
+
+    const hasEmptyValue =
+      isEmpty(formTitle) ||
+      isEmpty(deadline) ||
+      fields.some(
+        (f) => isEmpty(f.title) || isEmpty(f.description) || f.type === "",
+      );
+
+    if (hasEmptyValue) {
+      toast.error("입력하지 않은 값이 있어 공지할 수 없습니다.");
+      return;
+    }
 
     const doAnnounce = (formId: number) => {
       announce({ formId }, { onSuccess: () => router.push("/form") });
