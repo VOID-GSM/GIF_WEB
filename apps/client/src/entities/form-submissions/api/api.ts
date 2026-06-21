@@ -27,7 +27,11 @@ async function fetchWithAuth<T>(
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
     },
   });
-  if (!res.ok) throw new Error(`API Error: ${res.status}`);
+  if (!res.ok) {
+    const errBody = await res.text().catch(() => "");
+    console.error(`[API ${res.status}] ${options?.method ?? "GET"} ${endpoint}`, errBody);
+    throw new Error(`API Error: ${res.status}`);
+  }
   const text = await res.text();
   if (!text) return {} as T;
   try {
