@@ -67,23 +67,29 @@ export default function FormSubmitView({ formId }: Props) {
       return;
     }
 
-    const answers: FormAnswerItem[] = formDetail.fields.flatMap((field) => {
+    const answers: FormAnswerItem[] = formDetail.fields.flatMap((field): FormAnswerItem[] => {
       const fId = field.fieldId ?? field.id ?? 0;
       if (field.type === "FILE") return [];
 
-      if (field.type === "DATE" || field.type === "CALENDAR") {
+      if (field.type === "DATE") {
         const events = calendarAnswers[fId] ?? [];
-        const mapped = events.map((e) => ({
+        // DATE 타입은 단일 날짜 문자열(dateAnswer)로 전송한다.
+        return events.map((e) => ({
+          fieldId: fId,
+          dateAnswer: e.startDate,
+        }));
+      }
+
+      if (field.type === "CALENDAR") {
+        const events = calendarAnswers[fId] ?? [];
+        // 캘린더 이벤트는 같은 fieldId 를 가진 개별 answer 항목으로 전송한다.
+        return events.map((e) => ({
+          fieldId: fId,
           eventName: e.title,
           startDate: e.startDate,
           endDate: e.endDate,
           color: e.color,
         }));
-        return [{
-          fieldId: fId,
-          textAnswer: "-",
-          dateAnswer: mapped,
-        }];
       }
 
       return [{

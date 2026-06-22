@@ -11,7 +11,7 @@ import {
   usePostFormUpload,
   useGetFormDetail,
 } from "@/entities/form-submissions/index";
-import type { SubmitAnswerItem } from "@/entities/form-submissions/model/types";
+import type { SubmitAnswerItem, FormAnswerItem } from "@/entities/form-submissions/model/types";
 import { useGetMyInfo } from "@/entities/mypage/index";
 import { toast } from "sonner";
 
@@ -23,19 +23,25 @@ function toCalendarEvents(
   answers: SubmitAnswerItem[],
   fieldId: number,
 ): CalendarEvent[] {
+  // 캘린더 이벤트는 같은 fieldId 를 가진 개별 answer 항목으로 내려온다.
+  // DATE 타입은 단일 날짜를 dateAnswer 로 내려보내므로 함께 처리한다.
   return answers
     .filter(
-      (a) => a.fieldId === fieldId && (a.type === "DATE" || a.type === "CALENDAR"),
+      (a) =>
+        a.fieldId === fieldId &&
+        (a.type === "DATE" || a.type === "CALENDAR") &&
+        (!!a.startDate || !!a.dateAnswer),
     )
-    .flatMap((a) =>
-      (a.dateAnswer ?? []).map((ca, i) => ({
-        id: `${fieldId}-${ca.startDate}-${i}`,
-        title: ca.eventName,
-        startDate: ca.startDate,
-        endDate: ca.endDate,
-        color: ca.color || "gray",
-      })),
-    );
+    .map((a, i) => {
+      const start = a.startDate ?? a.dateAnswer ?? "";
+      return {
+        id: `${fieldId}-${start}-${i}`,
+        title: a.eventName ?? "",
+        startDate: start,
+        endDate: a.endDate ?? start,
+        color: a.color || "gray",
+      };
+    });
 }
 
 export default function FormMySubmitView({ formId }: Props) {
@@ -148,24 +154,30 @@ export default function FormMySubmitView({ formId }: Props) {
     }
 
     // Build answers from formDetail.fields
-    const answers = (formDetail.fields ?? []).flatMap((field) => {
+    const answers = (formDetail.fields ?? []).flatMap((field): FormAnswerItem[] => {
       const fId = field.fieldId ?? field.id ?? 0;
       const type = field.type?.toUpperCase();
       if (type === "FILE") return [];
 
-      if (type === "DATE" || type === "CALENDAR") {
+      if (type === "DATE") {
         const calEvents = getCalendarValue(fId);
-        const mapped = calEvents.map((e) => ({
+        // DATE 타입은 단일 날짜 문자열(dateAnswer)로 전송한다.
+        return calEvents.map((e) => ({
+          fieldId: fId,
+          dateAnswer: e.startDate,
+        }));
+      }
+
+      if (type === "CALENDAR") {
+        const calEvents = getCalendarValue(fId);
+        // 캘린더 이벤트는 같은 fieldId 를 가진 개별 answer 항목으로 전송한다.
+        return calEvents.map((e) => ({
+          fieldId: fId,
           eventName: e.title,
           startDate: e.startDate,
           endDate: e.endDate,
           color: e.color,
         }));
-        return [{
-          fieldId: fId,
-          textAnswer: "-",
-          dateAnswer: mapped,
-        }];
       }
 
       return [{
