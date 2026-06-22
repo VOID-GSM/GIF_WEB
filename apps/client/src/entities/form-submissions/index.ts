@@ -3,13 +3,6 @@ export { default as FileField } from "./ui/FileField";
 export { default as CalendarField } from "./ui/CalendarField";
 export type { CalendarMode, CalendarEvent } from "./ui/CalendarField";
 
-export {
-  mockFormFields,
-  mockMySubmit,
-  MOCK_FORM_ID,
-  MOCK_PROJECT_ID,
-} from "./model/mock";
-
 export { usePostFormSubmit } from "./hooks/usePostFormSubmit";
 export { usePostFormUpload } from "./hooks/usePostFormUpload";
 export { useDeleteFormUpload } from "./hooks/useDeleteFormUpload";

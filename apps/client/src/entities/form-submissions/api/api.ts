@@ -8,9 +8,7 @@ import type {
   PostFormUploadResponse,
   GetFormDetailResponse,
 } from "../model/types";
-import { mockMySubmit, mockFormDetail } from "../model/mock";
 
-const USE_MOCK = process.env.NEXT_PUBLIC_USE_MOCK === "true";
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 async function fetchWithAuth<T>(
@@ -44,21 +42,18 @@ async function fetchWithAuth<T>(
 export const getFormDetail = async (
   formId: number,
 ): Promise<GetFormDetailResponse> => {
-  if (USE_MOCK) return mockFormDetail;
   return fetchWithAuth<GetFormDetailResponse>(`/api/form/${formId}`);
 };
 
 export const getFormMySubmit = async (
   params: GetFormMySubmitParams,
 ): Promise<GetFormMySubmitResponse> => {
-  if (USE_MOCK) return mockMySubmit;
   return fetchWithAuth<GetFormMySubmitResponse>(
     `/api/form/my-submit?formId=${params.formId}&projectId=${params.projectId}`,
   );
 };
 
 export const postFormSubmit = async (body: PostFormSubmitRequest) => {
-  if (USE_MOCK) return 1; // submitId mock
   return fetchWithAuth<number>(`/api/form/submit`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -67,7 +62,6 @@ export const postFormSubmit = async (body: PostFormSubmitRequest) => {
 };
 
 export const patchFormSubmit = async (body: PatchFormSubmitRequest) => {
-  if (USE_MOCK) return { success: true };
   return fetchWithAuth(`/api/form/submit?submitId=${body.submitId}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
@@ -84,7 +78,6 @@ export const postFormUpload = async ({
   fieldId: number;
   submitId: number; // optional → 필수로 변경
 }): Promise<PostFormUploadResponse> => {
-  if (USE_MOCK) return "/mock/uploaded-file.pdf";
   const params = new URLSearchParams({
     fieldId: String(fieldId),
     submitId: String(submitId), // 항상 포함
@@ -96,7 +89,6 @@ export const postFormUpload = async ({
 };
 
 export const deleteFormUpload = async (params: DeleteFormUploadParams) => {
-  if (USE_MOCK) return { success: true };
   return fetchWithAuth(
     `/api/form/upload?fieldId=${params.fieldId}&submitId=${params.submitId}`, // submitId 추가
     { method: "DELETE" },
