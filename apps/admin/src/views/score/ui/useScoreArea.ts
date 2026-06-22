@@ -73,8 +73,6 @@ export function useScoreArea({ area, projectId }: Params) {
     [criteria, existingScore, localScores, localComplete],
   );
 
-  const completed = rows.filter((r) =>  r.isComplete).length;
-  const pending   = rows.filter((r) => !r.isComplete).length;
   const allScored = rows.every((r) => r.selectedScore !== null);
 
   // 해당 영역의 점수가 실제로 서버에 저장되어 있는지 확인
@@ -142,8 +140,6 @@ export function useScoreArea({ area, projectId }: Params) {
 
   return {
     rows,
-    completed,
-    pending,
     allScored,
     isAreaScored,
     isQueryLoading,
