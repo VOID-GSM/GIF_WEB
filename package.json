@@ -16,6 +16,7 @@
     "typescript": "^5.0.0"
   },
   "dependencies": {
-    "@fontsource/press-start-2p": "^5.2.7"
+    "@fontsource/press-start-2p": "^5.2.7",
+    "react-colorful": "^5.7.0"
   }
 }

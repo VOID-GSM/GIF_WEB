@@ -1,5 +1,6 @@
 "use client";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
+import { HexColorPicker } from "react-colorful";
 import { Close, Color } from "@repo/ui";
 import {
   PRESET_COLOR_MAP,
@@ -38,16 +39,25 @@ export default function EventFormModal({
   onClose,
 }: EventFormModalProps) {
   const [title, setTitle] = useState(initialTitle ?? "");
-  const [color, setColor] = useState<PresetColorKey>(
-    (initialColor as PresetColorKey) ?? "blue",
-  );
+  const [color, setColor] = useState<string>(initialColor ?? "blue");
+  const [paletteOpen, setPaletteOpen] = useState(false);
+  const paletteRef = useRef<HTMLDivElement>(null);
   const isSameDay = startDate === endDate;
 
-  const handleRandomColor = () => {
-    const others = PRESET_COLOR_KEYS.filter((k) => k !== color);
-    const random = others[Math.floor(Math.random() * others.length)];
-    setColor(random);
-  };
+  // 프리셋에 없는 색상이면 컬러 팔레트로 직접 고른 커스텀 색상으로 간주
+  const isCustomColor = !PRESET_COLOR_KEYS.includes(color as PresetColorKey);
+
+  // 컬러 팔레트 바깥을 클릭하면 팔레트를 닫는다
+  useEffect(() => {
+    if (!paletteOpen) return;
+    const handleClickOutside = (e: MouseEvent) => {
+      if (paletteRef.current && !paletteRef.current.contains(e.target as Node)) {
+        setPaletteOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [paletteOpen]);
 
   return (
     <div
@@ -55,7 +65,7 @@ export default function EventFormModal({
       onClick={onClose}
     >
       <div
-        className="relative w-[336px] bg-white rounded-[10px] overflow-hidden shadow-new"
+        className="relative w-[336px] bg-white rounded-[10px] shadow-new"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="px-5 pt-[38px] pb-6 flex flex-col gap-4">
@@ -75,8 +85,11 @@ export default function EventFormModal({
                   <button
                     key={key}
                     type="button"
-                    onClick={() => setColor(key)}
-                    className="w-6 h-6 rounded-full transition flex-shrink-0"
+                    onClick={() => {
+                      setColor(key);
+                      setPaletteOpen(false);
+                    }}
+                    className="w-6 h-6 rounded-full transition flex-shrink-0 cursor-pointer"
                     style={{
                       backgroundColor: resolveColor(key),
                       outline: isSelected
@@ -88,16 +101,32 @@ export default function EventFormModal({
                 );
               })}
 
-              <button
-                type="button"
-                onClick={handleRandomColor}
-                className="w-6 h-6 rounded-full flex-shrink-0 cursor-pointer"
-                style={{
-                  outline: "2px solid transparent",
-                }}
-              >
-                <Color className="w-6 h-6" />
-              </button>
+              {/* 컬러 팔레트 — 클릭 시 react-colorful 피커로 직접 색상 선택 */}
+              <div ref={paletteRef} className="relative flex-shrink-0">
+                <button
+                  type="button"
+                  onClick={() => setPaletteOpen((prev) => !prev)}
+                  className="w-6 h-6 rounded-full flex-shrink-0 cursor-pointer flex items-center justify-center"
+                  style={{
+                    backgroundColor: isCustomColor ? color : undefined,
+                    outline: isCustomColor
+                      ? "2px solid var(--color-gray-500)"
+                      : "2px solid transparent",
+                    outlineOffset: isCustomColor ? "3px" : "0px",
+                  }}
+                >
+                  {!isCustomColor && <Color className="w-6 h-6" />}
+                </button>
+
+                {paletteOpen && (
+                  <div className="absolute right-0 top-9 z-20 rounded-[10px] bg-white p-2 shadow-new">
+                    <HexColorPicker
+                      color={isCustomColor ? color : "#FFD43B"}
+                      onChange={setColor}
+                    />
+                  </div>
+                )}
+              </div>
             </div>
 
             <input
