@@ -36,6 +36,7 @@ export interface GetMyInfoResponse {
   adminTeam: string | null;
   clientRole: string | null;
   clientTeam: string | null;
+  projectId: number;
 }
 
 export type GetMeResponse = Omit<SignInResponse, "accessToken">;
