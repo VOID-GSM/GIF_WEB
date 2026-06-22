@@ -15,6 +15,7 @@
   --color-gray-100: #f5f5f5;
   --color-gray-80: #c8c8c8;
   --color-gray-70: #bababa;
+  --color-gray-50: #939393;
   --color-gray-40: #7f7f7f;
 
   /* yellow scale */
@@ -52,7 +53,7 @@
   --color-red: var(--color-orange-900);
   --color-orange: var(--color-orange-400);
   --color-yellow: var(--color-yellow-500);
-  --color-green: var(--color-success);
+  --color-green: var(--color-green-50);
   --color-blue: #6db8ff;
   --color-purple: #a991ff;
   --color-gray: var(--color-gray-400);
