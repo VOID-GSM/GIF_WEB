@@ -16,18 +16,19 @@ export interface GetFormDetailResponse {
   fields: FormDetailField[];
 }
 
-export interface CalendarEventAnswer {
-  eventName: string;
-  startDate: string;
-  endDate: string;
-  color: string;
-}
+// 백엔드 AnswerRequest/AnswerResponse 는 평면(flat) 구조이며,
+// 캘린더 이벤트는 같은 fieldId 를 가진 개별 answer 항목으로 표현된다.
+// (dateAnswer 는 단일 날짜 문자열, 캘린더 이벤트는 eventName/startDate/endDate/color)
 
 // POST /api/form/submit
 export interface FormAnswerItem {
   fieldId: number;
   textAnswer?: string;
-  dateAnswer?: CalendarEventAnswer[];
+  dateAnswer?: string;
+  eventName?: string;
+  startDate?: string;
+  endDate?: string;
+  color?: string;
 }
 
 export interface PostFormSubmitRequest {
@@ -46,11 +47,7 @@ export interface DeleteFormUploadParams {
 }
 
 // PATCH /api/form/submit
-export interface PatchFormSubmitAnswerItem {
-  fieldId: number;
-  textAnswer?: string;
-  dateAnswer?: CalendarEventAnswer[];
-}
+export type PatchFormSubmitAnswerItem = FormAnswerItem;
 
 export interface PatchFormSubmitRequest {
   submitId: number;
@@ -70,7 +67,11 @@ export interface SubmitAnswerItem {
   textAnswer: string;
   filePath: string;
   fileSize: number;
-  dateAnswer: CalendarEventAnswer[] | null;
+  dateAnswer: string | null;
+  eventName: string | null;
+  startDate: string | null;
+  endDate: string | null;
+  color: string | null;
 }
 
 export interface GetFormMySubmitResponse {
