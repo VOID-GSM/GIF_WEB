@@ -11,7 +11,8 @@ export default function Input({
 }: InputProps) {
   return (
     <input
-      className="w-full py-[13px] px-[16px] border border-gray-200 rounded-[10px] font-medium placeholder:text-gray-500 outline-none"
+      className="w-full py-[13px] px-[16px] border border-gray-200 rounded-[10px] font-medium placeholder:text-gray-500 outline-none 
+      transition-colors bg-white focus:border-yellow-600 [&:not(:placeholder-shown)]:border-yellow-600"
       placeholder={title}
       value={value}
       onChange={onChange}
