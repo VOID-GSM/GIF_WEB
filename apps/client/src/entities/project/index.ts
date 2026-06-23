@@ -4,6 +4,7 @@ export {
   getProject,
   getProjectSummary,
   updateProject,
+  updateProjectDescription,
   searchUsers,
 } from "./api/projectApi";
 export { useCreateProject } from "./api/useCreateProject";
@@ -11,6 +12,7 @@ export { useSearchUsers } from "./api/useSearchUsers";
 export { useGetProject } from "./api/useGetProject";
 export { useGetProjectSummary } from "./api/useGetProjectSummary";
 export { useUpdateProject } from "./api/useUpdateProject";
+export { useUpdateProjectDescription } from "./api/useUpdateProjectDescription";
 export { useGetMyProject } from "./hooks/useGetMyProject";
 export { useGetFilteredProjects } from "./hooks/useGetFilteredProjects";
 export { useStoredGrade } from "./hooks/useStoredGrade";

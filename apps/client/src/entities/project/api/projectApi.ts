@@ -61,6 +61,16 @@ export const updateProject = async (
   });
 };
 
+// 팀원(리더 아님)은 프로젝트 설명만 수정 가능 — 전체 수정(PUT)은 리더만 허용(403)
+export const updateProjectDescription = async (
+  projectId: number,
+  description: string,
+): Promise<void> => {
+  await apiClient.patch(`/api/project/${projectId}/description`, {
+    description,
+  });
+};
+
 export const searchUsers = async (keyword: string): Promise<UserSearchResult[]> => {
   const { data } = await apiClient.get<UserSearchResult[]>("/api/project/users/search", {
     params: { keyword },
