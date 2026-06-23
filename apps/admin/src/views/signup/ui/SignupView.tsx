@@ -1,17 +1,17 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
-
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { toast } from "sonner";
 
 import { RoleSelect, usePostAdminInfo, type AdminRole } from "@/entities/signup";
 
 export default function SignupView() {
   const router = useRouter();
+  const { mutate, isPending } = usePostAdminInfo();
   const [adminRole, setAdminRole] = useState<AdminRole | null>(null);
   const [adminTeam, setAdminTeam] = useState("");
-  const { mutate, isPending } = usePostAdminInfo();
 
   const isActive = adminRole !== null;
 
@@ -19,9 +19,11 @@ export default function SignupView() {
     if (!adminRole) return;
     const team = adminTeam.trim();
     mutate(
-      { adminRole, adminTeam: team || undefined },
+      // 담당 팀이 비어있으면 필드를 생략 (빈 문자열 전송 시 400 방지)
+      { adminRole, ...(team ? { adminTeam: team } : {}) },
       {
         onSuccess: () => router.replace("/"),
+        onError: () => toast.error("회원가입에 실패했습니다. 다시 시도해주세요."),
       },
     );
   };

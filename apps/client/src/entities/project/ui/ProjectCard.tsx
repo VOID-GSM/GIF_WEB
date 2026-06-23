@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import type { FilteredProject } from "../model/types";
 
 interface ProjectCardProps {
@@ -6,7 +8,10 @@ interface ProjectCardProps {
 
 export default function ProjectCard({ project }: ProjectCardProps) {
   return (
-    <div className="flex h-[176px] w-[224px] shrink-0 cursor-pointer flex-col overflow-hidden rounded-[12px] bg-white shadow-new transition-all duration-200 ease-out hover:-translate-y-1 hover:shadow-lg">
+    <Link
+      href={`/projects/${project.id}`}
+      className="flex h-[176px] w-[224px] shrink-0 cursor-pointer flex-col overflow-hidden rounded-[12px] bg-white shadow-new transition-all duration-200 ease-out hover:-translate-y-1 hover:shadow-lg"
+    >
       <div className="h-[112px] w-full">
         {/* logo는 외부 API에서 내려오는 동적 URL이라 next/image 대신 img 사용 */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -24,6 +29,6 @@ export default function ProjectCard({ project }: ProjectCardProps) {
           {project.teamName}
         </p>
       </div>
-    </div>
+    </Link>
   );
 }

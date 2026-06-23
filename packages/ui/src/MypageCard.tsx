@@ -10,6 +10,7 @@ export interface MypageInfoItem {
   editValue?: string;
   type?: "readonly" | "input" | "dropdown";
   dropdownOptions?: string[];
+  placeholder?: string;
 }
 
 export interface MypageCardProps {
@@ -53,14 +54,20 @@ export default function MypageCard({
 
   const renderValue = (item: MypageInfoItem) => {
     if (!isEditing || item.type === "readonly") {
-      return <span>{editValues[item.key] || item.value}</span>;
+      const display = editValues[item.key] || item.value;
+      return (
+        <span className={display ? undefined : "text-gray-400"}>
+          {display || item.placeholder}
+        </span>
+      );
     }
 
     if (item.type === "input") {
       return (
         <input
-          className="w-full focus:outline-none"
+          className="w-full focus:outline-none placeholder:text-gray-400"
           value={editValues[item.key] ?? ""}
+          placeholder={item.placeholder}
           onChange={(e) =>
             setEditValues((prev) => ({ ...prev, [item.key]: e.target.value }))
           }
