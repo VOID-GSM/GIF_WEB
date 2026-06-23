@@ -4,6 +4,7 @@ import { DeadlineStatusSection, FormListSection, ProjectInfo } from "@repo/ui";
 
 import { getDeadlineSummary, useGetForms } from "@/entities/form";
 import { useGetProject } from "@/entities/project";
+import AiSummarySection from "@/widgets/project-detail/ui/AiSummarySection";
 import MemoSection from "@/widgets/project-detail/ui/MemoSection";
 
 interface ProjectDetailViewProps {
@@ -31,7 +32,11 @@ export default function ProjectDetailView({
     <div className="flex min-h-[calc(100vh-5rem)] justify-center bg-background px-4 pb-8 pt-[87px]">
       <div className="flex w-full min-w-0 max-w-[830px] flex-col">
         {/* 정보 영역 — 클라이언트 상세와 동일한 레이아웃 */}
-        <ProjectInfo project={project} />
+        {/* AI 요약은 로고 영역과 설명 사이에 노출 */}
+        <ProjectInfo
+          project={project}
+          summary={<AiSummarySection projectId={projectId} />}
+        />
 
         {/* 마감현황 · 양식 목록 (좌) / 메모 (우) */}
         <div className="mt-14 flex flex-col gap-8 lg:flex-row lg:items-stretch lg:gap-12">

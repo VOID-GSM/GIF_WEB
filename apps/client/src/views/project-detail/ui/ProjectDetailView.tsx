@@ -7,6 +7,7 @@ import { DeadlineStatusSection, FormListSection, ProjectInfo } from "@repo/ui";
 import { getDeadlineSummary, useGetForms } from "@/entities/form";
 import { useGetMyProject, useGetProject } from "@/entities/project";
 
+import AiSummarySection from "@/widgets/project-detail/ui/AiSummarySection";
 import ScheduleSection from "@/widgets/project-detail/ui/ScheduleSection";
 
 interface ProjectDetailViewProps {
@@ -47,7 +48,13 @@ export default function ProjectDetailView({
     <div className="flex min-h-[calc(100vh-5rem)] justify-center bg-background px-4 pb-8 pt-[87px]">
       <div className="flex w-full min-w-0 max-w-[830px] flex-col">
         {/* 정보 영역 — 생성 페이지와 동일한 레이아웃 (로고 · 팀 정보 · 설명) */}
-        <ProjectInfo project={project} />
+        {/* AI 요약(다른 팀 프로젝트일 때만)은 로고 영역과 설명 사이에 노출 */}
+        <ProjectInfo
+          project={project}
+          summary={
+            !isMine ? <AiSummarySection projectId={projectId} /> : undefined
+          }
+        />
 
         {/* 마감현황 · 양식 목록 (좌) / 일정 캘린더 (우) — 내 팀일 때만 */}
         {/* 프로젝트 설명 ↔ 마감현황 간격 56px */}
