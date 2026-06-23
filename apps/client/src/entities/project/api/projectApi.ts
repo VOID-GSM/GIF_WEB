@@ -4,6 +4,7 @@ import type {
   CreateProjectRequest,
   ProjectDetail,
   ProjectResponse,
+  ProjectSummaryResponse,
   UpdateProjectRequest,
   UserSearchResult,
 } from "../model/types";
@@ -64,5 +65,14 @@ export const searchUsers = async (keyword: string): Promise<UserSearchResult[]> 
   const { data } = await apiClient.get<UserSearchResult[]>("/api/project/users/search", {
     params: { keyword },
   });
+  return data;
+};
+
+export const getProjectSummary = async (
+  projectId: number,
+): Promise<ProjectSummaryResponse> => {
+  const { data } = await apiClient.get<ProjectSummaryResponse>(
+    `/api/project/${projectId}/summary`,
+  );
   return data;
 };

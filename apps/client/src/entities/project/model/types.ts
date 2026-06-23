@@ -66,6 +66,9 @@ export interface ProjectDetail {
   members: ProjectMember[];
 }
 
+// GET /api/project/{projectId}/summary — AI가 생성한 프로젝트 요약 (응답은 요약 문자열)
+export type ProjectSummaryResponse = string;
+
 // PUT /api/project/{projectId}/update — 멤버는 추가/삭제 델타로 전달
 export interface UpdateProjectRequest {
   name: string;
