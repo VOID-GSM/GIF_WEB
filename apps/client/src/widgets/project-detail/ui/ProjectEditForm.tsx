@@ -2,11 +2,12 @@
 
 import { useState, type ChangeEvent } from "react";
 
-import { FileUpload, SubmitButton, Textarea } from "@repo/ui";
+import { FileUpload, NameBadge, SubmitButton, Textarea } from "@repo/ui";
 
 import { useGetMe } from "@/entities/auth";
 import {
   useUpdateProject,
+  useUpdateProjectDescription,
   type ProjectDetail,
   type UserSearchResult,
 } from "@/entities/project";
@@ -27,6 +28,13 @@ export default function ProjectEditForm({
 }: ProjectEditFormProps) {
   const { data: me } = useGetMe();
   const { mutate, isPending } = useUpdateProject(project.id);
+  const { mutate: updateDescription, isPending: isDescPending } =
+    useUpdateProjectDescription(project.id);
+
+  // 리더만 전체 수정 가능, 팀원은 설명만 수정 가능(백엔드 권한과 동일)
+  const isLeader = project.members.some(
+    (member) => member.userId === me?.userId && member.role === "LEADER",
+  );
 
   // 본인(오너)을 제외한 팀원만 편집 대상 — 생성 페이지와 동일하게 학번/이름 표시
   const initialMembers: UserSearchResult[] = project.members
@@ -55,6 +63,16 @@ export default function ProjectEditForm({
   };
 
   const handleSubmit = () => {
+    // 팀원 — 설명만 수정(PATCH /description)
+    if (!isLeader) {
+      const hasError = !description.trim();
+      setErrors((prev) => ({ ...prev, description: hasError }));
+      if (hasError) return;
+
+      updateDescription(description, { onSuccess: onDone });
+      return;
+    }
+
     const newErrors = {
       projectName: !projectName.trim(),
       teamName: !teamName.trim(),
@@ -88,7 +106,7 @@ export default function ProjectEditForm({
   };
 
   const underlineInput = (hasError: boolean) =>
-    `w-full border-b bg-transparent pb-1 text-2xl outline-none transition-colors duration-200 ${
+    `w-full border-b bg-transparent pb-1 text-2xl outline-none transition-colors duration-200 disabled:cursor-not-allowed disabled:text-gray-500 ${
       hasError
         ? "border-red-500 focus:border-red-500"
         : "border-gray-300 focus:border-gray-900"
@@ -103,7 +121,24 @@ export default function ProjectEditForm({
       className="flex w-full max-w-[830px] flex-col gap-14"
     >
       <section className="flex flex-col gap-6 sm:flex-row sm:gap-8">
-        <FileUpload onChange={setThumbnail} className="mx-auto h-[160px] w-[240px]" />
+        {isLeader ? (
+          <FileUpload
+            onChange={setThumbnail}
+            className="mx-auto h-[160px] w-[240px]"
+          />
+        ) : (
+          // 팀원 — 로고 수정 불가, 기존 로고만 표시
+          <div className="mx-auto h-[160px] w-[240px] shrink-0 overflow-hidden rounded-xl border border-gray-200 bg-gray-100">
+            {project.logo && (
+              // logo는 외부 API에서 내려오는 동적 URL이라 next/image 대신 img 사용
+              <img
+                src={project.logo}
+                alt={project.name}
+                className="h-full w-full object-cover"
+              />
+            )}
+          </div>
+        )}
 
         <div className="flex flex-1 flex-col gap-6">
           <div className="flex flex-col gap-1">
@@ -114,6 +149,7 @@ export default function ProjectEditForm({
               <input
                 type="text"
                 value={projectName}
+                disabled={!isLeader}
                 onChange={(e) => {
                   const val = e.target.value.slice(0, MAX_NAME_LENGTH);
                   setProjectName(val);
@@ -146,6 +182,7 @@ export default function ProjectEditForm({
               <input
                 type="text"
                 value={teamName}
+                disabled={!isLeader}
                 onChange={(e) => {
                   const val = e.target.value.slice(0, MAX_NAME_LENGTH);
                   setTeamName(val);
@@ -168,19 +205,39 @@ export default function ProjectEditForm({
             </div>
           </div>
 
-          <MemberSearchInput
-            owner={
-              me
-                ? {
-                    userId: me.userId,
-                    name: me.name,
-                    studentNumber: me.studentNumber,
-                  }
-                : undefined
-            }
-            value={members}
-            onChange={setMembers}
-          />
+          {isLeader ? (
+            <MemberSearchInput
+              owner={
+                me
+                  ? {
+                      userId: me.userId,
+                      name: me.name,
+                      studentNumber: me.studentNumber,
+                    }
+                  : undefined
+              }
+              value={members}
+              onChange={setMembers}
+            />
+          ) : (
+            // 팀원 — 팀원 목록 수정 불가, 읽기 전용으로 표시
+            <div className="flex items-start gap-4">
+              <div className="flex h-9 shrink-0 items-center">
+                <span className="text-2xl font-medium text-gray-700">팀원</span>
+              </div>
+              <div className="flex flex-1 flex-wrap items-center gap-2">
+                {project.members.map((member) => (
+                  <NameBadge
+                    key={member.userId}
+                    id={Number(member.studentNumber)}
+                    name={member.name}
+                    isEditable={false}
+                    color={member.role === "LEADER" ? "yellow" : "gray"}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </section>
 
@@ -209,7 +266,9 @@ export default function ProjectEditForm({
       </section>
 
       <div className="flex justify-center">
-        <SubmitButton disabled={isPending}>완료하기</SubmitButton>
+        <SubmitButton disabled={isPending || isDescPending}>
+          완료하기
+        </SubmitButton>
       </div>
     </form>
   );
