@@ -27,6 +27,12 @@ export default function ProjectDetailView({
 
   const goToEdit = () => router.push(`/projects/${projectId}/edit`);
 
+  // 양식 클릭 — 제출했으면 수정/상세, 아니면 제출 페이지로 이동
+  const goToForm = (formId: number) => {
+    const form = forms?.find((f) => f.id === formId);
+    router.push(`/form/${formId}/${form?.submitted ? "edit" : "submit"}`);
+  };
+
   if (isPending || isError || !project) {
     return (
       <div className="flex min-h-[calc(100dvh-80px)] items-center justify-center px-4">
@@ -52,9 +58,12 @@ export default function ProjectDetailView({
               <DeadlineStatusSection
                 summary={getDeadlineSummary(forms ?? [])}
               />
-              <FormListSection forms={forms ?? []} />
+              <FormListSection
+                forms={forms ?? []}
+                onFormClick={goToForm}
+              />
             </div>
-            <ScheduleSection forms={forms ?? []} />
+            <ScheduleSection projectId={projectId} forms={forms ?? []} />
           </div>
         )}
 
