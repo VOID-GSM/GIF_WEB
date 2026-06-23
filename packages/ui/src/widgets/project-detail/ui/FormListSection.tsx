@@ -10,6 +10,8 @@ interface FormListSectionForm {
 
 interface FormListSectionProps {
   forms: FormListSectionForm[];
+  // 양식 클릭 시 동작 (전달 시 각 행이 클릭 가능해짐)
+  onFormClick?: (formId: number) => void;
 }
 
 // "2026-08-12" -> "2026.08.12"
@@ -24,7 +26,10 @@ const isOverdue = (deadline: string) => {
 // 양식 제출 목록 (admin·client 공용)
 // 부모가 flex 컨테이너(lg:items-stretch + min-h-0)를 제공하면 우측 컬럼 높이에 맞춰
 // 끝점까지 채우고 넘치면 스크롤된다.
-export default function FormListSection({ forms }: FormListSectionProps) {
+export default function FormListSection({
+  forms,
+  onFormClick,
+}: FormListSectionProps) {
   const announced = forms.filter((form) => form.announced);
 
   return (
@@ -42,9 +47,23 @@ export default function FormListSection({ forms }: FormListSectionProps) {
         <div className="relative lg:-mx-2 lg:min-h-0 lg:flex-1">
           {/* lg: 스크롤바 숨김 + 좌우/상하 여백으로 카드 그림자가 잘리지 않게 */}
           <ul className="flex flex-col gap-3 lg:absolute lg:inset-0 lg:overflow-y-auto lg:px-2 lg:py-1 lg:[scrollbar-width:none] lg:[&::-webkit-scrollbar]:hidden">
-            {announced.map((form) => (
+            {announced.map((form) => {
+              const Row = onFormClick ? "button" : "div";
+              return (
               <li key={form.id}>
-                <div className="flex items-center justify-between rounded-xl bg-white px-6 py-2.5 shadow-[0_2px_8px_rgba(0,0,0,0.08)]">
+                <Row
+                  {...(onFormClick
+                    ? {
+                        type: "button" as const,
+                        onClick: () => onFormClick(form.id),
+                      }
+                    : {})}
+                  className={`flex w-full items-center justify-between rounded-xl bg-white px-6 py-2.5 text-left shadow-[0_2px_8px_rgba(0,0,0,0.08)] ${
+                    onFormClick
+                      ? "cursor-pointer transition-shadow hover:shadow-md"
+                      : ""
+                  }`}
+                >
                   <div className="flex flex-col gap-0.5">
                     <span className="flex items-center gap-1.5 text-base font-medium tracking-tight text-black">
                       {form.title}
@@ -75,9 +94,10 @@ export default function FormListSection({ forms }: FormListSectionProps) {
                     className="size-4 shrink-0 text-gray-600"
                     aria-hidden="true"
                   />
-                </div>
+                </Row>
               </li>
-            ))}
+              );
+            })}
           </ul>
         </div>
       )}
