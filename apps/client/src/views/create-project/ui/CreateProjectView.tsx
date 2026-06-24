@@ -162,6 +162,7 @@ export function CreateProjectView() {
 
             <div className="flex flex-col gap-1">
               <MemberSearchInput
+                grade={grade}
                 owner={
                   me
                     ? {

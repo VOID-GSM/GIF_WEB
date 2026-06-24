@@ -207,6 +207,7 @@ export default function ProjectEditForm({
 
           {isLeader ? (
             <MemberSearchInput
+              grade={project.grade}
               owner={
                 me
                   ? {
