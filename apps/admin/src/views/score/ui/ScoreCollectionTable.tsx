@@ -41,7 +41,7 @@ export default function ScoreCollectionTable({ isLoading, isError, scoreRows }: 
       ) : (
         scoreRows.map(({ rank, teamName, totalScore }) => (
           <div
-            key={rank}
+            key={teamName}
             className="flex justify-between items-center py-3 sm:py-[14px] border-t border-gray-100"
           >
             <div className="flex items-center gap-1.5">

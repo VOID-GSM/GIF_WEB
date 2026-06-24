@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { Chevron } from "@repo/ui";
-import type { Grade } from "@repo/ui";
+import type { Grade } from "@/entities/project";
 
 const GRADE_OPTIONS: { value: Grade; label: string }[] = [
   { value: 1, label: "1학년" },
@@ -68,8 +68,9 @@ export default function ScoreCollectionFilterBar({
       {canNotice && (
         <button
           type="button"
+          disabled={isNoticing}
           onClick={onNotice}
-          className="py-[6.5px] px-[20px] rounded-[8px] text-[12px] bg-yellow-600 hover:bg-yellow-700 text-black font-semibold cursor-pointer transition-colors"
+          className="py-[6.5px] px-[20px] rounded-[8px] text-[12px] bg-yellow-600 hover:bg-yellow-700 text-black font-semibold cursor-pointer transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isNoticing ? "공지 중..." : "공지하기"}
         </button>
