@@ -15,7 +15,10 @@ interface MemberSearchInputProps {
 }
 
 // 학번 첫 자리가 학년 (예: "1101" → 1학년)
-const gradeOf = (studentNumber: string) => Number(studentNumber[0]);
+const gradeOf = (studentNumber: string | undefined | null) => {
+  if (!studentNumber || studentNumber.length === 0) return 0;
+  return Number(studentNumber[0]);
+};
 
 export function MemberSearchInput({ grade, owner, value, onChange }: MemberSearchInputProps) {
   const [isOpen, setIsOpen] = useState(false);
