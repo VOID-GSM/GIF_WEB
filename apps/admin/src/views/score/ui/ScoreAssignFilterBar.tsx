@@ -54,7 +54,7 @@ export default function ScoreAssignFilterBar({
           <Chevron className={`w-3 h-3 transition-transform ${dropdownOpen ? "rotate-180" : ""}`} />
         </button>
         {dropdownOpen && (
-          <ul className="absolute top-full mt-1 left-0 z-10 bg-white rounded-lg shadow-[var(--shadow-new)] overflow-hidden min-w-[100px]">
+          <ul className="absolute top-full mt-1 left-0 z-20 bg-white rounded-lg shadow-[var(--shadow-new)] overflow-hidden min-w-[100px]">
             {GRADE_OPTIONS.map(({ value, label }) => (
               <li key={value}>
                 <button
