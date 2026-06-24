@@ -19,29 +19,28 @@ type Props = { formId: number };
 
 const EMPTY_EVENTS: CalendarEvent[] = [];
 
+function isDateStr(value: unknown): value is string {
+  return typeof value === "string" && value.length > 0;
+}
+
 function toCalendarEvents(
   answers: SubmitAnswerItem[],
   fieldId: number,
 ): CalendarEvent[] {
-  // 캘린더 이벤트는 같은 fieldId 를 가진 개별 answer 항목으로 내려온다.
-  // DATE 타입은 단일 날짜를 dateAnswer 로 내려보내므로 함께 처리한다.
+  // 백엔드는 DATE·CALENDAR 답변을 모두 dateAnswer 배열로 내려준다.
   return answers
-    .filter(
-      (a) =>
-        a.fieldId === fieldId &&
-        (a.type === "DATE" || a.type === "CALENDAR") &&
-        (!!a.startDate || !!a.dateAnswer),
-    )
-    .map((a, i) => {
-      const start = a.startDate ?? a.dateAnswer ?? "";
-      return {
-        id: `${fieldId}-${start}-${i}`,
-        title: a.eventName ?? "",
-        startDate: start,
-        endDate: a.endDate ?? start,
-        color: a.color || "gray",
-      };
-    });
+    .filter((a) => a.fieldId === fieldId && (a.type === "DATE" || a.type === "CALENDAR"))
+    .flatMap((a) =>
+      (a.dateAnswer ?? [])
+        .filter((ev) => isDateStr(ev.startDate))
+        .map((ev, i) => ({
+          id: `${fieldId}-${ev.startDate}-${i}`,
+          title: ev.eventName ?? "",
+          startDate: ev.startDate,
+          endDate: isDateStr(ev.endDate) ? ev.endDate : ev.startDate,
+          color: ev.color || "gray",
+        })),
+    );
 }
 
 export default function FormMySubmitView({ formId }: Props) {
@@ -157,27 +156,34 @@ export default function FormMySubmitView({ formId }: Props) {
     const answers = (formDetail.fields ?? []).flatMap((field): FormAnswerItem[] => {
       const fId = field.fieldId ?? field.id ?? 0;
       const type = field.type?.toUpperCase();
-      if (type === "FILE") return [];
 
-      if (type === "DATE") {
-        const calEvents = getCalendarValue(fId);
-        // DATE 타입은 단일 날짜 문자열(dateAnswer)로 전송한다.
-        return calEvents.map((e) => ({
+      if (type === "FILE") {
+        // 새 파일/삭제는 upload·delete 엔드포인트가 처리한다.
+        // 그 외(파일을 안 건드린 경우)에는 PATCH 가 answer 를 통째로 교체하면서
+        // 기존 파일이 사라지므로, filePath 를 함께 보내 보존한다.
+        const hasNewFile = fileAnswers[fId] instanceof File;
+        const isDeleted = fileAnswers[fId] === null;
+        const existingPath = answerMap[fId]?.filePath;
+        if (hasNewFile || isDeleted || !existingPath) return [];
+        return [{
           fieldId: fId,
-          dateAnswer: e.startDate,
-        }));
+          filePath: existingPath,
+          fileSize: answerMap[fId]?.fileSize ?? undefined,
+        }];
       }
 
-      if (type === "CALENDAR") {
+      if (type === "DATE" || type === "CALENDAR") {
+        // DATE·CALENDAR 모두 dateAnswer 배열(CalendarEventRequest[])로 전송한다.
         const calEvents = getCalendarValue(fId);
-        // 캘린더 이벤트는 같은 fieldId 를 가진 개별 answer 항목으로 전송한다.
-        return calEvents.map((e) => ({
+        return [{
           fieldId: fId,
-          eventName: e.title,
-          startDate: e.startDate,
-          endDate: e.endDate,
-          color: e.color,
-        }));
+          dateAnswer: calEvents.map((e) => ({
+            eventName: e.title,
+            startDate: e.startDate,
+            endDate: e.endDate,
+            color: e.color,
+          })),
+        }];
       }
 
       return [{

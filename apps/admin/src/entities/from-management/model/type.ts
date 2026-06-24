@@ -1,8 +1,8 @@
 export interface CalendarEventAnswer {
-  eventName: string;
+  eventName: string | null;
   startDate: string;
   endDate: string;
-  color: string;
+  color: string | null;
 }
 
 // GET /api/form/admin 응답
@@ -38,9 +38,9 @@ export interface AdminFormDetail {
   fields: FormField[];
 }
 
-// GET /api/form/admin/submit 응답
-// 캘린더 답변은 이벤트 1개당 answer 1행으로 평탄하게 내려온다
-// (eventName/startDate/endDate/color). 텍스트·파일 답변에서는 해당 필드가 null.
+// GET /api/form/admin/submit 응답 (백엔드 AnswerResponse, 스웨거 기준)
+// 캘린더·날짜 답변은 모두 dateAnswer 배열(CalendarEventAnswer[])로 내려온다.
+// eventName/startDate/endDate/color 는 평면 필드가 아니라 배열 원소의 속성이다.
 export interface SubmitAnswer {
   fieldId: number;
   fieldTitle: string;
@@ -48,11 +48,7 @@ export interface SubmitAnswer {
   textAnswer: string | null;
   filePath: string | null;
   fileSize: number | null;
-  dateAnswer: string | null;
-  eventName: string | null;
-  startDate: string | null;
-  endDate: string | null;
-  color: string | null;
+  dateAnswer: CalendarEventAnswer[] | null;
 }
 
 export interface AdminSubmitDetail {

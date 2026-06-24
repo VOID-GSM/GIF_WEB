@@ -71,25 +71,18 @@ export default function FormSubmitView({ formId }: Props) {
       const fId = field.fieldId ?? field.id ?? 0;
       if (field.type === "FILE") return [];
 
-      if (field.type === "DATE") {
+      if (field.type === "DATE" || field.type === "CALENDAR") {
         const events = calendarAnswers[fId] ?? [];
-        // DATE 타입은 단일 날짜 문자열(dateAnswer)로 전송한다.
-        return events.map((e) => ({
+        // DATE·CALENDAR 모두 dateAnswer 배열(CalendarEventRequest[])로 전송한다.
+        return [{
           fieldId: fId,
-          dateAnswer: e.startDate,
-        }));
-      }
-
-      if (field.type === "CALENDAR") {
-        const events = calendarAnswers[fId] ?? [];
-        // 캘린더 이벤트는 같은 fieldId 를 가진 개별 answer 항목으로 전송한다.
-        return events.map((e) => ({
-          fieldId: fId,
-          eventName: e.title,
-          startDate: e.startDate,
-          endDate: e.endDate,
-          color: e.color,
-        }));
+          dateAnswer: events.map((e) => ({
+            eventName: e.title,
+            startDate: e.startDate,
+            endDate: e.endDate,
+            color: e.color,
+          })),
+        }];
       }
 
       return [{
