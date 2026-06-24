@@ -32,6 +32,12 @@ export default function ProjectInfo({
 }: ProjectInfoProps) {
   const readonlyValue = "text-2xl text-gray-900 font-medium";
 
+  // 팀장(LEADER)을 항상 팀원 목록 맨 앞에 표시 (양도 시 새 팀장이 앞으로 이동)
+  const orderedMembers = [...project.members].sort(
+    (a, b) =>
+      (b.role === "LEADER" ? 1 : 0) - (a.role === "LEADER" ? 1 : 0),
+  );
+
   return (
     <div className="flex flex-col">
       <section className="flex flex-col gap-6 sm:flex-row sm:gap-8">
@@ -66,7 +72,7 @@ export default function ProjectInfo({
               <span className="text-2xl font-medium text-gray-700">팀원</span>
             </div>
             <div className="flex flex-1 flex-wrap items-center gap-2">
-              {project.members.map((member) =>
+              {orderedMembers.map((member) =>
                 onMemberClick ? (
                   <button
                     key={member.userId}
