@@ -1,13 +1,21 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { DeadlineStatusSection, FormListSection, ProjectInfo } from "@repo/ui";
 
+import { useGetMe } from "@/entities/auth";
 import { getDeadlineSummary, useGetForms } from "@/entities/form";
-import { useGetMyProject, useGetProject } from "@/entities/project";
+import {
+  useGetMyProject,
+  useGetProject,
+  useTransferLeader,
+  type ProjectMember,
+} from "@/entities/project";
 
 import AiSummarySection from "@/widgets/project-detail/ui/AiSummarySection";
+import LeaderTransferModal from "@/widgets/project-detail/ui/LeaderTransferModal";
 import ScheduleSection from "@/widgets/project-detail/ui/ScheduleSection";
 
 interface ProjectDetailViewProps {
@@ -22,9 +30,35 @@ export default function ProjectDetailView({
   const { data: project, isPending, isError } = useGetProject(projectId);
   const { data: myProjects } = useGetMyProject();
   const { data: forms } = useGetForms(projectId);
+  const { data: me } = useGetMe();
+
+  const { mutate: transferLeader, isPending: isTransferring } =
+    useTransferLeader(projectId);
+  const [transferTarget, setTransferTarget] = useState<ProjectMember | null>(
+    null,
+  );
 
   // 내 팀 여부 — 내 프로젝트 목록에 현재 상세 id가 포함되는지로 판단
   const isMine = myProjects?.some((p) => p.id === projectId) ?? false;
+
+  // 내가 이 팀의 팀장인지 — 팀장만 팀원에게 팀장을 양도할 수 있다
+  const isLeader =
+    project?.members.some(
+      (m) => m.userId === me?.userId && m.role === "LEADER",
+    ) ?? false;
+
+  // 팀원 클릭 시 양도 확인 모달 — 본인(현재 팀장)은 제외
+  const handleMemberClick = (member: ProjectMember) => {
+    if (member.userId === me?.userId) return;
+    setTransferTarget(member);
+  };
+
+  const handleConfirmTransfer = () => {
+    if (!transferTarget) return;
+    transferLeader(transferTarget.userId, {
+      onSuccess: () => setTransferTarget(null),
+    });
+  };
 
   const goToEdit = () => router.push(`/projects/${projectId}/edit`);
 
@@ -53,6 +87,10 @@ export default function ProjectDetailView({
           project={project}
           summary={
             !isMine ? <AiSummarySection projectId={projectId} /> : undefined
+          }
+          // 내 팀의 팀장일 때만 팀원 클릭으로 팀장 양도 가능
+          onMemberClick={
+            isMine && isLeader ? handleMemberClick : undefined
           }
         />
 
@@ -87,6 +125,15 @@ export default function ProjectDetailView({
           </div>
         )}
       </div>
+
+      {transferTarget && (
+        <LeaderTransferModal
+          memberName={transferTarget.name}
+          isPending={isTransferring}
+          onConfirm={handleConfirmTransfer}
+          onClose={() => setTransferTarget(null)}
+        />
+      )}
     </div>
   );
 }
