@@ -152,10 +152,6 @@ const emptyAnswerFields = {
   filePath: null,
   fileSize: null,
   dateAnswer: null,
-  eventName: null,
-  startDate: null,
-  endDate: null,
-  color: null,
 };
 
 function fileAnswer(
@@ -185,8 +181,7 @@ function calendarAnswer(
     fieldId,
     fieldTitle,
     type: "CALENDAR",
-    dateAnswer: event.startDate,
-    ...event,
+    dateAnswer: [event],
   };
 }
 

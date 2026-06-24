@@ -170,14 +170,16 @@ export default function CalendarAnswer({
     null,
   );
 
-  const events: CalendarEvent[] = answers
-    .filter((a) => a.eventName && a.startDate && a.endDate)
-    .map((a) => ({
-      title: a.eventName as string,
-      startDate: a.startDate as string,
-      endDate: a.endDate as string,
-      color: a.color ?? "gray",
-    }));
+  const events: CalendarEvent[] = answers.flatMap((a) =>
+    (a.dateAnswer ?? [])
+      .filter((ev) => ev.startDate && ev.endDate)
+      .map((ev) => ({
+        title: ev.eventName ?? "",
+        startDate: ev.startDate,
+        endDate: ev.endDate,
+        color: ev.color ?? "gray",
+      })),
+  );
 
   const year = currentMonth.getFullYear();
   const month = currentMonth.getMonth();
