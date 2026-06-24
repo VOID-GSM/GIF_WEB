@@ -6,6 +6,7 @@ import { getDeadlineSummary, useGetForms } from "@/entities/form";
 import { useGetProject } from "@/entities/project";
 import AiSummarySection from "@/widgets/project-detail/ui/AiSummarySection";
 import MemoSection from "@/widgets/project-detail/ui/MemoSection";
+import ScoreAssignSection from "@/widgets/project-detail/ui/ScoreAssignSection";
 
 interface ProjectDetailViewProps {
   projectId: number;
@@ -47,6 +48,9 @@ export default function ProjectDetailView({
           </div>
           <MemoSection key={projectId} projectId={projectId} />
         </div>
+
+        {/* 하단 — 역할별 점수 부여 버튼 */}
+        <ScoreAssignSection projectId={projectId} />
       </div>
     </div>
   );

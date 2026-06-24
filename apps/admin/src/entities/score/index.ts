@@ -1,4 +1,5 @@
 export * from "./model/types";
+export * from "./model/areas";
 export * from "./api";
 export * from "./hooks/useMajorScore";
 export * from "./hooks/useReportScore";
