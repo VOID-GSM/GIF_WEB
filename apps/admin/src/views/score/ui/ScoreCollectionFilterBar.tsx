@@ -1,33 +1,28 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Chevron, GrantButton } from "@repo/ui";
-import type { GrantStatus, Grade } from "@repo/ui";
-import type { ScoreFilter } from "./constants";
+import { Chevron } from "@repo/ui";
+import type { Grade } from "@/entities/project";
 
 const GRADE_OPTIONS: { value: Grade; label: string }[] = [
   { value: 1, label: "1학년" },
   { value: 2, label: "2학년" },
 ];
 
-const LEGEND = [
-  { dot: "bg-green-50 border-green-500",   label: "점수 부여 완료" },
-  { dot: "bg-orange-50 border-orange-400", label: "점수 미부여"   },
-  { dot: "bg-gray-100 border-gray-300",    label: "해당 없음"     },
-];
-
 interface Props {
   grade: Grade;
   onGradeChange: (grade: Grade) => void;
-  scoreFilter: ScoreFilter;
-  onFilterChange: (filter: ScoreFilter) => void;
+  canNotice: boolean;
+  isNoticing: boolean;
+  onNotice: () => void;
 }
 
-export default function ScoreAssignFilterBar({
+export default function ScoreCollectionFilterBar({
   grade,
   onGradeChange,
-  scoreFilter,
-  onFilterChange,
+  canNotice,
+  isNoticing,
+  onNotice,
 }: Props) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -44,7 +39,7 @@ export default function ScoreAssignFilterBar({
   const selectedLabel = GRADE_OPTIONS.find((o) => o.value === grade)?.label ?? "1학년";
 
   return (
-    <div className="flex flex-wrap items-center gap-2 mb-5 w-full">
+    <div className="flex items-center justify-between mb-4 sm:mb-5">
       <div className="relative" ref={dropdownRef}>
         <button
           onClick={() => setDropdownOpen((prev) => !prev)}
@@ -70,25 +65,16 @@ export default function ScoreAssignFilterBar({
           </ul>
         )}
       </div>
-      {(["ungranted", "granted"] as GrantStatus[]).map((status) => {
-        const filter: ScoreFilter = status === "ungranted" ? "incomplete" : "complete";
-        return (
-          <GrantButton
-            key={status}
-            status={status}
-            isActive={scoreFilter === filter}
-            onClick={() => onFilterChange(scoreFilter === filter ? "all" : filter)}
-          />
-        );
-      })}
-      <div className="w-full sm:w-auto sm:ml-auto flex items-center gap-x-4 text-xs text-gray-500">
-        {LEGEND.map(({ dot, label }) => (
-          <span key={label} className="flex items-center gap-1.5">
-            <span className={`w-2.5 h-2.5 rounded-full border inline-block ${dot}`} />
-            {label}
-          </span>
-        ))}
-      </div>
+      {canNotice && (
+        <button
+          type="button"
+          disabled={isNoticing}
+          onClick={onNotice}
+          className="py-[6.5px] px-[20px] rounded-[8px] text-[12px] bg-yellow-600 hover:bg-yellow-700 text-black font-semibold cursor-pointer transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {isNoticing ? "공지 중..." : "공지하기"}
+        </button>
+      )}
     </div>
   );
 }
