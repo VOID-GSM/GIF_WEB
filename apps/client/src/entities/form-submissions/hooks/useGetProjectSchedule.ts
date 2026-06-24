@@ -5,29 +5,29 @@ import { getFormMySubmit } from "../api/api";
 import type { CalendarEvent } from "../ui/CalendarField";
 import type { SubmitAnswerItem } from "../model/types";
 
+function isDateStr(value: unknown): value is string {
+  return typeof value === "string" && value.length > 0;
+}
+
 // 한 양식의 제출 답변에서 캘린더/날짜 이벤트만 뽑아낸다.
-// 캘린더 이벤트는 같은 fieldId 를 가진 개별 answer 항목으로 내려오고,
-// DATE 타입은 단일 날짜를 dateAnswer 로 내려보낸다.
+// 백엔드는 DATE·CALENDAR 답변을 모두 dateAnswer 배열(CalendarEventResponse[])로 내려준다.
 function toCalendarEvents(
   formId: number,
   answers: SubmitAnswerItem[],
 ): CalendarEvent[] {
   return answers
-    .filter(
-      (a) =>
-        (a.type === "DATE" || a.type === "CALENDAR") &&
-        (!!a.startDate || !!a.dateAnswer),
-    )
-    .map((a, i) => {
-      const start = a.startDate ?? a.dateAnswer ?? "";
-      return {
-        id: `${formId}-${a.fieldId}-${start}-${i}`,
-        title: a.eventName || a.fieldTitle || "",
-        startDate: start,
-        endDate: a.endDate ?? start,
-        color: a.color || "gray",
-      };
-    });
+    .filter((a) => a.type === "DATE" || a.type === "CALENDAR")
+    .flatMap((a) =>
+      (a.dateAnswer ?? [])
+        .filter((ev) => isDateStr(ev.startDate))
+        .map((ev, i) => ({
+          id: `${formId}-${a.fieldId}-${ev.startDate}-${i}`,
+          title: ev.eventName || a.fieldTitle || "",
+          startDate: ev.startDate,
+          endDate: isDateStr(ev.endDate) ? ev.endDate : ev.startDate,
+          color: ev.color || "gray",
+        })),
+    );
 }
 
 // 프로젝트(팀)가 제출한 양식들의 캘린더 일정을 모두 모아 하나의 일정으로 합친다.

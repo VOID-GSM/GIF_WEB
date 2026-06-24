@@ -16,19 +16,27 @@ export interface GetFormDetailResponse {
   fields: FormDetailField[];
 }
 
-// 백엔드 AnswerRequest/AnswerResponse 는 평면(flat) 구조이며,
-// 캘린더 이벤트는 같은 fieldId 를 가진 개별 answer 항목으로 표현된다.
-// (dateAnswer 는 단일 날짜 문자열, 캘린더 이벤트는 eventName/startDate/endDate/color)
+// 백엔드 계약(스웨거 기준):
+// - 캘린더/날짜 답변은 모두 dateAnswer 배열(CalendarEventRequest[]) 안의 객체로 표현된다.
+//   eventName/startDate/endDate/color 는 평면 필드가 아니라 배열 원소의 속성이다.
+// - DATE 타입도 dateAnswer 객체로 표현된다(단일 날짜는 startDate === endDate).
+// - 파일은 filePath/fileSize 로 표현되며, PATCH 시 기존 파일을 보존하려면 함께 보내야 한다.
 
-// POST /api/form/submit
+// AnswerRequest.dateAnswer 의 원소
+export interface CalendarEventRequest {
+  eventName?: string;
+  startDate: string;
+  endDate: string;
+  color?: string;
+}
+
+// POST /api/form/submit, PATCH /api/form/submit 의 answer 항목(AnswerRequest)
 export interface FormAnswerItem {
   fieldId: number;
   textAnswer?: string;
-  dateAnswer?: string;
-  eventName?: string;
-  startDate?: string;
-  endDate?: string;
-  color?: string;
+  dateAnswer?: CalendarEventRequest[];
+  filePath?: string;
+  fileSize?: number;
 }
 
 export interface PostFormSubmitRequest {
@@ -60,18 +68,24 @@ export interface GetFormMySubmitParams {
   projectId: number;
 }
 
+// AnswerResponse.dateAnswer 의 원소(CalendarEventResponse)
+export interface CalendarEventResponse {
+  eventName: string | null;
+  startDate: string;
+  endDate: string;
+  color: string | null;
+}
+
+// GET /api/form/my-submit, /api/form/admin/submit 의 answer 항목(AnswerResponse).
+// 캘린더 이벤트는 dateAnswer 배열로만 내려오며, 평면 필드는 존재하지 않는다.
 export interface SubmitAnswerItem {
   fieldId: number;
   fieldTitle: string;
   type: string;
-  textAnswer: string;
-  filePath: string;
-  fileSize: number;
-  dateAnswer: string | null;
-  eventName: string | null;
-  startDate: string | null;
-  endDate: string | null;
-  color: string | null;
+  textAnswer: string | null;
+  filePath: string | null;
+  fileSize: number | null;
+  dateAnswer: CalendarEventResponse[] | null;
 }
 
 export interface GetFormMySubmitResponse {
