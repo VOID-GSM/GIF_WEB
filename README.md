@@ -48,21 +48,11 @@ npm run dev -w apps/admin
 npm run dev -w apps/client
 ```
 
-### 빌드 & 린트
-
-```bash
-# 전체 프로젝트 빌드
-npm run build
-
-# 코드 린트 검사
-npm run lint
-```
-
 ## 버그 제보 및 이슈
 
 버그를 발견하거나 기능 제안이 있다면 GitHub 이슈 트래커를 이용해 주세요.
 
-- **이슈 트래커:** https://github.com/VOID-GSM/GIF_WAB/issues
+- **이슈 트래커:** https://github.com/VOID-GSM/GIF_WAB/issues/new?template=%F0%9F%90%9Ebug.md
 
 이슈를 등록할 때는 다음 내용을 포함해 주세요.
 
