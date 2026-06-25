@@ -20,8 +20,8 @@ export default function ScoreCollectionTable({ isLoading, isError, scoreRows }: 
   }
 
   return (
-    <div className="overflow-y-auto max-h-[440px]">
-      <div className="flex justify-between bg-orange-50 py-3 sm:py-4 sticky top-0 z-10">
+    <div className="flex-1 min-h-0 overflow-y-auto">
+      <div className="flex items-center justify-between bg-orange-50 h-9 sticky top-0 z-10">
         <div className="flex gap-1.5">
           <div className="w-12 sm:w-16 md:w-20 text-center font-medium text-sm sm:text-base">
             등수
@@ -42,7 +42,7 @@ export default function ScoreCollectionTable({ isLoading, isError, scoreRows }: 
         scoreRows.map(({ rank, teamName, totalScore }) => (
           <div
             key={teamName}
-            className="flex justify-between items-center py-3 sm:py-[14px] border-t border-gray-100"
+            className="flex justify-between items-center h-11 border-t border-gray-100"
           >
             <div className="flex items-center gap-1.5">
               <div className="w-12 sm:w-16 md:w-20 text-center font-medium text-sm sm:text-base">

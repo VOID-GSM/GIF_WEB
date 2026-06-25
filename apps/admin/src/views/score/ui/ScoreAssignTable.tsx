@@ -21,7 +21,7 @@ interface Props {
 const AREAS: ScoreArea[] = ["major", "report", "social"];
 
 const headerCellCx =
-  "px-4 py-2.5 bg-[var(--color-yellow-50)] border-y border-[var(--color-yellow-600)] text-xs font-semibold text-[var(--color-gray-700)] sticky top-0 z-10";
+  "px-4 h-9 flex items-center bg-[var(--color-yellow-50)] border-y border-[var(--color-yellow-600)] text-xs font-semibold text-[var(--color-gray-700)] sticky top-0 z-10";
 
 export default function ScoreAssignTable({ isLoading, teams, allowedAreas }: Props) {
   const router = useRouter();
@@ -87,7 +87,7 @@ export default function ScoreAssignTable({ isLoading, teams, allowedAreas }: Pro
       </div>
 
       {/* 데스크탑: 테이블 레이아웃 (>= sm) */}
-      <div className="hidden sm:block w-full max-h-[440px] overflow-y-auto">
+      <div className="hidden sm:block w-full flex-1 min-h-0 overflow-y-auto">
         <div className="grid grid-cols-[100px_1fr_minmax(200px,auto)] min-w-[520px]">
           <span className={headerCellCx}>팀명</span>
           <span className={headerCellCx}>프로젝트명</span>
@@ -95,13 +95,13 @@ export default function ScoreAssignTable({ isLoading, teams, allowedAreas }: Pro
 
           {teams.map((team) => (
             <Fragment key={team.id}>
-              <span className="border-t border-[var(--color-gray-100)] px-4 py-3 text-sm text-[var(--color-gray-800)] flex items-center">
+              <span className="border-t border-[var(--color-gray-100)] px-4 h-11 text-sm text-[var(--color-gray-800)] flex items-center">
                 {team.teamName}
               </span>
-              <span className="border-t border-[var(--color-gray-100)] px-4 py-3 text-sm text-[var(--color-gray-600)] truncate flex items-center min-w-0">
+              <span className="border-t border-[var(--color-gray-100)] px-4 h-11 text-sm text-[var(--color-gray-600)] truncate flex items-center min-w-0">
                 {team.name}
               </span>
-              <div className="border-t border-[var(--color-gray-100)] px-4 py-3 flex flex-wrap items-center gap-2">
+              <div className="border-t border-[var(--color-gray-100)] px-4 h-11 flex flex-wrap items-center gap-2">
                 {renderBadges(team)}
               </div>
             </Fragment>
