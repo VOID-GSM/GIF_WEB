@@ -1,0 +1,33 @@
+name: GIF-WAB CI
+
+on:
+  pull_request:
+    branches:
+      - develop
+      - main
+  push:
+    branches:
+      - develop
+      - main
+
+jobs:
+  client-docker-build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build client Docker image
+        run: docker build -f apps/client/Dockerfile -t gif-client .
+
+  admin-docker-build:
+    runs-on: ubuntu-latest
+    continue-on-error: true
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build admin Docker image
+        run: docker build -f apps/admin/Dockerfile -t gif-admin .
