@@ -1,33 +1,52 @@
 name: GIF-WAB CI
 
 on:
-  pull_request:
-    branches:
-      - develop
-      - main
   push:
-    branches:
-      - develop
-      - main
+    branches: ['main', 'develop']
+  pull_request:
+    branches: ['**']
 
 jobs:
-  client-docker-build:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Build client Docker image
+      - name: Node.js 22 설정
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: 의존성 설치
+        run: npm ci
+
+      - name: Client Build
+        run: npm run build --workspace=client
+
+      - name: Client Docker Build
         run: docker build -f apps/client/Dockerfile -t gif-client .
 
-  admin-docker-build:
-    runs-on: ubuntu-latest
-    continue-on-error: true
+      - name: GIF_WAB CI Discord Notification (success)
+        if: ${{ success() }}
+        uses: sarisia/actions-status-discord@v1
+        with:
+          webhook: ${{ secrets.DISCORD }}
+          title: '✅ GIF_WAB CI Success! ✅'
+          status: ${{ job.status }}
+          description: 'Client 빌드 및 Docker 이미지 빌드 성공'
+          color: 65280
+          username: 'GIF-WAB-bot'
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Build admin Docker image
-        run: docker build -f apps/admin/Dockerfile -t gif-admin .
+      - name: GIF_WAB CI Discord Notification (failure)
+        if: ${{ failure() }}
+        uses: sarisia/actions-status-discord@v1
+        with:
+          webhook: ${{ secrets.DISCORD }}
+          title: '❗️ GIF_WAB CI Fail! ❗️'
+          status: ${{ job.status }}
+          description: 'Client 빌드 또는 Docker 이미지 빌드 실패'
+          color: 16711680
+          username: 'GIF-WAB-bot'
