@@ -9,7 +9,8 @@ interface FormCardProps {
   form: FormSummary;
   onAnnounce: (id: number) => void;
   onEdit: (id: number) => void;
-  onDelete: (id: number) => void;
+  // 삭제 권한이 있을 때만 전달 — 없으면 삭제 버튼을 렌더하지 않는다.
+  onDelete?: (id: number) => void;
   onView?: (id: number) => void;
 }
 
@@ -61,14 +62,16 @@ export default function FormCard({
         </button>
       )}
 
-      <button
-        type="button"
-        onClick={(e) => { e.stopPropagation(); onDelete(id); }}
-        aria-label="양식 삭제"
-        className="ml-3 flex shrink-0 cursor-pointer items-center justify-center rounded-lg p-1 text-gray-700 transition-all duration-150 hover:scale-110 hover:text-black active:scale-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 sm:ml-5"
-      >
-        <Close width={20} height={20} />
-      </button>
+      {onDelete && (
+        <button
+          type="button"
+          onClick={(e) => { e.stopPropagation(); onDelete(id); }}
+          aria-label="양식 삭제"
+          className="ml-3 flex shrink-0 cursor-pointer items-center justify-center rounded-lg p-1 text-gray-700 transition-all duration-150 hover:scale-110 hover:text-black active:scale-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 sm:ml-5"
+        >
+          <Close width={20} height={20} />
+        </button>
+      )}
     </div>
   );
 }
