@@ -13,13 +13,6 @@ const ADMIN_ROLE_LABEL: Record<string, string> = {
   MASTER: "아이디어 페스티벌 담당",
 };
 
-const ADMIN_ROLE_VALUE: Record<string, string> = {
-  "학년부 부장": "GRADE_HEAD",
-  "보통 교과": "GENERAL_TEACHER",
-  "전공 교과": "MAJOR_TEACHER",
-  "아이디어 페스티벌 담당": "MASTER",
-};
-
 export default function MypageView() {
   const router = useRouter();
   const { data, isLoading, isError } = useGetMyInfo();
@@ -40,18 +33,13 @@ export default function MypageView() {
       key: "adminRole",
       label: "역할",
       value: role,
-      type: "dropdown" as const,
-      dropdownOptions: [
-        "학년부 부장",
-        "보통 교과",
-        "전공 교과",
-        "아이디어 페스티벌 담당",
-      ],
+      type: "readonly" as const,
     },
     {
       key: "adminTeam",
       label: "담당 팀",
-      value: data?.adminTeam ?? "담당하는 팀이 없습니다",
+      value: data?.adminTeam ?? "",
+      placeholder: "담당하는 팀이 없습니다",
       type: "input" as const,
     },
   ];
@@ -64,10 +52,7 @@ export default function MypageView() {
 
   const handleEdit = (updatedValues: Record<string, string>) => {
     updateInfo({
-      adminRole:
-        ADMIN_ROLE_VALUE[updatedValues["adminRole"]] ??
-        updatedValues["adminRole"],
-      adminTeam: updatedValues["adminTeam"],
+      adminTeam: updatedValues["adminTeam"]?.trim() || undefined,
     });
   };
 

@@ -18,9 +18,10 @@ export default function FormListView() {
 
   const handleCreate = () => router.push("/form/create");
   const handleEdit = (id: number) => router.push(`/form/edit/${id}`);
+  const handleView = (id: number) => router.push(`/form/submissions/${id}`);
 
   return (
-    <div className="flex flex-col items-center px-4 pt-12 pb-4 sm:pt-20">
+    <div className="flex min-h-[calc(100dvh-80px)] flex-col items-center bg-background px-4 pt-12 pb-4 sm:pt-20">
       <div className="flex max-h-[calc(100vh-160px)] w-full max-w-[848px] flex-col overflow-y-auto px-2 py-6 sm:px-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         <div className="mb-6 flex justify-end">
           <button
@@ -51,6 +52,7 @@ export default function FormListView() {
                 onAnnounce={announce}
                 onEdit={handleEdit}
                 onDelete={remove}
+                onView={handleView}
               />
             ))}
           </div>

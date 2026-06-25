@@ -21,7 +21,8 @@ export default function FormListView() {
     isError: isFormsError,
   } = useGetFormList(projectId);
 
-  const handleOpen = (id: number) => router.push(`/form/${id}`);
+  const handleSubmit = (id: number) => router.push(`/form/${id}/submit`);
+  const handleEdit = (id: number) => router.push(`/form/${id}/edit`);
 
   const isLoading = isProjectsLoading || (!!projectId && isFormsLoading);
   const isError = isProjectsError || isFormsError;
@@ -31,7 +32,7 @@ export default function FormListView() {
 
   return (
     <div
-      className={`flex min-h-[calc(100vh-80px)] flex-col items-center px-4 ${
+      className={`flex min-h-[calc(100vh-80px)] flex-col items-center bg-background px-4 ${
         showMessage ? "justify-center" : "justify-start"
       }`}
     >
@@ -56,7 +57,12 @@ export default function FormListView() {
           </p>
         ) : (
           forms.map((form) => (
-            <FormCard key={form.id} form={form} onOpen={handleOpen} />
+            <FormCard
+              key={form.id}
+              form={form}
+              onSubmit={handleSubmit}
+              onEdit={handleEdit}
+            />
           ))
         )}
       </div>

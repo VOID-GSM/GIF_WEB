@@ -16,8 +16,6 @@ export interface GetGoogleCallbackParams {
   state: string;
 }
 
-export type GetDgCallbackResponse = SignInResponse;
-
 export interface GetMyInfoResponse {
   userId: number;
   email: string;

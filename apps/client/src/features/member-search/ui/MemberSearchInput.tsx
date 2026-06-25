@@ -7,12 +7,20 @@ import { NameBadge, Plus } from "@repo/ui";
 import { useSearchUsers, type UserSearchResult } from "@/entities/project";
 
 interface MemberSearchInputProps {
+  // 프로젝트 학년 — 같은 학년 학생만 검색·추가 가능
+  grade: number;
   owner?: UserSearchResult;
   value: UserSearchResult[];
   onChange: (members: UserSearchResult[]) => void;
 }
 
-export function MemberSearchInput({ owner, value, onChange }: MemberSearchInputProps) {
+// 학번 첫 자리가 학년 (예: "1101" → 1학년)
+const gradeOf = (studentNumber: string | undefined | null) => {
+  if (!studentNumber || studentNumber.length === 0) return 0;
+  return Number(studentNumber[0]);
+};
+
+export function MemberSearchInput({ grade, owner, value, onChange }: MemberSearchInputProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [keyword, setKeyword] = useState("");
   const [debouncedKeyword, setDebouncedKeyword] = useState("");
@@ -25,7 +33,11 @@ export function MemberSearchInput({ owner, value, onChange }: MemberSearchInputP
 
   const { data: apiResults = [] } = useSearchUsers(debouncedKeyword);
   const results = apiResults.filter(
-    (u) => !value.some((m) => m.userId === u.userId) && u.userId !== owner?.userId,
+    (u) =>
+      !value.some((m) => m.userId === u.userId) &&
+      u.userId !== owner?.userId &&
+      // 프로젝트 학년과 다른 학년 학생은 검색 결과에서 제외
+      gradeOf(u.studentNumber) === grade,
   );
 
   useEffect(() => {
@@ -42,6 +54,8 @@ export function MemberSearchInput({ owner, value, onChange }: MemberSearchInputP
   }, [isOpen]);
 
   const handleAdd = (user: UserSearchResult) => {
+    // 다른 학년 학생은 추가 불가(검색 결과에서도 제외되지만 방어적으로 재확인)
+    if (gradeOf(user.studentNumber) !== grade) return;
     if (value.some((m) => m.userId === user.userId)) return;
     onChange([...value, user]);
     setKeyword("");

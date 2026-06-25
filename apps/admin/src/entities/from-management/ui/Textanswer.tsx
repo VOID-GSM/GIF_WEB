@@ -1,0 +1,13 @@
+import { SubmitAnswer } from "@/entities/from-management/model/type";
+
+export default function TextAnswer({
+  answer,
+}: {
+  answer: SubmitAnswer | undefined;
+}) {
+  return (
+    <div className="min-h-20 border border-gray-80 rounded-[10px] p-[15px] font-medium">
+      {answer?.textAnswer ?? "답변 없음"}
+    </div>
+  );
+}

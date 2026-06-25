@@ -1,6 +1,14 @@
 import { apiClient } from "@repo/lib";
 
-import type { CreateProjectRequest, ProjectResponse, UserSearchResult } from "../model/types";
+import type {
+  CreateProjectRequest,
+  ProjectDetail,
+  ProjectResponse,
+  ProjectSummaryResponse,
+  TransferLeaderRequest,
+  UpdateProjectRequest,
+  UserSearchResult,
+} from "../model/types";
 
 export const createProject = async (
   data: CreateProjectRequest,
@@ -27,9 +35,63 @@ export const getMyProject = async (): Promise<ProjectResponse> => {
   return data;
 };
 
+export const getProject = async (projectId: number): Promise<ProjectDetail> => {
+  const { data } = await apiClient.get<ProjectDetail>(
+    `/api/project/${projectId}`,
+  );
+  return data;
+};
+
+export const updateProject = async (
+  projectId: number,
+  data: UpdateProjectRequest,
+): Promise<void> => {
+  const formData = new FormData();
+  formData.append("name", data.name);
+  formData.append("teamName", data.teamName);
+  formData.append("description", data.description);
+  formData.append("grade", String(data.grade));
+  data.addMemberIds.forEach((id) => formData.append("addMemberIds", String(id)));
+  data.removeMemberIds.forEach((id) =>
+    formData.append("removeMemberIds", String(id)),
+  );
+  if (data.logo) formData.append("logo", data.logo);
+
+  await apiClient.put(`/api/project/${projectId}/update`, formData, {
+    headers: { "Content-Type": null },
+  });
+};
+
+// 팀원(리더 아님)은 프로젝트 설명만 수정 가능 — 전체 수정(PUT)은 리더만 허용(403)
+export const updateProjectDescription = async (
+  projectId: number,
+  description: string,
+): Promise<void> => {
+  await apiClient.patch(`/api/project/${projectId}/description`, {
+    description,
+  });
+};
+
+export const transferLeader = async (
+  projectId: number,
+  newLeaderUserId: number,
+): Promise<void> => {
+  const body: TransferLeaderRequest = { newLeaderUserId };
+  await apiClient.patch(`/api/project/${projectId}/transfer-leader`, body);
+};
+
 export const searchUsers = async (keyword: string): Promise<UserSearchResult[]> => {
   const { data } = await apiClient.get<UserSearchResult[]>("/api/project/users/search", {
     params: { keyword },
   });
+  return data;
+};
+
+export const getProjectSummary = async (
+  projectId: number,
+): Promise<ProjectSummaryResponse> => {
+  const { data } = await apiClient.get<ProjectSummaryResponse>(
+    `/api/project/${projectId}/summary`,
+  );
   return data;
 };

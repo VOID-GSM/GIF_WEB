@@ -1,5 +1,9 @@
 # GIF (Gsm Idea Festival) - Frontend Guide
 
+## Language
+
+- 모든 답변은 한국어로 작성한다.
+
 ## Project Overview
 
 GIF is a comprehensive management service designed to efficiently operate the entire process of the Gwangju Software Meister High School Idea Festival. Moving away from traditional manual processes, GIF integrates all workflows into a single platform to maximize operational efficiency. This ranges from student (Client) team project management and material submission, to administrator (Admin) tasks—which are subdivided by teacher roles (Idea Festival Coordinator, Major Subject Teacher, General Subject Teacher, and Head of Grade)—such as form creation, submission status tracking, evaluation, and score aggregation.
@@ -75,3 +79,4 @@ Simple code questions can be answered directly without a skill.
 |------|--------|--------|--------|
 | 2026-06-01 | Initial setup — git workflow harness | All | - |
 | 2026-06-01 | Added development harness (feature, API, component) | All | Project-wide coding pattern enforcement |
+| 2026-06-22 | Added Korean-only response rule | All | 모든 답변을 한국어로 작성 |

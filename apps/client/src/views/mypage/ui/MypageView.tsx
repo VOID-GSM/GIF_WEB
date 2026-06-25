@@ -3,6 +3,7 @@
 import { MypageCard } from "@repo/ui";
 import { useRouter } from "next/navigation";
 import { useGetMyInfo, useUpdateClientInfo } from "@/entities/mypage";
+import { useGetMyProject } from "@/entities/project";
 import { COOKIE_KEYS } from "@/shared/constants";
 import { deleteCookie } from "@/shared/utils";
 
@@ -19,11 +20,14 @@ const CLIENT_ROLE_VALUE: Record<string, string> = {
 export default function MypageView() {
   const router = useRouter();
   const { data, isLoading, isError } = useGetMyInfo();
+  const { data: myProjects } = useGetMyProject();
   const { mutate: updateInfo } = useUpdateClientInfo();
 
   const role = data?.clientRole
     ? (CLIENT_ROLE_LABEL[data.clientRole] ?? data.clientRole)
     : "-";
+
+  const teamName = myProjects?.[0]?.teamName ?? "-";
 
   const mypageInfoItems = [
     {
@@ -42,7 +46,7 @@ export default function MypageView() {
     {
       key: "clientTeam",
       label: "소속 팀",
-      value: data?.clientTeam ?? "-",
+      value: teamName,
       type: "readonly" as const,
     },
   ];

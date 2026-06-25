@@ -1,4 +1,12 @@
-export type ScoreArea = "major" | "report" | "social";
+// 점수 영역 도메인 정의(ScoreArea/AREA_LABELS/ROLE_ALLOWED_AREAS)는 entities/score 로 이동.
+// 기존 import 경로 호환을 위해 여기서 재export 한다.
+export {
+  AREA_LABELS,
+  AREA_LABELS_SHORT,
+  ROLE_ALLOWED_AREAS,
+} from "@/entities/score";
+export type { ScoreArea } from "@/entities/score";
+
 export type ScoreFilter = "all" | "incomplete" | "complete";
 export type ScoreValue = 40 | 32 | 24;
 
@@ -9,27 +17,7 @@ export interface CriterionRow {
   isComplete: boolean;
 }
 
-export const AREA_LABELS: Record<ScoreArea, string> = {
-  major: "전공 중심 영역",
-  report: "보고서 영역",
-  social: "사회 중심 영역",
-};
-
-export const AREA_LABELS_SHORT: Record<ScoreArea, string> = {
-  major: "전공",
-  report: "보고서",
-  social: "사회",
-};
-
-
 export const SCORES: ScoreValue[] = [40, 32, 24];
-
-export const ROLE_ALLOWED_AREAS: Record<string, ScoreArea[]> = {
-  MAJOR_TEACHER:   ["major"],
-  GENERAL_TEACHER: ["social"],
-  GRADE_HEAD:      ["report"],
-  MASTER:          ["major", "report", "social"],
-};
 
 export const AREA_CRITERIA: Record<string, { key: string; label: string }[]> = {
   major: [

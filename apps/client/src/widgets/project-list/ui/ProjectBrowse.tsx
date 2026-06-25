@@ -1,38 +1,36 @@
 "use client";
 
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-
 import {
   GRADES,
   ProjectCard,
   useGetFilteredProjects,
-  type Grade,
+  useStoredGrade,
 } from "@/entities/project";
 import GradeFilter from "@/features/project-filter/ui/GradeFilter";
 
-function parseGrade(value: string | null): Grade {
-  const parsed = Number(value);
-  return (GRADES as readonly number[]).includes(parsed)
-    ? (parsed as Grade)
-    : GRADES[0];
-}
-
 export default function ProjectBrowse() {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const grade = parseGrade(searchParams.get("grade"));
-  const { data: projects, isPending, isError } = useGetFilteredProjects(grade);
+  // 마지막으로 선택한 학년을 복원한다 (확정 전엔 null → 초기 학년 깜빡임 방지)
+  const { grade, setGrade } = useStoredGrade();
+
+  const {
+    data: projects,
+    isPending,
+    isError,
+  } = useGetFilteredProjects(grade ?? GRADES[0], grade !== null);
   // 서버가 grade로 거르지 않고 전체를 반환하므로 선택 학년으로 한 번 더 거른다
   const visibleProjects = projects?.filter((project) => project.grade === grade);
 
-  const handleChange = (next: Grade) => {
-    router.replace(`${pathname}?grade=${next}`, { scroll: false });
-  };
+  if (grade === null) {
+    return (
+      <div className="flex min-h-[calc(100dvh-80px)] flex-col items-center gap-12 bg-background px-4 py-10">
+        <p className="text-gray-600">불러오는 중...</p>
+      </div>
+    );
+  }
 
   return (
-    <div className="flex flex-col items-center gap-12 px-4 py-10">
-      <GradeFilter value={grade} onChange={handleChange} />
+    <div className="flex min-h-[calc(100dvh-80px)] flex-col items-center gap-12 bg-background px-4 py-10">
+      <GradeFilter value={grade} onChange={setGrade} />
 
       {isPending ? (
         <p className="text-gray-600">불러오는 중...</p>
