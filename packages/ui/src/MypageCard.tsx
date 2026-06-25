@@ -17,12 +17,15 @@ export interface MypageCardProps {
   items: MypageInfoItem[];
   onLogout?: () => void;
   onEdit?: (updatedValues: Record<string, string>) => void;
+  /** 이름 옆에 작게 붙는 텍스트 (예: "선생님") */
+  nameSuffix?: string;
 }
 
 export default function MypageCard({
   items,
   onLogout,
   onEdit,
+  nameSuffix,
 }: MypageCardProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
@@ -47,17 +50,33 @@ export default function MypageCard({
     return () => document.removeEventListener("mousedown", close);
   }, []);
 
-  const handleEditSave = () => {
-    if (isEditing) onEdit?.(editValues);
-    setIsEditing((prev) => !prev);
+  const handleSave = () => {
+    onEdit?.(editValues);
+    setIsEditing(false);
   };
+
+  const handleCancel = () => {
+    setOpenDropdown(null);
+    setIsEditing(false); // editValues는 effect가 초기값으로 되돌린다
+  };
+
+  // 이름은 상단 타이틀로 보여주고, 목록에서는 제외한다.
+  const nameItem = items.find((i) => i.key === "name");
+  const listItems = items.filter((i) => i.key !== "name");
+  const editable = items.some(
+    (i) => i.type === "input" || i.type === "dropdown",
+  );
+
+  const name = (nameItem?.value ?? "").trim();
 
   const renderValue = (item: MypageInfoItem) => {
     if (!isEditing || item.type === "readonly") {
       const display = editValues[item.key] || item.value;
       return (
-        <span className={display ? undefined : "text-gray-400"}>
-          {display || item.placeholder}
+        <span
+          className={`text-[16px] ${display && display !== "-" ? "text-gray-700" : "text-gray-400"}`}
+        >
+          {display && display !== "-" ? display : (item.placeholder ?? "-")}
         </span>
       );
     }
@@ -65,7 +84,8 @@ export default function MypageCard({
     if (item.type === "input") {
       return (
         <input
-          className="w-full focus:outline-none placeholder:text-gray-400"
+          autoFocus
+          className="w-full rounded-[10px] border border-gray-300 bg-white px-3 py-2 text-[16px] text-gray-700 transition-colors focus:border-yellow-700 focus:outline-none focus:ring-2 focus:ring-yellow-600/40 placeholder:text-gray-400"
           value={editValues[item.key] ?? ""}
           placeholder={item.placeholder}
           onChange={(e) =>
@@ -80,41 +100,52 @@ export default function MypageCard({
       const options = item.dropdownOptions ?? [];
 
       return (
-        <div className="relative w-full cursor-pointer dropdown-container">
+        <div className="dropdown-container relative w-full">
           <button
             type="button"
             onClick={(e) => {
               e.stopPropagation();
               setOpenDropdown(isOpen ? null : item.key);
             }}
-            className="flex items-center justify-between w-full text-left text-[20px] font-medium leading-[1.2] tracking-[-0.5px] text-gray-700"
+            className={`flex w-full items-center justify-between rounded-[10px] border bg-white px-3 py-2 text-left text-[16px] text-gray-700 transition-colors ${
+              isOpen
+                ? "border-yellow-700 ring-2 ring-yellow-600/40"
+                : "border-gray-300 hover:border-gray-400"
+            }`}
           >
-            {editValues[item.key] ?? ""}
+            {editValues[item.key] || "선택"}
             <Chevron
               direction={isOpen ? "up" : "down"}
-              className="transition-transform duration-300"
+              className="h-4 w-4 text-gray-500 transition-transform duration-300"
             />
           </button>
 
           {isOpen && (
-            <ul className="absolute left-0 top-9 z-10 w-[calc(100%+17px)] bg-background shadow-new rounded-[4px]">
-              {options.map((option) => (
-                <li key={option}>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setEditValues((prev) => ({
-                        ...prev,
-                        [item.key]: option,
-                      }));
-                      setOpenDropdown(null);
-                    }}
-                    className="w-full text-left text-[12px] px-[10px] py-3 leading-[1.2] tracking-[-0.5px] text-black hover:bg-gray-100"
-                  >
-                    {option}
-                  </button>
-                </li>
-              ))}
+            <ul className="absolute left-0 top-[calc(100%+6px)] z-10 w-full overflow-hidden rounded-[10px] border border-gray-100 bg-white shadow-new">
+              {options.map((option) => {
+                const selected = editValues[item.key] === option;
+                return (
+                  <li key={option}>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setEditValues((prev) => ({
+                          ...prev,
+                          [item.key]: option,
+                        }));
+                        setOpenDropdown(null);
+                      }}
+                      className={`w-full px-4 py-2.5 text-left text-[15px] transition-colors hover:bg-yellow-50 ${
+                        selected
+                          ? "font-semibold text-gray-900"
+                          : "text-gray-600"
+                      }`}
+                    >
+                      {option}
+                    </button>
+                  </li>
+                );
+              })}
             </ul>
           )}
         </div>
@@ -123,45 +154,79 @@ export default function MypageCard({
   };
 
   return (
-    <section className="w-full max-w-[720px] rounded-[20px] bg-white px-6 py-10 shadow-new md:px-[108px]">
-      <div className="flex w-full flex-col items-center justify-center gap-[55px]">
-        <div className="flex w-full items-center justify-between">
-          <h2 className="text-center text-[24px] font-medium leading-[1.2] tracking-[-0.6px] text-black">
-            프로필 정보
-          </h2>
-          <button
-            type="button"
-            onClick={onLogout}
-            className="flex cursor-pointer items-center gap-[18px] text-gray-600"
-          >
-            <span className="text-center text-[16px] font-medium leading-[1.2] tracking-[-0.4px]">
-              로그아웃
+    <section className="w-full max-w-[440px] rounded-[28px] bg-white px-8 py-9 shadow-new">
+      {/* 헤더 — 이름 */}
+      <div className="flex flex-col gap-1">
+        <span className="text-[13px] font-medium text-gray-400">내 프로필</span>
+        <h2 className="flex items-baseline gap-1.5 text-[24px] font-semibold tracking-[-0.5px] text-gray-900">
+          {name && name !== "-" ? name : "프로필"}
+          {nameSuffix && (
+            <span className="text-[14px] font-medium text-gray-400">
+              {nameSuffix}
             </span>
-            <Logout className="h-[15px] w-[18px]" aria-hidden="true" />
-          </button>
-        </div>
+          )}
+        </h2>
+      </div>
 
-        <dl className="flex w-full flex-col text-[20px] font-medium leading-[1.2] tracking-[-0.5px] text-gray-700">
-          {items.map((item) => (
-            <div
-              key={item.label}
-              className="relative flex w-full items-center justify-between border-b border-gray-200 py-3 px-[17px]"
+      {/* 정보 목록 */}
+      <dl className="mt-8 flex flex-col">
+        {listItems.map((item, idx) => (
+          <div
+            key={item.key}
+            className={`relative flex min-h-[64px] w-full items-center justify-between gap-4 py-3 ${
+              idx !== listItems.length - 1 ? "border-b border-gray-100" : ""
+            }`}
+          >
+            <dt className="shrink-0 text-[15px] font-medium text-gray-400">
+              {item.label}
+            </dt>
+            <dd className="flex min-w-0 flex-1 justify-end text-right font-medium">
+              {renderValue(item)}
+            </dd>
+          </div>
+        ))}
+      </dl>
+
+      {/* 액션 버튼 */}
+      <div className="mt-8 flex flex-col gap-2.5">
+        {isEditing ? (
+          <div className="flex gap-2.5">
+            <button
+              type="button"
+              onClick={handleCancel}
+              className="h-[48px] flex-1 cursor-pointer rounded-[14px] border border-gray-300 text-[15px] font-semibold text-gray-600 transition-colors hover:bg-gray-50"
             >
-              <dt className="w-[56px] shrink-0 text-right">{item.label}</dt>
-              <dd className="min-w-0 flex-1 pl-8 sm:w-[254px] sm:flex-none sm:pl-0">
-                {renderValue(item)}
-              </dd>
-            </div>
-          ))}
-        </dl>
-
-        <button
-          type="button"
-          onClick={handleEditSave}
-          className="h-10 w-[120px] cursor-pointer rounded-[32px] bg-yellow-600 text-center text-[16px] font-semibold leading-[1.2] tracking-[-0.32px] text-black"
-        >
-          {isEditing ? "저장하기" : "수정하기"}
-        </button>
+              취소
+            </button>
+            <button
+              type="button"
+              onClick={handleSave}
+              className="h-[48px] flex-1 cursor-pointer rounded-[14px] bg-yellow-600 text-[15px] font-semibold text-gray-900 shadow-sm transition-all hover:bg-yellow-400 active:scale-[0.98]"
+            >
+              저장하기
+            </button>
+          </div>
+        ) : (
+          <>
+            {editable && (
+              <button
+                type="button"
+                onClick={() => setIsEditing(true)}
+                className="h-[48px] w-full cursor-pointer rounded-[14px] bg-yellow-600 text-[15px] font-semibold text-gray-900 shadow-sm transition-all hover:bg-yellow-400 active:scale-[0.98]"
+              >
+                수정하기
+              </button>
+            )}
+            <button
+              type="button"
+              onClick={onLogout}
+              className="flex h-[48px] w-full cursor-pointer items-center justify-center gap-2 rounded-[14px] bg-gray-100 text-[15px] font-medium text-gray-600 transition-colors hover:bg-gray-200 hover:text-gray-700"
+            >
+              <Logout className="h-[15px] w-[18px]" aria-hidden="true" />
+              로그아웃
+            </button>
+          </>
+        )}
       </div>
     </section>
   );
