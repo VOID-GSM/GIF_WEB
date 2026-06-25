@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
+import { useGetMe } from "@/entities/auth";
 import {
   CLIENT_TERMS,
   TermsAgreement,
@@ -22,10 +23,17 @@ export default function TermsView() {
 
   const clientRole = searchParams.get("role") as ClientRole | null;
 
-  // 역할 정보 없이 약관 페이지에 직접 접근하면 회원가입으로 돌려보낸다.
+  const { data: me, isLoading: isMeLoading } = useGetMe();
+  const alreadySignedUp = !!me?.clientRole;
+
+  // 이미 가입한 사용자는 홈으로, 역할 정보 없이 직접 접근하면 회원가입으로 돌려보낸다.
   useEffect(() => {
-    if (!clientRole) router.replace("/signup");
-  }, [clientRole, router]);
+    if (alreadySignedUp) {
+      router.replace("/");
+    } else if (!clientRole) {
+      router.replace("/signup");
+    }
+  }, [alreadySignedUp, clientRole, router]);
 
   const handleSubmit = () => {
     if (!clientRole || !agreed) return;
@@ -41,7 +49,7 @@ export default function TermsView() {
     );
   };
 
-  if (!clientRole) return null;
+  if (isMeLoading || alreadySignedUp || !clientRole) return null;
 
   return (
     <main className="min-h-screen flex items-center justify-center bg-background p-4 md:p-0">

@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
+import { useGetMyInfo } from "@/entities/mypage";
 import {
   ADMIN_TERMS,
   TermsAgreement,
@@ -21,10 +22,17 @@ export default function TermsView() {
   const adminRole = searchParams.get("role") as AdminRole | null;
   const adminTeam = searchParams.get("team")?.trim() ?? "";
 
-  // 역할 정보 없이 약관 페이지에 직접 접근하면 회원가입으로 돌려보낸다.
+  const { data: myInfo, isLoading: isMyInfoLoading } = useGetMyInfo();
+  const alreadySignedUp = !!myInfo?.adminRole;
+
+  // 이미 가입한 사용자는 홈으로, 역할 정보 없이 직접 접근하면 회원가입으로 돌려보낸다.
   useEffect(() => {
-    if (!adminRole) router.replace("/signup");
-  }, [adminRole, router]);
+    if (alreadySignedUp) {
+      router.replace("/");
+    } else if (!adminRole) {
+      router.replace("/signup");
+    }
+  }, [alreadySignedUp, adminRole, router]);
 
   const handleSubmit = () => {
     if (!adminRole || !agreed) return;
@@ -38,7 +46,7 @@ export default function TermsView() {
     );
   };
 
-  if (!adminRole) return null;
+  if (isMyInfoLoading || alreadySignedUp || !adminRole) return null;
 
   return (
     <main className="min-h-screen flex items-center justify-center bg-background p-4 md:p-0">
