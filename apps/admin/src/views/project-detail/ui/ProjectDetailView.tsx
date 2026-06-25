@@ -1,5 +1,6 @@
 "use client";
 
+import { useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -24,12 +25,18 @@ export default function ProjectDetailView({
 }: ProjectDetailViewProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const { data: project, isPending, isError } = useGetProject(projectId);
-  const { data: forms } = useGetForms(projectId);
+  const { data: project, isPending: isProjectPending, isError } =
+    useGetProject(projectId);
+  const { data: forms, isPending: isFormsPending } = useGetForms(projectId);
+  const isPending = isProjectPending || isFormsPending;
 
   // 양식 클릭 → 이 팀이 제출한 양식 상세로 이동.
   // forms 목록에는 submitId가 없어, 양식별 제출 내역을 조회해 이 프로젝트의 제출을 찾는다.
+  const isNavigatingRef = useRef(false);
   const handleFormClick = async (formId: number) => {
+    // 빠른 연속 클릭으로 중복 요청·이동이 발생하지 않도록 진행 중에는 무시한다.
+    if (isNavigatingRef.current) return;
+    isNavigatingRef.current = true;
     try {
       const submissions = await queryClient.fetchQuery({
         queryKey: formKeys.adminSubmitDetail(formId),
@@ -43,6 +50,8 @@ export default function ProjectDetailView({
       router.push(`/form/submissions/${formId}/${submission.submitId}`);
     } catch {
       toast.error("양식을 불러오지 못했습니다.");
+    } finally {
+      isNavigatingRef.current = false;
     }
   };
 
