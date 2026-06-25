@@ -79,7 +79,7 @@ export function CreateProjectView() {
     }`;
 
   return (
-    <div className="flex min-h-[calc(100vh-5rem)] items-start justify-center px-4 py-8 sm:items-center bg-background">
+    <div className="flex min-h-[calc(100vh-3.75rem)] items-start justify-center px-4 py-8 sm:items-center bg-background">
       <form
         onSubmit={(e) => {
           e.preventDefault();

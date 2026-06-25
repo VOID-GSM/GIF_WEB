@@ -39,7 +39,7 @@ export default function ScoreAreaView({ area, projectId }: Props) {
   }
 
   return (
-    <div className="h-[calc(100vh-5rem)] bg-background flex flex-col items-center justify-center px-4 sm:px-6">
+    <div className="h-[calc(100vh-3.75rem)] bg-background flex flex-col items-center justify-center px-4 sm:px-6">
       <div className="w-full max-w-[980px] flex flex-col gap-5">
         <ScoreAreaHeader onBack={() => router.back()} />
         <div className="bg-white rounded-2xl border border-gray-200 shadow-new overflow-hidden p-4 sm:p-7 md:p-10 flex flex-col">
