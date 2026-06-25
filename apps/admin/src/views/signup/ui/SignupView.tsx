@@ -3,14 +3,12 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { toast } from "sonner";
 
 import { useGetMyInfo } from "@/entities/mypage";
-import { RoleSelect, usePostAdminInfo, type AdminRole } from "@/entities/signup";
+import { RoleSelect, type AdminRole } from "@/entities/signup";
 
 export default function SignupView() {
   const router = useRouter();
-  const { mutate, isPending } = usePostAdminInfo();
   const [adminRole, setAdminRole] = useState<AdminRole | null>(null);
   const [adminTeam, setAdminTeam] = useState("");
 
@@ -25,17 +23,13 @@ export default function SignupView() {
 
   const isActive = adminRole !== null;
 
+  // 역할(및 담당 팀)을 약관 동의 페이지로 넘긴다. 실제 가입은 약관 동의 후 완료된다.
   const handleNext = () => {
     if (!adminRole) return;
     const team = adminTeam.trim();
-    mutate(
-      // 담당 팀이 비어있으면 필드를 생략 (빈 문자열 전송 시 400 방지)
-      { adminRole, ...(team ? { adminTeam: team } : {}) },
-      {
-        onSuccess: () => router.replace("/"),
-        onError: () => toast.error("회원가입에 실패했습니다. 다시 시도해주세요."),
-      },
-    );
+    const params = new URLSearchParams({ role: adminRole });
+    if (team) params.set("team", team);
+    router.push(`/signup/terms?${params.toString()}`);
   };
 
   // 로딩 중이거나 이미 가입한 사용자는 폼을 그리지 않는다(폼 깜빡임 방지).
@@ -79,9 +73,9 @@ export default function SignupView() {
             <button
               type="button"
               onClick={handleNext}
-              disabled={!isActive || isPending}
+              disabled={!isActive}
               className={`w-full h-7 rounded text-[12px] text-white transition-colors ${
-                isActive && !isPending
+                isActive
                   ? "bg-[#ffee30] cursor-pointer"
                   : "bg-gray-400 cursor-not-allowed"
               }`}
