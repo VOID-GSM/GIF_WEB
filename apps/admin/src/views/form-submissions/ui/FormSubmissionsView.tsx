@@ -8,11 +8,13 @@ import {
   useAdminFormDetail,
   useAdminSubmitDetail,
 } from "@/entities/from-management/api/query";
+import FormPreviewModal from "./FormPreviewModal";
 
 type Props = { formId: number };
 
 export default function FormSubmissionsView({ formId }: Props) {
   const [selectedGrade, setSelectedGrade] = useState<Grade>(1);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const router = useRouter();
 
   const { data: projects, isLoading: projectsLoading } =
@@ -45,6 +47,14 @@ export default function FormSubmissionsView({ formId }: Props) {
           ← 뒤로
         </button>
         <GradeFilter value={selectedGrade} onChange={setSelectedGrade} />
+        <button
+          type="button"
+          onClick={() => setIsPreviewOpen(true)}
+          disabled={!form}
+          className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center gap-2 rounded-[10px] border border-yellow-600 bg-yellow-50 px-4 py-2 text-sm font-semibold text-gray-900 transition-colors hover:bg-yellow-100 disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer"
+        >
+          폼 미리보기
+        </button>
       </div>
 
       {isLoading ? (
@@ -85,6 +95,10 @@ export default function FormSubmissionsView({ formId }: Props) {
             </div>
           ))}
         </div>
+      )}
+
+      {isPreviewOpen && form && (
+        <FormPreviewModal form={form} onClose={() => setIsPreviewOpen(false)} />
       )}
     </div>
   );
