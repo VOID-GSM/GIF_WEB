@@ -51,8 +51,9 @@ export default function MypageView() {
   };
 
   const handleEdit = (updatedValues: Record<string, string>) => {
+    // 빈 값도 그대로 전송해 담당 팀을 실제로 비울 수 있게 한다.
     updateInfo({
-      adminTeam: updatedValues["adminTeam"]?.trim() || undefined,
+      adminTeam: updatedValues["adminTeam"]?.trim() ?? "",
     });
   };
 
@@ -78,6 +79,7 @@ export default function MypageView() {
           items={mypageInfoItems}
           onLogout={handleLogout}
           onEdit={handleEdit}
+          nameSuffix="선생님"
         />
       )}
     </main>

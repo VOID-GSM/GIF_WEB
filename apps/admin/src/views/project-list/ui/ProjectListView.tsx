@@ -22,14 +22,14 @@ export default function ProjectListView() {
 
   if (grade === null) {
     return (
-      <div className="flex min-h-[calc(100dvh-80px)] flex-col items-center gap-12 bg-background px-4 py-10">
+      <div className="flex min-h-[calc(100dvh-60px)] flex-col items-center gap-12 bg-background px-4 py-10">
         <p className="text-gray-600">불러오는 중...</p>
       </div>
     );
   }
 
   return (
-    <div className="flex min-h-[calc(100dvh-80px)] flex-col items-center gap-12 bg-background px-4 py-10">
+    <div className="flex min-h-[calc(100dvh-60px)] flex-col items-center gap-12 bg-background px-4 py-10">
       <GradeFilter value={grade} onChange={setGrade} />
 
       {isPending ? (

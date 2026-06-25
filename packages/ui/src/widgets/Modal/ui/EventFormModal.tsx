@@ -39,13 +39,15 @@ export default function EventFormModal({
   onClose,
 }: EventFormModalProps) {
   const [title, setTitle] = useState(initialTitle ?? "");
-  const [color, setColor] = useState<string>(initialColor ?? "blue");
+  // 새 일정 추가 시에는 아무 색상도 선택되지 않은 상태로 시작한다.
+  const [color, setColor] = useState<string>(initialColor ?? "");
   const [paletteOpen, setPaletteOpen] = useState(false);
   const paletteRef = useRef<HTMLDivElement>(null);
   const isSameDay = startDate === endDate;
 
-  // 프리셋에 없는 색상이면 컬러 팔레트로 직접 고른 커스텀 색상으로 간주
-  const isCustomColor = !PRESET_COLOR_KEYS.includes(color as PresetColorKey);
+  // 색상 미선택("")이 아니면서 프리셋에도 없으면 컬러 팔레트로 고른 커스텀 색상
+  const isCustomColor =
+    color !== "" && !PRESET_COLOR_KEYS.includes(color as PresetColorKey);
 
   // 컬러 팔레트 바깥을 클릭하면 팔레트를 닫는다
   useEffect(() => {
@@ -156,8 +158,10 @@ export default function EventFormModal({
             )}
             <button
               type="button"
-              disabled={!title.trim()}
-              onClick={() => title.trim() && onSubmit(title.trim(), color)}
+              disabled={!title.trim() || !color}
+              onClick={() =>
+                title.trim() && color && onSubmit(title.trim(), color)
+              }
               className="flex-1 items-center py-[7px] rounded-[4px] text-[12px] bg-yellow-600 font-semibold text-black cursor-pointer transition-opacity disabled:opacity-40"
             >
               저장

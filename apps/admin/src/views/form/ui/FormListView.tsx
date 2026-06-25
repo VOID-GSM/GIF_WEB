@@ -8,30 +8,40 @@ import {
   useDeleteForm,
   useGetFormList,
 } from "@/entities/form";
+import { useGetMyInfo } from "@/entities/mypage";
 
 export default function FormListView() {
   const router = useRouter();
 
-  const { data: forms, isLoading, isError } = useGetFormList();
+  const { data: forms, isLoading: isFormsLoading, isError } = useGetFormList();
+  const { data: myInfo, isLoading: isMyInfoLoading } = useGetMyInfo();
   const { mutate: announce } = useAnnounceForm();
   const { mutate: remove } = useDeleteForm();
+
+  // myInfo 로딩까지 함께 기다려 생성/삭제 버튼이 늦게 나타나는 레이아웃 시프트를 막는다.
+  const isLoading = isFormsLoading || isMyInfoLoading;
+
+  // 양식 생성은 아이디어페스티벌 담당(MASTER)만 가능
+  const canCreate = myInfo?.adminRole === "MASTER";
 
   const handleCreate = () => router.push("/form/create");
   const handleEdit = (id: number) => router.push(`/form/edit/${id}`);
   const handleView = (id: number) => router.push(`/form/submissions/${id}`);
 
   return (
-    <div className="flex min-h-[calc(100dvh-80px)] flex-col items-center bg-background px-4 pt-12 pb-4 sm:pt-20">
+    <div className="flex min-h-[calc(100dvh-60px)] flex-col items-center bg-background px-4 pt-12 pb-4 sm:pt-20">
       <div className="flex max-h-[calc(100vh-160px)] w-full max-w-[848px] flex-col overflow-y-auto px-2 py-6 sm:px-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-        <div className="mb-6 flex justify-end">
-          <button
-            type="button"
-            onClick={handleCreate}
-            className="cursor-pointer rounded-xl bg-yellow-600 px-[46px] py-[10px] text-xl text-black font-medium shadow transition-all duration-150 hover:bg-yellow-700 hover:shadow-md active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-600/50"
-          >
-            생성하기
-          </button>
-        </div>
+        {canCreate && (
+          <div className="mb-6 flex justify-end">
+            <button
+              type="button"
+              onClick={handleCreate}
+              className="cursor-pointer rounded-lg bg-yellow-600 px-7 py-2.5 text-base text-black font-medium shadow transition-all duration-150 hover:bg-yellow-700 hover:shadow-md active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-600/50"
+            >
+              생성하기
+            </button>
+          </div>
+        )}
 
         {isLoading ? (
           <p className="py-20 text-center text-gray-500">불러오는 중...</p>
@@ -51,7 +61,7 @@ export default function FormListView() {
                 form={form}
                 onAnnounce={announce}
                 onEdit={handleEdit}
-                onDelete={remove}
+                onDelete={canCreate ? remove : undefined}
                 onView={handleView}
               />
             ))}

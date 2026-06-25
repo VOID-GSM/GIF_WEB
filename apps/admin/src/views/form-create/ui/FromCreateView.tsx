@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { FormCard, Plus, DatePicker } from "@repo/ui";
 import { toast } from "sonner";
 
 import { usePostForm, useAnnounceForm } from "@/entities/form-create";
 import type { PostFormRequestField } from "@/entities/form-create";
+import { useGetMyInfo } from "@/entities/mypage";
 
 type FieldType = "TEXT" | "FILE" | "CALENDAR" | "";
 
@@ -22,6 +23,18 @@ export default function FormCreateView() {
   const router = useRouter();
   const { mutate: createForm, isPending: isSaving } = usePostForm();
   const { mutate: announce, isPending: isAnnouncing } = useAnnounceForm();
+
+  // 양식 생성은 아이디어페스티벌 담당(MASTER)만 가능 — 그 외 역할·에러는 목록으로 돌려보낸다.
+  const { data: myInfo, isLoading: isMyInfoLoading, isError } = useGetMyInfo();
+  const canCreate = !isError && myInfo?.adminRole === "MASTER";
+
+  useEffect(() => {
+    // 로딩이 끝났는데(정보 도착 또는 에러) 권한이 없으면 목록으로 보낸다.
+    if (!isMyInfoLoading && (myInfo || isError) && !canCreate) {
+      toast.error("양식 생성 권한이 없습니다.");
+      router.replace("/form");
+    }
+  }, [isMyInfoLoading, myInfo, isError, canCreate, router]);
 
   const [formTitle, setFormTitle] = useState("");
   const [deadline, setDeadline] = useState("");
@@ -118,6 +131,25 @@ export default function FormCreateView() {
       );
     }
   };
+
+  // 권한 확인 중에는 로딩만, 에러·무권한이면 안내 후 리다이렉트 대기 (무한 로딩 방지)
+  if (isMyInfoLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background px-5 text-gray-500 font-medium">
+        불러오는 중...
+      </div>
+    );
+  }
+
+  if (!canCreate) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background px-5 text-gray-500 font-medium">
+        {isError
+          ? "정보를 불러오지 못했습니다."
+          : "양식 생성 권한이 없습니다."}
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex flex-col items-center bg-background px-5">

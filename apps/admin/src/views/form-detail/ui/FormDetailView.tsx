@@ -1,8 +1,10 @@
 "use client";
 import { useRouter } from "next/navigation";
+import { AiSummary } from "@repo/ui";
 import {
   useAdminFormDetail,
   useAdminSubmitDetail,
+  useAdminSubmitSummary,
 } from "@/entities/from-management/api/query";
 import FileAnswer from "@/entities/from-management/ui/Fileanswer";
 import TextAnswer from "@/entities/from-management/ui/Textanswer";
@@ -54,6 +56,9 @@ export default function FormDetailView({ formId, submitId }: Props) {
 
   const { data: formDetail, isLoading: formLoading } =
     useAdminFormDetail(formId);
+
+  // 제출 답변 AI 요약 (제출 상세 진입 시 자동 조회)
+  const { data: summary } = useAdminSubmitSummary(submitId);
 
   // 제출 답변을 fieldId로 묶고, 양식 조회 결과(설명·정렬)는 보강용으로만 사용한다.
   // 두 엔드포인트의 fieldId가 어긋나도 제출된 답변은 그대로 표시된다.
@@ -112,6 +117,8 @@ export default function FormDetailView({ formId, submitId }: Props) {
               </span>
             )}
           </div>
+
+          {submission && summary && <AiSummary summary={summary} />}
 
           <div className="flex flex-col gap-4 mb-20">
             {items.length === 0 ? (

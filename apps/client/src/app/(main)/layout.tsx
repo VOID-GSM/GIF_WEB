@@ -9,7 +9,7 @@ export default function MainLayout({
   return (
     <Providers>
       <Navbar navItems={CLIENT_NAV_ITEMS} />
-      <main className="pt-20">{children}</main>
+      <main className="pt-15">{children}</main>
     </Providers>
   );
 }
