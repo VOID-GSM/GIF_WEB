@@ -53,7 +53,7 @@ export default function FileField({
 
     return (
       <div
-        className={`flex items-center justify-between rounded-[10px] border border-gray-80 pl-[24px] pr-[30px] py-[15px] ${
+        className={`flex items-center justify-between gap-3 rounded-[10px] border border-gray-80 pl-[24px] pr-[30px] py-[15px] ${
           filePath ? "cursor-pointer" : ""
         }`}
         onClick={() => {
@@ -62,10 +62,14 @@ export default function FileField({
           }
         }}
       >
-        <div className="flex gap-[22px]">
-          <File />
-          <div className="flex flex-col">
-            <span className="text-[14px] font-semibold">{fileName}</span>
+        <div className="flex gap-[22px] min-w-0 flex-1 items-center">
+          <span className="flex-shrink-0">
+            <File />
+          </span>
+          <div className="flex flex-col min-w-0">
+            <span className="text-[14px] font-semibold truncate">
+              {fileName}
+            </span>
             <span className="text-[11px] text-gray-400">
               {formatFileSize(size)}
             </span>
@@ -81,7 +85,7 @@ export default function FileField({
             }}
             width={15}
             height={15}
-            className="text-gray-40 hover:text-gray-40/60 transition-colors cursor-pointer"
+            className="flex-shrink-0 text-gray-40 hover:text-gray-40/60 transition-colors cursor-pointer"
           />
         )}
       </div>
