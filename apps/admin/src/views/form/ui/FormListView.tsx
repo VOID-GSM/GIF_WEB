@@ -13,10 +13,13 @@ import { useGetMyInfo } from "@/entities/mypage";
 export default function FormListView() {
   const router = useRouter();
 
-  const { data: forms, isLoading, isError } = useGetFormList();
-  const { data: myInfo } = useGetMyInfo();
+  const { data: forms, isLoading: isFormsLoading, isError } = useGetFormList();
+  const { data: myInfo, isLoading: isMyInfoLoading } = useGetMyInfo();
   const { mutate: announce } = useAnnounceForm();
   const { mutate: remove } = useDeleteForm();
+
+  // myInfo 로딩까지 함께 기다려 생성/삭제 버튼이 늦게 나타나는 레이아웃 시프트를 막는다.
+  const isLoading = isFormsLoading || isMyInfoLoading;
 
   // 양식 생성은 아이디어페스티벌 담당(MASTER)만 가능
   const canCreate = myInfo?.adminRole === "MASTER";

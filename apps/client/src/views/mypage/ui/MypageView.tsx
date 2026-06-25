@@ -15,7 +15,7 @@ const CLIENT_ROLE_LABEL: Record<string, string> = {
 export default function MypageView() {
   const router = useRouter();
   const { data, isLoading, isError } = useGetMyInfo();
-  const { data: myProjects } = useGetMyProject();
+  const { data: myProjects, isLoading: isProjectsLoading } = useGetMyProject();
 
   // 소속 팀은 내 프로젝트(서버)에서 그대로 가져온다. 팀에서 빠지면 비워진다.
   const teamName = myProjects?.[0]?.teamName ?? "";
@@ -56,7 +56,7 @@ export default function MypageView() {
 
   return (
     <main className="fixed inset-0 flex items-center justify-center bg-background p-4">
-      {isLoading ? (
+      {isLoading || isProjectsLoading ? (
         <p className="text-[16px] font-medium text-gray-600">불러오는 중</p>
       ) : isError ? (
         <div className="flex flex-col items-center gap-4">
