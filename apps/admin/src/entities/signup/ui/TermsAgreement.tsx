@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import type { TermsSection } from "../model/terms";
 
@@ -21,9 +21,15 @@ export default function TermsAgreement({
     .filter((term) => term.required)
     .every((term) => checked[term.id]);
 
+  // 부모가 인라인 콜백을 전달해도 무한 루프가 발생하지 않도록 최신 Ref 패턴을 적용한다.
+  const onRequiredAgreedChangeRef = useRef(onRequiredAgreedChange);
   useEffect(() => {
-    onRequiredAgreedChange(requiredAgreed);
-  }, [requiredAgreed, onRequiredAgreedChange]);
+    onRequiredAgreedChangeRef.current = onRequiredAgreedChange;
+  });
+
+  useEffect(() => {
+    onRequiredAgreedChangeRef.current(requiredAgreed);
+  }, [requiredAgreed]);
 
   const toggle = (id: string) =>
     setChecked((prev) => ({ ...prev, [id]: !prev[id] }));
