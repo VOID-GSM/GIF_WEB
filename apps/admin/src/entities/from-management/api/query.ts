@@ -3,6 +3,7 @@ import {
   getAdminFormDetail,
   getAdminForms,
   getAdminSubmitDetail,
+  getSubmitSummary,
 } from "@/entities/from-management/api/api";
 
 export const formKeys = {
@@ -11,6 +12,8 @@ export const formKeys = {
     ["forms", "admin", "detail", formId] as const,
   adminSubmitDetail: (formId: number) =>
     ["forms", "admin", "submit", formId] as const,
+  adminSubmitSummary: (submitId: number) =>
+    ["forms", "admin", "summary", submitId] as const,
 };
 
 export const useAdminForms = (grade?: number) =>
@@ -31,4 +34,17 @@ export const useAdminSubmitDetail = (formId: number) =>
     queryKey: formKeys.adminSubmitDetail(formId),
     queryFn: () => getAdminSubmitDetail(formId),
     enabled: !!formId,
+  });
+
+// AI 요약 — 생성 비용이 크므로 캐시를 유지하고(staleTime: Infinity) 자동 재시도는 끈다.
+export const useAdminSubmitSummary = (
+  submitId: number,
+  options?: { enabled?: boolean },
+) =>
+  useQuery({
+    queryKey: formKeys.adminSubmitSummary(submitId),
+    queryFn: () => getSubmitSummary(submitId),
+    enabled: !!submitId && (options?.enabled ?? true),
+    staleTime: Infinity,
+    retry: false,
   });

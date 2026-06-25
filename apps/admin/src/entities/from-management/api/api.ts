@@ -65,3 +65,29 @@ export const getAdminSubmitDetail = async (
     `/api/form/admin/submit?formId=${formId}`,
   );
 };
+
+// 제출 답변 AI 요약 (submitId = 개별 제출 ID, 응답은 요약 텍스트 문자열)
+// 서버가 평문(text/plain) 또는 JSON 문자열 양쪽으로 응답할 수 있어,
+// fetchWithAuth(항상 res.json())를 쓰지 않고 직접 text로 받아 안전하게 파싱한다.
+export const getSubmitSummary = async (submitId: number): Promise<string> => {
+  if (USE_MOCK) {
+    return "제출된 답변을 바탕으로 생성한 AI 요약입니다. (목업 데이터)";
+  }
+  if (!BASE_URL) throw new Error("NEXT_PUBLIC_API_URL is not set");
+  const token = getCookieValue("access_token");
+  const res = await fetch(`${BASE_URL}/api/form/submit/${submitId}/summary`, {
+    credentials: "include",
+    headers: {
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+  });
+  if (!res.ok) throw new Error(`API Error: ${res.status}`);
+
+  const text = await res.text();
+  try {
+    const parsed = JSON.parse(text);
+    return typeof parsed === "string" ? parsed : text;
+  } catch {
+    return text;
+  }
+};
