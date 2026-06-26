@@ -21,6 +21,28 @@ jobs:
       - name: Build client Docker image
         run: docker build -f apps/client/Dockerfile -t gif-client .
 
+      - name: GIF_WAB CI Discord Notification (success)
+        if: ${{ success() }}
+        uses: sarisia/actions-status-discord@v1
+        with:
+          webhook: ${{ secrets.DISCORD }}
+          title: '✅ GIF_WAB CI Success! ✅'
+          status: ${{ job.status }}
+          description: 'Client Docker 이미지 빌드 성공'
+          color: 65280
+          username: 'GIF-WAB-bot'
+
+      - name: GIF_WAB CI Discord Notification (failure)
+        if: ${{ failure() }}
+        uses: sarisia/actions-status-discord@v1
+        with:
+          webhook: ${{ secrets.DISCORD }}
+          title: '❗️ GIF_WAB CI Fail! ❗️'
+          status: ${{ job.status }}
+          description: 'Client Docker 이미지 빌드 실패'
+          color: 16711680
+          username: 'GIF-WAB-bot'
+
   admin-docker-build:
     runs-on: ubuntu-latest
     continue-on-error: true
