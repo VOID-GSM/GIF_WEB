@@ -11,6 +11,7 @@ export default function SignupView() {
   const router = useRouter();
   const [adminRole, setAdminRole] = useState<AdminRole | null>(null);
   const [adminTeam, setAdminTeam] = useState("");
+  const [gradeHead, setGradeHead] = useState(false);
 
   // 회원가입은 첫 로그인(역할 미설정)인 사용자에게만 노출한다.
   // 이미 가입(adminRole 보유)한 사용자가 /signup 에 접근하면 홈으로 돌려보낸다.
@@ -29,6 +30,7 @@ export default function SignupView() {
     const team = adminTeam.trim();
     const params = new URLSearchParams({ role: adminRole });
     if (team) params.set("team", team);
+    if (gradeHead) params.set("gradeHead", "true");
     router.push(`/signup/terms?${params.toString()}`);
   };
 
@@ -68,6 +70,20 @@ export default function SignupView() {
                     : "border-gray-500 text-gray-500"
                 }`}
               />
+
+              <label
+                className={`flex items-center gap-2 text-[12px] cursor-pointer select-none transition-colors ${
+                  gradeHead ? "text-black" : "text-gray-500"
+                }`}
+              >
+                <input
+                  type="checkbox"
+                  checked={gradeHead}
+                  onChange={(e) => setGradeHead(e.target.checked)}
+                  className="w-4 h-4 accent-[#ffee30] cursor-pointer"
+                />
+                학년부 부장 선생님
+              </label>
             </div>
 
             <button
