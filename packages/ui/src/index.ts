@@ -63,3 +63,7 @@ export type { StyleOption } from "./components/Dropdown/StyleDropdown";
 
 export { default as RankView } from "./views/RankView";
 export { default as LandingView } from "./views/LandingView";
+export { default as AboutView } from "./views/AboutView";
+export { default as WinnersView } from "./views/WinnersView";
+export { default as VoidView } from "./views/VoidView";
+export { default as IntroLayout } from "./landing/IntroLayout";
