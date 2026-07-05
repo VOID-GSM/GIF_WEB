@@ -62,3 +62,4 @@ export { ADMIN_NAV_ITEMS, CLIENT_NAV_ITEMS } from "./widgets/Navbar/model/nav";
 export type { StyleOption } from "./components/Dropdown/StyleDropdown";
 
 export { default as RankView } from "./views/RankView";
+export { default as LandingView } from "./views/LandingView";
