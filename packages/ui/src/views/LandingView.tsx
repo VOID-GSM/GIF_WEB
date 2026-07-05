@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import IntroHeader from "../landing/IntroHeader";
 import Reveal from "../landing/Reveal";
 import { STATS, FEATURES, WINNERS, MEMBERS } from "../landing/data";
 
@@ -17,8 +18,13 @@ export default function LandingView({
 }: LandingViewProps) {
   return (
     <div className="min-h-screen w-full overflow-x-hidden bg-white text-gray-900">
+      <IntroHeader signinHref={signinHref} />
+
       {/* ===== Hero ===== */}
-      <section className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-6 text-center">
+      <section
+        id="top"
+        className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-6 text-center"
+      >
         {/* 배경 그라데이션 블롭 */}
         <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
           <div className="absolute left-1/2 top-[-10%] h-[520px] w-[520px] -translate-x-1/2 rounded-full bg-yellow-300 opacity-60 blur-[120px]" />
@@ -78,7 +84,7 @@ export default function LandingView({
       </section>
 
       {/* ===== About ===== */}
-      <section id="about" className="mx-auto max-w-5xl px-6 py-28">
+      <section id="about" className="mx-auto max-w-5xl scroll-mt-16 px-6 py-28">
         <Reveal>
           <p className={`mb-4 text-orange-600 ${EYEBROW}`}>About</p>
           <h2 className="text-[32px] font-bold leading-tight sm:text-[44px]">
@@ -116,7 +122,7 @@ export default function LandingView({
       </section>
 
       {/* ===== Features ===== */}
-      <section id="features" className="bg-yellow-50 py-28">
+      <section id="features" className="scroll-mt-16 bg-yellow-50 py-28">
         <div className="mx-auto max-w-6xl px-6">
           <Reveal>
             <p className={`mb-4 text-orange-600 ${EYEBROW}`}>Features</p>
@@ -151,7 +157,7 @@ export default function LandingView({
       </section>
 
       {/* ===== Winners ===== */}
-      <section id="winners" className="py-28">
+      <section id="winners" className="scroll-mt-16 py-28">
         <div className="mx-auto max-w-6xl px-6">
           <Reveal>
             <p className={`mb-4 text-orange-600 ${EYEBROW}`}>Hall of Fame</p>
@@ -193,7 +199,7 @@ export default function LandingView({
       </section>
 
       {/* ===== Team VOID ===== */}
-      <section id="team" className="bg-gray-900 py-28 text-white">
+      <section id="team" className="scroll-mt-16 bg-gray-900 py-28 text-white">
         <div className="mx-auto max-w-6xl px-6">
           <Reveal>
             <p className={`mb-4 text-yellow-500 ${EYEBROW}`}>Made by</p>
