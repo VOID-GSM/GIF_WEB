@@ -1,6 +1,6 @@
 "use client";
 
-import type { CSSProperties } from "react";
+import Image from "next/image";
 import Reveal from "../landing/Reveal";
 import { STATS, FEATURES, WINNERS, MEMBERS } from "../landing/data";
 
@@ -9,8 +9,8 @@ interface LandingViewProps {
   signinHref?: string;
 }
 
-// 브랜드 레트로 픽셀 폰트 (두 앱 모두 @fontsource/press-start-2p 로드).
-const PIXEL: CSSProperties = { fontFamily: '"Press Start 2P", cursive' };
+// 섹션 상단 눈에 띄는 라벨 공통 스타일 (Pretendard, 브랜드 색상).
+const EYEBROW = "text-[12px] font-extrabold uppercase tracking-[0.2em]";
 
 export default function LandingView({
   signinHref = "/signin",
@@ -27,17 +27,19 @@ export default function LandingView({
         </div>
 
         <span
-          style={PIXEL}
-          className="mb-8 inline-block animate-pulse text-[11px] text-orange-700"
+          className={`mb-8 inline-block rounded-full bg-yellow-100 px-4 py-1.5 text-orange-700 ${EYEBROW}`}
         >
-          GSM IDEA FESTIVAL
+          GSM Idea Festival
         </span>
 
-        <h1 style={PIXEL} className="text-[64px] leading-none sm:text-[96px] md:text-[128px]">
-          <span className="bg-gradient-to-br from-yellow-600 via-yellow-800 to-orange-700 bg-clip-text text-transparent">
-            GIF
-          </span>
-        </h1>
+        <Image
+          src="/gif-logo.png"
+          alt="GIF"
+          width={300}
+          height={200}
+          priority
+          className="h-auto w-[180px] sm:w-[240px] md:w-[280px]"
+        />
 
         <p className="mt-8 max-w-xl text-[18px] font-semibold text-gray-700 sm:text-[22px]">
           아이디어가 현실이 되는 곳,
@@ -52,7 +54,7 @@ export default function LandingView({
         <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
           <a
             href={signinHref}
-            className="group rounded-full bg-gray-900 px-8 py-4 text-[15px] font-semibold text-white shadow-new transition hover:bg-black active:scale-[0.98]"
+            className="group rounded-full bg-gradient-to-r from-yellow-600 to-orange-500 px-8 py-4 text-[15px] font-bold text-gray-900 shadow-new transition hover:from-yellow-500 hover:to-orange-400 active:scale-[0.98]"
           >
             시작하기
             <span className="ml-1 inline-block transition group-hover:translate-x-1">
@@ -61,7 +63,7 @@ export default function LandingView({
           </a>
           <a
             href="#about"
-            className="rounded-full border border-gray-300 bg-white/70 px-8 py-4 text-[15px] font-semibold text-gray-700 backdrop-blur transition hover:border-gray-400 hover:bg-white"
+            className="rounded-full border border-yellow-600 bg-white/70 px-8 py-4 text-[15px] font-semibold text-orange-700 backdrop-blur transition hover:bg-yellow-50"
           >
             더 알아보기
           </a>
@@ -69,8 +71,8 @@ export default function LandingView({
 
         {/* 스크롤 인디케이터 */}
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2">
-          <div className="flex h-10 w-6 items-start justify-center rounded-full border-2 border-gray-300 p-1.5">
-            <span className="h-2 w-1 animate-bounce rounded-full bg-gray-400" />
+          <div className="flex h-10 w-6 items-start justify-center rounded-full border-2 border-yellow-600 p-1.5">
+            <span className="h-2 w-1 animate-bounce rounded-full bg-orange-500" />
           </div>
         </div>
       </section>
@@ -78,11 +80,12 @@ export default function LandingView({
       {/* ===== About ===== */}
       <section id="about" className="mx-auto max-w-5xl px-6 py-28">
         <Reveal>
-          <p style={PIXEL} className="mb-4 text-[11px] text-orange-700">
-            ABOUT
-          </p>
+          <p className={`mb-4 text-orange-600 ${EYEBROW}`}>About</p>
           <h2 className="text-[32px] font-bold leading-tight sm:text-[44px]">
-            아이디어 페스티벌이란?
+            <span className="bg-gradient-to-r from-yellow-700 to-orange-600 bg-clip-text text-transparent">
+              아이디어 페스티벌
+            </span>
+            이란?
           </h2>
         </Reveal>
         <Reveal delay={120}>
@@ -99,7 +102,7 @@ export default function LandingView({
         <div className="mt-14 grid grid-cols-2 gap-4 sm:grid-cols-4">
           {STATS.map((s, i) => (
             <Reveal key={s.label} delay={i * 100}>
-              <div className="rounded-2xl border border-gray-100 bg-gray-50 px-5 py-7 text-center">
+              <div className="rounded-2xl border border-yellow-200 bg-yellow-50 px-5 py-7 text-center">
                 <div className="bg-gradient-to-br from-yellow-700 to-orange-600 bg-clip-text text-[34px] font-extrabold text-transparent">
                   {s.value}
                 </div>
@@ -113,14 +116,15 @@ export default function LandingView({
       </section>
 
       {/* ===== Features ===== */}
-      <section id="features" className="bg-gray-50 py-28">
+      <section id="features" className="bg-yellow-50 py-28">
         <div className="mx-auto max-w-6xl px-6">
           <Reveal>
-            <p style={PIXEL} className="mb-4 text-[11px] text-orange-700">
-              FEATURES
-            </p>
+            <p className={`mb-4 text-orange-600 ${EYEBROW}`}>Features</p>
             <h2 className="text-[32px] font-bold leading-tight sm:text-[44px]">
-              GIF가 도와드려요
+              <span className="bg-gradient-to-r from-yellow-700 to-orange-600 bg-clip-text text-transparent">
+                GIF
+              </span>
+              가 도와드려요
             </h2>
             <p className="mt-4 max-w-xl text-[16px] text-gray-500">
               페스티벌 운영에 필요한 모든 기능을 담았어요.
@@ -129,8 +133,8 @@ export default function LandingView({
           <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {FEATURES.map((f, i) => (
               <Reveal key={f.title} delay={(i % 3) * 100}>
-                <div className="group h-full rounded-3xl border border-gray-100 bg-white p-7 shadow-sm transition hover:-translate-y-1 hover:shadow-new">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-yellow-100 text-[24px] transition group-hover:bg-yellow-200">
+                <div className="group h-full rounded-3xl border border-yellow-100 bg-white p-7 shadow-sm transition hover:-translate-y-1 hover:border-yellow-300 hover:shadow-new">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-yellow-200 to-orange-200 text-[24px] transition group-hover:from-yellow-300 group-hover:to-orange-300">
                     {f.icon}
                   </div>
                   <h3 className="mt-5 text-[19px] font-bold text-gray-900">
@@ -150,11 +154,12 @@ export default function LandingView({
       <section id="winners" className="py-28">
         <div className="mx-auto max-w-6xl px-6">
           <Reveal>
-            <p style={PIXEL} className="mb-4 text-[11px] text-orange-700">
-              HALL OF FAME
-            </p>
+            <p className={`mb-4 text-orange-600 ${EYEBROW}`}>Hall of Fame</p>
             <h2 className="text-[32px] font-bold leading-tight sm:text-[44px]">
-              2025 수상작
+              2025{" "}
+              <span className="bg-gradient-to-r from-yellow-700 to-orange-600 bg-clip-text text-transparent">
+                수상작
+              </span>
             </h2>
             <p className="mt-4 max-w-xl text-[16px] text-gray-500">
               지난 페스티벌을 빛낸 팀들을 소개해요.
@@ -163,18 +168,18 @@ export default function LandingView({
           <div className="mt-14 grid gap-6 md:grid-cols-3">
             {WINNERS.map((w, i) => (
               <Reveal key={w.team} delay={i * 120}>
-                <div className="relative h-full overflow-hidden rounded-3xl border border-gray-100 bg-white p-8 shadow-sm">
+                <div className="relative h-full overflow-hidden rounded-3xl border border-yellow-100 bg-white p-8 shadow-sm transition hover:shadow-new">
                   <div
                     className={`absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r ${w.accent}`}
                   />
                   <div className="text-[44px]">{w.medal}</div>
-                  <div className="mt-3 inline-block rounded-full bg-gray-900 px-3 py-1 text-[12px] font-semibold text-white">
+                  <div className="mt-3 inline-block rounded-full bg-gradient-to-r from-yellow-600 to-orange-500 px-3 py-1 text-[12px] font-bold text-gray-900">
                     {w.rank}
                   </div>
                   <h3 className="mt-4 text-[20px] font-bold text-gray-900">
                     {w.title}
                   </h3>
-                  <p className="mt-1 text-[14px] font-medium text-orange-700">
+                  <p className="mt-1 text-[14px] font-semibold text-orange-700">
                     {w.team}
                   </p>
                   <p className="mt-3 text-[14px] leading-relaxed text-gray-500">
@@ -191,9 +196,7 @@ export default function LandingView({
       <section id="team" className="bg-gray-900 py-28 text-white">
         <div className="mx-auto max-w-6xl px-6">
           <Reveal>
-            <p style={PIXEL} className="mb-4 text-[11px] text-yellow-500">
-              MADE BY
-            </p>
+            <p className={`mb-4 text-yellow-500 ${EYEBROW}`}>Made by</p>
             <h2 className="text-[32px] font-bold leading-tight sm:text-[44px]">
               <span className="bg-gradient-to-r from-yellow-500 to-orange-400 bg-clip-text text-transparent">
                 Team VOID
@@ -206,11 +209,8 @@ export default function LandingView({
           <div className="mt-14 grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-5">
             {MEMBERS.map((m, i) => (
               <Reveal key={m.name} delay={(i % 5) * 90}>
-                <div className="rounded-3xl border border-white/10 bg-white/5 p-6 text-center transition hover:bg-white/10">
-                  <div
-                    style={PIXEL}
-                    className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-yellow-500 to-orange-500 text-[13px] text-gray-900"
-                  >
+                <div className="rounded-3xl border border-white/10 bg-white/5 p-6 text-center transition hover:border-yellow-500/40 hover:bg-white/10">
+                  <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-yellow-500 to-orange-500 text-[18px] font-extrabold text-gray-900">
                     {m.initial}
                   </div>
                   <h3 className="mt-4 text-[16px] font-bold">{m.name}</h3>
@@ -226,13 +226,13 @@ export default function LandingView({
       <section className="relative overflow-hidden py-32 text-center">
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-br from-yellow-600 to-orange-500"
+          className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-br from-yellow-500 via-yellow-600 to-orange-500"
         />
         <Reveal>
           <h2 className="px-6 text-[34px] font-extrabold text-gray-900 sm:text-[48px]">
             지금, 당신의 아이디어를 시작하세요
           </h2>
-          <p className="mt-4 text-[16px] font-medium text-gray-800">
+          <p className="mt-4 text-[16px] font-medium text-gray-900/70">
             GIF와 함께라면 준비부터 수상까지 한 걸음이에요.
           </p>
           <a
@@ -245,10 +245,8 @@ export default function LandingView({
       </section>
 
       {/* ===== Footer ===== */}
-      <footer className="border-t border-gray-100 py-10 text-center">
-        <p style={PIXEL} className="text-[10px] text-gray-400">
-          GIF · TEAM VOID
-        </p>
+      <footer className="border-t border-yellow-100 py-10 text-center">
+        <p className={`text-orange-600 ${EYEBROW}`}>GIF · Team VOID</p>
         <p className="mt-3 text-[13px] text-gray-400">
           © 2026 VOID. Gwangju Software Meister High School.
         </p>
