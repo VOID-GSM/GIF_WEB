@@ -19,7 +19,7 @@ const INTRO_NAV: IntroNavItem[] = [
 ];
 
 interface IntroHeaderProps {
-  /** 로그아웃 후 이동할 경로 */
+  /** 로그인 페이지 경로 */
   signinHref?: string;
 }
 
@@ -30,11 +30,8 @@ export default function IntroHeader({
   const pathname = usePathname();
   const router = useRouter();
 
-  const handleLogout = () => {
-    // 두 앱 모두 access_token 쿠키를 사용한다 (COOKIE_KEYS.ACCESS_TOKEN).
-    document.cookie = "access_token=; path=/; max-age=0";
-    router.replace(signinHref);
-    router.refresh();
+  const handleLogin = () => {
+    router.push(signinHref);
   };
 
   return (
@@ -80,10 +77,10 @@ export default function IntroHeader({
           <div className="flex items-center gap-2">
             <button
               type="button"
-              onClick={handleLogout}
-              className="hidden cursor-pointer rounded-full border border-gray-300 px-4 py-1.5 text-[15px] font-medium text-gray-600 transition hover:border-yellow-600 hover:text-orange-700 lg:inline-flex"
+              onClick={handleLogin}
+              className="hidden cursor-pointer rounded-full bg-gradient-to-r from-yellow-600 to-orange-500 px-5 py-1.5 text-[15px] font-bold text-gray-900 transition hover:from-yellow-500 hover:to-orange-400 lg:inline-flex"
             >
-              로그아웃
+              로그인
             </button>
             <button
               type="button"
@@ -131,11 +128,11 @@ export default function IntroHeader({
             type="button"
             onClick={() => {
               setIsOpen(false);
-              handleLogout();
+              handleLogin();
             }}
-            className="mx-2 cursor-pointer rounded-lg px-4 py-3 text-left font-medium text-orange-700 transition-all duration-200 hover:bg-yellow-100"
+            className="mx-2 cursor-pointer rounded-lg bg-gradient-to-r from-yellow-600 to-orange-500 px-4 py-3 text-left font-bold text-gray-900 transition-all duration-200 hover:from-yellow-500 hover:to-orange-400"
           >
-            로그아웃
+            로그인
           </button>
         </div>
       </div>
