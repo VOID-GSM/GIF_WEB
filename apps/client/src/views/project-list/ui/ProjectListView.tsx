@@ -27,7 +27,7 @@ export default function ProjectListView() {
         ) : (
           <ProjectListEmpty
             role={role}
-            onCreateProject={() => router.push("/create-project")}
+            onCreateProject={() => router.push("/projects/create")}
           />
         )}
       </div>

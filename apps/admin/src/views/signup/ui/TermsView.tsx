@@ -21,6 +21,7 @@ export default function TermsView() {
 
   const adminRole = searchParams.get("role") as AdminRole | null;
   const adminTeam = searchParams.get("team")?.trim() ?? "";
+  const gradeHead = searchParams.get("gradeHead") === "true";
 
   const { data: myInfo, isLoading: isMyInfoLoading } = useGetMyInfo();
   const alreadySignedUp = !!myInfo?.adminRole;
@@ -37,8 +38,8 @@ export default function TermsView() {
   const handleSubmit = () => {
     if (!adminRole || !agreed) return;
     mutate(
-      // 담당 팀이 비어있으면 필드를 생략 (빈 문자열 전송 시 400 방지)
-      { adminRole, ...(adminTeam ? { adminTeam } : {}) },
+      // 담당 팀이 비어있으면 undefined로 두어 필드를 생략 (빈 문자열 전송 시 400 방지)
+      { adminRole, gradeHead, adminTeam: adminTeam || undefined },
       {
         onSuccess: () => router.replace("/"),
         onError: () => toast.error("회원가입에 실패했습니다. 다시 시도해주세요."),
