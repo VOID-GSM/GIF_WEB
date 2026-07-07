@@ -2,6 +2,7 @@ export {
   useAdminForms,
   useAdminFormDetail,
   useAdminSubmitDetail,
+  useAdminSubmitSummary,
 } from "./api/query";
 
 export type {

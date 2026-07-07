@@ -79,10 +79,10 @@ export default function ScoreAssignView() {
   });
 
   return (
-    <div className="h-[calc(100vh-5rem)] bg-background flex flex-col items-center justify-center px-4 sm:px-6">
-      <div className="w-full max-w-[980px] flex flex-col gap-5">
+    <div className="h-[calc(100vh-3.75rem)] bg-background flex flex-col items-center justify-center px-4 sm:px-6">
+      <div className="w-full max-w-4xl flex flex-col gap-5">
         <ScoreTabNav />
-        <div className="bg-white rounded-2xl border border-gray-200 shadow-new p-4 sm:p-7 md:p-10">
+        <div className="w-full flex flex-col sm:max-h-[600px] bg-white rounded-2xl border border-gray-200 shadow-new p-4 sm:p-7 md:p-10">
           <ScoreAssignFilterBar
             grade={grade}
             onGradeChange={handleGradeChange}

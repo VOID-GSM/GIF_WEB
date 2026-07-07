@@ -2,7 +2,7 @@
 
 import { MypageCard } from "@repo/ui";
 import { useRouter } from "next/navigation";
-import { useGetMyInfo, useUpdateClientInfo } from "@/entities/mypage";
+import { useGetMyInfo } from "@/entities/mypage";
 import { useGetMyProject } from "@/entities/project";
 import { COOKIE_KEYS } from "@/shared/constants";
 import { deleteCookie } from "@/shared/utils";
@@ -12,22 +12,18 @@ const CLIENT_ROLE_LABEL: Record<string, string> = {
   MEMBER: "팀원",
 };
 
-const CLIENT_ROLE_VALUE: Record<string, string> = {
-  팀장: "LEADER",
-  팀원: "MEMBER",
-};
-
 export default function MypageView() {
   const router = useRouter();
   const { data, isLoading, isError } = useGetMyInfo();
-  const { data: myProjects } = useGetMyProject();
-  const { mutate: updateInfo } = useUpdateClientInfo();
+  const { data: myProjects, isLoading: isProjectsLoading } = useGetMyProject();
 
-  const role = data?.clientRole
-    ? (CLIENT_ROLE_LABEL[data.clientRole] ?? data.clientRole)
-    : "-";
-
-  const teamName = myProjects?.[0]?.teamName ?? "-";
+  // 소속 팀은 내 프로젝트(서버)에서 그대로 가져온다. 팀에서 빠지면 비워진다.
+  const teamName = myProjects?.[0]?.teamName ?? "";
+  // 역할은 직접 수정하지 않고 팀 소속/팀장 양도 결과를 서버 값 그대로 반영한다.
+  const role =
+    teamName && data?.clientRole
+      ? (CLIENT_ROLE_LABEL[data.clientRole] ?? data.clientRole)
+      : "";
 
   const mypageInfoItems = [
     {
@@ -40,13 +36,14 @@ export default function MypageView() {
       key: "clientRole",
       label: "역할",
       value: role,
-      type: "dropdown" as const,
-      dropdownOptions: ["팀장", "팀원"],
+      placeholder: "-",
+      type: "readonly" as const,
     },
     {
       key: "clientTeam",
       label: "소속 팀",
       value: teamName,
+      placeholder: "소속된 팀이 없습니다",
       type: "readonly" as const,
     },
   ];
@@ -57,17 +54,9 @@ export default function MypageView() {
     router.refresh();
   };
 
-  const handleEdit = (updatedValues: Record<string, string>) => {
-    updateInfo({
-      clientRole:
-        CLIENT_ROLE_VALUE[updatedValues["clientRole"]] ??
-        updatedValues["clientRole"],
-    });
-  };
-
   return (
     <main className="fixed inset-0 flex items-center justify-center bg-background p-4">
-      {isLoading ? (
+      {isLoading || isProjectsLoading ? (
         <p className="text-[16px] font-medium text-gray-600">불러오는 중</p>
       ) : isError ? (
         <div className="flex flex-col items-center gap-4">
@@ -83,11 +72,7 @@ export default function MypageView() {
           </button>
         </div>
       ) : (
-        <MypageCard
-          items={mypageInfoItems}
-          onLogout={handleLogout}
-          onEdit={handleEdit}
-        />
+        <MypageCard items={mypageInfoItems} onLogout={handleLogout} />
       )}
     </main>
   );

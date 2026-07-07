@@ -18,6 +18,8 @@ export function useTransferLeader(projectId: number) {
       });
       queryClient.invalidateQueries({ queryKey: ["project", "me"] });
       queryClient.invalidateQueries({ queryKey: ["project", "filter"] });
+      // 마이페이지 역할(clientRole)은 auth/me 에서 오므로 함께 갱신한다.
+      queryClient.invalidateQueries({ queryKey: ["auth", "me"] });
       toast.success("팀장이 양도되었습니다.");
     },
     onError: () => {

@@ -8,11 +8,13 @@ import {
   useAdminFormDetail,
   useAdminSubmitDetail,
 } from "@/entities/from-management/api/query";
+import FormPreviewModal from "./FormPreviewModal";
 
 type Props = { formId: number };
 
 export default function FormSubmissionsView({ formId }: Props) {
   const [selectedGrade, setSelectedGrade] = useState<Grade>(1);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const router = useRouter();
 
   const { data: projects, isLoading: projectsLoading } =
@@ -35,15 +37,25 @@ export default function FormSubmissionsView({ formId }: Props) {
   });
 
   return (
-    <div className="flex flex-col items-center gap-12 px-4 py-10">
-      {/* 메인 페이지와 동일한 높이·위치로 학년 필터는 중앙, 뒤로 버튼은 카드 시작점(좌측) */}
-      <div className="relative flex w-200 justify-center">
-        <button
-          onClick={() => router.back()}
-          className="absolute left-0 top-1/2 -translate-y-1/2 flex items-center gap-2 text-lg font-semibold text-gray-700 hover:text-gray-900 cursor-pointer"
-        >
-          ← 뒤로
-        </button>
+    <div className="flex flex-col items-center gap-8 px-4 py-6 sm:gap-12 sm:py-10">
+      {/* 모바일: [뒤로 / 미리보기] 한 줄 + 필터 아래 / sm+: 필터 중앙, 양옆 버튼 */}
+      <div className="flex w-full max-w-[800px] flex-col items-center gap-4 sm:relative sm:flex-row sm:justify-center sm:gap-0">
+        <div className="flex w-full items-center justify-between sm:contents">
+          <button
+            onClick={() => router.back()}
+            className="z-10 flex items-center gap-2 text-base font-semibold text-gray-700 hover:text-gray-900 cursor-pointer sm:absolute sm:left-0 sm:top-1/2 sm:-translate-y-1/2 sm:text-lg"
+          >
+            ← 뒤로
+          </button>
+          <button
+            type="button"
+            onClick={() => setIsPreviewOpen(true)}
+            disabled={!form}
+            className="z-10 flex items-center gap-2 rounded-[10px] border border-yellow-600 bg-yellow-50 px-3 py-1.5 text-xs font-semibold text-gray-900 transition-colors hover:bg-yellow-100 disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer sm:absolute sm:right-0 sm:top-1/2 sm:-translate-y-1/2 sm:px-4 sm:py-2 sm:text-sm"
+          >
+            폼 미리보기
+          </button>
+        </div>
         <GradeFilter value={selectedGrade} onChange={setSelectedGrade} />
       </div>
 
@@ -54,26 +66,30 @@ export default function FormSubmissionsView({ formId }: Props) {
           등록된 팀이 없습니다.
         </div>
       ) : (
-        <div className="flex w-200 flex-col gap-4">
+        <div className="flex w-full max-w-[800px] flex-col gap-3 sm:gap-4">
           {rows.map((row) => (
             <div
               key={row.projectId}
-              className={`flex items-center justify-between h-20 w-200 pl-8 pr-17 bg-white rounded-[12px] shadow
+              className={`flex min-h-[64px] w-full items-center justify-between gap-3 rounded-[12px] bg-white px-4 shadow sm:h-20 sm:gap-8 sm:pl-8 sm:pr-17
               ${row.submitted ? "cursor-pointer" : "cursor-not-allowed"}`}
               onClick={() => {
                 if (!row.submitted || row.submitId == null) return;
                 router.push(`/form/submissions/${formId}/${row.submitId}`);
               }}
             >
-              <div className="flex gap-8 text-5 font-medium">
-                <span>{row.teamName}</span>
-                <span>{form?.title}</span>
+              {/* 좌측: 모바일은 팀명/양식명 세로, sm+는 가로 */}
+              <div className="flex min-w-0 flex-col gap-0.5 font-medium sm:flex-row sm:gap-8 sm:text-[20px]">
+                <span className="truncate">{row.teamName}</span>
+                <span className="truncate text-sm text-gray-600 sm:text-[20px] sm:text-black">
+                  {form?.title}
+                </span>
               </div>
 
-              <div className="flex items-center gap-16 text-5 font-medium">
-                <span>{form?.deadline}</span>
+              <div className="flex shrink-0 items-center gap-3 font-medium sm:gap-16 sm:text-[20px]">
+                {/* 마감일은 공간이 좁은 모바일에서는 숨김 */}
+                <span className="hidden sm:inline">{form?.deadline}</span>
                 <span
-                  className={`flex items-center justify-center w-20 py-[5px] border rounded-[12px] text-4 ${
+                  className={`flex w-16 items-center justify-center rounded-[12px] border py-[5px] text-xs sm:w-20 sm:text-base ${
                     row.submitted
                       ? "border-yellow-600 bg-yellow-50"
                       : "border-gray-200 bg-gray-100"
@@ -85,6 +101,10 @@ export default function FormSubmissionsView({ formId }: Props) {
             </div>
           ))}
         </div>
+      )}
+
+      {isPreviewOpen && form && (
+        <FormPreviewModal form={form} onClose={() => setIsPreviewOpen(false)} />
       )}
     </div>
   );

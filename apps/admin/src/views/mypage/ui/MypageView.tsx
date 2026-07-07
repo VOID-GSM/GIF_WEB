@@ -7,7 +7,6 @@ import { COOKIE_KEYS } from "@/shared/constants";
 import { deleteCookie } from "@/shared/utils";
 
 const ADMIN_ROLE_LABEL: Record<string, string> = {
-  GRADE_HEAD: "학년부 부장",
   GENERAL_TEACHER: "보통 교과",
   MAJOR_TEACHER: "전공 교과",
   MASTER: "아이디어 페스티벌 담당",
@@ -18,9 +17,14 @@ export default function MypageView() {
   const { data, isLoading, isError } = useGetMyInfo();
   const { mutate: updateInfo } = useUpdateAdminInfo();
 
-  const role = data?.adminRole
-    ? (ADMIN_ROLE_LABEL[data.adminRole] ?? data.adminRole)
-    : "-";
+  // 교과 역할과 학년부 부장 여부를 함께 표시한다. (예: "전공 교과 · 학년부 부장")
+  const roleParts = [
+    data?.adminRole
+      ? (ADMIN_ROLE_LABEL[data.adminRole] ?? data.adminRole)
+      : null,
+    data?.gradeHead ? "학년부 부장" : null,
+  ].filter(Boolean);
+  const role = roleParts.length > 0 ? roleParts.join(" · ") : "-";
 
   const mypageInfoItems = [
     {
@@ -51,8 +55,9 @@ export default function MypageView() {
   };
 
   const handleEdit = (updatedValues: Record<string, string>) => {
+    // 빈 값도 그대로 전송해 담당 팀을 실제로 비울 수 있게 한다.
     updateInfo({
-      adminTeam: updatedValues["adminTeam"]?.trim() || undefined,
+      adminTeam: updatedValues["adminTeam"]?.trim() ?? "",
     });
   };
 
@@ -78,6 +83,7 @@ export default function MypageView() {
           items={mypageInfoItems}
           onLogout={handleLogout}
           onEdit={handleEdit}
+          nameSuffix="선생님"
         />
       )}
     </main>

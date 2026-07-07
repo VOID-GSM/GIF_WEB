@@ -24,6 +24,7 @@ export interface GetMyInfoResponse {
   role: string;
   adminRole: string | null;
   adminTeam: string | null;
+  gradeHead: boolean;
   clientRole: string | null;
   clientTeam: string | null;
 }

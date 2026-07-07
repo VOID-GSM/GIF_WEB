@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useMemo, useSyncExternalStore } from "react";
 import { useQueries } from "@tanstack/react-query";
 import { useGetFilteredProjects } from "@/entities/project";
@@ -8,6 +7,7 @@ import { useGetMyInfo } from "@/entities/mypage";
 import type { Grade } from "@/entities/project";
 import { getMajorScore, useScoreNotice } from "@/entities/score";
 import { toNullOn404 } from "@/shared/utils";
+import ScoreTabNav from "./ScoreTabNav";
 import ScoreCollectionFilterBar from "./ScoreCollectionFilterBar";
 import ScoreCollectionTable from "./ScoreCollectionTable";
 
@@ -58,20 +58,10 @@ export default function ScoreView() {
     .map((row, i) => ({ ...row, rank: i + 1 }));
 
   return (
-    <div className="h-[calc(100vh-5rem)] bg-background flex flex-col items-center justify-center px-4 sm:px-6">
-      <div className="w-full max-w-[980px] flex flex-col gap-5">
-        <nav className="flex gap-6">
-          <Link
-            href="/score"
-            className="text-xl sm:text-2xl font-bold pb-1 text-gray-400 whitespace-nowrap"
-          >
-            점수 부여
-          </Link>
-          <span className="text-xl sm:text-2xl font-bold pb-1 border-b-2 border-yellow-600 whitespace-nowrap">
-            점수 합계
-          </span>
-        </nav>
-        <div className="max-w-2xl mx-auto w-full bg-white rounded-2xl border border-gray-200 shadow-new p-4 sm:p-7 md:p-10">
+    <div className="h-[calc(100vh-3.75rem)] bg-background flex flex-col items-center justify-center px-4 sm:px-6">
+      <div className="w-full max-w-4xl flex flex-col gap-5">
+        <ScoreTabNav />
+        <div className="w-full flex flex-col sm:max-h-[600px] bg-white rounded-2xl border border-gray-200 shadow-new p-4 sm:p-7 md:p-10">
           <ScoreCollectionFilterBar
             grade={grade}
             onGradeChange={handleGradeChange}
