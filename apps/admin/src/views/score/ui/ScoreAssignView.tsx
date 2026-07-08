@@ -11,7 +11,7 @@ import { getMajorScore } from "@/entities/score";
 import { useGetMyInfo } from "@/entities/mypage";
 import { toNullOn404 } from "@/shared/utils";
 import type { ScoreFilter, ScoreArea } from "./constants";
-import { ROLE_ALLOWED_AREAS } from "./constants";
+import { getAllowedScoreAreas } from "./constants";
 
 const GRADE_STORAGE_KEY = "score_assign_grade";
 
@@ -33,8 +33,10 @@ export default function ScoreAssignView() {
   }
 
   const { data: myInfo } = useGetMyInfo();
-  const allowedAreas: ScoreArea[] =
-    ROLE_ALLOWED_AREAS[myInfo?.adminRole ?? ""] ?? (["major", "report", "social"] as ScoreArea[]);
+  const allowedAreas: ScoreArea[] = getAllowedScoreAreas(
+    myInfo?.adminRole,
+    myInfo?.gradeHead,
+  );
 
   const { data: projects = [], isLoading: isProjectsLoading } = useGetFilteredProjects(grade);
 

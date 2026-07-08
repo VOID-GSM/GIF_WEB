@@ -2,20 +2,14 @@
 
 import { useRouter } from "next/navigation";
 
-import {
-  AREA_LABELS,
-  ROLE_ALLOWED_AREAS,
-  type ScoreArea,
-} from "@/entities/score";
+import { AREA_LABELS, getAllowedScoreAreas } from "@/entities/score";
 import { useGetMyInfo } from "@/entities/mypage";
 
 interface ScoreAssignSectionProps {
   projectId: number;
 }
 
-const ALL_AREAS: ScoreArea[] = ["major", "report", "social"];
-
-// 관리자 프로젝트 상세 하단 — 역할별 채점 가능 영역마다 점수 부여 버튼을 띄운다.
+// 관리자 프로젝트 상세 하단 — 역할별(+학년부 부장) 채점 가능 영역마다 점수 부여 버튼을 띄운다.
 // 버튼 클릭 시 해당 영역의 채점 페이지로 이동한다.
 export default function ScoreAssignSection({
   projectId,
@@ -26,7 +20,7 @@ export default function ScoreAssignSection({
   // 역할 정보가 아직 없으면 버튼을 렌더하지 않는다.
   if (!myInfo?.adminRole) return null;
 
-  const areas = ROLE_ALLOWED_AREAS[myInfo.adminRole] ?? ALL_AREAS;
+  const areas = getAllowedScoreAreas(myInfo.adminRole, myInfo.gradeHead);
   if (areas.length === 0) return null;
 
   return (

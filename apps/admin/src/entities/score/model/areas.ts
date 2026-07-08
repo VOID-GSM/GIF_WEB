@@ -24,3 +24,17 @@ export const ROLE_ALLOWED_AREAS: Record<string, ScoreArea[]> = {
   GRADE_HEAD: ["report", "social"],
   MASTER: ["major"],
 };
+
+// 전체 영역(순서 기준). 역할 매핑이 없을 때의 폴백이자 정렬 기준으로 쓴다.
+export const ALL_SCORE_AREAS: ScoreArea[] = ["major", "report", "social"];
+
+// 채점 가능 영역 계산 — 역할 기본 영역에 더해, 학년부 부장(gradeHead)이면 보고서 영역을 추가한다.
+export function getAllowedScoreAreas(
+  adminRole: string | null | undefined,
+  gradeHead?: boolean,
+): ScoreArea[] {
+  const base = ROLE_ALLOWED_AREAS[adminRole ?? ""] ?? ALL_SCORE_AREAS;
+  const areas = new Set<ScoreArea>(base);
+  if (gradeHead) areas.add("report");
+  return ALL_SCORE_AREAS.filter((area) => areas.has(area));
+}
