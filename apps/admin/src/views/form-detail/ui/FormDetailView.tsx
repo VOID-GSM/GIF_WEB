@@ -104,9 +104,14 @@ export default function FormDetailView({ formId, submitId }: Props) {
         </div>
       ) : (
         <div className="mx-auto flex flex-col w-full max-w-[560px] gap-6">
-          <div className="flex flex-col gap-2">
-            <span className="flex justify-center text-[24px] font-semibold">
-              {formDetail.title}
+          <div className="flex flex-col">
+            <span className="flex items-center justify-center gap-2 mb-2 text-[24px] font-semibold">
+              {formDetail.title} :
+              {submission && (
+                <span className="text-[16px] font-medium text-gray-500">
+                  ({submission.teamName})
+                </span>
+              )}
             </span>
             <span className="text-[14px] font-medium">
               마감일: {formDetail.deadline}
