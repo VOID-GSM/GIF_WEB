@@ -32,7 +32,7 @@ export default function ScoreAssignView() {
     window.dispatchEvent(new Event("storage"));
   }
 
-  const { data: myInfo } = useGetMyInfo();
+  const { data: myInfo, isLoading: isMyInfoLoading } = useGetMyInfo();
   const allowedAreas: ScoreArea[] = getAllowedAreas(myInfo?.adminRole, myInfo?.gradeHead);
 
   const { data: projects = [], isLoading: isProjectsLoading } = useGetFilteredProjects(grade);
@@ -60,7 +60,7 @@ export default function ScoreAssignView() {
   });
 
   const isScoreLoading = scoreQueries.some((q) => q.isPending);
-  const isLoading = isProjectsLoading || isScoreLoading;
+  const isLoading = isProjectsLoading || isScoreLoading || isMyInfoLoading;
 
   const teamsWithScores = projects
     .map((project, i) => {
