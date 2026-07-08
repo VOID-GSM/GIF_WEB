@@ -123,9 +123,9 @@ export function useScoreArea({ area, projectId }: Params) {
     } satisfies CreateSocialScoreRequest;
   }
 
-  function handleSave() {
+  function handleSave(onComplete?: () => void) {
     const body = buildBody();
-    const onSuccess = () => { setLocalScores({}); setLocalComplete({}); };
+    const onSuccess = () => { setLocalScores({}); setLocalComplete({}); onComplete?.(); };
     // 레코드가 하나이므로: 서버에 데이터가 있으면(다른 영역이라도) PATCH, 없으면 POST
     if (existingScore !== null) {
       if (area === "major")        updateMajor.mutate(body as CreateMajorScoreRequest,   { onSuccess });

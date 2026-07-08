@@ -26,17 +26,21 @@ export default function ScoreAreaView({ area, projectId, teamName }: Props) {
     handleSave,
   } = useScoreArea({ area, projectId });
 
+  function goToScorePage() {
+    router.push("/score");
+  }
+
   function handleSaveClick() {
     if (isAreaScored) {
       setShowConfirm(true);
     } else {
-      handleSave();
+      handleSave(goToScorePage);
     }
   }
 
   function handleConfirm() {
     setShowConfirm(false);
-    handleSave();
+    handleSave(goToScorePage);
   }
 
   return (
