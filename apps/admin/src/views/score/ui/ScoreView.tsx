@@ -1,12 +1,11 @@
 "use client";
 
 import { useMemo, useSyncExternalStore } from "react";
-import { useQueries } from "@tanstack/react-query";
-import { useGetFilteredProjects } from "@/entities/project";
+import { useQuery } from "@tanstack/react-query";
 import { useGetMyInfo } from "@/entities/mypage";
 import type { Grade } from "@/entities/project";
-import { getMajorScore, useScoreNotice } from "@/entities/score";
-import { toNullOn404 } from "@/shared/utils";
+import { useScoreNotice } from "@/entities/score";
+import { getRank } from "@repo/lib";
 import ScoreTabNav from "./ScoreTabNav";
 import ScoreCollectionFilterBar from "./ScoreCollectionFilterBar";
 import ScoreCollectionTable from "./ScoreCollectionTable";
@@ -33,29 +32,18 @@ export default function ScoreView() {
   const { data: myInfo } = useGetMyInfo();
   const canNotice = myInfo?.adminRole === "MASTER";
 
-  const { data: projects, isLoading: isProjectsLoading, isError: isProjectsError } =
-    useGetFilteredProjects(grade);
-
-  const scoreQueries = useQueries({
-    queries: (projects ?? []).map((project) => ({
-      queryKey: ["score", "all", project.id],
-      queryFn: async () => {
-        const data = await toNullOn404(() => getMajorScore(project.id).then((res) => res.data))();
-        return data?.subTotalScore ?? 0;
-      },
-    })),
+  const {
+    data: rankRows = [],
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["score", "rank", grade],
+    queryFn: async () => (await getRank(grade)).data,
   });
 
-  const isLoading = isProjectsLoading || scoreQueries.some((q) => q.isLoading);
-  const isError = isProjectsError || scoreQueries.some((q) => q.isError);
-
-  const scoreRows = (projects ?? [])
-    .map((project, i) => ({
-      teamName: project.teamName,
-      totalScore: scoreQueries[i]?.data ?? 0,
-    }))
-    .sort((a, b) => b.totalScore - a.totalScore)
-    .map((row, i) => ({ ...row, rank: i + 1 }));
+  const scoreRows = [...rankRows]
+    .sort((a, b) => a.rank - b.rank)
+    .map(({ rank, teamName, totalScore }) => ({ rank, teamName, totalScore }));
 
   return (
     <div className="h-[calc(100vh-3.75rem)] bg-background flex flex-col items-center justify-center px-4 sm:px-6">
