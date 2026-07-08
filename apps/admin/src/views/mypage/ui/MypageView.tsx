@@ -2,7 +2,7 @@
 
 import { MypageCard } from "@repo/ui";
 import { useRouter } from "next/navigation";
-import { useGetMyInfo, useUpdateAdminInfo } from "@/entities/mypage/";
+import { useGetMyInfo } from "@/entities/mypage/";
 import { COOKIE_KEYS } from "@/shared/constants";
 import { deleteCookie } from "@/shared/utils";
 
@@ -15,7 +15,6 @@ const ADMIN_ROLE_LABEL: Record<string, string> = {
 export default function MypageView() {
   const router = useRouter();
   const { data, isLoading, isError } = useGetMyInfo();
-  const { mutate: updateInfo } = useUpdateAdminInfo();
 
   // 교과 역할과 학년부 부장 여부를 함께 표시한다. (예: "전공 교과 · 학년부 부장")
   const roleParts = [
@@ -39,26 +38,12 @@ export default function MypageView() {
       value: role,
       type: "readonly" as const,
     },
-    {
-      key: "adminTeam",
-      label: "담당 팀",
-      value: data?.adminTeam ?? "",
-      placeholder: "담당하는 팀이 없습니다",
-      type: "input" as const,
-    },
   ];
 
   const handleLogout = () => {
     deleteCookie(COOKIE_KEYS.ACCESS_TOKEN);
     router.replace("/signin");
     router.refresh();
-  };
-
-  const handleEdit = (updatedValues: Record<string, string>) => {
-    // 빈 값도 그대로 전송해 담당 팀을 실제로 비울 수 있게 한다.
-    updateInfo({
-      adminTeam: updatedValues["adminTeam"]?.trim() ?? "",
-    });
   };
 
   return (
@@ -82,7 +67,6 @@ export default function MypageView() {
         <MypageCard
           items={mypageInfoItems}
           onLogout={handleLogout}
-          onEdit={handleEdit}
           nameSuffix="선생님"
         />
       )}

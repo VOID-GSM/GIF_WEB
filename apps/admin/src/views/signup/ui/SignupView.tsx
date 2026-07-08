@@ -10,7 +10,6 @@ import { RoleSelect, type AdminRole } from "@/entities/signup";
 export default function SignupView() {
   const router = useRouter();
   const [adminRole, setAdminRole] = useState<AdminRole | null>(null);
-  const [adminTeam, setAdminTeam] = useState("");
   const [gradeHead, setGradeHead] = useState(false);
 
   // 회원가입은 첫 로그인(역할 미설정)인 사용자에게만 노출한다.
@@ -24,12 +23,10 @@ export default function SignupView() {
 
   const isActive = adminRole !== null;
 
-  // 역할(및 담당 팀)을 약관 동의 페이지로 넘긴다. 실제 가입은 약관 동의 후 완료된다.
+  // 역할을 약관 동의 페이지로 넘긴다. 실제 가입은 약관 동의 후 완료된다.
   const handleNext = () => {
     if (!adminRole) return;
-    const team = adminTeam.trim();
     const params = new URLSearchParams({ role: adminRole });
-    if (team) params.set("team", team);
     if (gradeHead) params.set("gradeHead", "true");
     router.push(`/signup/terms?${params.toString()}`);
   };
@@ -58,18 +55,6 @@ export default function SignupView() {
           <div className="flex flex-col gap-5 w-full">
             <div className="flex flex-col gap-[10px] w-full">
               <RoleSelect value={adminRole} onChange={setAdminRole} />
-
-              <input
-                type="text"
-                value={adminTeam}
-                onChange={(e) => setAdminTeam(e.target.value)}
-                placeholder="담당 팀을 입력해주세요(없을 시 작성 X)"
-                className={`w-full h-7 px-[10px] rounded bg-white text-[12px] border outline-none transition-colors placeholder:text-gray-500 ${
-                  adminTeam
-                    ? "border-black text-black"
-                    : "border-gray-500 text-gray-500"
-                }`}
-              />
 
               <label
                 className={`flex items-center gap-2 text-[12px] cursor-pointer select-none transition-colors ${
