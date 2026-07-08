@@ -25,7 +25,7 @@ export default function FormCard({
 
   return (
     <div
-      className={`flex h-20 w-full shrink-0 items-center rounded-xl bg-white pr-4 pl-4 shadow transition-shadow duration-200 hover:shadow-md sm:pr-6 ${announced ? "cursor-pointer" : ""}`}
+      className={`flex h-20 w-full shrink-0 overflow-hidden items-center rounded-xl bg-white pr-4 pl-4 shadow transition-shadow duration-200 hover:shadow-md sm:pr-6 ${announced ? "cursor-pointer" : ""}`}
       onClick={announced ? () => onView?.(id) : undefined}
     >
       {announced ? (
@@ -35,7 +35,10 @@ export default function FormCard({
       ) : (
         <button
           type="button"
-          onClick={(e) => { e.stopPropagation(); onAnnounce(id); }}
+          onClick={(e) => {
+            e.stopPropagation();
+            onAnnounce(id);
+          }}
           className="flex h-8 w-[88px] shrink-0 cursor-pointer items-center justify-center rounded-xl border border-yellow-600 bg-yellow-50 font-medium transition-all duration-150 hover:bg-yellow-100 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-600/50"
         >
           공지하기
@@ -51,11 +54,17 @@ export default function FormCard({
       </span>
 
       {announced ? (
-        <div className="ml-4 h-8 w-20 shrink-0 sm:ml-[68px]" aria-hidden />
+        <div
+          className="ml-4 hidden h-8 w-20 shrink-0 sm:ml-[68px] sm:block"
+          aria-hidden
+        />
       ) : (
         <button
           type="button"
-          onClick={(e) => { e.stopPropagation(); onEdit(id); }}
+          onClick={(e) => {
+            e.stopPropagation();
+            onEdit(id);
+          }}
           className="ml-4 flex h-8 w-20 shrink-0 cursor-pointer items-center justify-center rounded-xl border border-yellow-600 bg-yellow-50 transition-all duration-150 hover:bg-yellow-100 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-600/50 sm:ml-[68px]"
         >
           수정
@@ -65,9 +74,12 @@ export default function FormCard({
       {onDelete && (
         <button
           type="button"
-          onClick={(e) => { e.stopPropagation(); onDelete(id); }}
+          onClick={(e) => {
+            e.stopPropagation();
+            onDelete(id);
+          }}
           aria-label="양식 삭제"
-          className="ml-3 flex shrink-0 cursor-pointer items-center justify-center rounded-lg p-1 text-gray-700 transition-all duration-150 hover:scale-110 hover:text-black active:scale-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 sm:ml-5"
+          className="ml-3 flex shrink-0 cursor-pointer items-center justify-center rounded-lg p-1 text-gray-700 transition-all duration-150 hover:scale-110 hover:text-black active:scale-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400"
         >
           <Close width={20} height={20} />
         </button>
