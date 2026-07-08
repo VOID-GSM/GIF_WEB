@@ -23,14 +23,17 @@ export default function ScoreAssignSection({
   const areas = getAllowedScoreAreas(myInfo.adminRole, myInfo.gradeHead);
   if (areas.length === 0) return null;
 
+  // 채점 영역이 2개일 때는 두 버튼을 가로로 나란히 배치한다.
+  const isRow = areas.length === 2;
+
   return (
-    <div className="mt-[30px] flex flex-col gap-3">
+    <div className={`mt-[30px] flex gap-3 ${isRow ? "flex-row" : "flex-col"}`}>
       {areas.map((area) => (
         <button
           key={area}
           type="button"
           onClick={() => router.push(`/score/${area}?projectId=${projectId}`)}
-          className="w-full rounded-[10px] bg-yellow-600 py-3 text-center text-sm font-semibold text-gray-900 transition-opacity hover:opacity-90 cursor-pointer"
+          className={`${isRow ? "flex-1" : "w-full"} rounded-[10px] bg-yellow-600 py-3 text-center text-sm font-semibold text-gray-900 transition-opacity hover:opacity-90 cursor-pointer`}
         >
           {AREA_LABELS[area]} 점수 부여하기
         </button>
