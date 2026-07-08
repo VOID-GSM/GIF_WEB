@@ -76,7 +76,24 @@ export default function FormCreateView() {
     );
   };
 
+  const hasEmptyValue = () => {
+    const isEmpty = (value: string) => value.trim() === "";
+
+    return (
+      isEmpty(formTitle) ||
+      isEmpty(deadline) ||
+      fields.some(
+        (f) => isEmpty(f.title) || isEmpty(f.description) || f.type === "",
+      )
+    );
+  };
+
   const handleSave = () => {
+    if (hasEmptyValue()) {
+      toast.error("입력하지 않은 값이 있어 저장할 수 없습니다.");
+      return;
+    }
+
     createForm(
       {
         title: formTitle,
@@ -94,16 +111,7 @@ export default function FormCreateView() {
   };
 
   const handleAnnounce = () => {
-    const isEmpty = (value: string) => value.trim() === "";
-
-    const hasEmptyValue =
-      isEmpty(formTitle) ||
-      isEmpty(deadline) ||
-      fields.some(
-        (f) => isEmpty(f.title) || isEmpty(f.description) || f.type === "",
-      );
-
-    if (hasEmptyValue) {
+    if (hasEmptyValue()) {
       toast.error("입력하지 않은 값이 있어 공지할 수 없습니다.");
       return;
     }
@@ -144,9 +152,7 @@ export default function FormCreateView() {
   if (!canCreate) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background px-5 text-gray-500 font-medium">
-        {isError
-          ? "정보를 불러오지 못했습니다."
-          : "양식 생성 권한이 없습니다."}
+        {isError ? "정보를 불러오지 못했습니다." : "양식 생성 권한이 없습니다."}
       </div>
     );
   }
