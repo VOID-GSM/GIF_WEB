@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { FormCard, Plus, DatePicker } from "@repo/ui";
+import { FormCard, Plus, DatePicker, TimePicker } from "@repo/ui";
 import { toast } from "sonner";
 
 import { usePostForm, useAnnounceForm } from "@/entities/form-create";
@@ -38,7 +38,13 @@ export default function FormCreateView() {
 
   const [formTitle, setFormTitle] = useState("");
   const [deadline, setDeadline] = useState("");
+  // 마감 시각 (HH:mm) — 날짜처럼 사용자가 직접 선택한다.
+  const [deadlineTime, setDeadlineTime] = useState("");
   const [savedFormId, setSavedFormId] = useState<number | null>(null);
+
+  // 날짜(YYYY-MM-DD) + 시각(HH:mm) → 백엔드 LocalDateTime 형식 "YYYY-MM-DDTHH:mm:ss"
+  const buildDeadline = () =>
+    deadline && deadlineTime ? `${deadline}T${deadlineTime}:00` : "";
 
   const [fields, setFields] = useState<FieldWithId[]>([
     {
@@ -80,7 +86,7 @@ export default function FormCreateView() {
     createForm(
       {
         title: formTitle,
-        deadline,
+        deadline: buildDeadline(),
         fields: fields.map(({ ...rest }) => rest as PostFormRequestField),
       },
       {
@@ -99,6 +105,7 @@ export default function FormCreateView() {
     const hasEmptyValue =
       isEmpty(formTitle) ||
       isEmpty(deadline) ||
+      isEmpty(deadlineTime) ||
       fields.some(
         (f) => isEmpty(f.title) || isEmpty(f.description) || f.type === "",
       );
@@ -118,7 +125,7 @@ export default function FormCreateView() {
       createForm(
         {
           title: formTitle,
-          deadline,
+          deadline: buildDeadline(),
           fields: fields.map(({ ...rest }) => rest as PostFormRequestField),
         },
         {
@@ -168,8 +175,13 @@ export default function FormCreateView() {
         </div>
         <div className="flex flex-col text-[14px] font-medium text-gray-600 gap-1">
           마감일 선택하기
-          <div>
-            <DatePicker value={deadline} onChange={setDeadline} />
+          <div className="flex gap-3">
+            <div className="flex-1">
+              <DatePicker value={deadline} onChange={setDeadline} />
+            </div>
+            <div className="w-[140px]">
+              <TimePicker value={deadlineTime} onChange={setDeadlineTime} />
+            </div>
           </div>
         </div>
       </div>

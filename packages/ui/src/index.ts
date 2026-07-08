@@ -43,6 +43,7 @@ export { default as FormListSection } from "./widgets/project-detail/ui/FormList
 export { default as EventFormModal } from "./widgets/Modal/ui/EventFormModal";
 export { default as EventViewModal } from "./widgets/Modal/ui/EventViewModal";
 export { default as DatePicker } from "./widgets/Calendar/ui/DatePicker";
+export { default as TimePicker } from "./widgets/Calendar/ui/TimePicker";
 
 export { default as Chevron } from "./svg/Chevron";
 export { default as DashedBorder } from "./svg/DashedBorder";

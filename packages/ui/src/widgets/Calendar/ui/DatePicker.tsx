@@ -1,10 +1,23 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { DatePickerProps } from "../model/type";
 
 export default function DatePicker({ value, onChange }: DatePickerProps) {
   const today = new Date();
   const [isOpen, setIsOpen] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
+
+  // 바깥 영역 클릭 시 닫기
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleClickOutside = (e: MouseEvent) => {
+      if (rootRef.current && !rootRef.current.contains(e.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [isOpen]);
   const [current, setCurrent] = useState(
     value
       ? new Date(value)
@@ -41,7 +54,7 @@ export default function DatePicker({ value, onChange }: DatePickerProps) {
   const DAYS = ["일", "월", "화", "수", "목", "금", "토"];
 
   return (
-    <div className="relative w-full">
+    <div className="relative w-full" ref={rootRef}>
       <div
         className="w-full flex items-center justify-between py-3 px-4 border border-gray-200 rounded-[10px] text-[18px] font-medium cursor-pointer outline-none bg-white"
         onClick={() => setIsOpen((prev) => !prev)}
