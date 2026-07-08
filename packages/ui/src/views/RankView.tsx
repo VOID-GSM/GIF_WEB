@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { getCookieValue, useGetRank } from "@repo/lib";
+import { useGetRank, useGetScoreNotice } from "@repo/lib";
 import type { RankItem } from "@repo/lib";
 
 import GradeSelector from "../components/GradeSelector/GradeSelector";
@@ -30,20 +30,16 @@ export default function RankView({
   const grade = propGrade ?? localGrade;
   const setGrade = onGradeChange ?? setLocalGrade;
   const router = useRouter();
-  const [isPublished, setIsPublished] = useState<boolean | null>(null);
+  const { data: notice, isPending: isNoticePending } = useGetScoreNotice();
   const { data, isPending, isError } = useGetRank({ grade });
 
   useEffect(() => {
-    setIsPublished(getCookieValue("rank_announced") === "1");
-  }, []);
-
-  useEffect(() => {
-    if (isPublished === false) {
+    if (notice && !notice.isPublished) {
       router.replace("/");
     }
-  }, [isPublished, router]);
+  }, [notice, router]);
 
-  if (isPublished === null) {
+  if (isNoticePending || (notice && !notice.isPublished)) {
     return null;
   }
 

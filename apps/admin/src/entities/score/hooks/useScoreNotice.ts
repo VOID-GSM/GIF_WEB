@@ -1,18 +1,16 @@
 "use client";
 
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { postScoreNotice } from "../api";
-import { setCookieValue } from "@repo/lib";
 
 export function useScoreNotice() {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: postScoreNotice,
     onSuccess: () => {
-      setCookieValue("rank_announced", "1", {
-        path: "/",
-        maxAge: 60 * 60 * 24,
-      });
+      queryClient.invalidateQueries({ queryKey: ["score", "notice"] });
       toast.success("점수가 공지되었습니다.");
     },
     onError: () => {
