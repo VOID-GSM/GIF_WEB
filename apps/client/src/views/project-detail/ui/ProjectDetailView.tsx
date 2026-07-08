@@ -105,9 +105,9 @@ export default function ProjectDetailView({
         {/* 마감현황 · 양식 목록 (좌) / 일정 캘린더 (우) — 내 팀일 때만 */}
         {/* 프로젝트 설명 ↔ 마감현황 간격 56px */}
         {isMine && (
-          <div className="mt-14 flex flex-col gap-8 lg:flex-row lg:items-stretch lg:gap-12">
+          <div className="mt-14 flex flex-col gap-8 sm:flex-row sm:items-stretch sm:gap-8 lg:gap-12">
             {/* 좌측: 일정(우측) 높이에 맞춰 늘어나고, 양식 목록이 남는 공간을 채우며 스크롤 */}
-            <div className="flex flex-1 flex-col gap-8 lg:min-h-0">
+            <div className="flex flex-1 flex-col gap-8 sm:min-h-0">
               <DeadlineStatusSection
                 summary={getDeadlineSummary(forms ?? [])}
               />
