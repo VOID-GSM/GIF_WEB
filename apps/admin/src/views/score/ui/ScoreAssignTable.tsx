@@ -75,10 +75,10 @@ export default function ScoreAssignTable({ isLoading, teams, allowedAreas }: Pro
           <div key={team.id} className="py-3 flex flex-col gap-2">
             <div className="flex flex-col gap-0.5">
               <span className="text-xs font-semibold text-[var(--color-gray-500)]">
-                {team.teamName}
+                {team.name}
               </span>
               <span className="text-sm text-[var(--color-gray-800)] line-clamp-2">
-                {team.name}
+                {team.teamName}
               </span>
             </div>
             <div className="flex flex-wrap gap-1.5">{renderBadges(team)}</div>
@@ -89,17 +89,17 @@ export default function ScoreAssignTable({ isLoading, teams, allowedAreas }: Pro
       {/* 데스크탑: 테이블 레이아웃 (>= sm) */}
       <div className="hidden sm:block w-full flex-1 min-h-0 overflow-y-auto">
         <div className="grid grid-cols-[100px_1fr_minmax(200px,auto)] min-w-[520px]">
-          <span className={headerCellCx}>팀명</span>
           <span className={headerCellCx}>프로젝트명</span>
+          <span className={headerCellCx}>팀명</span>
           <span className={headerCellCx}>점수 부여</span>
 
           {teams.map((team) => (
             <Fragment key={team.id}>
               <span className="border-t border-[var(--color-gray-100)] px-4 h-11 text-sm text-[var(--color-gray-800)] flex items-center">
-                {team.teamName}
+                {team.name}
               </span>
               <span className="border-t border-[var(--color-gray-100)] px-4 h-11 text-sm text-[var(--color-gray-600)] truncate flex items-center min-w-0">
-                {team.name}
+                {team.teamName}
               </span>
               <div className="border-t border-[var(--color-gray-100)] px-4 h-11 flex flex-wrap items-center gap-2">
                 {renderBadges(team)}
