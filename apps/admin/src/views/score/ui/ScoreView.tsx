@@ -41,7 +41,7 @@ export default function ScoreView() {
     queryFn: async () => (await getRank(grade)).data,
   });
 
-  const scoreRows = [...rankRows]
+  const scoreRows = [...(rankRows ?? [])]
     .sort((a, b) => a.rank - b.rank)
     .map(({ rank, teamName, totalScore }) => ({ rank, teamName, totalScore }));
 
