@@ -108,8 +108,8 @@ export default function FormDetailView({ formId, submitId }: Props) {
             <span className="flex items-center justify-center gap-2 mb-2 text-[24px] font-semibold">
               {formDetail.title}
               {submission && (
-                <span className="text-[16px] font-medium text-gray-500">
-                  : ({submission.teamName})
+                <span className="font-medium text-gray-500">
+                  팀: {submission.teamName}
                 </span>
               )}
             </span>
