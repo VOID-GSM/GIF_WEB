@@ -12,13 +12,21 @@ export interface FeatureItem {
 }
 
 export interface WinnerItem {
+  /** 수상 학년 (1 | 2) */
+  grade: 1 | 2;
   rank: string;
   medal: string;
   team: string;
   title: string;
   desc: string;
+  /** 팀원 명단 */
+  members: string[];
+  /** 팀 로고 경로 (public 기준, 예: /winners/story.png). 없으면 메달 이모지로 대체 */
+  logo?: string;
   /** 카드 상단 그라데이션 (Tailwind from/to 클래스) */
   accent: string;
+  /** 수상작 미공개 시 자리표시자 처리 */
+  pending?: boolean;
 }
 
 export interface MemberItem {
@@ -69,28 +77,72 @@ export const FEATURES: FeatureItem[] = [
 ];
 
 export const WINNERS: WinnerItem[] = [
+  // ── 1학년 ──────────────────────────────
   {
-    rank: "대상",
+    grade: 1,
+    rank: "최우수상",
     medal: "🥇",
-    team: "Team Prism",
-    title: "모두를 위한 배리어프리 내비게이션",
-    desc: "시각장애인을 위한 실내 길안내 서비스",
+    team: "404",
+    title: "Story",
+    desc: "포트폴리오 및 블로그 작성에 익숙하지 않은 학생들이 AI의 도움으로 손쉽게 자신만의 글을 완성할 수 있도록 도와주고 이를 공유할 수 있는 플랫폼입니다.",
+    members: ["이남진", "정연돈", "홍지민", "배재현", "박채은", "김서연"],
+    logo: "/story.png",
     accent: "from-yellow-600 to-orange-400",
   },
   {
-    rank: "최우수상",
+    grade: 1,
+    rank: "우수상",
     medal: "🥈",
-    team: "Team Nova",
-    title: "교실 탄소중립 대시보드",
-    desc: "학급 전력 사용량을 실시간 시각화한 IoT 프로젝트",
+    team: "",
+    title: "",
+    desc: "",
+    members: [],
+    accent: "from-gray-300 to-gray-500",
+    pending: true,
+  },
+  {
+    grade: 1,
+    rank: "장려상",
+    medal: "🥉",
+    team: "null",
+    title: "Coding GO!",
+    desc: "누구나 쉽고 재미있게 코딩을 배우고, 꾸준한 학습을 통해 성장할 수 있도록 돕는 코딩 학습 플랫폼, Coding GO!",
+    members: ["류수연", "유휘영", "이의빈", "정종윤", "주현진"],
+    logo: "/codinggo.png",
+    accent: "from-orange-300 to-orange-500",
+  },
+  // ── 2학년 ──────────────────────────────
+  {
+    grade: 2,
+    rank: "최우수상",
+    medal: "🥇",
+    team: "한승일",
+    title: "NoChu",
+    desc: "AI 실시간 표정 인식을 통해 사용자의 현재 감정을 분석하여 최적의 맞춤형 음악을 추천하는 모바일 애플리케이션",
+    members: ["조수민", "임지훈", "전선우", "김재관", "박정우", "박승일", "배용빈"],
+    logo: "/nochu.png",
+    accent: "from-yellow-600 to-orange-400",
+  },
+  {
+    grade: 2,
+    rank: "우수상",
+    medal: "🥈",
+    team: "NFTEEN",
+    title: "DONDON",
+    desc: "청소년들을 위한 경제/금융 플랫폼",
+    members: ["박서현", "이서희", "유은서", "김준혁", "송정연", "이준건"],
+    logo: "/dondon.png",
     accent: "from-gray-300 to-gray-500",
   },
   {
-    rank: "우수상",
+    grade: 2,
+    rank: "장려상",
     medal: "🥉",
-    team: "Team Echo",
-    title: "AI 급식 추천 봇",
-    desc: "잔반을 줄이는 개인 맞춤 급식 추천 서비스",
+    team: "소라고",
+    title: "아.아.",
+    desc: '개발자 전용 커피챗 네트워킹 플랫폼, "아.아." 가볍게 만나서 기술과 커리어 이야기를 나눠보세요. 아.아.는 개발자들이 부담 없이 신뢰를 쌓아가는 새로운 네트워킹 문화를 만들어갑니다.',
+    members: ["허은서", "김명현", "임시현", "이영서", "김한주"],
+    logo: "/aa_logo.jpg",
     accent: "from-orange-300 to-orange-500",
   },
 ];
