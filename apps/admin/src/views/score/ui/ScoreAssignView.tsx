@@ -11,7 +11,7 @@ import { getMajorScore } from "@/entities/score";
 import { useGetMyInfo } from "@/entities/mypage";
 import { toNullOn404 } from "@/shared/utils";
 import type { ScoreFilter, ScoreArea } from "./constants";
-import { ROLE_ALLOWED_AREAS } from "./constants";
+import { getAllowedAreas } from "./constants";
 
 const GRADE_STORAGE_KEY = "score_assign_grade";
 
@@ -33,8 +33,7 @@ export default function ScoreAssignView() {
   }
 
   const { data: myInfo } = useGetMyInfo();
-  const allowedAreas: ScoreArea[] =
-    ROLE_ALLOWED_AREAS[myInfo?.adminRole ?? ""] ?? (["major", "report", "social"] as ScoreArea[]);
+  const allowedAreas: ScoreArea[] = getAllowedAreas(myInfo?.adminRole, myInfo?.gradeHead);
 
   const { data: projects = [], isLoading: isProjectsLoading } = useGetFilteredProjects(grade);
 
@@ -45,7 +44,7 @@ export default function ScoreAssignView() {
       staleTime: 5 * 60 * 1000,
       queryFn: async () => {
         const data = await toNullOn404(() => getMajorScore(project.id).then((r) => r.data))();
-        if (!data) return { isComplete: false, scoredAreas: [] as ScoreArea[] };
+        if (!data) return { scoredAreas: [] as ScoreArea[] };
         const VALID = [40, 32, 24];
         const majorDone  = [data.technicalCompleteness, data.socialValueMajor, data.aiUtilizationMajor, data.presentationMajor].every((v) => VALID.includes(v));
         const reportDone = [data.reportWriting, data.reportContent, data.aiUsagePlan, data.creativity].every((v) => VALID.includes(v));
@@ -55,7 +54,7 @@ export default function ScoreAssignView() {
           ...(reportDone ? ["report"] as ScoreArea[] : []),
           ...(socialDone ? ["social"] as ScoreArea[] : []),
         ];
-        return { isComplete: majorDone && reportDone && socialDone, scoredAreas };
+        return { scoredAreas };
       },
     })),
   });
@@ -64,13 +63,18 @@ export default function ScoreAssignView() {
   const isLoading = isProjectsLoading || isScoreLoading;
 
   const teamsWithScores = projects
-    .map((project, i) => ({
-      id: project.id,
-      teamName: project.teamName,
-      name: project.name,
-      scoredAreas: scoreQueries[i]?.data?.scoredAreas ?? [] as ScoreArea[],
-      isComplete: scoreQueries[i]?.data?.isComplete ?? false,
-    }))
+    .map((project, i) => {
+      const scoredAreas = scoreQueries[i]?.data?.scoredAreas ?? [] as ScoreArea[];
+      // 완료 여부는 3개 영역 전체가 아니라, 로그인한 계정이 담당하는 영역 기준으로 판단한다.
+      const isComplete = allowedAreas.length > 0 && allowedAreas.every((a) => scoredAreas.includes(a));
+      return {
+        id: project.id,
+        teamName: project.teamName,
+        name: project.name,
+        scoredAreas,
+        isComplete,
+      };
+    })
     .sort((a, b) => a.teamName.localeCompare(b.teamName));
 
   const teams = teamsWithScores.filter((t) => {
