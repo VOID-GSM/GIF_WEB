@@ -82,9 +82,7 @@ export default function FormCreateView() {
     return (
       isEmpty(formTitle) ||
       isEmpty(deadline) ||
-      fields.some(
-        (f) => isEmpty(f.title) || isEmpty(f.description) || f.type === "",
-      )
+      fields.some((f) => isEmpty(f.title) || f.type === "")
     );
   };
 
