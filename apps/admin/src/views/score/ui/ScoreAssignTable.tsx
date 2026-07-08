@@ -5,6 +5,13 @@ import { useRouter } from "next/navigation";
 import { SectionBadge } from "@repo/ui";
 import type { ScoreArea } from "./constants";
 
+// 모바일 카드에서는 "영역"을 뺀 축약 라벨을 쓴다.
+const COMPACT_AREA_LABELS: Record<ScoreArea, string> = {
+  major: "전공 중심",
+  report: "보고서",
+  social: "사회 중심",
+};
+
 interface TeamRow {
   id: number;
   teamName: string;
@@ -26,11 +33,13 @@ const headerCellCx =
 export default function ScoreAssignTable({ isLoading, teams, allowedAreas }: Props) {
   const router = useRouter();
 
-  function renderBadges(team: TeamRow) {
+  function renderBadges(team: TeamRow, compact = false) {
     return AREAS.map((area) => {
       const isAllowed = allowedAreas.includes(area);
       const isScored  = team.scoredAreas?.includes(area) ?? false;
       const variant   = isAllowed ? (isScored ? "active" : "unscored") : "inactive";
+      const label     = compact ? COMPACT_AREA_LABELS[area] : undefined;
+      const size      = compact ? "sm" : "md";
       return isAllowed ? (
         <button
           key={area}
@@ -39,13 +48,13 @@ export default function ScoreAssignTable({ isLoading, teams, allowedAreas }: Pro
               `/score/${area}?projectId=${team.id}&teamName=${encodeURIComponent(team.teamName)}`,
             )
           }
-          className="cursor-pointer"
+          className="shrink-0 cursor-pointer"
         >
-          <SectionBadge status={area} variant={variant} />
+          <SectionBadge status={area} variant={variant} label={label} size={size} />
         </button>
       ) : (
-        <div key={area} className="cursor-not-allowed">
-          <SectionBadge status={area} variant="inactive" />
+        <div key={area} className="shrink-0 cursor-not-allowed">
+          <SectionBadge status={area} variant="inactive" label={label} size={size} />
         </div>
       );
     });
@@ -75,13 +84,13 @@ export default function ScoreAssignTable({ isLoading, teams, allowedAreas }: Pro
           <div key={team.id} className="py-3 flex flex-col gap-2">
             <div className="flex flex-col gap-0.5">
               <span className="text-xs font-semibold text-[var(--color-gray-500)]">
-                {team.name}
-              </span>
-              <span className="text-sm text-[var(--color-gray-800)] line-clamp-2">
                 {team.teamName}
               </span>
+              <span className="text-sm text-[var(--color-gray-800)] line-clamp-2">
+                {team.name}
+              </span>
             </div>
-            <div className="flex flex-wrap gap-1.5">{renderBadges(team)}</div>
+            <div className="flex flex-nowrap justify-center gap-3">{renderBadges(team, true)}</div>
           </div>
         ))}
       </div>
