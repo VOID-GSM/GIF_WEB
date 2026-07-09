@@ -169,6 +169,7 @@ export default function FormMySubmitView({ formId }: Props) {
           fieldId: fId,
           filePath: existingPath,
           fileSize: answerMap[fId]?.fileSize ?? undefined,
+          originalFileName: answerMap[fId]?.originalFileName ?? undefined,
         }];
       }
 
@@ -297,6 +298,7 @@ export default function FormMySubmitView({ formId }: Props) {
                           file={hasNewFile ? (fileAnswers[fId] as File) : null}
                           filePath={serverFilePath}
                           fileSize={existingAnswer?.fileSize || undefined}
+                          originalFileName={existingAnswer?.originalFileName || undefined}
                           submitId={mySubmit.submitId}
                           readOnly={!isEditing}
                           onChange={handleFileChange}
