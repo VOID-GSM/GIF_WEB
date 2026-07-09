@@ -1,9 +1,16 @@
 "use client";
 
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { postScoreNotice } from "../api";
+import { postScoreNotice, getScoreNotice } from "../api";
 import { setCookieValue } from "@repo/lib";
+
+export function useGetScoreNotice() {
+  return useQuery({
+    queryKey: ["score", "notice"],
+    queryFn: async () => (await getScoreNotice()).data,
+  });
+}
 
 export function useScoreNotice() {
   return useMutation({

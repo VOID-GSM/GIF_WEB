@@ -38,7 +38,8 @@ export function useCreateReportScore() {
 export function useUpdateReportScore() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (body: CreateReportScoreRequest) => patchReportScore(body),
+    mutationFn: ({ projectId, ...body }: CreateReportScoreRequest) =>
+      patchReportScore(projectId, body),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ["score", "report", variables.projectId] });
       queryClient.invalidateQueries({ queryKey: ["score", "status", variables.projectId] });
