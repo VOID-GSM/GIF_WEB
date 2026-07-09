@@ -4,7 +4,11 @@ import { useMemo, useSyncExternalStore } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useGetMyInfo } from "@/entities/mypage";
 import type { Grade } from "@/entities/project";
-import { useScoreNotice } from "@/entities/score";
+import {
+  useScoreNotice,
+  useGetScoreNotice,
+  useGetAllProjectFieldAverages,
+} from "@/entities/score";
 import { getRank } from "@repo/lib";
 import ScoreTabNav from "./ScoreTabNav";
 import ScoreCollectionFilterBar from "./ScoreCollectionFilterBar";
@@ -41,9 +45,44 @@ export default function ScoreView() {
     queryFn: async () => (await getRank(grade)).data,
   });
 
-  const scoreRows = [...(rankRows ?? [])]
-    .sort((a, b) => a.rank - b.rank)
-    .map(({ rank, teamName, totalScore }) => ({ rank, teamName, totalScore }));
+  const { data: notice } = useGetScoreNotice();
+  const { data: fieldAverages } = useGetAllProjectFieldAverages();
+
+  const scoreRows = useMemo(() => {
+    // teamName → 채점 현황(평균/응답수) 매핑 (notice.scores 기준)
+    const summaryByTeam = new Map(
+      (notice?.scores ?? []).map((s) => [s.teamName, s]),
+    );
+    // projectId → teamName 매핑 (notice.scores가 둘 다 보유)
+    const teamNameByProjectId = new Map(
+      (notice?.scores ?? []).map((s) => [s.projectId, s.teamName]),
+    );
+    // teamName → 영역별 평균 매핑 (field-averages는 projectId만 보유 → 위 맵으로 연결)
+    const fieldByTeam = new Map(
+      (fieldAverages ?? []).flatMap((f) => {
+        const teamName = teamNameByProjectId.get(f.projectId);
+        return teamName ? [[teamName, f] as const] : [];
+      }),
+    );
+
+    return [...(rankRows ?? [])]
+      .sort((a, b) => a.rank - b.rank)
+      .map(({ rank, teamName, totalScore }) => {
+        const summary = summaryByTeam.get(teamName);
+        const field = fieldByTeam.get(teamName);
+        return {
+          rank,
+          teamName,
+          totalScore,
+          averageScore: summary?.averageScore,
+          scoreCount: summary?.scoreCount,
+          majorAverage: field?.majorAverage,
+          reportAverage: field?.reportAverage,
+          communityAverage: field?.communityAverage,
+          grandTotalAverage: field?.grandTotalAverage,
+        };
+      });
+  }, [rankRows, notice, fieldAverages]);
 
   return (
     <div className="h-[calc(100vh-3.75rem)] bg-background flex flex-col items-center justify-center px-4 sm:px-6">
