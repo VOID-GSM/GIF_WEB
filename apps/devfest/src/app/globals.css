@@ -1,0 +1,17 @@
+@import "tailwindcss";
+@import "pretendard/dist/web/static/pretendard.css";
+@import "@repo/ui/tokens.css";
+@source "../../../../packages/ui/src";
+
+body {
+  font-family: var(--font-sans);
+}
+
+.datagsm-logo {
+  font-family: "Press Start 2P", cursive;
+  font-size: 16px;
+  line-height: 14px;
+  display: inline-block;
+  transform: scaleY(-1);
+  flex-shrink: 0;
+}
