@@ -216,6 +216,7 @@ export default function ProjectEditForm({
                       userId: me.userId,
                       name: me.name,
                       studentNumber: me.studentNumber,
+                      hasTeam: true,
                     }
                   : undefined
               }
