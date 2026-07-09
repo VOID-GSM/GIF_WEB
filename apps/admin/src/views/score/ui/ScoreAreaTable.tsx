@@ -24,7 +24,7 @@ export default function ScoreAreaTable({ isLoading, rows, onSelectScore }: Props
         {rows.map((row) => (
           <div key={row.key} className="py-3 flex flex-col gap-2">
             <span className="text-sm font-medium text-gray-800">{row.label}</span>
-            <div className="flex gap-2">
+            <div className="flex w-full justify-center gap-3">
               {SCORES.map((score) => (
                 <ScoreButton
                   key={score}
