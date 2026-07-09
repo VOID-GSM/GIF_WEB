@@ -70,7 +70,7 @@ export default function ProjectDetailView({
 
   if (isPending || isError || !project) {
     return (
-      <div className="flex min-h-[calc(100dvh-60px)] items-center justify-center px-4">
+      <div className="flex min-h-dvh items-center justify-center px-4">
         <p className="text-[14px] text-gray-600">
           {isError ? "프로젝트를 불러오지 못했습니다." : "불러오는 중..."}
         </p>
@@ -79,7 +79,7 @@ export default function ProjectDetailView({
   }
 
   return (
-    <div className="flex min-h-[calc(100vh-3.75rem)] justify-center bg-background px-4 pb-8 pt-[67px]">
+    <div className="flex min-h-dvh justify-center bg-background px-4 pb-8 pt-[67px]">
       <div className="flex w-full min-w-0 max-w-[830px] flex-col">
         {/* 정보 영역 — 생성 페이지와 동일한 레이아웃 (로고 · 팀 정보 · 설명) */}
         {/* AI 요약(다른 팀 프로젝트일 때만)은 로고 영역과 설명 사이에 노출 */}
