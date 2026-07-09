@@ -18,10 +18,19 @@ const SUBMISSION_TABLE_GRID =
 
 type Props = { formId: number };
 
+type SubmissionFilter = "ALL" | "SUBMITTED" | "UNSUBMITTED";
+
 export default function FormSubmissionsView({ formId }: Props) {
   const [selectedGrade, setSelectedGrade] = useState<Grade>(1);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [submissionFilter, setSubmissionFilter] =
+    useState<SubmissionFilter>("ALL");
   const router = useRouter();
+
+  // 같은 필터를 다시 누르면 선택 해제되어 전체 목록으로 돌아간다
+  const toggleSubmissionFilter = (value: SubmissionFilter) => {
+    setSubmissionFilter((prev) => (prev === value ? "ALL" : value));
+  };
 
   const { data: projects, isLoading: projectsLoading } =
     useGetFilteredProjects(selectedGrade);
@@ -46,25 +55,56 @@ export default function FormSubmissionsView({ formId }: Props) {
     };
   });
 
+  // 제출/미제출 필터 — 선택 없으면(ALL) 전체 목록을 그대로 보여준다
+  const filteredRows = rows.filter((row) => {
+    if (submissionFilter === "SUBMITTED") return row.submitted;
+    if (submissionFilter === "UNSUBMITTED") return !row.submitted;
+    return true;
+  });
+
   return (
     <div className="flex flex-col items-center gap-8 px-4 py-6 sm:gap-12 sm:py-10">
-      {/* 모바일: [뒤로 / 미리보기] 한 줄 + 필터 아래 / sm+: 필터 중앙, 양옆 버튼 */}
-      <div className="flex w-full max-w-[800px] flex-col items-center gap-4 sm:relative sm:flex-row sm:justify-center sm:gap-0">
-        <div className="flex w-full items-center justify-between sm:contents">
+      {/* 880px 미만: [뒤로 / 미리보기] 한 줄 + 필터 아래 / 880px+: 필터 중앙, 양옆 버튼 */}
+      <div className="flex w-full max-w-[800px] flex-col items-center gap-4 min-[880px]:relative min-[880px]:flex-row min-[880px]:justify-center min-[880px]:gap-0">
+        <div className="flex w-full items-center justify-between min-[880px]:contents">
           <button
             onClick={() => router.back()}
-            className="z-10 flex items-center gap-2 text-base font-semibold text-gray-700 hover:text-gray-900 cursor-pointer sm:absolute sm:left-0 sm:top-1/2 sm:-translate-y-1/2 sm:text-lg"
+            className="z-10 flex items-center gap-2 text-base font-semibold text-gray-700 hover:text-gray-900 cursor-pointer min-[880px]:absolute min-[880px]:left-0 min-[880px]:top-1/2 min-[880px]:-translate-y-1/2 min-[880px]:text-lg"
           >
             ← 뒤로
           </button>
-          <button
-            type="button"
-            onClick={() => setIsPreviewOpen(true)}
-            disabled={!form}
-            className="z-10 flex items-center gap-2 rounded-[10px] border border-yellow-600 bg-yellow-50 px-3 py-1.5 text-xs font-semibold text-gray-900 transition-colors hover:bg-yellow-100 disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer sm:absolute sm:right-0 sm:top-1/2 sm:-translate-y-1/2 sm:px-4 sm:py-2 sm:text-sm"
-          >
-            폼 미리보기
-          </button>
+          <div className="z-10 flex items-center gap-2 min-[880px]:absolute min-[880px]:right-0 min-[880px]:top-1/2 min-[880px]:-translate-y-1/2">
+            <button
+              type="button"
+              onClick={() => toggleSubmissionFilter("SUBMITTED")}
+              className={`flex items-center gap-2 rounded-[10px] border px-3 py-1.5 text-xs font-semibold transition-colors cursor-pointer min-[880px]:px-4 min-[880px]:py-2 min-[880px]:text-sm ${
+                submissionFilter === "SUBMITTED"
+                  ? "border-yellow-600 bg-yellow-50 text-gray-900"
+                  : "border-gray-200 bg-gray-100 text-gray-700"
+              }`}
+            >
+              제출
+            </button>
+            <button
+              type="button"
+              onClick={() => toggleSubmissionFilter("UNSUBMITTED")}
+              className={`flex items-center gap-2 rounded-[10px] border px-3 py-1.5 text-xs font-semibold transition-colors cursor-pointer min-[880px]:px-4 min-[880px]:py-2 min-[880px]:text-sm ${
+                submissionFilter === "UNSUBMITTED"
+                  ? "border-yellow-600 bg-yellow-50 text-gray-900"
+                  : "border-gray-200 bg-gray-100 text-gray-700"
+              }`}
+            >
+              미제출
+            </button>
+            <button
+              type="button"
+              onClick={() => setIsPreviewOpen(true)}
+              disabled={!form}
+              className="flex items-center gap-2 rounded-[10px] border border-yellow-600 bg-yellow-50 px-3 py-1.5 text-xs font-semibold text-gray-900 transition-colors hover:bg-yellow-100 disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer min-[880px]:px-4 min-[880px]:py-2 min-[880px]:text-sm"
+            >
+              폼 미리보기
+            </button>
+          </div>
         </div>
         <GradeFilter value={selectedGrade} onChange={setSelectedGrade} />
       </div>
@@ -74,6 +114,12 @@ export default function FormSubmissionsView({ formId }: Props) {
       ) : rows.length === 0 ? (
         <div className="pt-20 text-gray-500 font-medium">
           등록된 팀이 없습니다.
+        </div>
+      ) : filteredRows.length === 0 ? (
+        <div className="pt-20 text-gray-500 font-medium">
+          {submissionFilter === "SUBMITTED"
+            ? "제출한 팀이 없습니다."
+            : "미제출한 팀이 없습니다."}
         </div>
       ) : (
         <div className="w-full max-w-[800px] overflow-x-auto rounded-xl bg-white shadow [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
@@ -88,7 +134,7 @@ export default function FormSubmissionsView({ formId }: Props) {
             <span className="text-sm font-semibold text-gray-700">제출 여부</span>
           </div>
 
-          {rows.map((row) => (
+          {filteredRows.map((row) => (
               <div
                 key={row.projectId}
                 className={`${SUBMISSION_TABLE_GRID} border-b border-gray-100 px-4 py-4 transition-colors hover:bg-yellow-50
