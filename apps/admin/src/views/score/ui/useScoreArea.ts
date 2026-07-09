@@ -39,7 +39,7 @@ const SCORE_CRITERION_KEYS = [
   "presentationCommunity",
 ] as const satisfies readonly (keyof DetailScoreResponse)[];
 
-function isValidScore(value: number): value is ScoreValue {
+function isValidScore(value: unknown): value is ScoreValue {
   return value === 40 || value === 32 || value === 24;
 }
 
