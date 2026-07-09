@@ -20,6 +20,7 @@ export default function TermsView() {
   const [agreed, setAgreed] = useState(false);
 
   const adminRole = searchParams.get("role") as AdminRole | null;
+  const name = searchParams.get("name") ?? "";
   const gradeHead = searchParams.get("gradeHead") === "true";
 
   const { data: myInfo, isLoading: isMyInfoLoading } = useGetMyInfo();
@@ -29,15 +30,15 @@ export default function TermsView() {
   useEffect(() => {
     if (alreadySignedUp) {
       router.replace("/");
-    } else if (!adminRole) {
+    } else if (!adminRole || !name) {
       router.replace("/signup");
     }
-  }, [alreadySignedUp, adminRole, router]);
+  }, [alreadySignedUp, adminRole, name, router]);
 
   const handleSubmit = () => {
-    if (!adminRole || !agreed) return;
+    if (!adminRole || !name || !agreed) return;
     mutate(
-      { adminRole, gradeHead },
+      { adminRole, name, gradeHead },
       {
         onSuccess: () => router.replace("/"),
         onError: () => toast.error("회원가입에 실패했습니다. 다시 시도해주세요."),
@@ -45,7 +46,7 @@ export default function TermsView() {
     );
   };
 
-  if (isMyInfoLoading || alreadySignedUp || !adminRole) return null;
+  if (isMyInfoLoading || alreadySignedUp || !adminRole || !name) return null;
 
   return (
     <main className="min-h-screen flex items-center justify-center bg-background p-4 md:p-0">

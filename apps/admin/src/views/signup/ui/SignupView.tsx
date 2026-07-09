@@ -10,6 +10,7 @@ import { RoleSelect, type AdminRole } from "@/entities/signup";
 export default function SignupView() {
   const router = useRouter();
   const [adminRole, setAdminRole] = useState<AdminRole | null>(null);
+  const [name, setName] = useState("");
   const [gradeHead, setGradeHead] = useState(false);
 
   // 회원가입은 첫 로그인(역할 미설정)인 사용자에게만 노출한다.
@@ -21,12 +22,13 @@ export default function SignupView() {
     if (alreadySignedUp) router.replace("/");
   }, [alreadySignedUp, router]);
 
-  const isActive = adminRole !== null;
+  const trimmedName = name.trim();
+  const isActive = adminRole !== null && trimmedName !== "";
 
-  // 역할을 약관 동의 페이지로 넘긴다. 실제 가입은 약관 동의 후 완료된다.
+  // 역할·이름을 약관 동의 페이지로 넘긴다. 실제 가입은 약관 동의 후 완료된다.
   const handleNext = () => {
-    if (!adminRole) return;
-    const params = new URLSearchParams({ role: adminRole });
+    if (!adminRole || trimmedName === "") return;
+    const params = new URLSearchParams({ role: adminRole, name: trimmedName });
     if (gradeHead) params.set("gradeHead", "true");
     router.push(`/signup/terms?${params.toString()}`);
   };
@@ -54,6 +56,16 @@ export default function SignupView() {
 
           <div className="flex flex-col gap-5 w-full">
             <div className="flex flex-col gap-[10px] w-full">
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="이름을 입력해 주세요"
+                className={`w-full h-7 px-[10px] rounded bg-white text-[12px] border outline-none transition-colors placeholder:text-gray-500 ${
+                  name ? "border-black text-black" : "border-gray-500 text-gray-500"
+                }`}
+              />
+
               <RoleSelect value={adminRole} onChange={setAdminRole} />
 
               <label
