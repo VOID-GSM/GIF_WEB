@@ -38,7 +38,8 @@ export function useCreateMajorScore() {
 export function useUpdateMajorScore() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (body: CreateMajorScoreRequest) => patchMajorScore(body),
+    mutationFn: ({ projectId, ...body }: CreateMajorScoreRequest) =>
+      patchMajorScore(projectId, body),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ["score", "major", variables.projectId] });
       queryClient.invalidateQueries({ queryKey: ["score", "status", variables.projectId] });

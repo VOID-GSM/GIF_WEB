@@ -4,7 +4,7 @@ export {
   AREA_LABELS,
   AREA_LABELS_SHORT,
   ROLE_ALLOWED_AREAS,
-  getAllowedScoreAreas,
+  getAllowedAreas,
 } from "@/entities/score";
 export type { ScoreArea } from "@/entities/score";
 

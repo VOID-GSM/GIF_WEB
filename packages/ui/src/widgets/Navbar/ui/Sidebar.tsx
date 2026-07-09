@@ -7,7 +7,7 @@ export default function Sidebar({ onClose, isOpen, navItems }: SidebarProps) {
   const router = useRouter();
   return (
     <div
-      className={`fixed top-15 right-0 w-64 h-[calc(100vh-60px)] bg-white border-l border-gray-200 shadow-xl
+      className={`fixed top-15 right-0 w-64 h-[calc(100dvh-60px)] overflow-y-auto bg-white border-l border-gray-200 shadow-xl
         z-[100] md:hidden transition-all duration-300 ease-out
         ${isOpen ? "translate-x-0 opacity-100" : "translate-x-full opacity-0"}
       `}

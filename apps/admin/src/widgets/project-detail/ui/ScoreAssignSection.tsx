@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 
-import { AREA_LABELS, getAllowedScoreAreas } from "@/entities/score";
+import { AREA_LABELS, getAllowedAreas } from "@/entities/score";
 import { useGetMyInfo } from "@/entities/mypage";
 
 interface ScoreAssignSectionProps {
@@ -20,7 +20,7 @@ export default function ScoreAssignSection({
   // 역할 정보가 아직 없으면 버튼을 렌더하지 않는다.
   if (!myInfo?.adminRole) return null;
 
-  const areas = getAllowedScoreAreas(myInfo.adminRole, myInfo.gradeHead);
+  const areas = getAllowedAreas(myInfo.adminRole, myInfo.gradeHead);
   if (areas.length === 0) return null;
 
   // 채점 영역이 2개일 때는 두 버튼을 가로로 나란히 배치한다.

@@ -15,26 +15,24 @@ export const AREA_LABELS_SHORT: Record<ScoreArea, string> = {
 
 // 관리자 역할별 채점 가능 영역.
 // - MASTER(아이디어페스티벌 담당): 전공
-// - GRADE_HEAD(학생부 부장): 보고서 + 사회
 // - GENERAL_TEACHER(보통 교과): 사회
 // - MAJOR_TEACHER(전공 교과): 전공
+// 학년부 부장(gradeHead)은 adminRole과 별도의 boolean 플래그이며,
+// 학년부 부장이면 기본 role과 무관하게 보고서 영역만 채점 가능하다 (getAllowedAreas 참고).
 export const ROLE_ALLOWED_AREAS: Record<string, ScoreArea[]> = {
   MAJOR_TEACHER: ["major"],
   GENERAL_TEACHER: ["social"],
-  GRADE_HEAD: ["report", "social"],
   MASTER: ["major"],
 };
 
-// 전체 영역(순서 기준). 역할 매핑이 없을 때의 폴백이자 정렬 기준으로 쓴다.
-export const ALL_SCORE_AREAS: ScoreArea[] = ["major", "report", "social"];
+const DEFAULT_AREAS: ScoreArea[] = ["major", "report", "social"];
+const GRADE_HEAD_AREAS: ScoreArea[] = ["report"];
 
-// 채점 가능 영역 계산 — 역할 기본 영역에 더해, 학년부 부장(gradeHead)이면 보고서 영역을 추가한다.
-export function getAllowedScoreAreas(
+// 학년부 부장이면 adminRole과 무관하게 보고서 영역만, 아니면 adminRole 기준 영역을 반환한다.
+export function getAllowedAreas(
   adminRole: string | null | undefined,
-  gradeHead?: boolean,
+  gradeHead: boolean | null | undefined,
 ): ScoreArea[] {
-  const base = ROLE_ALLOWED_AREAS[adminRole ?? ""] ?? ALL_SCORE_AREAS;
-  const areas = new Set<ScoreArea>(base);
-  if (gradeHead) areas.add("report");
-  return ALL_SCORE_AREAS.filter((area) => areas.has(area));
+  if (gradeHead) return GRADE_HEAD_AREAS;
+  return ROLE_ALLOWED_AREAS[adminRole ?? ""] ?? DEFAULT_AREAS;
 }

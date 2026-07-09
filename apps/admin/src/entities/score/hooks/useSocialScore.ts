@@ -38,7 +38,8 @@ export function useCreateSocialScore() {
 export function useUpdateSocialScore() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (body: CreateSocialScoreRequest) => patchSocialScore(body),
+    mutationFn: ({ projectId, ...body }: CreateSocialScoreRequest) =>
+      patchSocialScore(projectId, body),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ["score", "social", variables.projectId] });
       queryClient.invalidateQueries({ queryKey: ["score", "status", variables.projectId] });
