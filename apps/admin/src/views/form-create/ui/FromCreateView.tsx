@@ -82,7 +82,25 @@ export default function FormCreateView() {
     );
   };
 
+  const hasEmptyValue = () => {
+    const isEmpty = (value: string) => value.trim() === "";
+
+    return (
+      isEmpty(formTitle) ||
+      isEmpty(deadline) ||
+      isEmpty(deadlineTime) ||
+      fields.some(
+        (f) => isEmpty(f.title) || isEmpty(f.description) || f.type === "",
+      )
+    );
+  };
+
   const handleSave = () => {
+    if (hasEmptyValue()) {
+      toast.error("입력하지 않은 값이 있어 저장할 수 없습니다.");
+      return;
+    }
+
     createForm(
       {
         title: formTitle,
@@ -100,17 +118,7 @@ export default function FormCreateView() {
   };
 
   const handleAnnounce = () => {
-    const isEmpty = (value: string) => value.trim() === "";
-
-    const hasEmptyValue =
-      isEmpty(formTitle) ||
-      isEmpty(deadline) ||
-      isEmpty(deadlineTime) ||
-      fields.some(
-        (f) => isEmpty(f.title) || isEmpty(f.description) || f.type === "",
-      );
-
-    if (hasEmptyValue) {
+    if (hasEmptyValue()) {
       toast.error("입력하지 않은 값이 있어 공지할 수 없습니다.");
       return;
     }
