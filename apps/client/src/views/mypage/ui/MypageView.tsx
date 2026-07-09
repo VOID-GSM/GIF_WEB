@@ -3,7 +3,7 @@
 import { MypageCard } from "@repo/ui";
 import { useRouter } from "next/navigation";
 import { useGetMyInfo } from "@/entities/mypage";
-import { useGetMyProject } from "@/entities/project";
+import { useGetMyProject, useGetProject } from "@/entities/project";
 import { COOKIE_KEYS } from "@/shared/constants";
 import { deleteCookie } from "@/shared/utils";
 
@@ -18,12 +18,16 @@ export default function MypageView() {
   const { data: myProjects, isLoading: isProjectsLoading } = useGetMyProject();
 
   // 소속 팀은 내 프로젝트(서버)에서 그대로 가져온다. 팀에서 빠지면 비워진다.
-  const teamName = myProjects?.[0]?.teamName ?? "";
-  // 역할은 직접 수정하지 않고 팀 소속/팀장 양도 결과를 서버 값 그대로 반영한다.
-  const role =
-    teamName && data?.clientRole
-      ? (CLIENT_ROLE_LABEL[data.clientRole] ?? data.clientRole)
-      : "";
+  const myProject = myProjects?.[0];
+  const teamName = myProject?.teamName ?? "";
+
+  // 역할은 프로젝트 멤버의 실제 role 에서 가져온다.
+  // clientRole(가입 시 선택값)은 팀장을 양도해도 바뀌지 않으므로 사용하지 않는다.
+  const { data: projectDetail } = useGetProject(myProject?.id ?? NaN);
+  const myRole = projectDetail?.members.find(
+    (m) => m.userId === data?.userId,
+  )?.role;
+  const role = teamName && myRole ? (CLIENT_ROLE_LABEL[myRole] ?? myRole) : "";
 
   const mypageInfoItems = [
     {
