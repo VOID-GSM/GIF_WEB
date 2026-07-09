@@ -11,6 +11,8 @@ export interface UserSearchResult {
   userId: number;
   name: string;
   studentNumber: string;
+  // 이미 다른 팀에 소속된 학생인지 여부
+  hasTeam: boolean;
 }
 
 export interface ProjectResponse {

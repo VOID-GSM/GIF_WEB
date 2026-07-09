@@ -4,6 +4,8 @@ type SectionVariant = "active" | "inactive" | "unscored";
 interface SectionBadgeProps {
   status: SectionType;
   variant: SectionVariant;
+  label?: string;
+  size?: "md" | "sm";
 }
 
 const variantStyles: Record<SectionVariant, { wrap: string; text: string }> = {
@@ -12,16 +14,24 @@ const variantStyles: Record<SectionVariant, { wrap: string; text: string }> = {
   inactive: { wrap: "bg-gray-100 border-gray-200",    text: "text-gray-400"  },
 };
 
-export default function SectionBadge({ status, variant }: SectionBadgeProps) {
+const sizeStyles: Record<"md" | "sm", { wrap: string; text: string }> = {
+  md: { wrap: "py-[1px] px-[21px]", text: "text-[14px]" },
+  sm: { wrap: "py-[2px] px-[10px]", text: "text-[12px]" },
+};
+
+const DEFAULT_LABELS: Record<SectionType, string> = {
+  major: "전공 중심 영역",
+  report: "보고서 영역",
+  social: "사회 중심 영역",
+};
+
+export default function SectionBadge({ status, variant, label, size = "md" }: SectionBadgeProps) {
   const { wrap, text } = variantStyles[variant];
+  const sizeCx = sizeStyles[size];
   return (
-    <div className={`flex items-center w-fit py-[1px] px-[21px] border rounded-full ${wrap}`}>
-      <span className={`font-semibold text-[14px] ${text}`}>
-        {status === "major"
-          ? "전공 중심 영역"
-          : status === "report"
-            ? "보고서 영역"
-            : "사회 중심 영역"}
+    <div className={`flex items-center w-fit border rounded-full ${sizeCx.wrap} ${wrap}`}>
+      <span className={`font-semibold whitespace-nowrap ${sizeCx.text} ${text}`}>
+        {label ?? DEFAULT_LABELS[status]}
       </span>
     </div>
   );

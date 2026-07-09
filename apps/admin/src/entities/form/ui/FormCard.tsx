@@ -1,9 +1,12 @@
 "use client";
 
-import { Close } from "@repo/ui";
-
-import { formatDeadline } from "../lib/formatDeadline";
+import { formatDeadlineDate, formatDeadlineTime } from "../lib/formatDeadline";
 import type { FormSummary } from "../model/types";
+
+// 헤더 행과 데이터 행이 동일한 컬럼 폭을 공유하도록 그리드 정의를 한곳에서 관리한다.
+// 컬럼: 제목 / 마감 날짜 / 마감 시간 / 공지 / 관리
+export const FORM_TABLE_GRID =
+  "grid grid-cols-[1fr_130px_84px_100px_132px] gap-4 items-center min-w-[660px]";
 
 interface FormCardProps {
   form: FormSummary;
@@ -22,56 +25,76 @@ export default function FormCard({
   onView,
 }: FormCardProps) {
   const { id, title, deadline, announced } = form;
+  const time = formatDeadlineTime(deadline);
 
   return (
     <div
-      className={`flex h-20 w-full shrink-0 items-center rounded-xl bg-white pr-4 pl-4 shadow transition-shadow duration-200 hover:shadow-md sm:pr-6 ${announced ? "cursor-pointer" : ""}`}
+      className={`${FORM_TABLE_GRID} border-b border-gray-100 bg-white px-4 py-4 transition-colors hover:bg-yellow-50 ${announced ? "cursor-pointer" : ""}`}
       onClick={announced ? () => onView?.(id) : undefined}
     >
-      {announced ? (
-        <span className="flex h-8 w-[88px] shrink-0 items-center justify-center rounded-xl border border-gray-200 bg-gray-100 font-medium">
-          공지 함
-        </span>
-      ) : (
-        <button
-          type="button"
-          onClick={(e) => { e.stopPropagation(); onAnnounce(id); }}
-          className="flex h-8 w-[88px] shrink-0 cursor-pointer items-center justify-center rounded-xl border border-yellow-600 bg-yellow-50 font-medium transition-all duration-150 hover:bg-yellow-100 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-600/50"
-        >
-          공지하기
-        </button>
-      )}
-
-      <span className="ml-4 min-w-0 flex-1 truncate text-base font-medium sm:text-xl">
+      {/* 제목 */}
+      <span className="min-w-0 truncate text-base font-medium sm:text-lg">
         {title}
       </span>
 
-      <span className="ml-4 hidden shrink-0 text-base font-medium sm:inline sm:text-xl">
-        {formatDeadline(deadline)}
+      {/* 마감 날짜 */}
+      <span className="text-sm text-gray-700">
+        {formatDeadlineDate(deadline)}
       </span>
 
-      {announced ? (
-        <div className="ml-4 h-8 w-20 shrink-0 sm:ml-[68px]" aria-hidden />
-      ) : (
-        <button
-          type="button"
-          onClick={(e) => { e.stopPropagation(); onEdit(id); }}
-          className="ml-4 flex h-8 w-20 shrink-0 cursor-pointer items-center justify-center rounded-xl border border-yellow-600 bg-yellow-50 transition-all duration-150 hover:bg-yellow-100 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-600/50 sm:ml-[68px]"
-        >
-          수정
-        </button>
-      )}
+      {/* 마감 시간 */}
+      <span className="text-sm text-gray-700">{time || "—"}</span>
 
-      {onDelete && (
-        <button
-          type="button"
-          onClick={(e) => { e.stopPropagation(); onDelete(id); }}
-          aria-label="양식 삭제"
-          className="ml-3 flex shrink-0 cursor-pointer items-center justify-center rounded-lg p-1 text-gray-700 transition-all duration-150 hover:scale-110 hover:text-black active:scale-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 sm:ml-5"
-        >
-          <Close width={20} height={20} />
-        </button>
-      )}
+      {/* 공지 */}
+      <div className="flex justify-start">
+        {announced ? (
+          <span className="inline-flex h-8 items-center rounded-lg bg-gray-100 px-3 text-sm font-medium text-gray-500">
+            공지됨
+          </span>
+        ) : (
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onAnnounce(id);
+            }}
+            className="inline-flex h-8 cursor-pointer items-center rounded-lg bg-yellow-600 px-3 text-sm font-medium text-black transition-all duration-150 hover:bg-yellow-700 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-600/50"
+          >
+            공지하기
+          </button>
+        )}
+      </div>
+
+      {/* 관리 (수정 / 삭제) — 공지되면 수정이 사라져도 삭제가 밀리지 않도록 수정 자리를 고정 폭으로 유지 */}
+      <div className="flex items-center justify-start gap-3">
+        {announced ? (
+          <span className="h-8 w-14" aria-hidden />
+        ) : (
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onEdit(id);
+            }}
+            className="inline-flex h-8 w-14 cursor-pointer items-center justify-center rounded-lg border border-gray-300 text-sm font-medium text-gray-700 transition-all duration-150 hover:bg-gray-100 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-300"
+          >
+            수정
+          </button>
+        )}
+
+        {onDelete && (
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onDelete(id);
+            }}
+            className="ml-4 cursor-pointer text-sm font-medium text-red-500 transition-colors duration-150 hover:text-red-600 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-300"
+          >
+            삭제
+          </button>
+        )}
+      </div>
     </div>
   );
 }

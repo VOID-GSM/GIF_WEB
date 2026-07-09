@@ -32,7 +32,7 @@ function AnswerField({ item }: { item: AnswerItem }) {
   const answer = item.answers[0];
 
   return (
-    <div className="flex flex-col py-8 px-12 border-t-5 border-yellow-600 bg-white rounded-[10px] shadow-new">
+    <div className="flex flex-col py-6 px-6 sm:py-8 sm:px-12 border-t-5 border-yellow-600 bg-white rounded-[10px] shadow-new">
       <span className="text-[20px] font-semibold pb-2">{item.title}</span>
       {item.description && (
         <span className="font-medium text-gray-500 pb-4">
@@ -86,10 +86,10 @@ export default function FormDetailView({ formId, submitId }: Props) {
     .sort((a, b) => a.orderIndex - b.orderIndex);
 
   return (
-    <div className="min-h-screen flex flex-col items-center pt-20 bg-background">
+    <div className="min-h-screen flex flex-col items-center pt-20 px-4 sm:px-8 bg-background">
       <button
         onClick={() => router.back()}
-        className="flex items-center gap-2 w-fit self-start ml-8 mb-4 text-lg font-semibold text-gray-700 hover:text-gray-900 cursor-pointer"
+        className="flex items-center gap-2 w-fit self-start mb-4 text-lg font-semibold text-gray-700 hover:text-gray-900 cursor-pointer"
       >
         ← 뒤로
       </button>
@@ -104,9 +104,14 @@ export default function FormDetailView({ formId, submitId }: Props) {
         </div>
       ) : (
         <div className="mx-auto flex flex-col w-full max-w-[560px] gap-6">
-          <div className="flex flex-col gap-2">
-            <span className="flex justify-center text-[24px] font-semibold">
+          <div className="flex flex-col">
+            <span className="flex items-center justify-center gap-2 mb-2 text-[24px] font-semibold">
               {formDetail.title}
+              {submission && (
+                <span className="font-medium text-gray-500">
+                  팀: {submission.teamName}
+                </span>
+              )}
             </span>
             <span className="text-[14px] font-medium">
               마감일: {formDetail.deadline}

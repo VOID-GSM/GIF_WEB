@@ -40,3 +40,30 @@ export interface CreateSocialScoreRequest {
   aiUtilizationCommunity: number;
   presentationCommunity: number;
 }
+
+export type PatchMajorScoreRequest = Omit<CreateMajorScoreRequest, "projectId">;
+
+export type PatchReportScoreRequest = Omit<CreateReportScoreRequest, "projectId">;
+
+export type PatchSocialScoreRequest = Omit<CreateSocialScoreRequest, "projectId">;
+
+export interface GetScoreSummaryResponse {
+  projectId: number;
+  teamName: string;
+  averageScore: number;
+  scoreCount: number;
+}
+
+export interface GetScoreNoticeResponse {
+  isPublished: boolean;
+  publishedAt: string;
+  scores: GetScoreSummaryResponse[];
+}
+
+export interface GetProjectFieldAverageResponse {
+  projectId: number;
+  majorAverage: number;
+  reportAverage: number;
+  communityAverage: number;
+  grandTotalAverage: number;
+}

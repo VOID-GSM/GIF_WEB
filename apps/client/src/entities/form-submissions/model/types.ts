@@ -37,6 +37,8 @@ export interface FormAnswerItem {
   dateAnswer?: CalendarEventRequest[];
   filePath?: string;
   fileSize?: number;
+  // PATCH 로 기존 파일을 보존할 때 원본 파일명이 사라지지 않도록 함께 전송
+  originalFileName?: string;
 }
 
 export interface PostFormSubmitRequest {
@@ -85,6 +87,8 @@ export interface SubmitAnswerItem {
   textAnswer: string | null;
   filePath: string | null;
   fileSize: number | null;
+  // 서버에 UUID로 저장된 파일의 사용자 업로드 당시 원본 파일명
+  originalFileName: string | null;
   dateAnswer: CalendarEventResponse[] | null;
 }
 
