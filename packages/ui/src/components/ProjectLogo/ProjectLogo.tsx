@@ -23,6 +23,13 @@ export default function ProjectLogo({
   fallbackClassName,
 }: ProjectLogoProps) {
   const [failed, setFailed] = useState(false);
+  const [prevSrc, setPrevSrc] = useState(src);
+
+  // src 가 새 URL 로 바뀌면 이전 실패 상태를 초기화한다(안 그러면 계속 폴백 로고 표시).
+  if (src !== prevSrc) {
+    setPrevSrc(src);
+    setFailed(false);
+  }
 
   const isFallback = !src || failed;
   const resolvedSrc = isFallback ? FALLBACK_LOGO : src;
