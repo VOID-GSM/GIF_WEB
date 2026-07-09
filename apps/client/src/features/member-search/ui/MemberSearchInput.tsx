@@ -36,6 +36,8 @@ export function MemberSearchInput({ grade, owner, value, onChange }: MemberSearc
     (u) =>
       !value.some((m) => m.userId === u.userId) &&
       u.userId !== owner?.userId &&
+      // 이미 다른 팀에 소속된 학생은 검색 결과에서 제외
+      !u.hasTeam &&
       // 프로젝트 학년과 다른 학년 학생은 검색 결과에서 제외
       gradeOf(u.studentNumber) === grade,
   );

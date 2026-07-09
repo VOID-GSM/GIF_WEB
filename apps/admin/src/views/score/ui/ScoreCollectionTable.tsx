@@ -2,12 +2,32 @@ interface ScoreRow {
   rank: number;
   teamName: string;
   totalScore: number;
+  averageScore?: number;
+  scoreCount?: number;
+  majorAverage?: number;
+  reportAverage?: number;
+  communityAverage?: number;
+  grandTotalAverage?: number;
 }
 
 interface Props {
   isLoading: boolean;
   isError: boolean;
   scoreRows: ScoreRow[];
+}
+
+const DASH = "-";
+
+function formatAverage(value: number | undefined) {
+  return value === undefined ? DASH : value.toFixed(1);
+}
+
+function formatCount(value: number | undefined) {
+  return value === undefined ? DASH : `${value}명`;
+}
+
+function formatInt(value: number | undefined) {
+  return value === undefined ? DASH : String(Math.round(value));
 }
 
 export default function ScoreCollectionTable({ isLoading, isError, scoreRows }: Props) {
@@ -20,44 +40,88 @@ export default function ScoreCollectionTable({ isLoading, isError, scoreRows }: 
   }
 
   return (
-    <div className="flex-1 min-h-0 overflow-y-auto">
-      <div className="flex items-center justify-between bg-orange-50 h-9 sticky top-0 z-10">
-        <div className="flex gap-1.5">
-          <div className="w-12 sm:w-16 md:w-20 text-center font-medium text-sm sm:text-base">
+    <div className="flex-1 min-h-0 overflow-x-auto overflow-y-auto">
+      {/*
+        min-w로 전체 컬럼 폭을 확보한다.
+        - 데스크톱(max-w-4xl 컨테이너): 전체 컬럼이 한 화면에 들어온다.
+        - 모바일: 폭이 넘쳐 가로 스크롤이 생기고, 좌측 핵심 정보(등수/팀명/총점)가 먼저 보인다.
+      */}
+      <div className="min-w-[46rem]">
+        <div className="flex items-center bg-orange-50 h-9 sticky top-0 z-10">
+          {/* 핵심 정보 */}
+          <div className="w-12 sm:w-16 md:w-20 shrink-0 text-center font-medium text-sm sm:text-base">
             등수
           </div>
-          <div className="flex-1 text-center font-medium text-sm sm:text-base">
+          <div className="flex-1 min-w-[6rem] text-center font-medium text-sm sm:text-base">
             팀명
           </div>
-        </div>
-        <div className="w-24 sm:w-32 md:w-40 text-center font-medium text-sm sm:text-base">
-          점수 수합
-        </div>
-      </div>
-      {scoreRows.length === 0 ? (
-        <p className="py-10 text-center text-gray-400 text-sm">
-          해당 학년에 등록된 팀이 없습니다.
-        </p>
-      ) : (
-        scoreRows.map(({ rank, teamName, totalScore }) => (
-          <div
-            key={teamName}
-            className="flex justify-between items-center h-11 border-t border-gray-100"
-          >
-            <div className="flex items-center gap-1.5">
-              <div className="w-12 sm:w-16 md:w-20 text-center font-medium text-sm sm:text-base">
-                {rank}
-              </div>
-              <div className="flex-1 text-center font-medium text-sm sm:text-base">
-                {teamName}
-              </div>
-            </div>
-            <div className="w-24 sm:w-32 md:w-40 text-center font-medium text-sm sm:text-base">
-              {totalScore}
-            </div>
+          <div className="w-24 sm:w-32 md:w-40 shrink-0 text-center font-medium text-sm sm:text-base">
+            점수 수합
           </div>
-        ))
-      )}
+          {/* 채점 현황 */}
+          <div className="w-20 shrink-0 text-center font-medium text-sm sm:text-base">
+            평균
+          </div>
+          <div className="w-16 shrink-0 text-center font-medium text-sm sm:text-base">
+            응답
+          </div>
+          {/* 영역별 평균 */}
+          <div className="w-16 shrink-0 text-center font-medium text-sm sm:text-base">
+            전공
+          </div>
+          <div className="w-16 shrink-0 text-center font-medium text-sm sm:text-base">
+            보고서
+          </div>
+          <div className="w-16 shrink-0 text-center font-medium text-sm sm:text-base">
+            사회
+          </div>
+          <div className="w-16 shrink-0 text-center font-medium text-sm sm:text-base">
+            총평균
+          </div>
+        </div>
+        {scoreRows.length === 0 ? (
+          <p className="py-10 text-center text-gray-400 text-sm">
+            해당 학년에 등록된 팀이 없습니다.
+          </p>
+        ) : (
+          scoreRows.map((row) => (
+            <div
+              key={row.teamName}
+              className="flex items-center h-11 border-t border-gray-100"
+            >
+              <div className="w-12 sm:w-16 md:w-20 shrink-0 text-center font-medium text-sm sm:text-base">
+                {row.rank}
+              </div>
+              <div className="flex-1 min-w-[6rem] text-center font-medium text-sm sm:text-base truncate">
+                {row.teamName}
+              </div>
+              <div className="w-24 sm:w-32 md:w-40 shrink-0 text-center font-medium text-sm sm:text-base">
+                {row.totalScore}
+              </div>
+              {/* 채점 현황 */}
+              <div className="w-20 shrink-0 text-center text-sm sm:text-base text-gray-600">
+                {formatAverage(row.averageScore)}
+              </div>
+              <div className="w-16 shrink-0 text-center text-sm sm:text-base text-gray-600">
+                {formatCount(row.scoreCount)}
+              </div>
+              {/* 영역별 평균 */}
+              <div className="w-16 shrink-0 text-center text-sm sm:text-base text-gray-600">
+                {formatInt(row.majorAverage)}
+              </div>
+              <div className="w-16 shrink-0 text-center text-sm sm:text-base text-gray-600">
+                {formatInt(row.reportAverage)}
+              </div>
+              <div className="w-16 shrink-0 text-center text-sm sm:text-base text-gray-600">
+                {formatInt(row.communityAverage)}
+              </div>
+              <div className="w-16 shrink-0 text-center text-sm sm:text-base text-gray-600">
+                {formatInt(row.grandTotalAverage)}
+              </div>
+            </div>
+          ))
+        )}
+      </div>
     </div>
   );
 }

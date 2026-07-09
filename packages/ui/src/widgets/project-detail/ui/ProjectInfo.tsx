@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 
 import NameBadge from "../../../components/Badge/NameBadge";
+import ProjectLogo from "../../../components/ProjectLogo/ProjectLogo";
 
 interface ProjectInfoMember {
   userId: number;
@@ -42,14 +43,12 @@ export default function ProjectInfo({
     <div className="flex flex-col">
       <section className="flex flex-col gap-6 sm:flex-row sm:gap-8">
         <div className="mx-auto h-[160px] w-[240px] shrink-0 overflow-hidden rounded-xl border border-gray-200 bg-gray-100">
-          {project.logo && (
-            // logo는 외부 API에서 내려오는 동적 URL이라 next/image 대신 img 사용
-            <img
-              src={project.logo}
-              alt={project.name}
-              className="h-full w-full object-cover"
-            />
-          )}
+          <ProjectLogo
+            src={project.logo}
+            alt={project.name}
+            className="h-full w-full object-cover"
+            fallbackClassName="h-full w-full bg-white object-contain p-8"
+          />
         </div>
 
         <div className="flex flex-1 flex-col gap-6">

@@ -17,9 +17,30 @@ import type {
 } from "@/entities/score";
 import { AREA_CRITERIA, RESPONSE_TO_REQUEST_KEY } from "./constants";
 import type { ScoreValue, CriterionRow } from "./constants";
+import type { DetailScoreResponse } from "@/entities/score";
 
 function normalizeKey(key: string): string {
   return RESPONSE_TO_REQUEST_KEY[key] ?? key;
+}
+
+// 채점 기준 필드 전체 (영역 무관) — 레코드 존재 여부 판정에 사용
+const SCORE_CRITERION_KEYS = [
+  "technicalCompleteness",
+  "socialValueMajor",
+  "aiUtilizationMajor",
+  "presentationMajor",
+  "reportWriting",
+  "reportContent",
+  "aiUsagePlan",
+  "creativity",
+  "userExperience",
+  "socialValueCommunity",
+  "aiUtilizationCommunity",
+  "presentationCommunity",
+] as const satisfies readonly (keyof DetailScoreResponse)[];
+
+function isValidScore(value: unknown): value is ScoreValue {
+  return value === 40 || value === 32 || value === 24;
 }
 
 interface Params {
@@ -81,8 +102,15 @@ export function useScoreArea({ area, projectId }: Params) {
     const responseKey =
       Object.keys(existingScore).find((k) => (RESPONSE_TO_REQUEST_KEY[k] ?? k) === c.key) ?? c.key;
     const raw = (existingScore as unknown as Record<string, number>)[responseKey] ?? 0;
-    return raw === 40 || raw === 32 || raw === 24;
+    return isValidScore(raw);
   });
+
+  // 레코드(다른 영역 포함) 존재 여부. GET이 미채점 시에도 200 + 기본값을 반환하므로
+  // existingScore !== null 만으로는 판단 불가 — 실제 채점 기준 필드 중 하나라도
+  // 유효 점수(40/32/24)를 가지고 있는지로 "레코드 실존"을 판정한다.
+  const recordExists =
+    existingScore !== null &&
+    SCORE_CRITERION_KEYS.some((k) => isValidScore(existingScore[k]));
 
   function selectScore(key: string, score: ScoreValue) {
     setLocalScores((prev) => ({ ...prev, [key]: prev[key] === score ? null : score }));
@@ -123,11 +151,11 @@ export function useScoreArea({ area, projectId }: Params) {
     } satisfies CreateSocialScoreRequest;
   }
 
-  function handleSave() {
+  function handleSave(onComplete?: () => void) {
     const body = buildBody();
-    const onSuccess = () => { setLocalScores({}); setLocalComplete({}); };
-    // 레코드가 하나이므로: 서버에 데이터가 있으면(다른 영역이라도) PATCH, 없으면 POST
-    if (existingScore !== null) {
+    const onSuccess = () => { setLocalScores({}); setLocalComplete({}); onComplete?.(); };
+    // 레코드가 하나이므로: 서버에 실제 채점 데이터가 있으면(다른 영역이라도) PATCH, 없으면 POST
+    if (recordExists) {
       if (area === "major")        updateMajor.mutate(body as CreateMajorScoreRequest,   { onSuccess });
       else if (area === "report")  updateReport.mutate(body as CreateReportScoreRequest, { onSuccess });
       else                         updateSocial.mutate(body as CreateSocialScoreRequest, { onSuccess });

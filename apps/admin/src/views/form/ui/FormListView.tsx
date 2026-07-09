@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 
 import {
   FormCard,
+  FORM_TABLE_GRID,
   useAnnounceForm,
   useDeleteForm,
   useGetFormList,
@@ -54,7 +55,18 @@ export default function FormListView() {
             등록된 양식이 없습니다.
           </p>
         ) : (
-          <div className="flex flex-col gap-4">
+          <div className="overflow-x-auto rounded-xl bg-white shadow [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            {/* 헤더 행 — 각 컬럼이 무엇인지 명시 */}
+            <div
+              className={`${FORM_TABLE_GRID} border-b border-orange-400 bg-orange-50 px-4 py-2.5`}
+            >
+              <span className="text-sm font-semibold text-gray-700">제목</span>
+              <span className="text-sm font-semibold text-gray-700">마감 날짜</span>
+              <span className="text-sm font-semibold text-gray-700">마감 시간</span>
+              <span className="text-sm font-semibold text-gray-700">공지</span>
+              <span className="text-sm font-semibold text-gray-700">관리</span>
+            </div>
+
             {forms.map((form) => (
               <FormCard
                 key={form.id}
