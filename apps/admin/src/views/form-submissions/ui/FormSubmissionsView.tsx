@@ -31,6 +31,10 @@ export default function FormSubmissionsView({ formId }: Props) {
 
   const isLoading = projectsLoading || submissionsLoading;
 
+  // 마감 날짜/시간은 양식(form) 단위 값이라 행마다 동일 — 루프 밖에서 한 번만 계산한다.
+  const deadlineDate = formatDeadlineDate(form?.deadline ?? "");
+  const deadlineTime = formatDeadlineTime(form?.deadline ?? "");
+
   // 학년별 팀 목록에 양식 제출 내역을 합쳐 팀별 제출 여부를 만든다
   const rows = (projects ?? []).map((project) => {
     const submission = submissions?.find((s) => s.projectId === project.id);
@@ -84,9 +88,7 @@ export default function FormSubmissionsView({ formId }: Props) {
             <span className="text-sm font-semibold text-gray-700">제출 여부</span>
           </div>
 
-          {rows.map((row) => {
-            const time = formatDeadlineTime(form?.deadline ?? "");
-            return (
+          {rows.map((row) => (
               <div
                 key={row.projectId}
                 className={`${SUBMISSION_TABLE_GRID} border-b border-gray-100 px-4 py-4 transition-colors hover:bg-yellow-50
@@ -107,12 +109,10 @@ export default function FormSubmissionsView({ formId }: Props) {
                 </span>
 
                 {/* 마감 날짜 */}
-                <span className="text-sm text-gray-700">
-                  {formatDeadlineDate(form?.deadline ?? "")}
-                </span>
+                <span className="text-sm text-gray-700">{deadlineDate}</span>
 
                 {/* 마감 시간 */}
-                <span className="text-sm text-gray-700">{time || "—"}</span>
+                <span className="text-sm text-gray-700">{deadlineTime || "—"}</span>
 
                 {/* 제출 여부 */}
                 <div className="flex justify-start">
@@ -127,8 +127,7 @@ export default function FormSubmissionsView({ formId }: Props) {
                   </span>
                 </div>
               </div>
-            );
-          })}
+          ))}
         </div>
       )}
 
