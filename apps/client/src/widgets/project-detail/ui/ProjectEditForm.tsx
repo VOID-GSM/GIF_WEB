@@ -43,6 +43,8 @@ export default function ProjectEditForm({
       userId: member.userId,
       name: member.name,
       studentNumber: member.studentNumber,
+      // 이미 이 팀에 소속된 팀원
+      hasTeam: true,
     }));
 
   const [thumbnail, setThumbnail] = useState<File | null>(null);
