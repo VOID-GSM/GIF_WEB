@@ -24,6 +24,11 @@ export const setCookieValue = (
   document.cookie = parts.join("; ");
 };
 
+export const deleteCookieValue = (key: string) => {
+  if (typeof window === "undefined") return;
+  document.cookie = `${key}=; path=/; max-age=0`;
+};
+
 export const apiClient = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
   timeout: 10000,
