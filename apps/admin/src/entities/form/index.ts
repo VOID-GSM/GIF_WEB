@@ -7,9 +7,9 @@ export { useAnnounceForm } from "./hooks/useAnnounceForm";
 export { useUpdateForm } from "./hooks/useUpdateForm";
 
 export { getDeadlineSummary, isOverdue } from "./lib/deadlineStatus";
-export { formatDeadline } from "./lib/formatDeadline";
+export { formatDeadline, formatDeadlineDate, formatDeadlineTime } from "./lib/formatDeadline";
 
-export { default as FormCard } from "./ui/FormCard";
+export { default as FormCard, FORM_TABLE_GRID } from "./ui/FormCard";
 
 export type {
   FormSummary,
