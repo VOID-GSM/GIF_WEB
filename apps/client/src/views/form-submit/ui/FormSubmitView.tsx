@@ -124,6 +124,16 @@ export default function FormSubmitView({ formId }: Props) {
 
   return (
     <div className="min-h-screen flex flex-col items-center pt-20 px-5 bg-background">
+      <div className="mx-auto w-full max-w-[560px]">
+        <button
+          type="button"
+          onClick={() => router.back()}
+          className="flex items-center gap-2 w-fit mb-4 text-lg font-semibold text-gray-700 hover:text-gray-900 cursor-pointer"
+        >
+          ← 뒤로
+        </button>
+      </div>
+
       {myInfoLoading || detailLoading ? (
         <div className="flex w-full justify-center pt-20 text-gray-500 font-medium">
           로딩중...

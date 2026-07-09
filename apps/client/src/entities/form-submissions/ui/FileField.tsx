@@ -1,13 +1,17 @@
 import { ChangeEvent } from "react";
+import { toast } from "sonner";
 import { Upload, File, Close } from "@repo/ui";
 import { useDeleteFormUpload } from "../hooks/useDeleteFormUpload";
 import { useDownloadFile } from "../hooks/useDownloadFile";
+
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 
 interface FileFieldProps {
   fieldId: number;
   file: { name: string; size: number } | null;
   filePath?: string;
   fileSize?: number;
+  originalFileName?: string; // 서버에 저장된 파일의 원본 파일명
   readOnly?: boolean;
   submitId?: number; // 추가
   onChange: (fieldId: number, file: File | null) => void;
@@ -18,6 +22,7 @@ export default function FileField({
   file,
   filePath,
   fileSize,
+  originalFileName,
   readOnly = false,
   submitId,
   onChange,
@@ -44,11 +49,18 @@ export default function FileField({
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const selected = e.target.files?.[0];
     if (!selected) return;
+    if (selected.size > MAX_FILE_SIZE) {
+      toast.error("파일 용량이 커서 업로드할 수 없습니다. (최대 10MB)");
+      e.target.value = "";
+      return;
+    }
     onChange(fieldId, selected);
   };
 
   if (file || filePath) {
-    const fileName = file?.name ?? filePath?.split("/").pop() ?? "첨부파일";
+    // 새로 선택한 파일 > 서버 원본 파일명 > 경로 마지막(UUID) 순으로 표시
+    const fileName =
+      file?.name ?? originalFileName ?? filePath?.split("/").pop() ?? "첨부파일";
     const size = file?.size ?? fileSize ?? 0;
 
     return (

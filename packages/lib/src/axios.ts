@@ -24,6 +24,11 @@ export const setCookieValue = (
   document.cookie = parts.join("; ");
 };
 
+export const removeCookieValue = (key: string) => {
+  if (typeof window === "undefined") return;
+  document.cookie = `${key}=; path=/; max-age=0`;
+};
+
 export const apiClient = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
   timeout: 10000,
@@ -39,7 +44,31 @@ apiClient.interceptors.request.use((config) => {
   return config;
 });
 
+// 로그인 없이 접근 가능한 경로 (리다이렉트 루프 방지)
+const PUBLIC_PATHS = ["/signin", "/callback"];
+
+const redirectToSignIn = () => {
+  if (typeof window === "undefined") return;
+
+  // 만료된 인증 정보 제거
+  removeCookieValue("access_token");
+  removeCookieValue("client_role");
+
+  const { pathname } = window.location;
+  const isPublic = PUBLIC_PATHS.some((path) => pathname.startsWith(path));
+  if (isPublic) return;
+
+  window.location.href = "/signin";
+};
+
 apiClient.interceptors.response.use(
   (res) => res,
-  (error) => Promise.reject(error),
+  (error) => {
+    // 세션 만료/인증 실패 시 로그인 페이지로 즉시 이동
+    const status = error?.response?.status;
+    if (status === 401 || status === 403) {
+      redirectToSignIn();
+    }
+    return Promise.reject(error);
+  },
 );

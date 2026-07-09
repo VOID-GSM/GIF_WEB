@@ -33,7 +33,10 @@ export default function ScoreAssignView() {
   }
 
   const { data: myInfo, isLoading: isMyInfoLoading } = useGetMyInfo();
-  const allowedAreas: ScoreArea[] = getAllowedAreas(myInfo?.adminRole, myInfo?.gradeHead);
+  const allowedAreas: ScoreArea[] = getAllowedAreas(
+    myInfo?.adminRole,
+    myInfo?.gradeHead,
+  );
 
   const { data: projects = [], isLoading: isProjectsLoading } = useGetFilteredProjects(grade);
 
