@@ -31,7 +31,7 @@ const CallbackContent = () => {
 
         const { data } = await getDgCallback({ code, state });
 
-        if (data.studentNumber?.[0] === "3") {
+        if (data.studentNumber?.startsWith("3")) {
           throw new Error("3학년은 로그인할 수 없습니다.");
         }
 
