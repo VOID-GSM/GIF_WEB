@@ -14,19 +14,19 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.SERVER_SSH_KEY }}" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
-          ssh-keyscan -p 24157 ssh.gsmsv.site >> ~/.ssh/known_hosts 2>/dev/null || true
+          ssh-keyscan -p 24131 ssh.gsmsv.site >> ~/.ssh/known_hosts 2>/dev/null || true
 
       - name: 서버 배포 (SSH)
         run: |
-          ssh -p 24157 -i ~/.ssh/id_ed25519 ubuntu@ssh.gsmsv.site << 'EOF'
+          ssh -p 24131 -i ~/.ssh/id_ed25519 ubuntu@ssh.gsmsv.site << 'EOF'
           set -e
-          
+
           if [ ! -d "$HOME/GIF_WEB" ]; then
             echo "새 서버입니다. Repository 복제를 시작합니다..."
             git clone https://github.com/VOID-GSM/GIF_WEB.git "$HOME/GIF_WEB"
           fi
-          
-          cd ~/GIF_WEB
+
+          cd $HOME/GIF_WEB
           git fetch origin main
           git checkout main
           git reset --hard origin/main
@@ -34,7 +34,7 @@ jobs:
           docker compose up -d --build --remove-orphans
           docker image prune -f
           EOF
-
+          
       - name: GIF_WAB CD Discord Notification (success)
         if: ${{ success() }}
         continue-on-error: true
