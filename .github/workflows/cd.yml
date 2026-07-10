@@ -20,10 +20,17 @@ jobs:
         run: |
           ssh -p 24157 -i ~/.ssh/id_ed25519 ubuntu@ssh.gsmsv.site << 'EOF'
           set -e
+          
+          if [ ! -d "$HOME/GIF_WEB" ]; then
+            echo "새 서버입니다. Repository 복제를 시작합니다..."
+            git clone https://github.com/VOID-GSM/GIF_WEB.git "$HOME/GIF_WEB"
+          fi
+          
           cd ~/GIF_WEB
           git fetch origin main
           git checkout main
           git reset --hard origin/main
+          
           docker compose up -d --build --remove-orphans
           docker image prune -f
           EOF
