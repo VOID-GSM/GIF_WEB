@@ -4,62 +4,37 @@ on:
   push:
     branches: ['main']
 
-permissions:
-  contents: read
-  packages: write
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-
-      - name: 소유자명 소문자 변환
-        run: echo "OWNER=$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
-
-      - name: GHCR 로그인
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Client 이미지 빌드 및 푸시
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: apps/client/Dockerfile
-          push: true
-          tags: ghcr.io/${{ env.OWNER }}/gif-client:latest
-
-      - name: Admin 이미지 빌드 및 푸시
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: apps/admin/Dockerfile
-          push: true
-          tags: ghcr.io/${{ env.OWNER }}/gif-admin:latest
+      - name: SSH 키 설정
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SERVER_SSH_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -p 24157 ssh.gsmsv.site >> ~/.ssh/known_hosts 2>/dev/null || true
 
       - name: 서버 배포 (SSH)
-        uses: appleboy/ssh-action@v1
-        with:
-          host: ${{ secrets.SERVER_HOST }}
-          port: 37670
-          username: ${{ secrets.SERVER_USER }}
-          key: ${{ secrets.SERVER_SSH_KEY }}
-          script: |
-            cd ~/gif-wab
-            docker compose pull
-            docker compose up -d --remove-orphans
-            docker image prune -f
+        run: |
+          ssh -p 24157 -i ~/.ssh/id_ed25519 ubuntu@ssh.gsmsv.site << 'EOF'
+          set -e
+          cd ~/GIF_WEB
+          git fetch origin main
+          git checkout main
+          git reset --hard origin/main
+          docker compose up -d --build --remove-orphans
+          docker image prune -f
+          EOF
 
       - name: GIF_WAB CD Discord Notification (success)
         if: ${{ success() }}
+        continue-on-error: true
         uses: sarisia/actions-status-discord@v1
         with:
           webhook: ${{ secrets.DISCORD }}
+          ack_no_webhook: true
           title: '✅ GIF_WAB CD Success! ✅'
           status: ${{ job.status }}
           description: 'Client/Admin 배포 성공'
@@ -68,9 +43,11 @@ jobs:
 
       - name: GIF_WAB CD Discord Notification (failure)
         if: ${{ failure() }}
+        continue-on-error: true
         uses: sarisia/actions-status-discord@v1
         with:
           webhook: ${{ secrets.DISCORD }}
+          ack_no_webhook: true
           title: '❗️ GIF_WAB CD Fail! ❗️'
           status: ${{ job.status }}
           description: 'Client/Admin 배포 실패'
