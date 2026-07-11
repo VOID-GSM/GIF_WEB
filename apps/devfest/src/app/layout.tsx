@@ -1,5 +1,7 @@
 import "@fontsource/press-start-2p";
 import "./globals.css";
+
+import SiteHeader from "@/widgets/site-header/ui/SiteHeader";
 import { Providers } from "./providers";
 
 export default function RootLayout({
@@ -10,7 +12,10 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body className="overflow-x-hidden">
-        <Providers>{children}</Providers>
+        <Providers>
+          <SiteHeader />
+          <main>{children}</main>
+        </Providers>
       </body>
     </html>
   );
