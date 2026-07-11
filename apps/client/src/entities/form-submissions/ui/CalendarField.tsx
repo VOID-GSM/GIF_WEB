@@ -74,7 +74,8 @@ function DayCell({
   const isSelectStart = mode === "write" && selectStart === dateStr;
   const isSelectEnd = mode === "write" && selectEnd === dateStr;
 
-  const cell = "flex items-center justify-center h-10 w-10 mx-auto";
+  const cell =
+    "flex items-center justify-center h-8 w-8 sm:h-10 sm:w-10 mx-auto";
 
   if (event) {
     const colorVar = resolveColor(event.color);
@@ -86,7 +87,7 @@ function DayCell({
       return (
         <div className={cell} onClick={() => onEventClick(event)}>
           <span
-            className="flex items-center justify-center w-[35px] h-[35px] text-[20px] rounded-full cursor-pointer"
+            className="flex items-center justify-center w-7 h-7 text-sm sm:w-[35px] sm:h-[35px] sm:text-[20px] rounded-full cursor-pointer"
             style={{ border: `2px solid ${colorVar}` }}
           >
             {day}
@@ -97,7 +98,7 @@ function DayCell({
 
     return (
       <div
-        className={`flex items-center justify-center h-[35px] w-full text-[20px] cursor-pointer
+        className={`flex items-center justify-center h-7 w-full text-sm sm:h-[35px] sm:text-[20px] cursor-pointer
           ${isStart ? "rounded-l-full" : ""}
           ${isEnd ? "rounded-r-full" : ""}
         `}
@@ -116,7 +117,7 @@ function DayCell({
 
   return (
     <div
-      className={`flex items-center justify-center h-[35px] w-full text-[20px]
+      className={`flex items-center justify-center h-7 w-full text-sm sm:h-[35px] sm:text-[20px]
         ${mode === "write" ? "cursor-pointer" : ""}
         ${inSelectRange && !isSelectStart && !isSelectEnd ? "bg-gray-100" : ""}
         ${isSelectStart && !isSelectEnd ? "rounded-l-full bg-gray-100" : ""}
@@ -126,7 +127,7 @@ function DayCell({
       onClick={() => mode === "write" && onDayClick(dateStr)}
     >
       <span
-        className={`flex items-center justify-center w-9 h-9 text-[20px]
+        className={`flex items-center justify-center w-7 h-7 text-sm sm:w-9 sm:h-9 sm:text-[20px]
           ${isToday && !inSelectRange ? "bg-yellow-400 rounded-full" : ""}
         `}
       >
@@ -273,16 +274,16 @@ export default function CalendarField({
         />
       )}
 
-      <div className="text-center text-[20px] mb-4">{year}</div>
+      <div className="text-center text-lg mb-4 sm:text-[20px]">{year}</div>
 
       <div className="flex items-center justify-between mb-[10px]">
         <button
-          className="px-2 text-gray-500 pl-6"
+          className="px-1 text-gray-500 sm:px-2 sm:pl-6"
           onClick={() => setCurrentMonth(new Date(year, month - 1))}
         >
           {"<"}
         </button>
-        <div className="flex gap-[27px] items-center">
+        <div className="flex gap-2 items-center text-sm sm:gap-[27px] sm:text-base">
           {monthLabels.map((m, i) => (
             <span
               key={i}
@@ -294,27 +295,27 @@ export default function CalendarField({
           ))}
         </div>
         <button
-          className="px-2 text-gray-500 pr-6"
+          className="px-1 text-gray-500 sm:px-2 sm:pr-6"
           onClick={() => setCurrentMonth(new Date(year, month + 1))}
         >
           {">"}
         </button>
       </div>
 
-      <div className="shadow-[0_0_6px_0_#E2E2E2] rounded-[10px] px-22 py-5">
+      <div className="shadow-[0_0_6px_0_#E2E2E2] rounded-[10px] px-3 py-4 sm:px-22 sm:py-5">
         <div className="grid grid-cols-7 text-center mb-2">
           {["S", "M", "T", "W", "T", "F", "S"].map((d, i) => (
             <div
               key={i}
-              className="flex items-center justify-center h-10 w-10 mx-auto text-[20px] font-semibold"
+              className="flex items-center justify-center h-8 w-8 sm:h-10 sm:w-10 mx-auto text-sm sm:text-[20px] font-semibold"
             >
               {d}
             </div>
           ))}
         </div>
-        <div className="grid grid-cols-7 gap-y-[18px]">
+        <div className="grid grid-cols-7 gap-y-2 sm:gap-y-[18px]">
           {Array.from({ length: firstDay }).map((_, i) => (
-            <div key={`e-${i}`} className="h-10 w-10 mx-auto" />
+            <div key={`e-${i}`} className="h-8 w-8 sm:h-10 sm:w-10 mx-auto" />
           ))}
           {Array.from({ length: daysInMonth }, (_, i) => i + 1).map((day) => (
             <DayCell
