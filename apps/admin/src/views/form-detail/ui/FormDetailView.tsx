@@ -10,6 +10,10 @@ import FileAnswer from "@/entities/from-management/ui/Fileanswer";
 import TextAnswer from "@/entities/from-management/ui/Textanswer";
 import CalendarAnswer from "@/entities/from-management/ui/Calendaranswer";
 import type { SubmitAnswer } from "@/entities/from-management/model/type";
+import {
+  formatDeadlineDate,
+  formatDeadlineTime,
+} from "@/entities/form/lib/formatDeadline";
 
 type Props = { formId: number; submitId: number };
 
@@ -114,7 +118,9 @@ export default function FormDetailView({ formId, submitId }: Props) {
               )}
             </span>
             <span className="text-[14px] font-medium">
-              마감일: {formDetail.deadline}
+              마감 날짜: {formatDeadlineDate(formDetail.deadline)}
+              {formatDeadlineTime(formDetail.deadline) &&
+                ` · 마감 시간: ${formatDeadlineTime(formDetail.deadline)}`}
             </span>
             {submission && (
               <span className="text-[14px] font-medium text-gray-500">

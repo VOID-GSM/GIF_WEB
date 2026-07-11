@@ -14,8 +14,14 @@ interface FormListSectionProps {
   onFormClick?: (formId: number) => void;
 }
 
-// "2026-08-12" -> "2026.08.12"
-const formatDeadline = (deadline: string) => deadline.replace(/-/g, ".");
+// "2026-08-12T23:29:00" -> "2026.08.12 23:29" (날짜와 시간 분리, T 제거)
+const formatDeadline = (deadline: string) => {
+  if (!deadline) return "";
+  const [datePart, timePart] = deadline.split("T");
+  const date = datePart.replace(/-/g, ".");
+  if (!timePart) return date;
+  return `${date} ${timePart.slice(0, 5)}`;
+};
 
 // 마감일이 오늘(0시 기준)보다 이전이면 마감됨
 const isOverdue = (deadline: string) => {
