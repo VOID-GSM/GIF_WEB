@@ -14,27 +14,37 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.SERVER_SSH_KEY }}" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
-          ssh-keyscan -p 24131 ssh.gsmsv.site >> ~/.ssh/known_hosts 2>/dev/null || true
+          ssh-keyscan -p 21103 ssh.gsmsv.site >> ~/.ssh/known_hosts 2>/dev/null || true
 
       - name: 서버 배포 (SSH)
         run: |
-          ssh -p 24131 -i ~/.ssh/id_ed25519 ubuntu@ssh.gsmsv.site << 'EOF'
+          ssh -p 21103 -o ServerAliveInterval=30 -o ServerAliveCountMax=20 -i ~/.ssh/id_ed25519 ubuntu@ssh.gsmsv.site << 'EOF'
           set -e
 
-          if [ ! -d "$HOME/GIF_WEB" ]; then
+          # 기존 클론(GIF_WAB) 우선, 없으면 GIF_WEB, 둘 다 없으면 신규 클론
+          if [ -d "$HOME/GIF_WAB" ]; then
+            APP_DIR="$HOME/GIF_WAB"
+          elif [ -d "$HOME/GIF_WEB" ]; then
+            APP_DIR="$HOME/GIF_WEB"
+          else
             echo "새 서버입니다. Repository 복제를 시작합니다..."
             git clone https://github.com/VOID-GSM/GIF_WEB.git "$HOME/GIF_WEB"
+            APP_DIR="$HOME/GIF_WEB"
           fi
 
-          cd $HOME/GIF_WEB
+          cd "$APP_DIR"
           git fetch origin main
           git checkout main
           git reset --hard origin/main
-          
-          docker compose up -d --build --remove-orphans
+
+          # 이 서버는 docker-compose v1(하이픈) 사용, compose v2 미설치
+          # 빌드 출력은 파일로 (SSH 연결 끊김 방지), build 후 down->up (v1+Docker29 recreate 버그 회피)
+          docker-compose build > /tmp/gif_build.log 2>&1 || { echo '=== build 실패 로그 ==='; tail -60 /tmp/gif_build.log; exit 1; }
+          docker-compose down --remove-orphans
+          docker-compose up -d --no-build
           docker image prune -f
           EOF
-          
+
       - name: GIF_WAB CD Discord Notification (success)
         if: ${{ success() }}
         continue-on-error: true
