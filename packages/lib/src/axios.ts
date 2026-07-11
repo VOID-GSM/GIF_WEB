@@ -64,9 +64,11 @@ const redirectToSignIn = () => {
 apiClient.interceptors.response.use(
   (res) => res,
   (error) => {
-    // 세션 만료/인증 실패 시 로그인 페이지로 즉시 이동
+    // 세션 만료(401)일 때만 로그인 페이지로 이동한다.
+    // 403(권한 없음/금지)은 인증은 유효한 상태이므로 로그아웃 대상이 아니며,
+    // 각 요청의 onError(토스트 등)에서 처리하도록 그대로 전파한다.
     const status = error?.response?.status;
-    if (status === 401 || status === 403) {
+    if (status === 401) {
       redirectToSignIn();
     }
     return Promise.reject(error);
