@@ -13,7 +13,7 @@ import {
 } from "@/entities/form-submissions/index";
 import type { SubmitAnswerItem, FormAnswerItem } from "@/entities/form-submissions/model/types";
 import { useGetMyInfo } from "@/entities/mypage/index";
-import { formatDeadlineDate, formatDeadlineTime } from "@/entities/form";
+import { formatDeadlineDate, formatDeadlineTime, isDeadlinePassed } from "@/entities/form";
 import { toast } from "sonner";
 
 type Props = { formId: number };
@@ -59,6 +59,9 @@ export default function FormMySubmitView({ formId }: Props) {
   const { mutateAsync: uploadFile } = usePostFormUpload();
 
   const [isEditing, setIsEditing] = useState(false);
+
+  // 마감이 지난 제출 건은 열람만 가능 — 수정 불가
+  const deadlinePassed = isDeadlinePassed(formDetail?.deadline ?? "");
 
   // fieldId → SubmitAnswerItem lookup (first occurrence wins)
   const answerMap = useMemo(() => {
@@ -343,6 +346,10 @@ export default function FormMySubmitView({ formId }: Props) {
                   {isPending ? "저장 중..." : "완료하기"}
                 </button>
               </>
+            ) : deadlinePassed ? (
+              <div className="flex w-full items-center justify-center py-3 font-medium text-gray-500">
+                마감된 양식입니다. 열람만 가능합니다.
+              </div>
             ) : (
               <button
                 className="flex w-full items-center justify-center py-3 font-medium bg-yellow-600 rounded-[10px] cursor-pointer"
