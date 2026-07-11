@@ -1,15 +1,13 @@
 "use client";
 
 import { useState, useMemo, useSyncExternalStore } from "react";
-import { useQueries } from "@tanstack/react-query";
 import ScoreTabNav from "./ScoreTabNav";
 import ScoreAssignFilterBar from "./ScoreAssignFilterBar";
 import ScoreAssignTable from "./ScoreAssignTable";
 import { useGetFilteredProjects } from "@/entities/project";
 import type { Grade } from "@/entities/project";
-import { getMajorScore } from "@/entities/score";
+import { useScoreStatuses } from "@/entities/score";
 import { useGetMyInfo } from "@/entities/mypage";
-import { toNullOn404 } from "@/shared/utils";
 import type { ScoreFilter, ScoreArea } from "./constants";
 import { getAllowedAreas } from "./constants";
 
@@ -40,27 +38,7 @@ export default function ScoreAssignView() {
 
   const { data: projects = [], isLoading: isProjectsLoading } = useGetFilteredProjects(grade);
 
-  const scoreQueries = useQueries({
-    queries: projects.map((project) => ({
-      queryKey: ["score", "status", project.id],
-      enabled: projects.length > 0,
-      staleTime: 5 * 60 * 1000,
-      queryFn: async () => {
-        const data = await toNullOn404(() => getMajorScore(project.id).then((r) => r.data))();
-        if (!data) return { scoredAreas: [] as ScoreArea[] };
-        const VALID = [40, 32, 24];
-        const majorDone  = [data.technicalCompleteness, data.socialValueMajor, data.aiUtilizationMajor, data.presentationMajor].every((v) => VALID.includes(v));
-        const reportDone = [data.reportWriting, data.reportContent, data.aiUsagePlan, data.creativity].every((v) => VALID.includes(v));
-        const socialDone = [data.userExperience, data.socialValueCommunity, data.aiUtilizationCommunity, data.presentationCommunity].every((v) => VALID.includes(v));
-        const scoredAreas: ScoreArea[] = [
-          ...(majorDone  ? ["major"]  as ScoreArea[] : []),
-          ...(reportDone ? ["report"] as ScoreArea[] : []),
-          ...(socialDone ? ["social"] as ScoreArea[] : []),
-        ];
-        return { scoredAreas };
-      },
-    })),
-  });
+  const scoreQueries = useScoreStatuses(projects.map((project) => project.id));
 
   const isScoreLoading = scoreQueries.some((q) => q.isPending);
   const isLoading = isProjectsLoading || isScoreLoading || isMyInfoLoading;
