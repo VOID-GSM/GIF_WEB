@@ -27,6 +27,9 @@ export function useCreateSocialScore() {
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ["score", "social", variables.projectId] });
       queryClient.invalidateQueries({ queryKey: ["score", "status", variables.projectId] });
+      queryClient.invalidateQueries({ queryKey: ["score", "notice"] });
+      queryClient.invalidateQueries({ queryKey: ["score", "field-averages"] });
+      queryClient.invalidateQueries({ queryKey: ["score", "rank"] });
       toast.success("사회 중심 영역 점수가 저장되었습니다.");
     },
     onError: () => {
@@ -43,6 +46,9 @@ export function useUpdateSocialScore() {
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ["score", "social", variables.projectId] });
       queryClient.invalidateQueries({ queryKey: ["score", "status", variables.projectId] });
+      queryClient.invalidateQueries({ queryKey: ["score", "notice"] });
+      queryClient.invalidateQueries({ queryKey: ["score", "field-averages"] });
+      queryClient.invalidateQueries({ queryKey: ["score", "rank"] });
       toast.success("사회 중심 영역 점수가 수정되었습니다.");
     },
     onError: () => {

@@ -19,24 +19,24 @@ export default function ScoreTabNav() {
 
   return (
     <nav className="flex gap-6 w-full">
-      {TABS.map(({ label, href }) =>
-        isActive(href) ? (
-          <span
-            key={href}
-            className="text-xl sm:text-2xl font-bold pb-1 border-b-2 border-yellow-600 whitespace-nowrap"
-          >
-            {label}
-          </span>
-        ) : (
+      {TABS.map(({ label, href }) => {
+        const active = isActive(href);
+        return (
           <Link
             key={href}
             href={href}
-            className="text-xl sm:text-2xl font-bold pb-1 text-gray-400 whitespace-nowrap"
+            className={`relative pb-1 text-xl sm:text-2xl font-bold whitespace-nowrap transition-colors ${
+              active ? "text-black" : "text-gray-400"
+            }`}
           >
             {label}
+            {active && (
+              // 라우트 이동마다 새로 마운트되므로 CSS 애니메이션이 매번 자동 재생된다.
+              <span className="animate-tab-underline absolute inset-x-0 bottom-0 h-0.5 origin-center bg-yellow-600" />
+            )}
           </Link>
-        ),
-      )}
+        );
+      })}
     </nav>
   );
 }
