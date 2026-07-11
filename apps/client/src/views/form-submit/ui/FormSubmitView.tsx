@@ -13,7 +13,11 @@ import { usePostFormUpload } from "@/entities/form-submissions/hooks/usePostForm
 import { useGetFormDetail } from "@/entities/form-submissions/hooks/useGetFormDetail";
 import type { FormAnswerItem } from "@/entities/form-submissions/model/types";
 import { useGetMyInfo } from "@/entities/mypage/index";
-import { FORM_QUERY_KEY } from "@/entities/form";
+import {
+  FORM_QUERY_KEY,
+  formatDeadlineDate,
+  formatDeadlineTime,
+} from "@/entities/form";
 import { toast } from "sonner";
 
 type Props = { formId: number };
@@ -25,13 +29,18 @@ export default function FormSubmitView({ formId }: Props) {
   const router = useRouter();
   const queryClient = useQueryClient();
 
-  const { data: formDetail, isLoading: detailLoading } = useGetFormDetail(formId);
+  const { data: formDetail, isLoading: detailLoading } =
+    useGetFormDetail(formId);
   const { mutateAsync: submitForm, isPending } = usePostFormSubmit();
   const { mutateAsync: uploadFile } = usePostFormUpload();
 
   const [textAnswers, setTextAnswers] = useState<Record<number, string>>({});
-  const [fileAnswers, setFileAnswers] = useState<Record<number, File | null>>({});
-  const [calendarAnswers, setCalendarAnswers] = useState<Record<number, CalendarEvent[]>>({});
+  const [fileAnswers, setFileAnswers] = useState<Record<number, File | null>>(
+    {},
+  );
+  const [calendarAnswers, setCalendarAnswers] = useState<
+    Record<number, CalendarEvent[]>
+  >({});
   const [fieldErrors, setFieldErrors] = useState<Record<number, string>>({});
 
   const handleTextChange = (fieldId: number, value: string) => {
@@ -67,29 +76,35 @@ export default function FormSubmitView({ formId }: Props) {
       return;
     }
 
-    const answers: FormAnswerItem[] = formDetail.fields.flatMap((field): FormAnswerItem[] => {
-      const fId = field.fieldId ?? field.id ?? 0;
-      if (field.type === "FILE") return [];
+    const answers: FormAnswerItem[] = formDetail.fields.flatMap(
+      (field): FormAnswerItem[] => {
+        const fId = field.fieldId ?? field.id ?? 0;
+        if (field.type === "FILE") return [];
 
-      if (field.type === "DATE" || field.type === "CALENDAR") {
-        const events = calendarAnswers[fId] ?? [];
-        // DATE·CALENDAR 모두 dateAnswer 배열(CalendarEventRequest[])로 전송한다.
-        return [{
-          fieldId: fId,
-          dateAnswer: events.map((e) => ({
-            eventName: e.title,
-            startDate: e.startDate,
-            endDate: e.endDate,
-            color: e.color,
-          })),
-        }];
-      }
+        if (field.type === "DATE" || field.type === "CALENDAR") {
+          const events = calendarAnswers[fId] ?? [];
+          // DATE·CALENDAR 모두 dateAnswer 배열(CalendarEventRequest[])로 전송한다.
+          return [
+            {
+              fieldId: fId,
+              dateAnswer: events.map((e) => ({
+                eventName: e.title,
+                startDate: e.startDate,
+                endDate: e.endDate,
+                color: e.color,
+              })),
+            },
+          ];
+        }
 
-      return [{
-        fieldId: fId,
-        textAnswer: textAnswers[fId] ?? "",
-      }];
-    });
+        return [
+          {
+            fieldId: fId,
+            textAnswer: textAnswers[fId] ?? "",
+          },
+        ];
+      },
+    );
 
     try {
       const submitId = await submitForm({ formId, projectId, answers });
@@ -104,11 +119,17 @@ export default function FormSubmitView({ formId }: Props) {
             fileEntries.map(([fieldIdStr, file]) => {
               const fd = new FormData();
               fd.append("file", file);
-              return uploadFile({ formData: fd, fieldId: Number(fieldIdStr), submitId });
+              return uploadFile({
+                formData: fd,
+                fieldId: Number(fieldIdStr),
+                submitId,
+              });
             }),
           );
         } catch {
-          toast.error("파일 업로드에 실패했습니다. 수정 페이지에서 파일을 다시 업로드해주세요.");
+          toast.error(
+            "파일 업로드에 실패했습니다. 수정 페이지에서 파일을 다시 업로드해주세요.",
+          );
           router.push(`/form/${formId}/edit`);
           return;
         }
@@ -124,6 +145,16 @@ export default function FormSubmitView({ formId }: Props) {
 
   return (
     <div className="min-h-screen flex flex-col items-center pt-20 px-5 bg-background">
+      <div className="mx-auto w-full max-w-[560px]">
+        <button
+          type="button"
+          onClick={() => router.back()}
+          className="flex items-center gap-2 w-fit mb-4 text-lg font-semibold text-gray-700 hover:text-gray-900 cursor-pointer"
+        >
+          ← 뒤로
+        </button>
+      </div>
+
       {myInfoLoading || detailLoading ? (
         <div className="flex w-full justify-center pt-20 text-gray-500 font-medium">
           로딩중...
@@ -142,9 +173,12 @@ export default function FormSubmitView({ formId }: Props) {
             <span className="flex justify-center text-[24px] font-semibold">
               {formDetail.title}
             </span>
-            <span className="text-[14px] font-medium">
-              마감일: {formDetail.deadline}
-            </span>
+            <div className="flex flex-wrap gap-x-4 gap-y-1 text-[14px] font-medium">
+              <span>마감 날짜: {formatDeadlineDate(formDetail.deadline)}</span>
+              {formatDeadlineTime(formDetail.deadline) && (
+                <span>마감 시간: {formatDeadlineTime(formDetail.deadline)}</span>
+              )}
+            </div>
           </div>
 
           <div className="flex flex-col gap-4">
@@ -174,7 +208,9 @@ export default function FormSubmitView({ formId }: Props) {
                           onChange={handleTextChange}
                         />
                         {error && (
-                          <span className="mt-1 text-[12px] text-red-500">{error}</span>
+                          <span className="mt-1 text-[12px] text-red-500">
+                            {error}
+                          </span>
                         )}
                       </>
                     )}
@@ -182,11 +218,17 @@ export default function FormSubmitView({ formId }: Props) {
                       <>
                         <FileField
                           fieldId={fId}
-                          file={fileAnswers[fId] instanceof File ? (fileAnswers[fId] as File) : null}
+                          file={
+                            fileAnswers[fId] instanceof File
+                              ? (fileAnswers[fId] as File)
+                              : null
+                          }
                           onChange={handleFileChange}
                         />
                         {error && (
-                          <span className="mt-1 text-[12px] text-red-500">{error}</span>
+                          <span className="mt-1 text-[12px] text-red-500">
+                            {error}
+                          </span>
                         )}
                       </>
                     )}
@@ -210,7 +252,7 @@ export default function FormSubmitView({ formId }: Props) {
               onClick={handleSubmit}
               disabled={isPending}
             >
-              {isPending ? "제출 중..." : "완료하기"}
+              {isPending ? "제출 중..." : "제출하기"}
             </button>
           </div>
         </div>

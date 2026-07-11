@@ -13,6 +13,7 @@ import {
 } from "@/entities/form-submissions/index";
 import type { SubmitAnswerItem, FormAnswerItem } from "@/entities/form-submissions/model/types";
 import { useGetMyInfo } from "@/entities/mypage/index";
+import { formatDeadlineDate, formatDeadlineTime } from "@/entities/form";
 import { toast } from "sonner";
 
 type Props = { formId: number };
@@ -169,6 +170,7 @@ export default function FormMySubmitView({ formId }: Props) {
           fieldId: fId,
           filePath: existingPath,
           fileSize: answerMap[fId]?.fileSize ?? undefined,
+          originalFileName: answerMap[fId]?.originalFileName ?? undefined,
         }];
       }
 
@@ -241,9 +243,12 @@ export default function FormMySubmitView({ formId }: Props) {
             <span className="flex justify-center text-[24px] font-semibold">
               {formDetail.title}
             </span>
-            <span className="text-[14px] font-medium">
-              마감일: {formDetail.deadline}
-            </span>
+            <div className="flex flex-wrap gap-x-4 gap-y-1 text-[14px] font-medium">
+              <span>마감 날짜: {formatDeadlineDate(formDetail.deadline)}</span>
+              {formatDeadlineTime(formDetail.deadline) && (
+                <span>마감 시간: {formatDeadlineTime(formDetail.deadline)}</span>
+              )}
+            </div>
           </div>
 
           <div className="flex flex-col gap-4">
@@ -297,6 +302,7 @@ export default function FormMySubmitView({ formId }: Props) {
                           file={hasNewFile ? (fileAnswers[fId] as File) : null}
                           filePath={serverFilePath}
                           fileSize={existingAnswer?.fileSize || undefined}
+                          originalFileName={existingAnswer?.originalFileName || undefined}
                           submitId={mySubmit.submitId}
                           readOnly={!isEditing}
                           onChange={handleFileChange}

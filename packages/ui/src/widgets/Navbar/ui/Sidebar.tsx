@@ -2,14 +2,14 @@
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { SidebarProps } from "@repo/ui";
-import { deleteCookieValue } from "@repo/lib";
+import { removeCookieValue } from "@repo/lib";
 
 export default function Sidebar({ navItems, isOpen, onClose }: SidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
 
   const handleLogout = () => {
-    deleteCookieValue("access_token");
+    removeCookieValue("access_token");
     onClose();
     router.replace("/signin");
     router.refresh();

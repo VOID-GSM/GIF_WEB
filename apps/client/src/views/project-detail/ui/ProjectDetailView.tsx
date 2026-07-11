@@ -81,6 +81,14 @@ export default function ProjectDetailView({
   return (
     <div className="flex min-h-dvh justify-center bg-background px-4 pb-8 pt-[67px]">
       <div className="flex w-full min-w-0 max-w-[830px] flex-col">
+        <button
+          type="button"
+          onClick={() => router.back()}
+          className="mb-4 flex w-fit items-center gap-2 text-lg font-semibold text-gray-700 transition-colors hover:text-gray-900"
+        >
+          ← 뒤로
+        </button>
+
         {/* 정보 영역 — 생성 페이지와 동일한 레이아웃 (로고 · 팀 정보 · 설명) */}
         {/* AI 요약(다른 팀 프로젝트일 때만)은 로고 영역과 설명 사이에 노출 */}
         <ProjectInfo
@@ -97,9 +105,9 @@ export default function ProjectDetailView({
         {/* 마감현황 · 양식 목록 (좌) / 일정 캘린더 (우) — 내 팀일 때만 */}
         {/* 프로젝트 설명 ↔ 마감현황 간격 56px */}
         {isMine && (
-          <div className="mt-14 flex flex-col gap-8 lg:flex-row lg:items-stretch lg:gap-12">
+          <div className="mt-14 flex flex-col gap-8 sm:flex-row sm:items-stretch sm:gap-8 lg:gap-12">
             {/* 좌측: 일정(우측) 높이에 맞춰 늘어나고, 양식 목록이 남는 공간을 채우며 스크롤 */}
-            <div className="flex flex-1 flex-col gap-8 lg:min-h-0">
+            <div className="flex flex-1 flex-col gap-8 sm:min-h-0">
               <DeadlineStatusSection
                 summary={getDeadlineSummary(forms ?? [])}
               />

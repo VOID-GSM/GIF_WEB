@@ -9,9 +9,10 @@ import { useScoreArea } from "./useScoreArea";
 interface Props {
   area: string;
   projectId: number;
+  teamName: string;
 }
 
-export default function ScoreAreaView({ area, projectId }: Props) {
+export default function ScoreAreaView({ area, projectId, teamName }: Props) {
   const router = useRouter();
   const [showConfirm, setShowConfirm] = useState(false);
 
@@ -25,23 +26,27 @@ export default function ScoreAreaView({ area, projectId }: Props) {
     handleSave,
   } = useScoreArea({ area, projectId });
 
+  function goToScorePage() {
+    router.push("/score");
+  }
+
   function handleSaveClick() {
     if (isAreaScored) {
       setShowConfirm(true);
     } else {
-      handleSave();
+      handleSave(goToScorePage);
     }
   }
 
   function handleConfirm() {
     setShowConfirm(false);
-    handleSave();
+    handleSave(goToScorePage);
   }
 
   return (
     <div className="h-dvh bg-background flex flex-col items-center justify-center px-4 sm:px-6">
       <div className="w-full max-w-[980px] flex flex-col gap-5">
-        <ScoreAreaHeader onBack={() => router.back()} />
+        <ScoreAreaHeader onBack={() => router.back()} teamName={teamName} area={area} />
         <div className="bg-white rounded-2xl border border-gray-200 shadow-new overflow-hidden p-4 sm:p-7 md:p-10 flex flex-col">
           <div className="flex flex-col min-h-[400px]">
             <ScoreAreaTable

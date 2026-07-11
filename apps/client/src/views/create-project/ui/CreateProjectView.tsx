@@ -169,6 +169,7 @@ export function CreateProjectView() {
                         userId: me.userId,
                         name: me.name,
                         studentNumber: me.studentNumber,
+                        hasTeam: true,
                       }
                     : undefined
                 }

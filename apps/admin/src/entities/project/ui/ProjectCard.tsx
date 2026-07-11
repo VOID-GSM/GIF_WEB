@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ProjectLogo } from "@repo/ui";
 
 import type { FilteredProject } from "../model/types";
 
@@ -13,12 +14,11 @@ export default function ProjectCard({ project }: ProjectCardProps) {
       className="flex h-[176px] w-[224px] shrink-0 cursor-pointer flex-col overflow-hidden rounded-[12px] bg-white shadow-new transition-all duration-200 ease-out hover:-translate-y-1 hover:shadow-lg"
     >
       <div className="h-[112px] w-full">
-        {/* logo는 외부 API에서 내려오는 동적 URL이라 next/image 대신 img 사용 */}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
+        <ProjectLogo
           src={project.logo}
           alt={project.name}
           className="h-full w-full object-cover"
+          fallbackClassName="h-full w-full bg-white object-contain p-5"
         />
       </div>
       <div className="flex h-[64px] flex-col justify-center bg-yellow-50 pl-[20px] pr-[32px] leading-[1.4]">
