@@ -3,12 +3,9 @@
 import { useMemo, useSyncExternalStore } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useGetMyInfo } from "@/entities/mypage";
+import { useGetFilteredProjects } from "@/entities/project";
 import type { Grade } from "@/entities/project";
-import {
-  useScoreNotice,
-  useGetScoreNotice,
-  useGetAllProjectFieldAverages,
-} from "@/entities/score";
+import { useScoreNotice, useGetAllProjectFieldAverages } from "@/entities/score";
 import { getRank } from "@repo/lib";
 import ScoreTabNav from "./ScoreTabNav";
 import ScoreCollectionFilterBar from "./ScoreCollectionFilterBar";
@@ -45,18 +42,12 @@ export default function ScoreView() {
     queryFn: async () => (await getRank(grade)).data,
   });
 
-  const { data: notice } = useGetScoreNotice();
   const { data: fieldAverages } = useGetAllProjectFieldAverages();
+  const { data: filteredProjects = [] } = useGetFilteredProjects(grade);
 
   const scoreRows = useMemo(() => {
-    // teamName → 채점 현황(평균/응답수) 매핑 (notice.scores 기준)
-    const summaryByTeam = new Map(
-      (notice?.scores ?? []).map((s) => [s.teamName, s]),
-    );
-    // projectId → teamName 매핑 (notice.scores가 둘 다 보유)
-    const teamNameByProjectId = new Map(
-      (notice?.scores ?? []).map((s) => [s.projectId, s.teamName]),
-    );
+    // projectId → teamName 매핑 (공지 발행 여부와 무관하게 항상 채워지는 프로젝트 목록 기준)
+    const teamNameByProjectId = new Map(filteredProjects.map((p) => [p.id, p.teamName]));
     // teamName → 영역별 평균 매핑 (field-averages는 projectId만 보유 → 위 맵으로 연결)
     const fieldByTeam = new Map(
       (fieldAverages ?? []).flatMap((f) => {
@@ -67,22 +58,25 @@ export default function ScoreView() {
 
     return [...(rankRows ?? [])]
       .sort((a, b) => a.rank - b.rank)
-      .map(({ rank, teamName, totalScore }) => {
-        const summary = summaryByTeam.get(teamName);
+      .map(({ rank, teamName }) => {
         const field = fieldByTeam.get(teamName);
+        // 채점된 영역(0보다 큰 값)만 골라 평균을 낸다. 0은 "아직 채점 안 됨"으로 취급.
+        const scoredAreaAverages = [field?.majorAverage, field?.reportAverage, field?.communityAverage]
+          .filter((v): v is number => v !== undefined && v > 0);
         return {
           rank,
           teamName,
-          totalScore,
-          averageScore: summary?.averageScore,
-          scoreCount: summary?.scoreCount,
+          averageScore:
+            scoredAreaAverages.length > 0
+              ? scoredAreaAverages.reduce((sum, v) => sum + v, 0) / scoredAreaAverages.length
+              : undefined,
           majorAverage: field?.majorAverage,
           reportAverage: field?.reportAverage,
           communityAverage: field?.communityAverage,
           grandTotalAverage: field?.grandTotalAverage,
         };
       });
-  }, [rankRows, notice, fieldAverages]);
+  }, [rankRows, fieldAverages, filteredProjects]);
 
   return (
     <div className="h-[calc(100vh-3.75rem)] bg-background flex flex-col items-center justify-center px-4 sm:px-6">
@@ -97,6 +91,11 @@ export default function ScoreView() {
             onNotice={() => noticeScore()}
           />
           <ScoreCollectionTable isLoading={isLoading} isError={isError} scoreRows={scoreRows} />
+          <p className="mt-2 text-xs text-gray-400">
+            전공·보고서·사회 점수는 채점 항목 합계가 아닌 평균 점수입니다.
+            <br />
+            총점수는 이 세 평균의 합입니다(반올림으로 1점 정도 차이가 날 수 있습니다).
+          </p>
         </div>
       </div>
     </div>
