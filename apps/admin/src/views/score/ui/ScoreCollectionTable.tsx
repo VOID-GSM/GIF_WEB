@@ -15,11 +15,11 @@ interface Props {
 }
 
 function formatAverage(value: number | undefined) {
-  return value === undefined ? "-" : value.toFixed(1);
+  return (value ?? 0).toFixed(1);
 }
 
 function formatInt(value: number | undefined) {
-  return value === undefined ? "-" : String(Math.round(value));
+  return String(Math.round(value ?? 0));
 }
 
 export default function ScoreCollectionTable({ isLoading, isError, scoreRows }: Props) {
