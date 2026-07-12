@@ -3,9 +3,37 @@
 @import "@repo/ui/tokens.css";
 @source "../../../../packages/ui/src";
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   font-family: var(--font-sans);
   background-color: var(--color-background);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background-color: var(--color-yellow-200);
+  color: #000;
+}
+
+/* 옐로우 형광펜 강조 — "아이디어를 밑줄로 강조한다"는 시그니처 */
+.marker-hl {
+  background-image: linear-gradient(
+    to top,
+    var(--color-yellow-300) 0.35em,
+    transparent 0.35em
+  );
+  padding-inline: 0.06em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
 }
 
 .datagsm-logo {
