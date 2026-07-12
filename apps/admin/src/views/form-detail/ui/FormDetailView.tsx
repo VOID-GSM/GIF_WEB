@@ -6,14 +6,12 @@ import {
   useAdminSubmitDetail,
   useAdminSubmitSummary,
 } from "@/entities/from-management/api/query";
+import { useGetProject } from "@/entities/project";
+import { formatDeadlineDate, formatDeadlineTime } from "@/entities/form";
 import FileAnswer from "@/entities/from-management/ui/Fileanswer";
 import TextAnswer from "@/entities/from-management/ui/Textanswer";
 import CalendarAnswer from "@/entities/from-management/ui/Calendaranswer";
 import type { SubmitAnswer } from "@/entities/from-management/model/type";
-import {
-  formatDeadlineDate,
-  formatDeadlineTime,
-} from "@/entities/form/lib/formatDeadline";
 
 type Props = { formId: number; submitId: number };
 
@@ -61,6 +59,11 @@ export default function FormDetailView({ formId, submitId }: Props) {
   const { data: formDetail, isLoading: formLoading } =
     useAdminFormDetail(formId);
 
+  // 팀원 중 실제 제출자 이름을 표시하기 위해 프로젝트 상세(멤버 목록)를 조회한다.
+  const { data: project } = useGetProject(submission?.projectId ?? NaN);
+  const submitterName = project?.members.find(
+    (m) => m.userId === submission?.submittedByUserId,
+  )?.name;
   // 제출 답변 AI 요약 (제출 상세 진입 시 자동 조회)
   const { data: summary } = useAdminSubmitSummary(submitId);
 
@@ -109,24 +112,35 @@ export default function FormDetailView({ formId, submitId }: Props) {
       ) : (
         <div className="mx-auto flex flex-col w-full max-w-[560px] gap-6">
           <div className="flex flex-col">
-            <span className="flex items-center justify-center gap-2 mb-2 text-[24px] font-semibold">
+            <span className="mb-2 text-center text-[24px] font-semibold">
               {formDetail.title}
-              {submission && (
-                <span className="font-medium text-gray-500">
-                  팀: {submission.teamName}
+            </span>
+            <div className="flex items-center justify-between">
+              <div className="flex flex-col">
+                <span className="text-[14px] font-medium">
+                  마감 날짜: {formatDeadlineDate(formDetail.deadline)}
+                  {formatDeadlineTime(formDetail.deadline) &&
+                    ` · 마감 시간: ${formatDeadlineTime(formDetail.deadline)}`}
                 </span>
+                {submission && (
+                  <span className="text-[14px] font-medium text-gray-500">
+                    제출일: {formatSubmittedAt(submission.submittedAt)}
+                  </span>
+                )}
+              </div>
+              {submission && (
+                <div className="flex flex-col items-end">
+                  <span className="text-[24px] font-medium">
+                    {submission.teamName}
+                  </span>
+                  {submitterName && (
+                    <span className="text-[14px] font-medium text-gray-500">
+                      제출자: {submitterName}
+                    </span>
+                  )}
+                </div>
               )}
-            </span>
-            <span className="text-[14px] font-medium">
-              마감 날짜: {formatDeadlineDate(formDetail.deadline)}
-              {formatDeadlineTime(formDetail.deadline) &&
-                ` · 마감 시간: ${formatDeadlineTime(formDetail.deadline)}`}
-            </span>
-            {submission && (
-              <span className="text-[14px] font-medium text-gray-500">
-                제출일: {formatSubmittedAt(submission.submittedAt)}
-              </span>
-            )}
+            </div>
           </div>
 
           {submission && summary && <AiSummary summary={summary} />}
