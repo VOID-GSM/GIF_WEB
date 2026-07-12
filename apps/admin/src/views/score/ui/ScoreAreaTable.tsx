@@ -1,7 +1,6 @@
 "use client";
 
 import { ScoreButton } from "@repo/ui";
-import { SCORES } from "./constants";
 import type { CriterionRow, ScoreValue } from "./constants";
 
 interface Props {
@@ -25,7 +24,7 @@ export default function ScoreAreaTable({ isLoading, rows, onSelectScore }: Props
           <div key={row.key} className="py-3 flex flex-col gap-2">
             <span className="text-sm font-medium text-gray-800">{row.label}</span>
             <div className="flex w-full justify-center gap-3">
-              {SCORES.map((score) => (
+              {row.scores.map((score) => (
                 <ScoreButton
                   key={score}
                   score={score}
@@ -50,7 +49,7 @@ export default function ScoreAreaTable({ isLoading, rows, onSelectScore }: Props
             <div key={row.key} className="flex-1 grid grid-cols-[1fr_180px] gap-4 px-4 py-3 items-center">
               <span className="text-sm font-medium text-gray-800">{row.label}</span>
               <div className="flex gap-1.5">
-                {SCORES.map((score) => (
+                {row.scores.map((score) => (
                   <ScoreButton
                     key={score}
                     score={score}

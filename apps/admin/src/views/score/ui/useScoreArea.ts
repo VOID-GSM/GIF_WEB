@@ -16,7 +16,7 @@ import type {
   CreateSocialScoreRequest,
 } from "@/entities/score";
 import { AREA_CRITERIA, RESPONSE_TO_REQUEST_KEY } from "./constants";
-import type { ScoreValue, CriterionRow } from "./constants";
+import type { CriterionDefinition, ScoreValue, CriterionRow } from "./constants";
 import type { DetailScoreResponse } from "@/entities/score";
 
 function normalizeKey(key: string): string {
@@ -40,7 +40,19 @@ const SCORE_CRITERION_KEYS = [
 ] as const satisfies readonly (keyof DetailScoreResponse)[];
 
 function isValidScore(value: unknown): value is ScoreValue {
-  return value === 40 || value === 32 || value === 24;
+  return (
+    value === 40 ||
+    value === 32 ||
+    value === 24 ||
+    value === 25 ||
+    value === 20 ||
+    value === 15 ||
+    value === 10
+  );
+}
+
+function isValidCriterionScore(value: unknown, criterion: CriterionDefinition): value is ScoreValue {
+  return isValidScore(value) && criterion.scores.includes(value);
 }
 
 interface Params {
@@ -85,7 +97,7 @@ export function useScoreArea({ area, projectId }: Params) {
         const responseKey =
           Object.keys(existingScore).find((k) => normalizeKey(k) === c.key) ?? c.key;
         const raw = (existingScore as unknown as Record<string, number>)[responseKey] ?? null;
-        return (raw === 40 || raw === 32 || raw === 24 ? raw : null) as ScoreValue | null;
+        return isValidCriterionScore(raw, c) ? raw : null;
       })();
       const selectedScore = c.key in localScores ? localScores[c.key] : serverScore;
       const isComplete    = c.key in localComplete ? localComplete[c.key] : serverScore !== null;
@@ -102,7 +114,7 @@ export function useScoreArea({ area, projectId }: Params) {
     const responseKey =
       Object.keys(existingScore).find((k) => (RESPONSE_TO_REQUEST_KEY[k] ?? k) === c.key) ?? c.key;
     const raw = (existingScore as unknown as Record<string, number>)[responseKey] ?? 0;
-    return isValidScore(raw);
+    return isValidCriterionScore(raw, c);
   });
 
   // 레코드(다른 영역 포함) 존재 여부. GET이 미채점 시에도 200 + 기본값을 반환하므로
