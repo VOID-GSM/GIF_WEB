@@ -4,13 +4,17 @@ export interface GetRankParams {
 
 export interface ScoreRankResponse {
   rank: number;
+  name: string;
   teamName: string;
   totalScore: number;
+  logo?: string | null;
 }
 
 export interface RankItem {
   rank: number;
+  name: string;
   teamName: string;
+  logo?: string | null;
 }
 
 export interface ScoreNoticeItem {

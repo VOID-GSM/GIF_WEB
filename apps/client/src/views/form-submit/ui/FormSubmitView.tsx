@@ -13,7 +13,11 @@ import { usePostFormUpload } from "@/entities/form-submissions/hooks/usePostForm
 import { useGetFormDetail } from "@/entities/form-submissions/hooks/useGetFormDetail";
 import type { FormAnswerItem } from "@/entities/form-submissions/model/types";
 import { useGetMyInfo } from "@/entities/mypage/index";
-import { FORM_QUERY_KEY } from "@/entities/form";
+import {
+  FORM_QUERY_KEY,
+  formatDeadlineDate,
+  formatDeadlineTime,
+} from "@/entities/form";
 import { toast } from "sonner";
 
 type Props = { formId: number };
@@ -169,9 +173,12 @@ export default function FormSubmitView({ formId }: Props) {
             <span className="flex justify-center text-[24px] font-semibold">
               {formDetail.title}
             </span>
-            <span className="text-[14px] font-medium">
-              마감일: {formDetail.deadline}
-            </span>
+            <div className="flex flex-wrap gap-x-4 gap-y-1 text-[14px] font-medium">
+              <span>마감 날짜: {formatDeadlineDate(formDetail.deadline)}</span>
+              {formatDeadlineTime(formDetail.deadline) && (
+                <span>마감 시간: {formatDeadlineTime(formDetail.deadline)}</span>
+              )}
+            </div>
           </div>
 
           <div className="flex flex-col gap-4">
@@ -184,7 +191,7 @@ export default function FormSubmitView({ formId }: Props) {
                 return (
                   <div
                     key={fId}
-                    className="flex flex-col py-8 px-12 border-t-5 border-yellow-600 bg-white rounded-[10px] shadow-new"
+                    className="flex flex-col py-6 px-6 sm:py-8 sm:px-12 border-t-5 border-yellow-600 bg-white rounded-[10px] shadow-new"
                   >
                     <span className="text-[20px] font-semibold pb-2">
                       {field.title}

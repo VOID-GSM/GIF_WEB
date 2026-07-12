@@ -15,3 +15,16 @@ body {
   transform: scaleY(-1);
   flex-shrink: 0;
 }
+
+@keyframes tab-underline-expand {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.animate-tab-underline {
+  animation: tab-underline-expand 300ms ease-out forwards;
+}

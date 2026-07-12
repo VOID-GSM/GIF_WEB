@@ -11,9 +11,17 @@ import {
   usePostFormUpload,
   useGetFormDetail,
 } from "@/entities/form-submissions/index";
-import type { SubmitAnswerItem, FormAnswerItem } from "@/entities/form-submissions/model/types";
+import type {
+  SubmitAnswerItem,
+  FormAnswerItem,
+} from "@/entities/form-submissions/model/types";
 import { useGetMyInfo } from "@/entities/mypage/index";
 import { useGetProject } from "@/entities/project";
+import {
+  formatDeadlineDate,
+  formatDeadlineTime,
+  isDeadlinePassed,
+} from "@/entities/form";
 import { toast } from "sonner";
 
 type Props = { formId: number };
@@ -30,7 +38,10 @@ function toCalendarEvents(
 ): CalendarEvent[] {
   // 백엔드는 DATE·CALENDAR 답변을 모두 dateAnswer 배열로 내려준다.
   return answers
-    .filter((a) => a.fieldId === fieldId && (a.type === "DATE" || a.type === "CALENDAR"))
+    .filter(
+      (a) =>
+        a.fieldId === fieldId && (a.type === "DATE" || a.type === "CALENDAR"),
+    )
     .flatMap((a) =>
       (a.dateAnswer ?? [])
         .filter((ev) => isDateStr(ev.startDate))
@@ -50,7 +61,8 @@ export default function FormMySubmitView({ formId }: Props) {
 
   const router = useRouter();
 
-  const { data: formDetail, isLoading: detailLoading } = useGetFormDetail(formId);
+  const { data: formDetail, isLoading: detailLoading } =
+    useGetFormDetail(formId);
   const { data: mySubmit, isLoading: submitLoading } = useGetFormMySubmit(
     { formId, projectId: projectId ?? 0 },
     { enabled: !!projectId },
@@ -65,6 +77,9 @@ export default function FormMySubmitView({ formId }: Props) {
   )?.name;
 
   const [isEditing, setIsEditing] = useState(false);
+
+  // 마감이 지난 제출 건은 열람만 가능 — 수정 불가
+  const deadlinePassed = isDeadlinePassed(formDetail?.deadline ?? "");
 
   // fieldId → SubmitAnswerItem lookup (first occurrence wins)
   const answerMap = useMemo(() => {
@@ -101,8 +116,12 @@ export default function FormMySubmitView({ formId }: Props) {
 
   // User edits: undefined = unchanged, null = deleted, File = new file
   const [textEdits, setTextEdits] = useState<Record<number, string>>({});
-  const [calendarEdits, setCalendarEdits] = useState<Record<number, CalendarEvent[]>>({});
-  const [fileAnswers, setFileAnswers] = useState<Record<number, File | null>>({});
+  const [calendarEdits, setCalendarEdits] = useState<
+    Record<number, CalendarEvent[]>
+  >({});
+  const [fileAnswers, setFileAnswers] = useState<Record<number, File | null>>(
+    {},
+  );
   const [fieldErrors, setFieldErrors] = useState<Record<number, string>>({});
 
   const getTextValue = (fieldId: number) =>
@@ -120,7 +139,10 @@ export default function FormMySubmitView({ formId }: Props) {
     if (file) setFieldErrors((prev) => ({ ...prev, [fieldId]: "" }));
   };
 
-  const handleCalendarChange = (fieldId: number, updatedEvents: CalendarEvent[]) => {
+  const handleCalendarChange = (
+    fieldId: number,
+    updatedEvents: CalendarEvent[],
+  ) => {
     setCalendarEdits((prev) => ({ ...prev, [fieldId]: updatedEvents }));
   };
 
@@ -146,7 +168,7 @@ export default function FormMySubmitView({ formId }: Props) {
       if (type === "FILE") {
         const hasNewFile = fileAnswers[fId] instanceof File;
         const isDeleted = fileAnswers[fId] === null;
-        const hasOriginalFile = !!(answerMap[fId]?.filePath);
+        const hasOriginalFile = !!answerMap[fId]?.filePath;
         if (isDeleted || (!hasNewFile && !hasOriginalFile)) {
           errors[fId] = "파일을 첨부해주세요.";
         }
@@ -160,45 +182,53 @@ export default function FormMySubmitView({ formId }: Props) {
     }
 
     // Build answers from formDetail.fields
-    const answers = (formDetail.fields ?? []).flatMap((field): FormAnswerItem[] => {
-      const fId = field.fieldId ?? field.id ?? 0;
-      const type = field.type?.toUpperCase();
+    const answers = (formDetail.fields ?? []).flatMap(
+      (field): FormAnswerItem[] => {
+        const fId = field.fieldId ?? field.id ?? 0;
+        const type = field.type?.toUpperCase();
 
-      if (type === "FILE") {
-        // 새 파일/삭제는 upload·delete 엔드포인트가 처리한다.
-        // 그 외(파일을 안 건드린 경우)에는 PATCH 가 answer 를 통째로 교체하면서
-        // 기존 파일이 사라지므로, filePath 를 함께 보내 보존한다.
-        const hasNewFile = fileAnswers[fId] instanceof File;
-        const isDeleted = fileAnswers[fId] === null;
-        const existingPath = answerMap[fId]?.filePath;
-        if (hasNewFile || isDeleted || !existingPath) return [];
-        return [{
-          fieldId: fId,
-          filePath: existingPath,
-          fileSize: answerMap[fId]?.fileSize ?? undefined,
-          originalFileName: answerMap[fId]?.originalFileName ?? undefined,
-        }];
-      }
+        if (type === "FILE") {
+          // 새 파일/삭제는 upload·delete 엔드포인트가 처리한다.
+          // 그 외(파일을 안 건드린 경우)에는 PATCH 가 answer 를 통째로 교체하면서
+          // 기존 파일이 사라지므로, filePath 를 함께 보내 보존한다.
+          const hasNewFile = fileAnswers[fId] instanceof File;
+          const isDeleted = fileAnswers[fId] === null;
+          const existingPath = answerMap[fId]?.filePath;
+          if (hasNewFile || isDeleted || !existingPath) return [];
+          return [
+            {
+              fieldId: fId,
+              filePath: existingPath,
+              fileSize: answerMap[fId]?.fileSize ?? undefined,
+              originalFileName: answerMap[fId]?.originalFileName ?? undefined,
+            },
+          ];
+        }
 
-      if (type === "DATE" || type === "CALENDAR") {
-        // DATE·CALENDAR 모두 dateAnswer 배열(CalendarEventRequest[])로 전송한다.
-        const calEvents = getCalendarValue(fId);
-        return [{
-          fieldId: fId,
-          dateAnswer: calEvents.map((e) => ({
-            eventName: e.title,
-            startDate: e.startDate,
-            endDate: e.endDate,
-            color: e.color,
-          })),
-        }];
-      }
+        if (type === "DATE" || type === "CALENDAR") {
+          // DATE·CALENDAR 모두 dateAnswer 배열(CalendarEventRequest[])로 전송한다.
+          const calEvents = getCalendarValue(fId);
+          return [
+            {
+              fieldId: fId,
+              dateAnswer: calEvents.map((e) => ({
+                eventName: e.title,
+                startDate: e.startDate,
+                endDate: e.endDate,
+                color: e.color,
+              })),
+            },
+          ];
+        }
 
-      return [{
-        fieldId: fId,
-        textAnswer: getTextValue(fId),
-      }];
-    });
+        return [
+          {
+            fieldId: fId,
+            textAnswer: getTextValue(fId),
+          },
+        ];
+      },
+    );
 
     try {
       await patchSubmit({ submitId: mySubmit.submitId, answers });
@@ -249,14 +279,19 @@ export default function FormMySubmitView({ formId }: Props) {
             <span className="flex justify-center text-[24px] font-semibold">
               {formDetail.title}
             </span>
-            <span className="text-[14px] font-medium">
-              마감일: {formDetail.deadline}
-            </span>
-            {submitterName && (
-              <span className="text-[14px] font-medium text-gray-500">
-                제출자: {submitterName}
-              </span>
-            )}
+            <div className="flex flex-wrap gap-x-4 gap-y-1 text-[14px] font-medium">
+              <span>마감 날짜: {formatDeadlineDate(formDetail.deadline)}</span>
+              {formatDeadlineTime(formDetail.deadline) && (
+                <span>
+                  마감 시간: {formatDeadlineTime(formDetail.deadline)}
+                </span>
+              )}
+              {submitterName && (
+                <span className="text-[14px] font-medium text-gray-500">
+                  제출자: {submitterName}
+                </span>
+              )}
+            </div>
           </div>
 
           <div className="flex flex-col gap-4">
@@ -279,7 +314,7 @@ export default function FormMySubmitView({ formId }: Props) {
                 return (
                   <div
                     key={fId}
-                    className="flex flex-col py-8 px-12 border-t-5 border-yellow-600 bg-white rounded-[10px] shadow-new"
+                    className="flex flex-col py-6 px-6 sm:py-8 sm:px-12 border-t-5 border-yellow-600 bg-white rounded-[10px] shadow-new"
                   >
                     <span className="text-[20px] font-semibold pb-2">
                       {field.title}
@@ -299,7 +334,9 @@ export default function FormMySubmitView({ formId }: Props) {
                           onChange={handleTextChange}
                         />
                         {error && (
-                          <span className="mt-1 text-[12px] text-red-500">{error}</span>
+                          <span className="mt-1 text-[12px] text-red-500">
+                            {error}
+                          </span>
                         )}
                       </>
                     )}
@@ -310,13 +347,17 @@ export default function FormMySubmitView({ formId }: Props) {
                           file={hasNewFile ? (fileAnswers[fId] as File) : null}
                           filePath={serverFilePath}
                           fileSize={existingAnswer?.fileSize || undefined}
-                          originalFileName={existingAnswer?.originalFileName || undefined}
+                          originalFileName={
+                            existingAnswer?.originalFileName || undefined
+                          }
                           submitId={mySubmit.submitId}
                           readOnly={!isEditing}
                           onChange={handleFileChange}
                         />
                         {error && (
-                          <span className="mt-1 text-[12px] text-red-500">{error}</span>
+                          <span className="mt-1 text-[12px] text-red-500">
+                            {error}
+                          </span>
                         )}
                       </>
                     )}
@@ -351,6 +392,10 @@ export default function FormMySubmitView({ formId }: Props) {
                   {isPending ? "저장 중..." : "완료하기"}
                 </button>
               </>
+            ) : deadlinePassed ? (
+              <div className="flex w-full items-center justify-center py-3 font-medium text-gray-500">
+                마감된 양식입니다. 열람만 가능합니다.
+              </div>
             ) : (
               <button
                 className="flex w-full items-center justify-center py-3 font-medium bg-yellow-600 rounded-[10px] cursor-pointer"

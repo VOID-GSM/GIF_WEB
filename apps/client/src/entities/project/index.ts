@@ -5,7 +5,6 @@ export {
   getProjectSummary,
   updateProject,
   updateProjectDescription,
-  transferLeader,
   searchUsers,
 } from "./api/projectApi";
 export { useCreateProject } from "./api/useCreateProject";
@@ -14,7 +13,6 @@ export { useGetProject } from "./api/useGetProject";
 export { useGetProjectSummary } from "./api/useGetProjectSummary";
 export { useUpdateProject } from "./api/useUpdateProject";
 export { useUpdateProjectDescription } from "./api/useUpdateProjectDescription";
-export { useTransferLeader } from "./api/useTransferLeader";
 export { useGetMyProject } from "./hooks/useGetMyProject";
 export { useGetFilteredProjects } from "./hooks/useGetFilteredProjects";
 export { useStoredGrade } from "./hooks/useStoredGrade";
@@ -27,7 +25,6 @@ export type {
   ProjectSummaryResponse,
   ProjectMember,
   UpdateProjectRequest,
-  TransferLeaderRequest,
   UserSearchResult,
   Project,
   GetMyProjectResponse,

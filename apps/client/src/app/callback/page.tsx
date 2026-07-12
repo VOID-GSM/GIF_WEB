@@ -31,6 +31,10 @@ const CallbackContent = () => {
 
         const { data } = await getDgCallback({ code, state });
 
+        if (data.studentNumber?.startsWith("3")) {
+          throw new Error("3학년은 로그인할 수 없습니다.");
+        }
+
         setCookie(COOKIE_KEYS.ACCESS_TOKEN, data.accessToken);
         if (data.clientRole) setCookie(COOKIE_KEYS.CLIENT_ROLE, data.clientRole);
         router.replace(data.clientRole ? "/" : "/signup");

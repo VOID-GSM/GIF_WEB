@@ -7,6 +7,7 @@ import {
   useAdminSubmitSummary,
 } from "@/entities/from-management/api/query";
 import { useGetProject } from "@/entities/project";
+import { formatDeadlineDate, formatDeadlineTime } from "@/entities/form";
 import FileAnswer from "@/entities/from-management/ui/Fileanswer";
 import TextAnswer from "@/entities/from-management/ui/Textanswer";
 import CalendarAnswer from "@/entities/from-management/ui/Calendaranswer";
@@ -63,7 +64,6 @@ export default function FormDetailView({ formId, submitId }: Props) {
   const submitterName = project?.members.find(
     (m) => m.userId === submission?.submittedByUserId,
   )?.name;
-
   // 제출 답변 AI 요약 (제출 상세 진입 시 자동 조회)
   const { data: summary } = useAdminSubmitSummary(submitId);
 
@@ -118,7 +118,9 @@ export default function FormDetailView({ formId, submitId }: Props) {
             <div className="flex items-center justify-between">
               <div className="flex flex-col">
                 <span className="text-[14px] font-medium">
-                  마감일: {formDetail.deadline}
+                  마감 날짜: {formatDeadlineDate(formDetail.deadline)}
+                  {formatDeadlineTime(formDetail.deadline) &&
+                    ` · 마감 시간: ${formatDeadlineTime(formDetail.deadline)}`}
                 </span>
                 {submission && (
                   <span className="text-[14px] font-medium text-gray-500">
