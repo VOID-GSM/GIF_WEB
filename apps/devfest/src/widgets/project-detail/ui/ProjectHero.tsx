@@ -275,7 +275,7 @@ export default function ProjectHero({ project }: ProjectHeroProps) {
       } ${
         isContain
           ? "aspect-[var(--r)] md:aspect-auto md:h-screen md:min-h-[420px]"
-          : "max-h-screen"
+          : "min-h-[320px] max-h-screen"
       }`}
     >
       {/* 대형 시연영상 배너 — 클릭 시 크게 보기 */}
