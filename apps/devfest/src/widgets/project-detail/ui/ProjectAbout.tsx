@@ -9,11 +9,11 @@ export default function ProjectAbout({
   description,
   tagline,
 }: ProjectAboutProps) {
-  const paragraphs = description.split("\n\n").filter(Boolean);
+  const paragraphs = description.split(/\r?\n\r?\n/).filter(Boolean);
   const [lead, ...rest] = paragraphs;
 
   // tagline은 헤드라인 한 줄 + 뒤따르는 본문 문단으로 구성될 수 있음 (\n\n 구분)
-  const taglineParts = tagline?.split("\n\n").filter(Boolean) ?? [];
+  const taglineParts = tagline?.split(/\r?\n\r?\n/).filter(Boolean) ?? [];
   const [taglineHead, ...taglineBody] = taglineParts;
 
   return (
