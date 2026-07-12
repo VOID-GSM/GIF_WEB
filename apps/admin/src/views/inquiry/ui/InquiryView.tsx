@@ -164,15 +164,27 @@ export default function InquiryView() {
                 <button
                   type="button"
                   onClick={() => setFile(null)}
+                  disabled={isPending}
                   aria-label="첨부파일 제거"
-                  className="shrink-0 cursor-pointer text-gray-400 transition-colors hover:text-gray-700"
+                  className="shrink-0 cursor-pointer text-gray-400 transition-colors hover:text-gray-700 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   <Close width={13} height={13} />
                 </button>
               </div>
             ) : (
-              <label className="group flex cursor-pointer items-center justify-center gap-2 rounded-[10px] border border-dashed border-gray-300 bg-white py-3.5 transition-colors hover:border-yellow-600 hover:bg-yellow-50">
-                <input type="file" className="hidden" onChange={handleFileChange} />
+              <label
+                className={`group flex cursor-pointer items-center justify-center gap-2 rounded-[10px] border border-dashed border-gray-300 bg-white py-3.5 transition-colors ${
+                  isPending
+                    ? "pointer-events-none opacity-50"
+                    : "hover:border-yellow-600 hover:bg-yellow-50"
+                }`}
+              >
+                <input
+                  type="file"
+                  className="hidden"
+                  onChange={handleFileChange}
+                  disabled={isPending}
+                />
                 <Upload className="h-4 w-4 text-gray-400 transition-colors group-hover:text-yellow-700" />
                 <span className="text-[12px] font-medium text-gray-500 transition-colors group-hover:text-gray-700">
                   클릭하여 파일 첨부 (최대 10MB)
