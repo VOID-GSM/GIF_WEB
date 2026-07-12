@@ -107,11 +107,22 @@ function MemberCard({
   return <div className={base}>{inner}</div>;
 }
 
+// 팀장 판별 — 역할에 "팀장"이 포함되거나 프로젝트의 leader 이름과 일치
+function isLeaderMember(member: ProjectMember, leader?: string) {
+  return member.role.includes("팀장") || member.name === leader;
+}
+
 export default function ProjectTeam({ members, leader }: ProjectTeamProps) {
   if (members.length === 0) return null;
 
+  // 팀장을 항상 목록 맨 앞으로 이동(팀장/나머지 각각 원래 순서는 유지)
+  const orderedMembers = [
+    ...members.filter((member) => isLeaderMember(member, leader)),
+    ...members.filter((member) => !isLeaderMember(member, leader)),
+  ];
+
   // 팀 전체에 사진이 하나도 없으면 프로필 아바타(이니셜 대체)를 표시하지 않는다.
-  const showAvatar = members.some((member) => member.photo);
+  const showAvatar = orderedMembers.some((member) => member.photo);
 
   return (
     <div>
@@ -123,12 +134,12 @@ export default function ProjectTeam({ members, leader }: ProjectTeamProps) {
       </SectionLabel>
 
       <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {members.map((member) => (
+        {orderedMembers.map((member) => (
           <MemberCard
             key={member.name}
             member={member}
             showAvatar={showAvatar}
-            isLeader={member.role.includes("팀장") || member.name === leader}
+            isLeader={isLeaderMember(member, leader)}
           />
         ))}
       </div>
