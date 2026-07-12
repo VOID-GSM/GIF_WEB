@@ -17,6 +17,7 @@ export default function MypageView() {
   const { data, isLoading, isError } = useGetMyInfo();
   const { data: myProjects, isLoading: isProjectsLoading } = useGetMyProject();
   const projectId = data?.projectId || myProjects?.[0]?.id;
+  const hasProjectId = Number.isFinite(projectId);
   const { data: projectDetail, isLoading: isProjectDetailLoading } =
     useGetProject(projectId ?? NaN);
 
@@ -62,7 +63,9 @@ export default function MypageView() {
 
   return (
     <main className="fixed inset-0 flex items-center justify-center bg-background p-4">
-      {isLoading || isProjectsLoading || isProjectDetailLoading ? (
+      {isLoading ||
+      isProjectsLoading ||
+      (hasProjectId && isProjectDetailLoading) ? (
         <p className="text-[16px] font-medium text-gray-600">불러오는 중</p>
       ) : isError ? (
         <div className="flex flex-col items-center gap-4">
