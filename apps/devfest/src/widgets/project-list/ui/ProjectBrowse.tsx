@@ -29,15 +29,15 @@ export default function ProjectBrowse() {
           />
 
           <p className="mt-7 text-[13px] font-semibold uppercase tracking-[0.22em] text-yellow-900">
-            GSM Idea Festival
+            제 3회 프로젝트 모음
           </p>
 
-          <h1 className="mt-3 text-[clamp(2.4rem,6vw,3.75rem)] font-bold leading-[1.05] tracking-[-1.5px] text-black">
+          <h1 className="mx-auto mt-3 max-w-[15ch] text-[clamp(1.9rem,5vw,3.1rem)] font-bold leading-[1.12] tracking-[-1.5px] text-black">
             <span className="marker-hl">DevFest</span>
           </h1>
 
           <p className="mx-auto mt-5 max-w-[520px] text-[16px] leading-[1.7] text-gray-600">
-            광주소프트웨어마이스터고 학생들이 직접 만든 프로젝트를 발표합니다
+            광주소프트웨어마이스터고 학생 프로젝트 발표회
           </p>
 
           <div className="mt-8 inline-flex items-center gap-2 rounded-full border border-yellow-600/30 bg-white/70 px-4 py-1.5 text-[14px] font-medium text-gray-700 shadow-sm backdrop-blur">
