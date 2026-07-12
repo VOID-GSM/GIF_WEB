@@ -13,7 +13,7 @@ export function useGetRank({ grade }: GetRankParams) {
       return ranked
         .sort((a, b) => a.rank - b.rank)
         .slice(0, 5)
-        .map(({ rank, teamName }) => ({ rank, teamName }));
+        .map(({ rank, name, teamName, logo }) => ({ rank, name, teamName, logo }));
     },
   });
 }

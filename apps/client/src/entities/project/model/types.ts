@@ -82,7 +82,3 @@ export interface UpdateProjectRequest {
   logo?: File;
 }
 
-// PATCH /api/project/{projectId}/transfer-leader — 팀장 양도(현재 리더만 호출)
-export interface TransferLeaderRequest {
-  newLeaderUserId: number;
-}

@@ -1,5 +1,6 @@
 "use client";
 
+import { useRef } from "react";
 import Close from "./svg/Close";
 import Input from "./components/Input/Input";
 import Textarea from "./components/Input/Textarea";
@@ -40,6 +41,9 @@ const STYLE_LABEL: Record<StyleOption, string> = {
   calendar: "캘린더",
 };
 
+const TITLE_MAX_LENGTH = 50;
+const DESCRIPTION_MAX_LENGTH = 1000;
+
 interface FormCardProps {
   field: PostFormRequestField & { id: string };
   onChange: (id: string, updated: Partial<PostFormRequestField>) => void;
@@ -49,6 +53,11 @@ interface FormCardProps {
 export default function FormCard({ field, onChange, onDelete }: FormCardProps) {
   const selectedStyle =
     field.type === "" ? null : (TYPE_TO_STYLE[field.type] ?? null);
+
+  // 한글(IME) 조합 중에는 값을 자르지 않는다 — 조합 도중 value를 강제로 잘라내면
+  // 브라우저의 composition 세션이 깨져 마지막 글자가 누락되거나 조합이 끊길 수 있다.
+  const isTitleComposing = useRef(false);
+  const isDescriptionComposing = useRef(false);
 
   const handleStyleChange = (style: StyleOption) => {
     onChange(field.id, {
@@ -62,14 +71,55 @@ export default function FormCard({ field, onChange, onDelete }: FormCardProps) {
         <div className="flex flex-col gap-2 px-8">
           <Input
             value={field.title}
-            onChange={(e) => onChange(field.id, { title: e.target.value })}
+            onChange={(e) => {
+              const value = e.target.value;
+              onChange(field.id, {
+                title: isTitleComposing.current
+                  ? value
+                  : value.slice(0, TITLE_MAX_LENGTH),
+              });
+            }}
+            onCompositionStart={() => {
+              isTitleComposing.current = true;
+            }}
+            onCompositionEnd={(e) => {
+              isTitleComposing.current = false;
+              onChange(field.id, {
+                title: e.currentTarget.value.slice(0, TITLE_MAX_LENGTH),
+              });
+            }}
+            maxLength={TITLE_MAX_LENGTH}
           />
+          <span className="self-end text-xs text-gray-400">
+            {field.title.length}/{TITLE_MAX_LENGTH}
+          </span>
           <Textarea
             value={field.description}
-            onChange={(e) =>
-              onChange(field.id, { description: e.target.value })
-            }
+            onChange={(e) => {
+              const value = e.target.value;
+              onChange(field.id, {
+                description: isDescriptionComposing.current
+                  ? value
+                  : value.slice(0, DESCRIPTION_MAX_LENGTH),
+              });
+            }}
+            onCompositionStart={() => {
+              isDescriptionComposing.current = true;
+            }}
+            onCompositionEnd={(e) => {
+              isDescriptionComposing.current = false;
+              onChange(field.id, {
+                description: e.currentTarget.value.slice(
+                  0,
+                  DESCRIPTION_MAX_LENGTH,
+                ),
+              });
+            }}
+            maxLength={DESCRIPTION_MAX_LENGTH}
           />
+          <span className="self-end text-xs text-gray-400">
+            {field.description.length}/{DESCRIPTION_MAX_LENGTH}
+          </span>
           <StyleDropdown value={selectedStyle} onChange={handleStyleChange} />
           {selectedStyle && (
             <div className="px-4 py-[14px] border-b border-gray-200 text-gray-500">

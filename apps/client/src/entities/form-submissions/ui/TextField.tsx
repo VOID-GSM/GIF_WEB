@@ -24,7 +24,7 @@ export default function TextField({
 
   if (readOnly) {
     return (
-      <div className="min-h-20 w-full border border-gray-80 rounded-[10px] p-[15px] font-medium text-gray-800 whitespace-pre-wrap">
+      <div className="min-h-20 w-full break-words border border-gray-80 rounded-[10px] p-[15px] font-medium text-gray-800 whitespace-pre-wrap">
         {value || <span className="text-gray-400">답변 없음</span>}
       </div>
     );
@@ -33,7 +33,7 @@ export default function TextField({
   return (
     <textarea
       ref={textareaRef}
-      className="min-h-20 w-full border border-gray-80 rounded-[10px] p-[15px] font-medium outline-none resize-none placeholder:text-gray-500"
+      className="min-h-20 w-full break-words border border-gray-80 rounded-[10px] p-[15px] font-medium outline-none resize-none placeholder:text-gray-500"
       placeholder="답변을 입력하세요"
       value={value}
       onChange={(e) => onChange(fieldId, e.target.value)}
