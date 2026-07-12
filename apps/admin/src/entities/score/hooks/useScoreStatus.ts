@@ -5,7 +5,9 @@ import { getMajorScore } from "../api";
 import type { ScoreArea } from "../model/areas";
 import { toNullOn404 } from "@/shared/utils";
 
-const VALID_AREA_SCORES = [40, 32, 24];
+const HIGH_SCORES = [40, 32, 24];
+const MEDIUM_SCORES = [25, 20, 15];
+const LOW_SCORES = [20, 15, 10];
 
 export interface ScoreStatus {
   scoredAreas: ScoreArea[];
@@ -23,24 +25,22 @@ export function useScoreStatuses(projectIds: number[]) {
       queryFn: async (): Promise<ScoreStatus> => {
         const data = await toNullOn404(() => getMajorScore(projectId).then((r) => r.data))();
         if (!data) return { scoredAreas: [] };
-        const majorDone = [
-          data.technicalCompleteness,
-          data.socialValueMajor,
-          data.aiUtilizationMajor,
-          data.presentationMajor,
-        ].every((v) => VALID_AREA_SCORES.includes(v));
+        const majorDone =
+          HIGH_SCORES.includes(data.technicalCompleteness) &&
+          LOW_SCORES.includes(data.socialValueMajor) &&
+          LOW_SCORES.includes(data.aiUtilizationMajor) &&
+          LOW_SCORES.includes(data.presentationMajor);
         const reportDone = [
           data.reportWriting,
           data.reportContent,
           data.aiUsagePlan,
           data.creativity,
-        ].every((v) => VALID_AREA_SCORES.includes(v));
-        const socialDone = [
-          data.userExperience,
-          data.socialValueCommunity,
-          data.aiUtilizationCommunity,
-          data.presentationCommunity,
-        ].every((v) => VALID_AREA_SCORES.includes(v));
+        ].every((v) => MEDIUM_SCORES.includes(v));
+        const socialDone =
+          HIGH_SCORES.includes(data.userExperience) &&
+          LOW_SCORES.includes(data.socialValueCommunity) &&
+          LOW_SCORES.includes(data.aiUtilizationCommunity) &&
+          LOW_SCORES.includes(data.presentationCommunity);
         const scoredAreas: ScoreArea[] = [
           ...(majorDone ? (["major"] as ScoreArea[]) : []),
           ...(reportDone ? (["report"] as ScoreArea[]) : []),
