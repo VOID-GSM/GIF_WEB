@@ -71,8 +71,10 @@ export default function ProjectInfo({
               <span className="text-2xl font-medium text-gray-700">팀원</span>
             </div>
             <div className="flex flex-1 flex-wrap items-center gap-2">
-              {orderedMembers.map((member) =>
-                onMemberClick ? (
+              {orderedMembers.map((member) => {
+                // 팀장(LEADER)은 양도 대상이 아니므로 클릭 가능한 버튼으로 렌더링하지 않는다.
+                const isClickable = onMemberClick && member.role !== "LEADER";
+                return isClickable ? (
                   <button
                     key={member.userId}
                     type="button"
@@ -83,7 +85,7 @@ export default function ProjectInfo({
                       id={Number(member.studentNumber)}
                       name={member.name}
                       isEditable={false}
-                      color={member.role === "LEADER" ? "yellow" : "gray"}
+                      color="gray"
                     />
                   </button>
                 ) : (
@@ -94,8 +96,8 @@ export default function ProjectInfo({
                     isEditable={false}
                     color={member.role === "LEADER" ? "yellow" : "gray"}
                   />
-                ),
-              )}
+                );
+              })}
             </div>
           </div>
         </div>
