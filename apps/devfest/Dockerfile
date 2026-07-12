@@ -12,6 +12,9 @@ RUN npm ci
 FROM base AS builder
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+# public/*.mp4 시연영상은 Git LFS로 관리됨 — 포인터가 아닌 실제 파일을 받아와야
+# 런타임 이미지(next start)가 정상적으로 영상을 서빙한다. (public repo라 인증 불필요)
+RUN apk add --no-cache git git-lfs && git lfs install && git lfs pull
 RUN npm run build --workspace=devfest
 
 FROM base AS runner
