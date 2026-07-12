@@ -2,9 +2,11 @@ import { apiClient } from "@repo/lib";
 
 import type {
   GetFilteredProjectsResponse,
+  GetProjectNoteResponse,
   Grade,
   ProjectDetail,
   ProjectSummaryResponse,
+  UpdateProjectNoteRequest,
 } from "../model/types";
 
 export const getFilteredProjects = (grade: Grade) =>
@@ -17,3 +19,11 @@ export const getProject = (projectId: number) =>
 
 export const getProjectSummary = (projectId: number) =>
   apiClient.get<ProjectSummaryResponse>(`/api/project/${projectId}/summary`);
+
+export const getProjectNote = (projectId: number) =>
+  apiClient.get<GetProjectNoteResponse>(`/api/project/${projectId}/note`);
+
+export const updateProjectNote = (
+  projectId: number,
+  body: UpdateProjectNoteRequest,
+) => apiClient.put<void>(`/api/project/${projectId}/note`, body);
