@@ -46,6 +46,7 @@ export default function ScheduleSection({
     new Date(today.getFullYear(), today.getMonth()),
   );
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
+  const [showHint, setShowHint] = useState(false);
 
   const year = currentMonth.getFullYear();
   const month = currentMonth.getMonth();
@@ -59,9 +60,27 @@ export default function ScheduleSection({
 
   return (
     <section className="flex flex-col gap-3">
-      <span className="text-xl font-semibold tracking-tight text-gray-600">
-        일정
-      </span>
+      <div className="flex items-center gap-1.5">
+        <span className="text-xl font-semibold tracking-tight text-gray-600">
+          일정
+        </span>
+        <div className="relative flex items-center">
+          <button
+            type="button"
+            aria-label="일정 안내"
+            onClick={() => setShowHint((prev) => !prev)}
+            onBlur={() => setShowHint(false)}
+            className="flex size-4 cursor-pointer items-center justify-center rounded-full border border-gray-400 text-[11px] font-semibold text-gray-400 transition-colors hover:border-gray-500 hover:text-gray-500"
+          >
+            ?
+          </button>
+          {showHint && (
+            <span className="absolute left-6 top-1/2 z-10 w-max -translate-y-1/2 whitespace-nowrap rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs font-medium tracking-tight text-gray-500 shadow-new">
+              캘린더가 포함된 양식을 제출하면 작성한 일정이 여기에 반영됩니다.
+            </span>
+          )}
+        </div>
+      </div>
 
       <div className="w-fit rounded-xl bg-white px-10 py-5 shadow-new">
         {/* 월 이동 */}

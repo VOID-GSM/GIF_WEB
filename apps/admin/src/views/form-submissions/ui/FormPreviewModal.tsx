@@ -3,6 +3,10 @@
 import { Close, Textarea, FileUpload } from "@repo/ui";
 import CalendarAnswer from "@/entities/from-management/ui/Calendaranswer";
 import type { AdminFormDetail, FormField } from "@/entities/from-management/model/type";
+import {
+  formatDeadlineDate,
+  formatDeadlineTime,
+} from "@/entities/form/lib/formatDeadline";
 
 type Props = {
   form: AdminFormDetail;
@@ -66,7 +70,9 @@ export default function FormPreviewModal({ form, onClose }: Props) {
               {form.title}
             </span>
             <span className="pt-1 text-[13px] font-medium text-gray-500">
-              마감일: {form.deadline}
+              마감 날짜: {formatDeadlineDate(form.deadline)}
+              {formatDeadlineTime(form.deadline) &&
+                ` · 마감 시간: ${formatDeadlineTime(form.deadline)}`}
             </span>
           </div>
           <button
