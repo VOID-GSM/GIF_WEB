@@ -1,11 +1,14 @@
 import { MOCK_PROJECTS, ProjectCard } from "@/entities/project";
 
+// 정적 데이터이므로 모듈 로드 시 1회만 정렬 (렌더마다 재정렬 방지)
+// 프로젝트 이름 순 정렬 (한글/영문 혼용 — ko 로케일 기준)
+const SORTED_PROJECTS = [...MOCK_PROJECTS].sort((a, b) =>
+  a.name.localeCompare(b.name, "ko"),
+);
+
 export default function ProjectBrowse() {
-  const count = MOCK_PROJECTS.length;
-  // 프로젝트 이름 순 정렬 (한글/영문 혼용 — ko 로케일 기준)
-  const projects = [...MOCK_PROJECTS].sort((a, b) =>
-    a.name.localeCompare(b.name, "ko"),
-  );
+  const count = SORTED_PROJECTS.length;
+  const projects = SORTED_PROJECTS;
 
   return (
     <div className="min-h-screen bg-background">
