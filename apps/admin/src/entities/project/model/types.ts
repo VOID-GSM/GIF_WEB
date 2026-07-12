@@ -45,3 +45,8 @@ export interface GetProjectNoteResponse {
 export interface UpdateProjectNoteRequest {
   content: string;
 }
+
+// PATCH /api/project/{projectId}/transfer-leader — 팀장 양도(아이디어페스티벌 담당(MASTER) 관리자만 호출)
+export interface TransferLeaderRequest {
+  newLeaderUserId: number;
+}
