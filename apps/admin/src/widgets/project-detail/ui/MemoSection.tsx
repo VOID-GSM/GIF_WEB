@@ -27,10 +27,12 @@ export default function MemoSection({ projectId }: MemoSectionProps) {
 
   // 로컬 편집 state — 타이핑 중에는 이 값만 갱신하고, blur 시점에만 서버에 저장한다.
   const [memo, setMemo] = useState("");
-  // 서버에서 받아온 원본 값 — blur 시 변경 여부 비교 및 초기화 1회 반영에 사용
-  const savedContentRef = useRef<string | null>(null);
-  // blur 없이 컴포넌트가 사라지는 경우(다른 프로젝트로 이동 등)에도 마지막 값을 저장할 수 있도록 최신값을 ref로 추적
+  // 마지막으로 서버에 저장 성공한 값 — 렌더링 중 변경 여부 비교(hasUnsavedChanges)에 쓰이므로 state로 관리한다.
+  const [savedContent, setSavedContent] = useState<string | null>(null);
+  // "초기화가 이미 끝났는지 / 최신 저장값이 뭔지"를 이벤트 핸들러·이펙트에서만 참조하기 위한 ref.
+  // savedContent state와 항상 함께 갱신하며, 렌더링 중에는 절대 읽지 않는다.
   const memoRef = useRef(memo);
+  const savedContentRef = useRef<string | null>(null);
   const updateNoteRef = useRef(updateNote);
   useEffect(() => {
     updateNoteRef.current = updateNote;
@@ -42,10 +44,12 @@ export default function MemoSection({ projectId }: MemoSectionProps) {
   useEffect(() => {
     if (data && savedContentRef.current === null) {
       savedContentRef.current = data.content;
+      setSavedContent(data.content);
       setMemo(data.content);
       memoRef.current = data.content;
     } else if (isNoteQueryError && savedContentRef.current === null) {
       savedContentRef.current = "";
+      setSavedContent("");
     }
   }, [data, isNoteQueryError]);
 
@@ -55,10 +59,16 @@ export default function MemoSection({ projectId }: MemoSectionProps) {
   };
 
   const handleBlur = () => {
-    // 서버 원본 값과 다를 때만 저장 (성공/실패 토스트 및 invalidate는 훅 내부 처리)
-    if (savedContentRef.current !== null && memo !== savedContentRef.current) {
-      savedContentRef.current = memo;
-      updateNote(memo);
+    // 서버 원본 값과 다를 때만 저장. 실패 시 재시도가 가능하도록 savedContent는
+    // 요청 성공(onSuccess) 시점에만 갱신한다 — 실패해도 미리 갱신해버리면 재blur해도 재저장 안 됨.
+    if (savedContent !== null && memo !== savedContent) {
+      const contentToSave = memo;
+      updateNote(contentToSave, {
+        onSuccess: () => {
+          savedContentRef.current = contentToSave;
+          setSavedContent(contentToSave);
+        },
+      });
     }
   };
 
@@ -70,17 +80,25 @@ export default function MemoSection({ projectId }: MemoSectionProps) {
         savedContentRef.current !== null &&
         memoRef.current !== savedContentRef.current
       ) {
-        savedContentRef.current = memoRef.current;
-        updateNoteRef.current(memoRef.current);
+        const contentToSave = memoRef.current;
+        updateNoteRef.current(contentToSave, {
+          onSuccess: () => {
+            savedContentRef.current = contentToSave;
+          },
+        });
       }
     };
   }, []);
+
+  // 저장 성공 이후에도 사용자가 다시 편집을 시작하면(현재 값이 마지막 저장값과 다르면)
+  // "저장됨" 문구 대신 상태 표시를 비워서 아직 반영 안 된 변경사항이 있음을 알린다.
+  const hasUnsavedChanges = savedContent !== null && memo !== savedContent;
 
   const statusText = isPending
     ? "저장 중..."
     : isError
       ? "저장 실패"
-      : isSuccess && submittedAt
+      : isSuccess && submittedAt && !hasUnsavedChanges
         ? `저장됨 · ${new Date(submittedAt).toLocaleTimeString("ko-KR", { hour: "2-digit", minute: "2-digit" })}`
         : null;
 
