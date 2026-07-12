@@ -40,6 +40,9 @@ const STYLE_LABEL: Record<StyleOption, string> = {
   calendar: "캘린더",
 };
 
+const TITLE_MAX_LENGTH = 50;
+const DESCRIPTION_MAX_LENGTH = 1000;
+
 interface FormCardProps {
   field: PostFormRequestField & { id: string };
   onChange: (id: string, updated: Partial<PostFormRequestField>) => void;
@@ -62,14 +65,28 @@ export default function FormCard({ field, onChange, onDelete }: FormCardProps) {
         <div className="flex flex-col gap-2 px-8">
           <Input
             value={field.title}
-            onChange={(e) => onChange(field.id, { title: e.target.value })}
+            onChange={(e) =>
+              onChange(field.id, {
+                title: e.target.value.slice(0, TITLE_MAX_LENGTH),
+              })
+            }
+            maxLength={TITLE_MAX_LENGTH}
           />
+          <span className="self-end text-xs text-gray-400">
+            {field.title.length}/{TITLE_MAX_LENGTH}
+          </span>
           <Textarea
             value={field.description}
             onChange={(e) =>
-              onChange(field.id, { description: e.target.value })
+              onChange(field.id, {
+                description: e.target.value.slice(0, DESCRIPTION_MAX_LENGTH),
+              })
             }
+            maxLength={DESCRIPTION_MAX_LENGTH}
           />
+          <span className="self-end text-xs text-gray-400">
+            {field.description.length}/{DESCRIPTION_MAX_LENGTH}
+          </span>
           <StyleDropdown value={selectedStyle} onChange={handleStyleChange} />
           {selectedStyle && (
             <div className="px-4 py-[14px] border-b border-gray-200 text-gray-500">
