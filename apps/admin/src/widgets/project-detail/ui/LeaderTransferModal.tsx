@@ -17,7 +17,7 @@ export default function LeaderTransferModal({
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 px-4"
-      onClick={onClose}
+      onClick={() => !isPending && onClose()}
     >
       <div
         className="flex w-full max-w-[320px] flex-col gap-6 rounded-[16px] bg-white px-6 py-7 shadow-new"
