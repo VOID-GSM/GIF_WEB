@@ -6,7 +6,7 @@ import type { DeadlineSummary, FormSummary } from "../model/types";
 export function isOverdue(deadline: string): boolean {
   if (!deadline || typeof deadline !== "string") return false;
   const hasTimezone =
-    deadline.includes("Z") || /[+-]\d{2}:?\d{2}$/.test(deadline);
+    deadline.includes("Z") || /[+-]\d{2}(?::?\d{2})?$/.test(deadline);
   const iso = deadline.includes("T") ? deadline : `${deadline}T23:59:59`;
   const endTime = new Date(hasTimezone ? iso : `${iso}+09:00`).getTime();
   return !isNaN(endTime) && Date.now() > endTime;
