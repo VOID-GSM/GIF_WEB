@@ -67,6 +67,7 @@ export default function MypageView() {
         <MypageCard
           items={mypageInfoItems}
           onLogout={handleLogout}
+          onInquiry={() => router.push("/inquiry")}
           nameSuffix="선생님"
         />
       )}

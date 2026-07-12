@@ -1,7 +1,6 @@
 interface ScoreRow {
   rank: number;
   teamName: string;
-  averageScore?: number;
   majorAverage?: number;
   reportAverage?: number;
   communityAverage?: number;
@@ -12,10 +11,6 @@ interface Props {
   isLoading: boolean;
   isError: boolean;
   scoreRows: ScoreRow[];
-}
-
-function formatAverage(value: number | undefined) {
-  return (value ?? 0).toFixed(1);
 }
 
 function formatInt(value: number | undefined) {
@@ -38,7 +33,7 @@ export default function ScoreCollectionTable({ isLoading, isError, scoreRows }: 
         - 데스크톱(max-w-4xl 컨테이너): 전체 컬럼이 한 화면에 들어온다.
         - 모바일: 폭이 넘쳐 가로 스크롤이 생기고, 좌측 핵심 정보(등수/팀명)가 먼저 보인다.
       */}
-      <div className="min-w-[46rem]">
+      <div className="min-w-[40rem]">
         <div className="flex items-center bg-orange-50 h-9 sticky top-0 z-10">
           {/* 핵심 정보 */}
           <div className="w-16 sm:w-20 md:w-24 shrink-0 text-center font-medium text-sm sm:text-base">
@@ -46,9 +41,6 @@ export default function ScoreCollectionTable({ isLoading, isError, scoreRows }: 
           </div>
           <div className="flex-1 min-w-[6rem] text-center font-medium text-sm sm:text-base">
             팀명
-          </div>
-          <div className="w-24 shrink-0 text-center font-medium text-sm sm:text-base">
-            평균
           </div>
           {/* 영역별 평균 */}
           <div className="w-24 shrink-0 text-center font-medium text-sm sm:text-base">
@@ -79,9 +71,6 @@ export default function ScoreCollectionTable({ isLoading, isError, scoreRows }: 
               </div>
               <div className="flex-1 min-w-[6rem] text-center font-medium text-sm sm:text-base truncate">
                 {row.teamName}
-              </div>
-              <div className="w-24 shrink-0 text-center text-sm sm:text-base text-gray-600">
-                {formatAverage(row.averageScore)}
               </div>
               {/* 영역별 평균 */}
               <div className="w-24 shrink-0 text-center text-sm sm:text-base text-gray-600">
