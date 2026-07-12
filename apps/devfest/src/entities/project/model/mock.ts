@@ -1269,7 +1269,7 @@ export const MOCK_PROJECTS: Project[] = [
     logoBg: "#ffffff",
     siteUrl: "https://www.ready.hellogsm.kr",
     leader: "김유찬",
-    demoVideoUrl: "/readygsm/readygsm-video.mov",
+    demoVideoUrl: "/readygsm/readygsm-video.mp4",
     description:
       "광주소프트웨어마이스터고등학교 학과 체험 신청 서비스\n\n" +
       "Ready, GSM은 광주소프트웨어마이스터고 학과 체험 신청을 위해 더모먼트가 개발한 웹 플랫폼입니다. " +
