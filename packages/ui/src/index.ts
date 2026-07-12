@@ -31,6 +31,7 @@ export {
   GRADES,
 } from "./components/GradeSelector/GradeSelector";
 export type { Grade } from "./components/GradeSelector/GradeSelector";
+export { default as GradeDropdown } from "./components/GradeDropdown/GradeDropdown";
 
 export { default as Navbar } from "./widgets/Navbar/ui/Navbar";
 export { default as Header } from "./widgets/Navbar/ui/Header";
