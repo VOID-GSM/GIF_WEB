@@ -1471,4 +1471,80 @@ export const MOCK_PROJECTS: Project[] = [
       },
     ],
   },
+  {
+    id: 20,
+    name: "Data GSM",
+    teamName: "THE(더모먼트)",
+    tagline: "학생 인증·데이터 연동을 위한 OpenAPI & OAuth 플랫폼",
+    logo: "/datagsm/datagsm-logo.png",
+    siteUrl: "https://datagsm.kr",
+    leader: "김태은",
+    demoVideoUrl: "/datagsm/datagsm-video.mp4",
+    description:
+      "광주소프트웨어마이스터고등학교 OpenAPI & OAuth 서비스\n\n" +
+      "Data GSM은 광주소프트웨어마이스터고에서 진행되는 프로젝트들이 공통으로 쓰는 학생 인증·데이터 연동 플랫폼입니다. " +
+      "OAuth 기반 SSO로 서비스 간 로그인을 일원화하고, 학생 인증 정보를 API로 제공해 개별 서비스의 중복 인증 개발 부담을 줄였습니다. " +
+      "신규 서비스 온보딩 시 API 연동만으로 로그인 기능을 확보할 수 있게 설계해 개발 생산성을 높였습니다.",
+    features: [
+      {
+        title: "Open API",
+        description:
+          "정보 제공에 쓰이는 API 키를 발급받을 수 있습니다. API 키를 통해 학생, 동아리, 프로젝트 등의 데이터를 조회할 수 있는 REST API를 제공합니다.",
+      },
+      {
+        title: "Event",
+        description:
+          "학생, 동아리, 프로젝트의 정보에서 생기는 변경사항을 외부 서버에 실시간으로 전송해주는 기능입니다. 외부 서버는 이를 통해 변경된 정보가 즉시 반영될 수 있습니다.",
+      },
+      {
+        title: "OAuth",
+        description:
+          "외부 서비스는 학생이 로그인 시 간편하게 학생 정보를 제공받을 수 있습니다. 학생에게는 DataGSM 계정으로 외부 서비스에 안전한 로그인을 돕습니다.",
+      },
+    ],
+    members: [
+      {
+        name: "김태은",
+        role: "팀장 · Back-end",
+        description:
+          "DX 경험 개선, 데이터 모델 설계 및 아키텍처 구조 정립을 담당했습니다. OpenAPI & OAuth 기능을 구현하고 기술문서를 작성했습니다.",
+      },
+      {
+        name: "배재현",
+        role: "Back-end",
+        description:
+          "웹훅 CRUD API·이벤트 디스패처를 신규 구현하고 이벤트 타입/페이로드 구조를 통합했습니다. OAuth 보안을 강화(STATELESS 세션 전환, 이메일 열거 취약점 제거, 도메인 검증 추가)하고, 페이지네이션 N+1 문제를 2-쿼리 패턴으로 해결했습니다.",
+      },
+      {
+        name: "홍지민",
+        role: "Back-end",
+        description:
+          "엑셀 업로드 성능을 QueryDSL 벌크 업데이트 전환으로 개선하고, 엔티티에 누락된 인덱스를 추가했습니다.",
+      },
+      {
+        name: "이세민",
+        role: "Back-end",
+        description:
+          "프로젝트 초기 단계부터 참여해 서비스 방향성과 핵심 기능을 정의했습니다. 사용자 인증 및 권한 관리 체계를 설계·구현하고, 스코프 기반 접근 제어로 리소스별 권한을 분리해 서비스 보안성을 확보했습니다.",
+      },
+      {
+        name: "정연돈",
+        role: "QA",
+        description:
+          "엣지 케이스를 발굴하고 시나리오 기반 테스트로 배포 전 잠재 이슈를 사전에 차단해 서비스 안정성 향상에 기여했습니다.",
+      },
+      {
+        name: "정효주",
+        role: "Front-end",
+        description:
+          "문서(Docs) 페이지 프론트엔드 개발을 전담하며 컴포넌트 설계와 마크업/스타일링을 구현했습니다.",
+      },
+      {
+        name: "전준연",
+        role: "Front-end",
+        description:
+          "프론트엔드 초기 기능의 70% 이상을 주도적으로 개발했습니다. OpenAPI JavaScript SDK를 개발하고, OAuth React SDK 구조 개선 및 빌드 최적화, LLM 친화적 문서 구조 설계를 담당했습니다.",
+      },
+    ],
+  },
 ];
