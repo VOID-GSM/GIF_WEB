@@ -34,3 +34,14 @@ export interface ProjectDetail {
 
 // GET /api/project/{projectId}/summary — AI가 생성한 프로젝트 요약 (응답은 요약 문자열)
 export type ProjectSummaryResponse = string;
+
+// GET /api/project/{projectId}/note — 프로젝트 메모 조회
+export interface GetProjectNoteResponse {
+  projectId: number;
+  content: string;
+}
+
+// PUT /api/project/{projectId}/note — 프로젝트 메모 작성/수정
+export interface UpdateProjectNoteRequest {
+  content: string;
+}
