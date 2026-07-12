@@ -3,7 +3,7 @@
 import { MypageCard } from "@repo/ui";
 import { useRouter } from "next/navigation";
 import { useGetMyInfo } from "@/entities/mypage";
-import { useGetMyProject } from "@/entities/project";
+import { useGetMyProject, useGetProject } from "@/entities/project";
 import { COOKIE_KEYS } from "@/shared/constants";
 import { deleteCookie } from "@/shared/utils";
 
@@ -16,15 +16,20 @@ export default function MypageView() {
   const router = useRouter();
   const { data, isLoading, isError } = useGetMyInfo();
   const { data: myProjects, isLoading: isProjectsLoading } = useGetMyProject();
+  const projectId = data?.projectId || myProjects?.[0]?.id;
+  const hasProjectId = Number.isFinite(projectId);
+  const { data: projectDetail, isLoading: isProjectDetailLoading } =
+    useGetProject(projectId ?? NaN);
 
-  // 소속 팀은 내 프로젝트(서버)에서 그대로 가져온다. 팀에서 빠지면 비워진다.
-  const teamName = myProjects?.[0]?.teamName ?? "";
+  // 소속 팀과 역할은 프로젝트 상세의 최신 멤버 정보를 우선 사용한다.
+  const teamName = projectDetail?.teamName ?? myProjects?.[0]?.teamName ?? "";
 
-  // 역할은 가입 시 선택한 clientRole 을 그대로 보여준다.
-  // 팀장 양도 기능이 제거되어 가입값과 실제 역할이 항상 일치하므로,
-  // 프로젝트 참여 여부와 무관하게 바로 표시된다.
-  const role = data?.clientRole
-    ? (CLIENT_ROLE_LABEL[data.clientRole] ?? data.clientRole)
+  const currentProjectRole = projectDetail?.members.find(
+    (member) => member.userId === data?.userId,
+  )?.role;
+  const displayRole = currentProjectRole ?? data?.clientRole;
+  const role = displayRole
+    ? (CLIENT_ROLE_LABEL[displayRole] ?? displayRole)
     : "";
 
   const mypageInfoItems = [
@@ -58,7 +63,9 @@ export default function MypageView() {
 
   return (
     <main className="fixed inset-0 flex items-center justify-center bg-background p-4">
-      {isLoading || isProjectsLoading ? (
+      {isLoading ||
+      isProjectsLoading ||
+      (hasProjectId && isProjectDetailLoading) ? (
         <p className="text-[16px] font-medium text-gray-600">불러오는 중</p>
       ) : isError ? (
         <div className="flex flex-col items-center gap-4">

@@ -3,15 +3,26 @@ export interface GetRankParams {
 }
 
 export interface ScoreRankResponse {
+  projectId?: number;
   rank: number;
   name: string;
   teamName: string;
   totalScore: number;
   logo?: string | null;
+  projectLogo?: string | null;
+  teamLogo?: string | null;
+  thumbnailUrl?: string | null;
 }
 
 export interface RankItem {
   rank: number;
+  name: string;
+  teamName: string;
+  logo?: string | null;
+}
+
+export interface RankProjectResponse {
+  id: number;
   name: string;
   teamName: string;
   logo?: string | null;
