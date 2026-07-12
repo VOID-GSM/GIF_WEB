@@ -31,6 +31,7 @@ export {
   GRADES,
 } from "./components/GradeSelector/GradeSelector";
 export type { Grade } from "./components/GradeSelector/GradeSelector";
+export { default as GradeDropdown } from "./components/GradeDropdown/GradeDropdown";
 
 export { default as Navbar } from "./widgets/Navbar/ui/Navbar";
 export { default as Header } from "./widgets/Navbar/ui/Header";
@@ -54,6 +55,7 @@ export { default as Plus } from "./svg/Plus";
 export { default as Upload } from "./svg/Upload";
 export { default as File } from "./svg/File";
 export { default as Color } from "./svg/Color";
+export { default as Crown } from "./svg/Crown";
 
 export type { NavItem } from "./widgets/Navbar/model/type";
 export type { NavbarProps } from "./widgets/Navbar/model/type";
