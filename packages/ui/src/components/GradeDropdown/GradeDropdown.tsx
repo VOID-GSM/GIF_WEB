@@ -23,6 +23,8 @@ export default function GradeDropdown({
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (!dropdownOpen) return;
+
     function handleClickOutside(e: MouseEvent) {
       if (
         dropdownRef.current &&
@@ -32,7 +34,7 @@ export default function GradeDropdown({
     }
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  }, [dropdownOpen]);
 
   const selectedLabel =
     GRADE_OPTIONS.find((o) => o.value === grade)?.label ?? "1학년";
