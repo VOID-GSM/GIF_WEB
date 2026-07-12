@@ -17,12 +17,15 @@ export function useGetRank({ grade }: GetRankParams) {
           .then((r) => r.data)
           .catch(() => []),
       ]);
+      const projectById = new Map(projects.map((project) => [project.id, project]));
       const projectByTeamName = new Map(projects.map((project) => [project.teamName, project]));
       return ranked
         .sort((a, b) => a.rank - b.rank)
         .slice(0, 5)
         .map((item) => {
-          const project = projectByTeamName.get(item.teamName);
+          const project =
+            (item.projectId ? projectById.get(item.projectId) : null) ??
+            projectByTeamName.get(item.teamName);
           return {
             rank: item.rank,
             name: item.name,
