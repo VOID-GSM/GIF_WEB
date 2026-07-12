@@ -29,12 +29,17 @@ export interface Project {
   teamName: string; // 팀명
   tagline?: string; // 카드/헤더용 한 줄 소개
   logo: string; // 프로젝트 로고
+  logoBg?: string; // 카드 미디어 배경색 강제 지정 (미지정 시 로고에서 자동 감지)
+  // 카드 로고 표시 방식: contain(기본, 여백 두고 전체 표시) / cover(여백 없이 꽉 채움)
+  logoFit?: "cover" | "contain";
+  leader?: string; // 팀장 이름 (팀원 목록에서 해당 이름을 팀장으로 표시)
   description: string; // 프로젝트 설명
   features: ProjectFeature[]; // 프로젝트 기능
   members: ProjectMember[]; // 프로젝트 팀원
   stats?: ProjectStat[]; // 프로젝트 지표 (없을 수 있음)
   siteUrl?: string; // 프로젝트 사이트 링크 (없을 수 있음)
   demoVideoUrl?: string; // 프로젝트 시연 영상 (없을 수 있음)
+  photos?: string[]; // 시연 사진(스크린샷) — 영상 대신 사진으로 소개하는 프로젝트용 (없을 수 있음)
   // 시연 영상 표시 방식: cover(꽉 채움, 기본) / contain(전체 표시, 좌우 여백 — 세로형 앱 영상용)
   videoFit?: "cover" | "contain";
   // 히어로 배경색 (contain 여백 등). 밝은 색을 지정하면 텍스트가 어둡게 전환됨. 미지정 시 검정
