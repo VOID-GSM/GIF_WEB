@@ -17,7 +17,7 @@ export default function ProjectDetailView({
 
   if (!project) {
     return (
-      <div className="flex min-h-[calc(100vh-3.5rem)] flex-col items-center justify-center gap-6 bg-background px-4 text-center">
+      <div className="flex min-h-screen flex-col items-center justify-center gap-6 bg-background px-4 text-center">
         <p className="text-2xl font-medium text-gray-500">
           프로젝트를 찾을 수 없습니다.
         </p>
@@ -32,24 +32,29 @@ export default function ProjectDetailView({
   }
 
   return (
-    <div className="bg-background pb-20">
+    <div className="bg-background pb-24">
       {/* 넷플릭스형 대형 영상 히어로 */}
       <ProjectHero project={project} />
 
-      {/* 하단 정보 */}
-      <div className="mx-auto max-w-[1000px] px-4">
-        <div className="py-12">
-          <ProjectAbout description={project.description} />
-        </div>
+      {/* 하단 정보 — 히어로 위로 살짝 올라오는 라운드 시트 */}
+      <div className="relative z-10 -mt-5 rounded-t-[28px] bg-background shadow-[0_-10px_30px_rgba(0,0,0,0.07)]">
+        <div className="mx-auto max-w-[1000px] px-5">
+          <section className="py-14 md:py-16">
+            <ProjectAbout
+              description={project.description}
+              tagline={project.tagline}
+            />
+          </section>
 
-        {project.features.length > 0 && (
-          <div className="border-t border-gray-200 py-12">
-            <ProjectFeatures features={project.features} />
-          </div>
-        )}
+          {project.features.length > 0 && (
+            <section className="border-t border-gray-100 py-14 md:py-16">
+              <ProjectFeatures features={project.features} />
+            </section>
+          )}
 
-        <div className="border-t border-gray-200 py-12">
-          <ProjectTeam members={project.members} />
+          <section className="border-t border-gray-100 py-14 md:py-16">
+            <ProjectTeam members={project.members} leader={project.leader} />
+          </section>
         </div>
       </div>
     </div>
