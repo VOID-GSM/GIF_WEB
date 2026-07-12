@@ -50,7 +50,7 @@ export default function ProjectDetailView({
         <button
           type="button"
           onClick={() => router.back()}
-          className="mb-4 flex w-fit items-center gap-2 text-lg font-semibold text-gray-700 transition-colors hover:text-gray-900"
+          className="mb-4 flex w-fit cursor-pointer items-center gap-2 text-lg font-semibold text-gray-700 transition-colors hover:text-gray-900"
         >
           ← 뒤로
         </button>
