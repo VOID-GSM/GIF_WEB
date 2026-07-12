@@ -9,7 +9,7 @@ export default function PodiumCardSkeleton({ place }: PodiumCardSkeletonProps) {
 
   return (
     <div
-      className={`flex min-w-0 flex-none flex-col ${style.grow} ${style.order} ${style.lift}`}
+      className={`flex min-w-0 flex-none flex-col ${style.grow} ${style.lift}`}
     >
       <div
         className={`overflow-hidden rounded-lg bg-white sm:rounded-2xl md:rounded-3xl ${style.cardShadow}`}

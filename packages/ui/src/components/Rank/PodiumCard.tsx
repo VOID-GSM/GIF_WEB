@@ -13,7 +13,7 @@ export default function PodiumCard({ item }: PodiumCardProps) {
 
   return (
     <div
-      className={`relative flex min-w-0 flex-none flex-col ${style.grow} ${style.order} ${style.lift}`}
+      className={`relative flex min-w-0 flex-none flex-col ${style.grow} ${style.lift}`}
     >
       <Crown
         className={`absolute left-1/2 -translate-x-1/2 ${style.crownOffset} ${style.crown}`}

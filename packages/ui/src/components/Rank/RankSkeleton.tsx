@@ -2,7 +2,7 @@ import PodiumCardSkeleton from "./PodiumCardSkeleton";
 import RankListItemSkeleton from "./RankListItemSkeleton";
 import type { Place } from "./podiumStyles";
 
-const PODIUM_PLACES: Place[] = [1, 2, 3];
+const PODIUM_PLACES: Place[] = [2, 1, 3];
 
 export default function RankSkeleton() {
   return (

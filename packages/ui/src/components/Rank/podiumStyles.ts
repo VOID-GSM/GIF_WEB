@@ -1,6 +1,5 @@
 export const PODIUM_STYLES = {
   1: {
-    order: "order-2",
     grow: "w-24 sm:w-48 md:w-64",
     lift: "-translate-y-2 sm:-translate-y-4 md:-translate-y-6",
     crown: "h-5 w-5 text-yellow-600 sm:h-7 sm:w-7 md:h-10 md:w-10",
@@ -15,7 +14,6 @@ export const PODIUM_STYLES = {
     teamText: "text-[10px] sm:text-base",
   },
   2: {
-    order: "order-1",
     grow: "w-20 sm:w-40 md:w-56",
     lift: "-translate-y-1 sm:-translate-y-2 md:-translate-y-3",
     crown: "h-5 w-5 text-gray-400 sm:h-7 sm:w-7 md:h-9 md:w-9",
@@ -30,7 +28,6 @@ export const PODIUM_STYLES = {
     teamText: "text-[9px] sm:text-sm",
   },
   3: {
-    order: "order-3",
     grow: "w-20 sm:w-40 md:w-56",
     lift: "",
     crown: "h-3.5 w-3.5 text-orange-500 sm:h-5 sm:w-5 md:h-7 md:w-7",
