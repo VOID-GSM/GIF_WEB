@@ -4,6 +4,7 @@ export { useGetProject } from "./hooks/useGetProject";
 export { useGetProjectSummary } from "./hooks/useGetProjectSummary";
 export { useGetProjectNote } from "./hooks/useGetProjectNote";
 export { useUpdateProjectNote } from "./hooks/useUpdateProjectNote";
+export { useTransferLeader } from "./hooks/useTransferLeader";
 export { default as ProjectCard } from "./ui/ProjectCard";
 export { GRADES } from "./model/types";
 export type {
@@ -15,4 +16,5 @@ export type {
   ProjectSummaryResponse,
   GetProjectNoteResponse,
   UpdateProjectNoteRequest,
+  TransferLeaderRequest,
 } from "./model/types";

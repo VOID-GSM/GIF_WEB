@@ -74,7 +74,11 @@ export default function MypageView() {
           </button>
         </div>
       ) : (
-        <MypageCard items={mypageInfoItems} onLogout={handleLogout} />
+        <MypageCard
+          items={mypageInfoItems}
+          onLogout={handleLogout}
+          onInquiry={() => router.push("/inquiry")}
+        />
       )}
     </main>
   );

@@ -60,16 +60,9 @@ export default function ScoreView() {
       .sort((a, b) => a.rank - b.rank)
       .map(({ rank, teamName }) => {
         const field = fieldByTeam.get(teamName);
-        // 채점된 영역(0보다 큰 값)만 골라 평균을 낸다. 0은 "아직 채점 안 됨"으로 취급.
-        const scoredAreaAverages = [field?.majorAverage, field?.reportAverage, field?.communityAverage]
-          .filter((v): v is number => v !== undefined && v > 0);
         return {
           rank,
           teamName,
-          averageScore:
-            scoredAreaAverages.length > 0
-              ? scoredAreaAverages.reduce((sum, v) => sum + v, 0) / scoredAreaAverages.length
-              : undefined,
           majorAverage: field?.majorAverage,
           reportAverage: field?.reportAverage,
           communityAverage: field?.communityAverage,

@@ -20,12 +20,16 @@ interface ProjectInfoProps {
   };
   // 로고 영역과 설명 사이에 들어가는 AI 요약 배너 슬롯 (없으면 설명이 로고 바로 아래)
   summary?: ReactNode;
+  // 팀원 배지 클릭 핸들러 (예: admin 상세에서 MASTER 관리자가 팀장을 양도).
+  // 전달되면 팀원 배지가 클릭 가능해진다.
+  onMemberClick?: (member: ProjectInfoMember) => void;
 }
 
 // 읽기(잠금) 모드의 프로젝트 정보 영역 — 생성 페이지와 동일한 레이아웃 (admin·client 공용)
 export default function ProjectInfo({
   project,
   summary,
+  onMemberClick,
 }: ProjectInfoProps) {
   const readonlyValue = "text-2xl text-gray-900 font-medium";
 
@@ -67,15 +71,33 @@ export default function ProjectInfo({
               <span className="text-2xl font-medium text-gray-700">팀원</span>
             </div>
             <div className="flex flex-1 flex-wrap items-center gap-2">
-              {orderedMembers.map((member) => (
-                <NameBadge
-                  key={member.userId}
-                  id={Number(member.studentNumber)}
-                  name={member.name}
-                  isEditable={false}
-                  color={member.role === "LEADER" ? "yellow" : "gray"}
-                />
-              ))}
+              {orderedMembers.map((member) => {
+                // 팀장(LEADER)은 양도 대상이 아니므로 클릭 가능한 버튼으로 렌더링하지 않는다.
+                const isClickable = onMemberClick && member.role !== "LEADER";
+                return isClickable ? (
+                  <button
+                    key={member.userId}
+                    type="button"
+                    onClick={() => onMemberClick(member)}
+                    className="cursor-pointer"
+                  >
+                    <NameBadge
+                      id={Number(member.studentNumber)}
+                      name={member.name}
+                      isEditable={false}
+                      color="gray"
+                    />
+                  </button>
+                ) : (
+                  <NameBadge
+                    key={member.userId}
+                    id={Number(member.studentNumber)}
+                    name={member.name}
+                    isEditable={false}
+                    color={member.role === "LEADER" ? "yellow" : "gray"}
+                  />
+                );
+              })}
             </div>
           </div>
         </div>

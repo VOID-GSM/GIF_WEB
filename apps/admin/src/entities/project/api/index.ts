@@ -6,6 +6,7 @@ import type {
   Grade,
   ProjectDetail,
   ProjectSummaryResponse,
+  TransferLeaderRequest,
   UpdateProjectNoteRequest,
 } from "../model/types";
 
@@ -27,3 +28,11 @@ export const updateProjectNote = (
   projectId: number,
   body: UpdateProjectNoteRequest,
 ) => apiClient.put<void>(`/api/project/${projectId}/note`, body);
+
+export const transferLeader = (
+  projectId: number,
+  newLeaderUserId: number,
+) => {
+  const body: TransferLeaderRequest = { newLeaderUserId };
+  return apiClient.patch<void>(`/api/project/${projectId}/transfer-leader`, body);
+};
