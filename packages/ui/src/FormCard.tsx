@@ -12,6 +12,7 @@ interface PostFormRequestField {
   description: string;
   type: "TEXT" | "FILE" | "CALENDAR" | "";
   orderIndex: number;
+  allowedExtensions?: string[]; // FILE 타입에서 client 가 제출 가능한 확장자
 }
 
 export interface PostFormRequest {
@@ -41,8 +42,20 @@ const STYLE_LABEL: Record<StyleOption, string> = {
   calendar: "캘린더",
 };
 
+// FILE 타입에서 admin 이 허용할 수 있는 제출 파일 확장자 목록
+const ALLOWED_EXTENSION_OPTIONS = [
+  "pdf",
+  "hwp",
+  "docx",
+  "pptx",
+  "xlsx",
+  "png",
+  "jpg",
+  "zip",
+] as const;
+
 const TITLE_MAX_LENGTH = 50;
-const DESCRIPTION_MAX_LENGTH = 1000;
+const DESCRIPTION_MAX_LENGTH = 200;
 
 interface FormCardProps {
   field: PostFormRequestField & { id: string };
@@ -63,6 +76,14 @@ export default function FormCard({ field, onChange, onDelete }: FormCardProps) {
     onChange(field.id, {
       type: STYLE_TO_TYPE[style],
     });
+  };
+
+  const toggleExtension = (ext: string) => {
+    const current = field.allowedExtensions ?? [];
+    const next = current.includes(ext)
+      ? current.filter((e) => e !== ext)
+      : [...current, ext];
+    onChange(field.id, { allowedExtensions: next });
   };
 
   return (
@@ -124,6 +145,32 @@ export default function FormCard({ field, onChange, onDelete }: FormCardProps) {
           {selectedStyle && (
             <div className="px-4 py-[14px] border-b border-gray-200 text-gray-500">
               <span>{STYLE_LABEL[selectedStyle]}</span>
+            </div>
+          )}
+          {selectedStyle === "file" && (
+            <div className="flex flex-col gap-2 pt-1">
+              <span className="text-[13px] font-medium text-gray-500">
+                허용 파일 형식
+              </span>
+              <div className="flex flex-wrap gap-2">
+                {ALLOWED_EXTENSION_OPTIONS.map((ext) => {
+                  const selected = (field.allowedExtensions ?? []).includes(ext);
+                  return (
+                    <button
+                      key={ext}
+                      type="button"
+                      onClick={() => toggleExtension(ext)}
+                      className={`px-3 py-1.5 rounded-full text-[13px] border transition-colors cursor-pointer ${
+                        selected
+                          ? "border-yellow-600 bg-yellow-600/10 text-yellow-700"
+                          : "border-gray-200 bg-white text-gray-500 hover:border-gray-300"
+                      }`}
+                    >
+                      {ext}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           )}
         </div>

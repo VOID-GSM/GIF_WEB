@@ -19,8 +19,6 @@ export interface MypageCardProps {
   onEdit?: (updatedValues: Record<string, string>) => void;
   /** 이름 옆에 작게 붙는 텍스트 (예: "선생님") */
   nameSuffix?: string;
-  /** 문의하기 진입점. 제공되면 로그아웃 위에 문의하기 버튼이 노출된다. */
-  onInquiry?: () => void;
 }
 
 export default function MypageCard({
@@ -28,7 +26,6 @@ export default function MypageCard({
   onLogout,
   onEdit,
   nameSuffix,
-  onInquiry,
 }: MypageCardProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
@@ -218,15 +215,6 @@ export default function MypageCard({
                 className="h-[48px] w-full cursor-pointer rounded-[14px] bg-yellow-600 text-[15px] font-semibold text-gray-900 shadow-sm transition-all hover:bg-yellow-400 active:scale-[0.98]"
               >
                 수정하기
-              </button>
-            )}
-            {onInquiry && (
-              <button
-                type="button"
-                onClick={onInquiry}
-                className="flex h-[48px] w-full cursor-pointer items-center justify-center rounded-[14px] text-[14px] font-medium text-gray-400 underline-offset-4 transition-colors hover:text-gray-600 hover:underline"
-              >
-                문의하기
               </button>
             )}
             <button

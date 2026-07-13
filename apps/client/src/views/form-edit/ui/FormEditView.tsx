@@ -69,8 +69,6 @@ export default function FormMySubmitView({ formId }: Props) {
   const { mutateAsync: patchSubmit, isPending } = usePatchFormSubmit();
   const { mutateAsync: uploadFile } = usePostFormUpload();
 
-  const submitterName = mySubmit?.submittedByName;
-
   const [isEditing, setIsEditing] = useState(false);
 
   // 마감이 지난 제출 건은 열람만 가능 — 수정 불가
@@ -279,11 +277,6 @@ export default function FormMySubmitView({ formId }: Props) {
               {formatDeadlineTime(formDetail.deadline) && (
                 <span>
                   마감 시간: {formatDeadlineTime(formDetail.deadline)}
-                </span>
-              )}
-              {submitterName && (
-                <span className="text-[14px] font-medium text-gray-500">
-                  제출자: {submitterName}
                 </span>
               )}
             </div>

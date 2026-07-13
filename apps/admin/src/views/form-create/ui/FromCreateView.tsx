@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { FormCard, Plus, DatePicker, TimePicker } from "@repo/ui";
 import { toast } from "sonner";
@@ -8,6 +8,8 @@ import { toast } from "sonner";
 import { usePostForm, useAnnounceForm } from "@/entities/form-create";
 import type { PostFormRequestField } from "@/entities/form-create";
 import { useGetMyInfo } from "@/entities/mypage";
+
+const FORM_TITLE_MAX_LENGTH = 50;
 
 type FieldType = "TEXT" | "FILE" | "CALENDAR" | "";
 
@@ -17,6 +19,7 @@ type FieldWithId = {
   description: string;
   type: FieldType;
   orderIndex: number;
+  allowedExtensions: string[];
 };
 
 export default function FormCreateView() {
@@ -37,6 +40,9 @@ export default function FormCreateView() {
   }, [isMyInfoLoading, myInfo, isError, canCreate, router]);
 
   const [formTitle, setFormTitle] = useState("");
+  // 한글(IME) 조합 중에는 값을 자르지 않는다 — 조합 도중 강제로 잘라내면
+  // composition 세션이 깨져 마지막 글자가 누락되거나 조합이 끊길 수 있다.
+  const isTitleComposing = useRef(false);
   const [deadline, setDeadline] = useState("");
   // 마감 시각 (HH:mm) — 날짜처럼 사용자가 직접 선택한다.
   const [deadlineTime, setDeadlineTime] = useState("");
@@ -46,6 +52,16 @@ export default function FormCreateView() {
   const buildDeadline = () =>
     deadline && deadlineTime ? `${deadline}T${deadlineTime}:00` : "";
 
+  // 내부 id 를 제거하고, 허용 확장자는 FILE 타입에서만 전송한다.
+  const buildRequestFields = (): PostFormRequestField[] =>
+    fields.map((f) => ({
+      title: f.title,
+      description: f.description,
+      type: f.type,
+      orderIndex: f.orderIndex,
+      ...(f.type === "FILE" ? { allowedExtensions: f.allowedExtensions } : {}),
+    }));
+
   const [fields, setFields] = useState<FieldWithId[]>([
     {
       id: crypto.randomUUID(),
@@ -53,6 +69,7 @@ export default function FormCreateView() {
       description: "",
       type: "TEXT",
       orderIndex: 0,
+      allowedExtensions: [],
     },
   ]);
 
@@ -65,6 +82,7 @@ export default function FormCreateView() {
         description: "",
         type: "",
         orderIndex: prev.length,
+        allowedExtensions: [],
       },
     ]);
   };
@@ -105,7 +123,7 @@ export default function FormCreateView() {
       {
         title: formTitle,
         deadline: buildDeadline(),
-        fields: fields.map(({ ...rest }) => rest as PostFormRequestField),
+        fields: buildRequestFields(),
       },
       {
         onSuccess: (res) => {
@@ -134,7 +152,7 @@ export default function FormCreateView() {
         {
           title: formTitle,
           deadline: buildDeadline(),
-          fields: fields.map(({ ...rest }) => rest as PostFormRequestField),
+          fields: buildRequestFields(),
         },
         {
           onSuccess: (res) => {
@@ -178,8 +196,28 @@ export default function FormCreateView() {
             className="w-full py-3 px-4 border border-gray-200 rounded-[10px] text-[18px] font-medium placeholder:text-gray-500 text-black outline-none bg-white"
             placeholder="제목을 입력하세요"
             value={formTitle}
-            onChange={(e) => setFormTitle(e.target.value)}
+            maxLength={FORM_TITLE_MAX_LENGTH}
+            onChange={(e) => {
+              const value = e.target.value;
+              setFormTitle(
+                isTitleComposing.current
+                  ? value
+                  : value.slice(0, FORM_TITLE_MAX_LENGTH),
+              );
+            }}
+            onCompositionStart={() => {
+              isTitleComposing.current = true;
+            }}
+            onCompositionEnd={(e) => {
+              isTitleComposing.current = false;
+              setFormTitle(
+                e.currentTarget.value.slice(0, FORM_TITLE_MAX_LENGTH),
+              );
+            }}
           />
+          <span className="self-end text-xs text-gray-400">
+            {formTitle.length}/{FORM_TITLE_MAX_LENGTH}
+          </span>
         </div>
         <div className="flex flex-col text-[14px] font-medium text-gray-600 gap-1">
           마감일 선택하기
