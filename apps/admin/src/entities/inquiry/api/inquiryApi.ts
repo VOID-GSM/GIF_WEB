@@ -3,6 +3,7 @@ import { apiClient } from "@repo/lib";
 import type {
   AnswerInquiryRequest,
   DetailInquiryResponse,
+  ListInquiryResponse,
   Pageable,
   PageListInquiryResponse,
   PostInquiryRequest,
@@ -47,4 +48,20 @@ export const answerInquiry = async (
   body: AnswerInquiryRequest,
 ): Promise<void> => {
   await apiClient.patch<void>(`/api/inquiry/admin/${inquiryId}/answer`, body);
+};
+
+export const getMyInquiries = async (): Promise<ListInquiryResponse[]> => {
+  const { data } = await apiClient.get<ListInquiryResponse[]>(
+    "/api/inquiry/my",
+  );
+  return data;
+};
+
+export const getMyInquiryDetail = async (
+  inquiryId: number,
+): Promise<DetailInquiryResponse> => {
+  const { data } = await apiClient.get<DetailInquiryResponse>(
+    `/api/inquiry/my/${inquiryId}`,
+  );
+  return data;
 };
