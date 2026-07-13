@@ -241,7 +241,8 @@ export const MOCK_PROJECTS: Project[] = [
       {
         name: "김민솔",
         role: "UI/UX Design",
-        description: "전체 서비스의 앱, 웹 디자인과 디자인시스템 구축을 맡았습니다.",
+        description:
+          "전체 서비스의 앱, 웹 디자인과 디자인시스템 구축을 맡았습니다.",
         photo: "/washer/member/min.png",
       },
       {
@@ -287,7 +288,8 @@ export const MOCK_PROJECTS: Project[] = [
       {
         name: "나현욱",
         role: "Flutter",
-        description: "앱 구조 설계, 전체 기능 구현, 이슈 해결을 담당해 진행하였습니다.",
+        description:
+          "앱 구조 설계, 전체 기능 구현, 이슈 해결을 담당해 진행하였습니다.",
         photo: "/washer/member/na.png",
         portfolioUrl:
           "https://qr1.me-qr.com/mobile/pdf/6a3e5966-c7d7-4446-a2a3-d3a0b0a8b6ca",
@@ -431,9 +433,10 @@ export const MOCK_PROJECTS: Project[] = [
         photo: "/flooding/member/mohwn.png",
       },
       {
-        name: "김민아",
+        name: "김민솔",
         role: "UI/UX Design",
-        description: "전체 서비스의 앱, 웹 디자인과 디자인 시스템 구축을 맡았습니다.",
+        description:
+          "전체 서비스의 앱, 웹 디자인과 디자인 시스템 구축을 맡았습니다.",
         photo: "/flooding/member/kimmin.png",
       },
       {
@@ -714,8 +717,7 @@ export const MOCK_PROJECTS: Project[] = [
       },
       {
         title: "감정 이력 기록 및 통계 시각화",
-        description:
-          "일 • 주 • 월별 감정 변화 차트 및 음악 취향 분석 제공",
+        description: "일 • 주 • 월별 감정 변화 차트 및 음악 취향 분석 제공",
       },
     ],
     members: [
@@ -1177,7 +1179,8 @@ export const MOCK_PROJECTS: Project[] = [
       },
       {
         title: "실시간 채팅",
-        description: "채널 기반 채팅을 통해 팀원들과 빠르게 소통할 수 있습니다.",
+        description:
+          "채널 기반 채팅을 통해 팀원들과 빠르게 소통할 수 있습니다.",
       },
       {
         title: "회의록 관리",
@@ -1291,8 +1294,7 @@ export const MOCK_PROJECTS: Project[] = [
       },
       {
         title: "학과 체험 예비 신청",
-        description:
-          "정원이 가득 찬 학과 체험에 예비로 신청할 수 있습니다.",
+        description: "정원이 가득 찬 학과 체험에 예비로 신청할 수 있습니다.",
       },
     ],
     members: [
