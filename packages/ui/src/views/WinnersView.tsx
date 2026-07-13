@@ -150,7 +150,7 @@ export default function WinnersView() {
 
           return (
             <Reveal
-              key={`${grade}-${winner.rank}`}
+              key={`${grade}-${winner.team}-${winner.title}`}
               delay={i * 120}
               className={`h-full ${orderClass} ${isFirst ? "md:scale-[1.03]" : ""}`}
             >
