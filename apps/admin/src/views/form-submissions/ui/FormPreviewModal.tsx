@@ -35,6 +35,11 @@ function PreviewField({ field }: { field: FormField }) {
       {field.type === "FILE" && (
         <div className="pointer-events-none mt-2 select-none">
           <FileUpload className="h-[160px] w-full" />
+          {field.allowedExtensions && field.allowedExtensions.length > 0 && (
+            <span className="mt-2 block text-[12px] font-medium text-gray-400">
+              허용 형식: {field.allowedExtensions.join(", ")}
+            </span>
+          )}
         </div>
       )}
       {field.type === "CALENDAR" && (
