@@ -40,7 +40,10 @@ export default function TermsView() {
     mutate(
       { clientRole },
       {
-        onSuccess: () => {
+        onSuccess: ({ data }) => {
+          if (data?.accessToken) {
+            setCookie(COOKIE_KEYS.ACCESS_TOKEN, data.accessToken);
+          }
           setCookie(COOKIE_KEYS.CLIENT_ROLE, clientRole);
           router.replace("/");
         },
