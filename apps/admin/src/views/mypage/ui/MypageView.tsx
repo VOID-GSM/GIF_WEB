@@ -64,12 +64,20 @@ export default function MypageView() {
           </button>
         </div>
       ) : (
-        <MypageCard
-          items={mypageInfoItems}
-          onLogout={handleLogout}
-          onInquiry={() => router.push("/inquiry")}
-          nameSuffix="선생님"
-        />
+        <div className="flex w-full max-w-[440px] flex-col items-center gap-5">
+          <MypageCard
+            items={mypageInfoItems}
+            onLogout={handleLogout}
+            nameSuffix="선생님"
+          />
+          <button
+            type="button"
+            onClick={() => router.push("/inquiry")}
+            className="cursor-pointer text-[14px] font-medium text-gray-400 underline-offset-4 transition-colors hover:text-gray-600 hover:underline"
+          >
+            문의하기
+          </button>
+        </div>
       )}
     </main>
   );
