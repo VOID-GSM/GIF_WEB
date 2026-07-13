@@ -3,6 +3,7 @@ export interface PostFormRequestField {
   description: string;
   type: "TEXT" | "FILE" | "CALENDAR" | "";
   orderIndex: number;
+  allowedExtensions?: string[]; // FILE 타입에서 client 가 제출 가능한 확장자
 }
 
 export interface PostFormRequest {
