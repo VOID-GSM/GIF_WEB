@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Chevron, File as FileIcon, Textarea } from "@repo/ui";
 import { formatDeadline } from "@/entities/form/lib/formatDeadline";
@@ -10,8 +10,8 @@ import {
   useGetAdminInquiryDetail,
 } from "@/entities/inquiry";
 import type { InquiryStatus } from "@/entities/inquiry";
+import { PRIVILEGED_ADMIN_EMAIL } from "@/shared/constants";
 
-const ANSWER_PERMITTED_EMAIL = "teamvoid0107@gmail.com";
 const MAX_ANSWER_LENGTH = 2000;
 
 const STATUS_META: Record<
@@ -42,7 +42,7 @@ export default function AdminInquiryDetailView({
 }: AdminInquiryDetailViewProps) {
   const router = useRouter();
   const { data, isPending, isError } = useGetAdminInquiryDetail(inquiryId);
-  const { data: myInfo } = useGetMyInfo();
+  const { data: myInfo, isLoading: isMyInfoLoading } = useGetMyInfo();
   const { mutate: answer, isPending: isAnswering } = useAnswerInquiry();
 
   const [answerContent, setAnswerContent] = useState("");
@@ -53,7 +53,12 @@ export default function AdminInquiryDetailView({
     setAnswerContent(data.answerContent ?? "");
   }
 
-  const canAnswer = myInfo?.email === ANSWER_PERMITTED_EMAIL;
+  const canAnswer = myInfo?.email === PRIVILEGED_ADMIN_EMAIL;
+
+  // 문의 관리 페이지는 답변 권한 계정만 접근할 수 있다. 그 외 계정은 홈으로 돌려보낸다.
+  useEffect(() => {
+    if (!isMyInfoLoading && !canAnswer) router.replace("/");
+  }, [isMyInfoLoading, canAnswer, router]);
 
   const handleSubmit = () => {
     if (isAnswering) return;
@@ -61,6 +66,14 @@ export default function AdminInquiryDetailView({
     if (!trimmed) return;
     answer({ inquiryId, body: { answerContent: trimmed } });
   };
+
+  if (isMyInfoLoading || !canAnswer) {
+    return (
+      <div className="flex min-h-[calc(100vh-60px)] w-full items-center justify-center bg-background px-4 py-8">
+        <p className="text-[13px] font-medium text-gray-400">불러오는 중</p>
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-[calc(100vh-60px)] w-full items-center justify-center bg-background px-4 py-8">
@@ -162,55 +175,45 @@ export default function AdminInquiryDetailView({
               )}
 
               {/* 답변 작성/수정 폼 */}
-              {canAnswer ? (
-                <div className="mt-2 flex flex-col gap-1.5">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[13px] font-medium text-gray-700">
-                      {data.status === "ANSWERED" ? "답변 수정" : "답변 작성"}
-                    </span>
-                    <span
-                      className={`text-[11px] font-medium ${
-                        answerContent.length >= MAX_ANSWER_LENGTH
-                          ? "text-red-500"
-                          : "text-gray-400"
-                      }`}
-                    >
-                      {answerContent.length}/{MAX_ANSWER_LENGTH}
-                    </span>
-                  </div>
-                  <Textarea
-                    title="답변 내용을 입력해주세요"
-                    value={answerContent}
-                    onChange={(e) =>
-                      setAnswerContent(
-                        e.target.value.slice(0, MAX_ANSWER_LENGTH),
-                      )
-                    }
-                    rows={6}
-                    maxLength={MAX_ANSWER_LENGTH}
-                  />
-                  <div className="mt-1 flex items-center justify-end">
-                    <button
-                      type="button"
-                      onClick={handleSubmit}
-                      disabled={isAnswering || !answerContent.trim()}
-                      className="h-10 cursor-pointer rounded-[10px] bg-yellow-600 px-5 text-[13px] font-semibold text-gray-900 transition-all hover:bg-yellow-400 active:scale-[0.98] disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400 disabled:active:scale-100"
-                    >
-                      {isAnswering
-                        ? "등록 중..."
-                        : data.status === "ANSWERED"
-                          ? "답변 수정하기"
-                          : "답변 등록하기"}
-                    </button>
-                  </div>
+              <div className="mt-2 flex flex-col gap-1.5">
+                <div className="flex items-center justify-between">
+                  <span className="text-[13px] font-medium text-gray-700">
+                    {data.status === "ANSWERED" ? "답변 수정" : "답변 작성"}
+                  </span>
+                  <span
+                    className={`text-[11px] font-medium ${
+                      answerContent.length >= MAX_ANSWER_LENGTH
+                        ? "text-red-500"
+                        : "text-gray-400"
+                    }`}
+                  >
+                    {answerContent.length}/{MAX_ANSWER_LENGTH}
+                  </span>
                 </div>
-              ) : (
-                data.status === "PENDING" && (
-                  <p className="mt-2 py-4 text-center text-[13px] font-medium text-gray-400">
-                    답변 권한이 없습니다.
-                  </p>
-                )
-              )}
+                <Textarea
+                  title="답변 내용을 입력해주세요"
+                  value={answerContent}
+                  onChange={(e) =>
+                    setAnswerContent(e.target.value.slice(0, MAX_ANSWER_LENGTH))
+                  }
+                  rows={6}
+                  maxLength={MAX_ANSWER_LENGTH}
+                />
+                <div className="mt-1 flex items-center justify-end">
+                  <button
+                    type="button"
+                    onClick={handleSubmit}
+                    disabled={isAnswering || !answerContent.trim()}
+                    className="h-10 cursor-pointer rounded-[10px] bg-yellow-600 px-5 text-[13px] font-semibold text-gray-900 transition-all hover:bg-yellow-400 active:scale-[0.98] disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400 disabled:active:scale-100"
+                  >
+                    {isAnswering
+                      ? "등록 중..."
+                      : data.status === "ANSWERED"
+                        ? "답변 수정하기"
+                        : "답변 등록하기"}
+                  </button>
+                </div>
+              </div>
             </div>
           </>
         )}

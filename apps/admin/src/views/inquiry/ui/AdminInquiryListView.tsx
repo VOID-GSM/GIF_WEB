@@ -1,11 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Chevron } from "@repo/ui";
 import { formatDeadline } from "@/entities/form/lib/formatDeadline";
 import { useGetAdminInquiries } from "@/entities/inquiry";
 import type { InquiryStatus } from "@/entities/inquiry";
+import { useGetMyInfo } from "@/entities/mypage";
+import { PRIVILEGED_ADMIN_EMAIL } from "@/shared/constants";
 
 const PAGE_SIZE = 10;
 
@@ -41,6 +43,22 @@ export default function AdminInquiryListView() {
     page,
     size: PAGE_SIZE,
   });
+
+  // 문의 관리 페이지는 답변 권한 계정만 접근할 수 있다. 그 외 계정은 홈으로 돌려보낸다.
+  const { data: myInfo, isLoading: isMyInfoLoading } = useGetMyInfo();
+  const isPermitted = myInfo?.email === PRIVILEGED_ADMIN_EMAIL;
+
+  useEffect(() => {
+    if (!isMyInfoLoading && !isPermitted) router.replace("/");
+  }, [isMyInfoLoading, isPermitted, router]);
+
+  if (isMyInfoLoading || !isPermitted) {
+    return (
+      <div className="flex min-h-[calc(100vh-60px)] w-full items-center justify-center bg-background px-4 py-8">
+        <p className="text-[13px] font-medium text-gray-400">불러오는 중</p>
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-[calc(100vh-60px)] w-full items-center justify-center bg-background px-4 py-8">
