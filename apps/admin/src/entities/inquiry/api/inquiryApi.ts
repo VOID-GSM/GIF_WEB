@@ -1,6 +1,12 @@
 import { apiClient } from "@repo/lib";
 
-import type { PostInquiryRequest } from "@/entities/inquiry/model/type";
+import type {
+  AnswerInquiryRequest,
+  DetailInquiryResponse,
+  Pageable,
+  PageListInquiryResponse,
+  PostInquiryRequest,
+} from "@/entities/inquiry/model/type";
 
 export const postInquiry = async ({
   title,
@@ -15,4 +21,30 @@ export const postInquiry = async ({
   return apiClient.post<void>("/api/inquiry", formData, {
     headers: { "Content-Type": "multipart/form-data" },
   });
+};
+
+export const getAdminInquiries = async (
+  pageable: Pageable,
+): Promise<PageListInquiryResponse> => {
+  const { data } = await apiClient.get<PageListInquiryResponse>(
+    "/api/inquiry/admin",
+    { params: pageable },
+  );
+  return data;
+};
+
+export const getAdminInquiryDetail = async (
+  inquiryId: number,
+): Promise<DetailInquiryResponse> => {
+  const { data } = await apiClient.get<DetailInquiryResponse>(
+    `/api/inquiry/admin/${inquiryId}`,
+  );
+  return data;
+};
+
+export const answerInquiry = async (
+  inquiryId: number,
+  body: AnswerInquiryRequest,
+): Promise<void> => {
+  await apiClient.patch<void>(`/api/inquiry/admin/${inquiryId}/answer`, body);
 };
