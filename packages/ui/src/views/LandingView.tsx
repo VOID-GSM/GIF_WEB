@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import Reveal from "../landing/Reveal";
 import { FEATURES, STEPS } from "../landing/data";
 
@@ -47,12 +48,12 @@ export default function LandingView({
           페스티벌
         </p>
 
-        <a
+        <Link
           href={signinHref}
           className="mt-9 inline-block rounded-full bg-yellow-600 px-8 py-3 text-[16px] font-bold text-gray-900 shadow-new transition hover:bg-yellow-500 active:scale-[0.98]"
         >
           시작하기 →
-        </a>
+        </Link>
 
         {/* 스크롤 인디케이터 — 마우스 휠 안에서 점이 아래로 내려가며 스크롤을 유도 */}
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2">
@@ -148,12 +149,12 @@ export default function LandingView({
           <p className="mt-4 text-[16px] font-medium text-gray-600">
             GIF와 함께라면 준비부터 수상까지 한 걸음이에요.
           </p>
-          <a
+          <Link
             href={signinHref}
             className="mt-10 inline-block rounded-full border border-yellow-600 bg-white px-10 py-4 text-[16px] font-bold text-gray-900 shadow-sm transition hover:bg-yellow-50 active:scale-[0.98]"
           >
             시작하기 →
-          </a>
+          </Link>
         </Reveal>
       </section>
     </>

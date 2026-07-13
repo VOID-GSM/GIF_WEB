@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { usePathname, useRouter } from "next/navigation";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Menu } from "@repo/ui";
 
 interface IntroNavItem {
@@ -28,20 +29,14 @@ export default function IntroHeader({
 }: IntroHeaderProps) {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
-  const router = useRouter();
-
-  const handleLogin = () => {
-    router.push(signinHref);
-  };
 
   return (
     <>
       <header className="fixed top-0 z-50 flex h-15 w-full items-center border-b border-gray-300 bg-white px-6 md:px-[42px]">
         <div className="flex w-full items-center justify-between">
           {/* 로고 → 메인 */}
-          <button
-            type="button"
-            onClick={() => router.push("/intro")}
+          <Link
+            href="/intro"
             className="flex cursor-pointer items-center transition hover:opacity-80"
           >
             <Image
@@ -52,15 +47,14 @@ export default function IntroHeader({
               loading="eager"
               style={{ width: 56, height: 37 }}
             />
-          </button>
+          </Link>
 
           {/* 데스크톱 중앙 메뉴 */}
           <nav className="pointer-events-none absolute inset-0 hidden items-center justify-center md:flex">
             {INTRO_NAV.map(({ label, path }) => (
-              <button
+              <Link
                 key={path}
-                type="button"
-                onClick={() => router.push(path)}
+                href={path}
                 className={`pointer-events-auto flex h-15 cursor-pointer items-center whitespace-nowrap border-b-3 px-3 text-[14px] font-medium transition-colors lg:px-5 lg:text-[17px]
                   ${
                     pathname === path
@@ -69,19 +63,18 @@ export default function IntroHeader({
                   }`}
               >
                 {label}
-              </button>
+              </Link>
             ))}
           </nav>
 
           {/* 데스크톱 로그아웃 + 모바일 햄버거 */}
           <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={handleLogin}
+            <Link
+              href={signinHref}
               className="hidden cursor-pointer rounded-full border border-yellow-600 bg-yellow-50 px-5 py-1.5 text-[15px] font-bold text-gray-900 transition hover:bg-yellow-100 active:scale-95 md:inline-flex"
             >
               로그인
-            </button>
+            </Link>
             <button
               type="button"
               className="flex cursor-pointer items-center justify-center md:hidden"
@@ -107,13 +100,10 @@ export default function IntroHeader({
       >
         <div className="flex flex-col gap-2 py-4">
           {INTRO_NAV.map(({ label, path }) => (
-            <button
+            <Link
               key={path}
-              type="button"
-              onClick={() => {
-                router.push(path);
-                setIsOpen(false);
-              }}
+              href={path}
+              onClick={() => setIsOpen(false)}
               className={`mx-2 cursor-pointer rounded-lg px-4 py-3 text-left font-medium transition-all duration-200
                 ${
                   pathname === path
@@ -122,18 +112,15 @@ export default function IntroHeader({
                 }`}
             >
               {label}
-            </button>
+            </Link>
           ))}
-          <button
-            type="button"
-            onClick={() => {
-              setIsOpen(false);
-              handleLogin();
-            }}
+          <Link
+            href={signinHref}
+            onClick={() => setIsOpen(false)}
             className="mx-2 cursor-pointer rounded-lg border border-yellow-600 bg-yellow-50 px-4 py-3 text-left font-bold text-gray-900 transition-all duration-200 hover:bg-yellow-100"
           >
             로그인
-          </button>
+          </Link>
         </div>
       </div>
     </>
