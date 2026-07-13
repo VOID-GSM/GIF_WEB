@@ -14,8 +14,15 @@ interface FileFieldProps {
   originalFileName?: string; // 서버에 저장된 파일의 원본 파일명
   readOnly?: boolean;
   submitId?: number; // 추가
+  allowedExtensions?: string[]; // admin 이 지정한 허용 확장자(비어 있으면 제한 없음)
   onChange: (fieldId: number, file: File | null) => void;
 }
+
+// 파일명에서 소문자 확장자를 추출한다. 확장자가 없으면 빈 문자열.
+const getExtension = (fileName: string) => {
+  const dotIndex = fileName.lastIndexOf(".");
+  return dotIndex === -1 ? "" : fileName.slice(dotIndex + 1).toLowerCase();
+};
 
 export default function FileField({
   fieldId,
@@ -25,6 +32,7 @@ export default function FileField({
   originalFileName,
   readOnly = false,
   submitId,
+  allowedExtensions,
   onChange,
 }: FileFieldProps) {
   const { mutate: deleteUpload, isPending: isDeleting } = useDeleteFormUpload();
@@ -46,9 +54,23 @@ export default function FileField({
     return `${(bytes / (1024 * 1024)).toFixed(1)}MB`;
   };
 
+  // admin 이 확장자를 지정한 경우에만 제한한다.
+  const extensions = (allowedExtensions ?? []).map((e) => e.toLowerCase());
+  const hasExtensionLimit = extensions.length > 0;
+
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const selected = e.target.files?.[0];
     if (!selected) return;
+    if (
+      hasExtensionLimit &&
+      !extensions.includes(getExtension(selected.name))
+    ) {
+      toast.error(
+        `허용된 파일 형식이 아닙니다. (${extensions.join(", ")} 형식만 업로드 가능)`,
+      );
+      e.target.value = "";
+      return;
+    }
     if (selected.size > MAX_FILE_SIZE) {
       toast.error("파일 용량이 커서 업로드할 수 없습니다. (최대 10MB)");
       e.target.value = "";
@@ -114,12 +136,26 @@ export default function FileField({
 
   return (
     <label className="flex items-center justify-center w-full border-2 border-dashed border-gray-600 bg-gray-100 rounded-[10px] cursor-pointer hover:border-gray-600/60 hover:bg-gray-100/60 transition-colors">
-      <input type="file" className="hidden" onChange={handleFileChange} />
-      <div className="flex flex-col items-center gap-6 my-[30px]">
+      <input
+        type="file"
+        className="hidden"
+        accept={
+          hasExtensionLimit
+            ? extensions.map((ext) => `.${ext}`).join(",")
+            : undefined
+        }
+        onChange={handleFileChange}
+      />
+      <div className="flex flex-col items-center gap-3 my-[30px]">
         <Upload className="text-gray-50" />
         <span className="text-gray-50 font-regular">
           클릭하거나 파일을 드래그하여 업로드
         </span>
+        {hasExtensionLimit && (
+          <span className="text-[12px] text-gray-400 font-regular">
+            허용 형식: {extensions.join(", ")}
+          </span>
+        )}
       </div>
     </label>
   );

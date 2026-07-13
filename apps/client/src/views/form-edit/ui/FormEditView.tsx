@@ -340,6 +340,7 @@ export default function FormMySubmitView({ formId }: Props) {
                           }
                           submitId={mySubmit.submitId}
                           readOnly={!isEditing}
+                          allowedExtensions={field.allowedExtensions}
                           onChange={handleFileChange}
                         />
                         {error && (

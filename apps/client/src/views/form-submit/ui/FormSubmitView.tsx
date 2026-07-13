@@ -223,6 +223,7 @@ export default function FormSubmitView({ formId }: Props) {
                               ? (fileAnswers[fId] as File)
                               : null
                           }
+                          allowedExtensions={field.allowedExtensions}
                           onChange={handleFileChange}
                         />
                         {error && (

@@ -24,6 +24,7 @@ export interface FormField {
   description: string;
   type: "TEXT" | "FILE" | "CALENDAR";
   orderIndex: number;
+  allowedExtensions?: string[]; // FILE 타입에서 client 가 제출 가능한 확장자
 }
 
 // GET /api/form/{formId} 응답 — 제출 상세보기용 양식 단건 조회
