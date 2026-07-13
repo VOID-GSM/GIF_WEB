@@ -235,7 +235,9 @@ export default function FormMySubmitView({ formId }: Props) {
     ) as [string, File][];
 
     if (fileEntries.length > 0) {
-      await Promise.all(
+      // 업로드 실패를 삼키지 않는다. 하나라도 실패하면 성공으로 처리하지 않고
+      // 수정 화면에 머물러 사용자가 다시 시도할 수 있게 한다.
+      const results = await Promise.allSettled(
         fileEntries.map(([fieldIdStr, file]) => {
           const fd = new FormData();
           fd.append("file", file);
@@ -243,9 +245,16 @@ export default function FormMySubmitView({ formId }: Props) {
             formData: fd,
             fieldId: Number(fieldIdStr),
             submitId: mySubmit.submitId,
-          }).catch(() => {});
+          });
         }),
       );
+
+      if (results.some((r) => r.status === "rejected")) {
+        toast.error(
+          "파일 업로드에 실패했습니다. 허용된 파일 형식(최대 10MB)인지 확인한 뒤 다시 시도해주세요.",
+        );
+        return;
+      }
     }
 
     toast.success("답변이 수정되었습니다.");
