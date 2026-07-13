@@ -42,7 +42,7 @@ const STYLE_LABEL: Record<StyleOption, string> = {
 };
 
 const TITLE_MAX_LENGTH = 50;
-const DESCRIPTION_MAX_LENGTH = 1000;
+const DESCRIPTION_MAX_LENGTH = 200;
 
 interface FormCardProps {
   field: PostFormRequestField & { id: string };
