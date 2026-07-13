@@ -58,6 +58,13 @@ export default function FileField({
   const extensions = (allowedExtensions ?? []).map((e) => e.toLowerCase());
   const hasExtensionLimit = extensions.length > 0;
 
+  // 파일 선택 여부·수정 상태와 무관하게 항상 노출되는 허용 형식 안내.
+  const formatHint = hasExtensionLimit ? (
+    <span className="mt-2 block text-[12px] text-gray-400 font-regular">
+      허용 형식: {extensions.join(", ")} (최대 10MB)
+    </span>
+  ) : null;
+
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const selected = e.target.files?.[0];
     if (!selected) return;
@@ -86,42 +93,45 @@ export default function FileField({
     const size = file?.size ?? fileSize ?? 0;
 
     return (
-      <div
-        className={`flex items-center justify-between gap-3 rounded-[10px] border border-gray-80 pl-[24px] pr-[30px] py-[15px] ${
-          filePath ? "cursor-pointer" : ""
-        }`}
-        onClick={() => {
-          if (filePath && !isDownloading) {
-            download({ fileUrl: filePath, fileName });
-          }
-        }}
-      >
-        <div className="flex gap-[22px] min-w-0 flex-1 items-center">
-          <span className="flex-shrink-0">
-            <File />
-          </span>
-          <div className="flex flex-col min-w-0">
-            <span className="text-[14px] font-semibold truncate">
-              {fileName}
+      <div>
+        <div
+          className={`flex items-center justify-between gap-3 rounded-[10px] border border-gray-80 pl-[24px] pr-[30px] py-[15px] ${
+            filePath ? "cursor-pointer" : ""
+          }`}
+          onClick={() => {
+            if (filePath && !isDownloading) {
+              download({ fileUrl: filePath, fileName });
+            }
+          }}
+        >
+          <div className="flex gap-[22px] min-w-0 flex-1 items-center">
+            <span className="flex-shrink-0">
+              <File />
             </span>
-            <span className="text-[11px] text-gray-400">
-              {formatFileSize(size)}
-            </span>
+            <div className="flex flex-col min-w-0">
+              <span className="text-[14px] font-semibold truncate">
+                {fileName}
+              </span>
+              <span className="text-[11px] text-gray-400">
+                {formatFileSize(size)}
+              </span>
+            </div>
           </div>
-        </div>
 
-        {!readOnly && (
-          <Close
-            onClick={(e: React.MouseEvent) => {
-              e.stopPropagation();
-              e.preventDefault();
-              if (!isDeleting) handleDelete();
-            }}
-            width={15}
-            height={15}
-            className="flex-shrink-0 text-gray-40 hover:text-gray-40/60 transition-colors cursor-pointer"
-          />
-        )}
+          {!readOnly && (
+            <Close
+              onClick={(e: React.MouseEvent) => {
+                e.stopPropagation();
+                e.preventDefault();
+                if (!isDeleting) handleDelete();
+              }}
+              width={15}
+              height={15}
+              className="flex-shrink-0 text-gray-40 hover:text-gray-40/60 transition-colors cursor-pointer"
+            />
+          )}
+        </div>
+        {!readOnly && formatHint}
       </div>
     );
   }
@@ -135,28 +145,31 @@ export default function FileField({
   }
 
   return (
-    <label className="flex items-center justify-center w-full border-2 border-dashed border-gray-600 bg-gray-100 rounded-[10px] cursor-pointer hover:border-gray-600/60 hover:bg-gray-100/60 transition-colors">
-      <input
-        type="file"
-        className="hidden"
-        accept={
-          hasExtensionLimit
-            ? extensions.map((ext) => `.${ext}`).join(",")
-            : undefined
-        }
-        onChange={handleFileChange}
-      />
-      <div className="flex flex-col items-center gap-3 my-[30px]">
-        <Upload className="text-gray-50" />
-        <span className="text-gray-50 font-regular">
-          클릭하거나 파일을 드래그하여 업로드
-        </span>
-        {hasExtensionLimit && (
-          <span className="text-[12px] text-gray-400 font-regular">
-            허용 형식: {extensions.join(", ")}
+    <div>
+      <label className="flex items-center justify-center w-full border-2 border-dashed border-gray-600 bg-gray-100 rounded-[10px] cursor-pointer hover:border-gray-600/60 hover:bg-gray-100/60 transition-colors">
+        <input
+          type="file"
+          className="hidden"
+          accept={
+            hasExtensionLimit
+              ? extensions.map((ext) => `.${ext}`).join(",")
+              : undefined
+          }
+          onChange={handleFileChange}
+        />
+        <div className="flex flex-col items-center gap-3 my-[30px]">
+          <Upload className="text-gray-50" />
+          <span className="text-gray-50 font-regular">
+            클릭하거나 파일을 드래그하여 업로드
           </span>
-        )}
-      </div>
-    </label>
+          {hasExtensionLimit && (
+            <span className="text-[12px] text-gray-400 font-regular">
+              허용 형식: {extensions.join(", ")}
+            </span>
+          )}
+        </div>
+      </label>
+      {formatHint}
+    </div>
   );
 }
