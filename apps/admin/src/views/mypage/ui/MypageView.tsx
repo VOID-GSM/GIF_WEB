@@ -1,6 +1,7 @@
 "use client";
 
 import { MypageCard } from "@repo/ui";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useGetMyInfo } from "@/entities/mypage/";
 import { COOKIE_KEYS } from "@/shared/constants";
@@ -71,21 +72,19 @@ export default function MypageView() {
             nameSuffix="선생님"
           />
           <div className="flex items-center gap-4">
-            <button
-              type="button"
-              onClick={() => router.push("/inquiry")}
+            <Link
+              href="/inquiry"
               className="cursor-pointer text-[14px] font-medium text-gray-400 underline-offset-4 transition-colors hover:text-gray-600 hover:underline"
             >
               문의하기
-            </button>
+            </Link>
             <span className="h-3 w-px bg-gray-300" aria-hidden="true" />
-            <button
-              type="button"
-              onClick={() => router.push("/inquiry/my")}
+            <Link
+              href="/inquiry/my"
               className="cursor-pointer text-[14px] font-medium text-gray-400 underline-offset-4 transition-colors hover:text-gray-600 hover:underline"
             >
               내 문의 내역
-            </button>
+            </Link>
           </div>
         </div>
       )}
