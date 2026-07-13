@@ -1555,4 +1555,140 @@ export const MOCK_PROJECTS: Project[] = [
       },
     ],
   },
+  {
+    id: 21,
+    name: "GIF",
+    teamName: "VOID",
+    tagline: "GSM Idea Festival 통합 관리 플랫폼",
+    logo: "/gif/gif-logo.png",
+    logoBg: "#ffffff",
+    siteUrl: "https://gif.io.kr",
+    leader: "김지유",
+    demoVideoUrl: "/gif/gif-video.mp4",
+    description:
+      "광주소프트웨어마이스터고등학교 idea festival 관리 서비스\n\n" +
+      "GIF는 아이디어페스티벌 전 과정을 학생, 선생님 사이트로 나눠 통합한 서비스로, 팀원과 함께 사용자 중심 설계를 배울 수 있었습니다.",
+    features: [
+      {
+        title: "프로젝트 팀 관리",
+        description: "팀원 관리 및 프로젝트 관리를 한번에",
+      },
+      {
+        title: "점수 부여 기능",
+        description: "선생님이 바로바로 팀별 점수 입력",
+      },
+      {
+        title: "양식 생성 기능",
+        description: "복잡한 과정없이 웹에서 바로 양식 생성 후 공지",
+      },
+      {
+        title: "AI 요약 기능",
+        description: "설명 등을 한눈에 알아볼 수 있도록 요약",
+      },
+    ],
+    members: [
+      {
+        name: "김지유",
+        role: "Front-end",
+        description:
+          "로그인 · 회원가입 인증 화면부터 프로젝트 목록 · 상세 조회, 양식 목록까지 서비스 핵심 페이지의 UI와 API 데이터 연동을 담당하여, 사용자가 프로젝트를 관리하고 양식을 확인하는 주요 흐름을 구현했습니다.",
+        photo: "/gif/member/jiyu.jpg",
+        skills: [
+          "Next.js",
+          "React",
+          "Tailwind CSS",
+          "Tanstack Query",
+          "TypeScript",
+        ],
+        email: "s25023@gsm.hs.kr",
+        portfolioUrl:
+          "https://forested-spell-882.notion.site/223431f0338b80bda42bdecac3138745",
+      },
+      {
+        name: "김민아",
+        role: "Front-end",
+        description:
+          "양식 생성 · 조회 · 수정 페이지와 마이페이지의 개발을 담당했으며, 공통 UI 컴포넌트 구현 및 백엔드 API 연동을 통해 기능을 개발했습니다. 또한 디자인 토큰을 적용하여 사용자 인터페이스를 구축했습니다.",
+        photo: "/gif/member/min.jpg",
+        skills: [
+          "Next.js",
+          "React",
+          "Tailwind CSS",
+          "Tanstack Query",
+          "TypeScript",
+        ],
+        email: "s25020@gsm.hs.kr",
+        portfolioUrl: "https://m.site.naver.com/2bEAm",
+      },
+      {
+        name: "이효은",
+        role: "Front-end",
+        description:
+          "참가자용 프로젝트 생성 페이지와 어드민의 점수 부여 · 수합 페이지를 담당했습니다. 프로젝트 등록 폼과 점수 입력 · 자동 합산화면을 구현했고, 등수 확인 페이지와 404 페이지도 함께 만들었습니다.",
+        photo: "/gif/member/hyo.png",
+        skills: [
+          "Next.js",
+          "React",
+          "Tailwind CSS",
+          "Tanstack Query",
+          "TypeScript",
+        ],
+        email: "s25049@gsm.hs.kr",
+        portfolioUrl: "https://m.site.naver.com/2bDZ8",
+      },
+      {
+        name: "김수빈",
+        role: "Back-end",
+        description:
+          "DataGsm OAuth를 이용한 로그인/회원가입 기능을 구현하였습니다. 선생님과 학생 역할을 세분화하여 관리하였으며 선생님 역할별 점수 부여 · 조회 · 합계 계산 · 랭킹 기능도 구현하였습니다.",
+        photo: "/gif/member/subin.jpg",
+        skills: [
+          "java",
+          "spring boot",
+          "Rest API",
+          "Spring Web",
+          "Spring Security",
+          "JPA",
+        ],
+        email: "s25021@gsm.hs.kr",
+        portfolioUrl: "https://m.site.naver.com/2bEgX",
+      },
+      {
+        name: "이하경",
+        role: "Back-end",
+        description:
+          "프로젝트 생성 및 양식 제출 시스템의 백엔드 API 설계 · 개발을 담당했고 AI 자동 요약 기능을 구현했습니다.",
+        photo: "/gif/member/kyoung.jpg",
+        skills: [
+          "java",
+          "spring boot",
+          "Rest API",
+          "Spring Web",
+          "Spring Security",
+        ],
+        email: "s25048@gsm.hs.kr",
+        portfolioUrl: "https://m.site.naver.com/2bDzW",
+      },
+      {
+        name: "박채은",
+        role: "DevOps",
+        description:
+          "CI/CD 파이프라인 구축 및 관리, 클라우드 인프라 설정 및 모니터링을 담당했습니다. 또한, 애플리케이션의 배포 자동화와 성능 최적화에 기여했습니다.",
+        photo: "/gif/member/chae.png",
+        skills: ["Docker"],
+        email: "s25026@gsm.hs.kr",
+        portfolioUrl: "https://m.site.naver.com/2bD1w",
+      },
+      {
+        name: "조하율",
+        role: "UI/UX Designer",
+        description:
+          "전체적인 프로젝트의 디자인을 기획하고, 캐릭터와 로고를 직접 디자인하여 프로젝트의 아이덴티티를 향상시켰습니다.",
+        photo: "/gif/member/yul.jpg",
+        skills: ["Figma"],
+        email: "s25033@gsm.hs.kr",
+        portfolioUrl: "https://m.site.naver.com/2bEf9",
+      },
+    ],
+  },
 ];

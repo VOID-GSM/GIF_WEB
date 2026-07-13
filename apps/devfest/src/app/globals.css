@@ -36,6 +36,50 @@ body {
   }
 }
 
+/* GIF 히어로 로고 — 로고 자체는 고정, 주변 하얀 빛만 서서히 밝아졌다 어두워지길 반복 */
+@keyframes bulb-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.2;
+  }
+}
+
+.gif-logo-wrap {
+  position: relative;
+  display: inline-block;
+}
+
+.gif-logo-wrap img {
+  position: relative;
+  z-index: 1;
+}
+
+.gif-logo-glow {
+  position: absolute;
+  inset: -60%;
+  z-index: 0;
+  border-radius: 9999px;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(255, 255, 255, 0.55) 35%,
+    rgba(255, 255, 255, 0) 70%
+  );
+  filter: blur(14px);
+  pointer-events: none;
+  animation: bulb-blink 3.2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gif-logo-glow {
+    animation: none;
+    opacity: 0.6;
+  }
+}
+
 .datagsm-logo {
   font-family: "Press Start 2P", cursive;
   font-size: 16px;
