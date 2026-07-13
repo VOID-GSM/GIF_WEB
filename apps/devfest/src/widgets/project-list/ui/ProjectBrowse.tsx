@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import { MOCK_PROJECTS, ProjectCard } from "@/entities/project";
 
 // 정적 데이터이므로 모듈 로드 시 1회만 정렬 (렌더마다 재정렬 방지)
@@ -5,6 +7,8 @@ import { MOCK_PROJECTS, ProjectCard } from "@/entities/project";
 const SORTED_PROJECTS = [...MOCK_PROJECTS].sort((a, b) =>
   a.name.localeCompare(b.name, "ko"),
 );
+
+const GIF_PROJECT = MOCK_PROJECTS.find((project) => project.name === "GIF");
 
 export default function ProjectBrowse() {
   const count = SORTED_PROJECTS.length;
@@ -21,12 +25,19 @@ export default function ProjectBrowse() {
         />
 
         <div className="relative mx-auto max-w-[1000px] px-4 py-16 text-center md:py-24">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/gif-logo.png"
-            alt="GIF"
-            className="mx-auto h-14 w-auto md:h-16"
-          />
+          <Link
+            href={GIF_PROJECT ? `/projects/${GIF_PROJECT.id}` : "#"}
+            className="gif-logo-wrap mx-auto"
+            aria-label="GIF 프로젝트 상세 보기"
+          >
+            <span aria-hidden className="gif-logo-glow" />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/gif-logo.png"
+              alt="GIF"
+              className="h-14 w-auto cursor-pointer md:h-16"
+            />
+          </Link>
 
           <p className="mt-7 text-[13px] font-semibold uppercase tracking-[0.22em] text-yellow-900">
             제 3회 프로젝트 모음
