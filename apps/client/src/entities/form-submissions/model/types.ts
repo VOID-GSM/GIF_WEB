@@ -97,6 +97,8 @@ export interface GetFormMySubmitResponse {
   projectId: number;
   teamName: string;
   submittedByUserId: number;
+  submittedByName: string;
+  submittedByStudentNumber: string;
   submittedAt: string;
   deadlineComplied: boolean;
   answers: SubmitAnswerItem[];
