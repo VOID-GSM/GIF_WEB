@@ -1,11 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { FormCard, Plus, DatePicker } from "@repo/ui";
 import { useUpdateForm, useGetFormById } from "@/entities/form-edit";
 import type { FormByIdResponse, UpdateFormField } from "@/entities/form-edit";
 import type { PostFormRequestField } from "@/entities/form-create";
+
+const FORM_TITLE_MAX_LENGTH = 50;
 
 type FieldWithId = {
   id: string;
@@ -33,6 +35,9 @@ function FormEditor({
   const { mutate: updateForm, isPending: isSaving } = useUpdateForm();
 
   const [formTitle, setFormTitle] = useState(formDetail.title);
+  // 한글(IME) 조합 중에는 값을 자르지 않는다 — 조합 도중 강제로 잘라내면
+  // composition 세션이 깨져 마지막 글자가 누락되거나 조합이 끊길 수 있다.
+  const isTitleComposing = useRef(false);
   const [deadline, setDeadline] = useState(formDetail.deadline);
   const [fields, setFields] = useState<FieldWithId[]>(() =>
     formDetail.fields
@@ -108,8 +113,28 @@ function FormEditor({
             className="w-full py-3 px-4 border border-gray-200 rounded-[10px] text-[18px] font-medium placeholder:text-gray-500 text-black outline-none bg-white"
             placeholder="제목을 입력하세요"
             value={formTitle}
-            onChange={(e) => setFormTitle(e.target.value)}
+            maxLength={FORM_TITLE_MAX_LENGTH}
+            onChange={(e) => {
+              const value = e.target.value;
+              setFormTitle(
+                isTitleComposing.current
+                  ? value
+                  : value.slice(0, FORM_TITLE_MAX_LENGTH),
+              );
+            }}
+            onCompositionStart={() => {
+              isTitleComposing.current = true;
+            }}
+            onCompositionEnd={(e) => {
+              isTitleComposing.current = false;
+              setFormTitle(
+                e.currentTarget.value.slice(0, FORM_TITLE_MAX_LENGTH),
+              );
+            }}
           />
+          <span className="self-end text-xs text-gray-400">
+            {formTitle.length}/{FORM_TITLE_MAX_LENGTH}
+          </span>
         </div>
         <div className="flex flex-col text-[14px] font-medium text-gray-600 gap-1">
           마감일 선택하기
