@@ -12,6 +12,8 @@ import {
   usePostAdminInfo,
   type AdminRole,
 } from "@/entities/signup";
+import { COOKIE_KEYS } from "@/shared/constants";
+import { setCookie } from "@/shared/utils";
 
 export default function TermsView() {
   const router = useRouter();
@@ -40,7 +42,12 @@ export default function TermsView() {
     mutate(
       { adminRole, name, gradeHead },
       {
-        onSuccess: () => router.replace("/"),
+        onSuccess: ({ data }) => {
+          if (data?.accessToken) {
+            setCookie(COOKIE_KEYS.ACCESS_TOKEN, data.accessToken);
+          }
+          router.replace("/");
+        },
         onError: () => toast.error("회원가입에 실패했습니다. 다시 시도해주세요."),
       },
     );

@@ -1,6 +1,6 @@
 import { apiClient } from "@repo/lib";
 
-import type { PostAdminInfoRequest } from "../model/types";
+import type { PostAdminInfoRequest, PostAdminInfoResponse } from "../model/types";
 
 export const postAdminInfo = (body: PostAdminInfoRequest) =>
-  apiClient.post("/api/additional-info/admin", body);
+  apiClient.post<PostAdminInfoResponse>("/api/additional-info/admin", body);
