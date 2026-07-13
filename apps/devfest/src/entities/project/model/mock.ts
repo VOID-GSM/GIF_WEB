@@ -1329,6 +1329,12 @@ export const MOCK_PROJECTS: Project[] = [
           "기획-QA 2개 파트를 오가며 이슈 트래킹 보드를 관리하고 우선순위를 조율해, 파트 간 정보 비대칭으로 인한 개발 지연을 최소화했습니다.",
       },
       {
+        name: "홍지민",
+        role: "",
+        description:
+          "Pulumi IaC 기반 AWS 프로덕션 배포 환경 구성하였으며, CORS/HTTPS 설정 및 CI/CD 자동화로 배포 파이프라인 확립, 예비신청 승격 로직 및 Discord 에러 알림 시스템까지 운영 전반을 담당했습니다.",
+      },
+      {
         name: "김태은",
         role: "",
         description:
