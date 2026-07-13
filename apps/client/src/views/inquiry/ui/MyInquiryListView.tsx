@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Chevron } from "@repo/ui";
 import { formatDeadline } from "@/entities/form/lib/formatDeadline";
@@ -79,9 +80,8 @@ export default function MyInquiryListView() {
             <ul className="flex flex-col gap-2.5">
               {data.map((inquiry) => (
                 <li key={inquiry.id}>
-                  <button
-                    type="button"
-                    onClick={() => router.push(`/inquiry/my/${inquiry.id}`)}
+                  <Link
+                    href={`/inquiry/my/${inquiry.id}`}
                     className="group flex w-full items-center justify-between gap-3 rounded-[12px] border border-gray-200 bg-white px-4 py-3.5 text-left transition-colors hover:border-yellow-600 hover:bg-yellow-50"
                   >
                     <div className="flex min-w-0 flex-1 flex-col gap-1">
@@ -93,7 +93,7 @@ export default function MyInquiryListView() {
                       </span>
                     </div>
                     <StatusPill status={inquiry.status} />
-                  </button>
+                  </Link>
                 </li>
               ))}
             </ul>
