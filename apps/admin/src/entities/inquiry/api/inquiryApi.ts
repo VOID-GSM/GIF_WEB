@@ -65,3 +65,12 @@ export const getMyInquiryDetail = async (
   );
   return data;
 };
+
+// 첨부파일은 인증이 필요한 엔드포인트이므로 apiClient(Authorization 헤더 자동 첨부)로
+// Blob을 받아 다운로드한다. filePath가 절대 URL이면 axios가 baseURL을 무시하고 그대로 사용한다.
+export const downloadInquiryFile = async (fileUrl: string): Promise<Blob> => {
+  const { data } = await apiClient.get<Blob>(fileUrl, {
+    responseType: "blob",
+  });
+  return data;
+};

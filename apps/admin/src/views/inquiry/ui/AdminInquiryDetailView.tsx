@@ -7,6 +7,7 @@ import { formatDeadline } from "@/entities/form/lib/formatDeadline";
 import { useGetMyInfo } from "@/entities/mypage";
 import {
   useAnswerInquiry,
+  useDownloadInquiryFile,
   useGetAdminInquiryDetail,
 } from "@/entities/inquiry";
 import type { InquiryStatus } from "@/entities/inquiry";
@@ -44,6 +45,7 @@ export default function AdminInquiryDetailView({
   const { data, isPending, isError } = useGetAdminInquiryDetail(inquiryId);
   const { data: myInfo, isLoading: isMyInfoLoading } = useGetMyInfo();
   const { mutate: answer, isPending: isAnswering } = useAnswerInquiry();
+  const { mutate: download, isPending: isDownloading } = useDownloadInquiryFile();
 
   const [answerContent, setAnswerContent] = useState("");
   // 새로운 문의가 로드되면 기존 답변으로 폼을 초기화한다. (렌더 중 상태 조정 패턴)
@@ -135,7 +137,21 @@ export default function AdminInquiryDetailView({
                   <span className="text-[13px] font-medium text-gray-700">
                     첨부파일
                   </span>
-                  <div className="flex items-center justify-between gap-3 rounded-[10px] border border-gray-200 bg-white px-3.5 py-2.5">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (isDownloading || !data.filePath) return;
+                      download({
+                        fileUrl: data.filePath,
+                        fileName:
+                          data.originalFileName ??
+                          data.filePath.split("/").pop() ??
+                          "첨부파일",
+                      });
+                    }}
+                    disabled={isDownloading}
+                    className="flex items-center justify-between gap-3 rounded-[10px] border border-gray-200 bg-white px-3.5 py-2.5 text-left transition-colors hover:border-yellow-600 hover:bg-yellow-50 disabled:cursor-not-allowed disabled:opacity-50"
+                  >
                     <div className="flex min-w-0 flex-1 items-center gap-2.5">
                       <FileIcon className="h-[18px] w-[15px] shrink-0" />
                       <div className="flex min-w-0 flex-col">
@@ -151,7 +167,7 @@ export default function AdminInquiryDetailView({
                         )}
                       </div>
                     </div>
-                  </div>
+                  </button>
                 </div>
               )}
 
