@@ -1,4 +1,4 @@
-import { Navbar, ADMIN_NAV_ITEMS } from "@repo/ui";
+import AdminNavbar from "@/widgets/navbar/ui/AdminNavbar";
 
 export default function MainLayout({
   children,
@@ -7,7 +7,7 @@ export default function MainLayout({
 }) {
   return (
     <>
-      <Navbar navItems={ADMIN_NAV_ITEMS} />
+      <AdminNavbar />
       <main className="pt-15">{children}</main>
     </>
   );
