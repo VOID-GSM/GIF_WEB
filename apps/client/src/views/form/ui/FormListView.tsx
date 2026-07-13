@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 
 import { FormCard, FORM_TABLE_GRID, useGetFormList } from "@/entities/form";
 import { useGetMyProject } from "@/entities/project";
+import { useGetFormSubmitters } from "@/entities/form-submissions";
 
 export default function FormListView() {
   const router = useRouter();
@@ -20,6 +21,13 @@ export default function FormListView() {
     isLoading: isFormsLoading,
     isError: isFormsError,
   } = useGetFormList(projectId);
+
+  // 제출자 이름 표시: 제출된 양식들의 my-submit(submittedByName)을 병렬 조회한다.
+  const submittedFormIds = (forms ?? [])
+    .filter((form) => form.submitted)
+    .map((form) => form.id);
+  const submitterNameMap = useGetFormSubmitters(submittedFormIds, projectId);
+  const getSubmitterName = (formId: number) => submitterNameMap.get(formId);
 
   const handleSubmit = (id: number) => router.push(`/form/${id}/submit`);
   const handleEdit = (id: number) => router.push(`/form/${id}/edit`);
@@ -65,6 +73,7 @@ export default function FormListView() {
               <span className="text-sm font-semibold text-gray-700">마감 날짜</span>
               <span className="text-sm font-semibold text-gray-700">마감 시간</span>
               <span className="text-sm font-semibold text-gray-700">제출 여부</span>
+              <span className="text-sm font-semibold text-gray-700">제출자</span>
               <span className="text-sm font-semibold text-gray-700">작업</span>
             </div>
 
@@ -72,6 +81,7 @@ export default function FormListView() {
               <FormCard
                 key={form.id}
                 form={form}
+                submitterName={getSubmitterName(form.id)}
                 onSubmit={handleSubmit}
                 onEdit={handleEdit}
               />
