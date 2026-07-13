@@ -5,6 +5,7 @@ export const ADMIN_NAV_ITEMS: NavItem[] = [
   { label: "양식", path: "/form" },
   { label: "등수", path: "/rank" },
   { label: "점수", path: "/score" },
+  { label: "문의 관리", path: "/inquiry/admin" },
   { label: "내 정보", path: "/mypage" },
 ];
 

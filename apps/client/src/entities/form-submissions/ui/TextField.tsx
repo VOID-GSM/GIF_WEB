@@ -1,5 +1,7 @@
 import { useRef, useEffect } from "react";
 
+const TEXT_MAX_LENGTH = 1000;
+
 interface TextFieldProps {
   fieldId: number;
   value: string;
@@ -14,6 +16,9 @@ export default function TextField({
   onChange,
 }: TextFieldProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  // 한글(IME) 조합 중에는 값을 자르지 않는다 — 조합 도중 강제로 잘라내면
+  // composition 세션이 깨져 마지막 글자가 누락되거나 조합이 끊길 수 있다.
+  const isComposing = useRef(false);
 
   useEffect(() => {
     const el = textareaRef.current;
@@ -24,19 +29,38 @@ export default function TextField({
 
   if (readOnly) {
     return (
-      <div className="min-h-20 w-full border border-gray-80 rounded-[10px] p-[15px] font-medium text-gray-800 whitespace-pre-wrap">
+      <div className="min-h-20 w-full break-words border border-gray-80 rounded-[10px] p-[15px] font-medium text-gray-800 whitespace-pre-wrap">
         {value || <span className="text-gray-400">답변 없음</span>}
       </div>
     );
   }
 
   return (
-    <textarea
-      ref={textareaRef}
-      className="min-h-20 w-full border border-gray-80 rounded-[10px] p-[15px] font-medium outline-none resize-none placeholder:text-gray-500"
-      placeholder="답변을 입력하세요"
-      value={value}
-      onChange={(e) => onChange(fieldId, e.target.value)}
-    />
+    <>
+      <textarea
+        ref={textareaRef}
+        className="min-h-20 w-full break-words border border-gray-80 rounded-[10px] p-[15px] font-medium outline-none resize-none placeholder:text-gray-500"
+        placeholder="답변을 입력하세요"
+        value={value}
+        maxLength={TEXT_MAX_LENGTH}
+        onChange={(e) => {
+          const next = e.target.value;
+          onChange(
+            fieldId,
+            isComposing.current ? next : next.slice(0, TEXT_MAX_LENGTH),
+          );
+        }}
+        onCompositionStart={() => {
+          isComposing.current = true;
+        }}
+        onCompositionEnd={(e) => {
+          isComposing.current = false;
+          onChange(fieldId, e.currentTarget.value.slice(0, TEXT_MAX_LENGTH));
+        }}
+      />
+      <span className="mt-1 self-end text-xs text-gray-400">
+        {value.length}/{TEXT_MAX_LENGTH}
+      </span>
+    </>
   );
 }

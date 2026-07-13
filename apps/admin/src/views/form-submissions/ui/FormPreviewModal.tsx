@@ -3,6 +3,10 @@
 import { Close, Textarea, FileUpload } from "@repo/ui";
 import CalendarAnswer from "@/entities/from-management/ui/Calendaranswer";
 import type { AdminFormDetail, FormField } from "@/entities/from-management/model/type";
+import {
+  formatDeadlineDate,
+  formatDeadlineTime,
+} from "@/entities/form/lib/formatDeadline";
 
 type Props = {
   form: AdminFormDetail;
@@ -31,6 +35,11 @@ function PreviewField({ field }: { field: FormField }) {
       {field.type === "FILE" && (
         <div className="pointer-events-none mt-2 select-none">
           <FileUpload className="h-[160px] w-full" />
+          {field.allowedExtensions && field.allowedExtensions.length > 0 && (
+            <span className="mt-2 block text-[12px] font-medium text-gray-400">
+              허용 형식: {field.allowedExtensions.join(", ")}
+            </span>
+          )}
         </div>
       )}
       {field.type === "CALENDAR" && (
@@ -66,7 +75,9 @@ export default function FormPreviewModal({ form, onClose }: Props) {
               {form.title}
             </span>
             <span className="pt-1 text-[13px] font-medium text-gray-500">
-              마감일: {form.deadline}
+              마감 날짜: {formatDeadlineDate(form.deadline)}
+              {formatDeadlineTime(form.deadline) &&
+                ` · 마감 시간: ${formatDeadlineTime(form.deadline)}`}
             </span>
           </div>
           <button

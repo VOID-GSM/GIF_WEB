@@ -34,3 +34,19 @@ export interface ProjectDetail {
 
 // GET /api/project/{projectId}/summary — AI가 생성한 프로젝트 요약 (응답은 요약 문자열)
 export type ProjectSummaryResponse = string;
+
+// GET /api/project/{projectId}/note — 프로젝트 메모 조회
+export interface GetProjectNoteResponse {
+  projectId: number;
+  content: string;
+}
+
+// PUT /api/project/{projectId}/note — 프로젝트 메모 작성/수정
+export interface UpdateProjectNoteRequest {
+  content: string;
+}
+
+// PATCH /api/project/{projectId}/transfer-leader — 팀장 양도(아이디어페스티벌 담당(MASTER) 관리자만 호출)
+export interface TransferLeaderRequest {
+  newLeaderUserId: number;
+}

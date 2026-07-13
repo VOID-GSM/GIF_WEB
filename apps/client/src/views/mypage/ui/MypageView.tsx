@@ -1,6 +1,7 @@
 "use client";
 
 import { MypageCard } from "@repo/ui";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useGetMyInfo } from "@/entities/mypage";
 import { useGetMyProject, useGetProject } from "@/entities/project";
@@ -16,18 +17,21 @@ export default function MypageView() {
   const router = useRouter();
   const { data, isLoading, isError } = useGetMyInfo();
   const { data: myProjects, isLoading: isProjectsLoading } = useGetMyProject();
+  const projectId = data?.projectId || myProjects?.[0]?.id;
+  const hasProjectId = Number.isFinite(projectId);
+  const { data: projectDetail, isLoading: isProjectDetailLoading } =
+    useGetProject(projectId ?? NaN);
 
-  // 소속 팀은 내 프로젝트(서버)에서 그대로 가져온다. 팀에서 빠지면 비워진다.
-  const myProject = myProjects?.[0];
-  const teamName = myProject?.teamName ?? "";
+  // 소속 팀과 역할은 프로젝트 상세의 최신 멤버 정보를 우선 사용한다.
+  const teamName = projectDetail?.teamName ?? myProjects?.[0]?.teamName ?? "";
 
-  // 역할은 프로젝트 멤버의 실제 role 에서 가져온다.
-  // clientRole(가입 시 선택값)은 팀장을 양도해도 바뀌지 않으므로 사용하지 않는다.
-  const { data: projectDetail } = useGetProject(myProject?.id ?? NaN);
-  const myRole = projectDetail?.members.find(
-    (m) => m.userId === data?.userId,
+  const currentProjectRole = projectDetail?.members.find(
+    (member) => member.userId === data?.userId,
   )?.role;
-  const role = teamName && myRole ? (CLIENT_ROLE_LABEL[myRole] ?? myRole) : "";
+  const displayRole = currentProjectRole ?? data?.clientRole;
+  const role = displayRole
+    ? (CLIENT_ROLE_LABEL[displayRole] ?? displayRole)
+    : "";
 
   const mypageInfoItems = [
     {
@@ -60,7 +64,9 @@ export default function MypageView() {
 
   return (
     <main className="fixed inset-0 flex items-center justify-center bg-background p-4">
-      {isLoading || isProjectsLoading ? (
+      {isLoading ||
+      isProjectsLoading ||
+      (hasProjectId && isProjectDetailLoading) ? (
         <p className="text-[16px] font-medium text-gray-600">불러오는 중</p>
       ) : isError ? (
         <div className="flex flex-col items-center gap-4">
@@ -76,7 +82,24 @@ export default function MypageView() {
           </button>
         </div>
       ) : (
-        <MypageCard items={mypageInfoItems} onLogout={handleLogout} />
+        <div className="flex w-full max-w-[440px] flex-col items-center gap-5">
+          <MypageCard items={mypageInfoItems} onLogout={handleLogout} />
+          <div className="flex items-center gap-4">
+            <Link
+              href="/inquiry"
+              className="cursor-pointer text-[14px] font-medium text-gray-400 underline-offset-4 transition-colors hover:text-gray-600 hover:underline"
+            >
+              문의하기
+            </Link>
+            <span className="h-3 w-px bg-gray-300" aria-hidden="true" />
+            <Link
+              href="/inquiry/my"
+              className="cursor-pointer text-[14px] font-medium text-gray-400 underline-offset-4 transition-colors hover:text-gray-600 hover:underline"
+            >
+              내 문의 내역
+            </Link>
+          </div>
+        </div>
       )}
     </main>
   );

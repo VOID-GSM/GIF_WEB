@@ -21,7 +21,8 @@ export function CreateProjectView() {
   const { mutate, isPending } = useCreateProject();
   const { data: me } = useGetMe();
 
-  const grade = (me ? Number(me.studentNumber[0]) : 1) as Grade;
+  // studentNumber가 없는 계정(null)일 수 있어 앞자리(학년) 접근 전에 방어한다.
+  const grade = (me?.studentNumber ? Number(me.studentNumber[0]) : 1) as Grade;
 
   const [thumbnail, setThumbnail] = useState<File | null>(null);
   const [projectName, setProjectName] = useState("");

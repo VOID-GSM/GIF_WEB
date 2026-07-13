@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 
 import { useGetMyInfo } from "@/entities/mypage";
 import { RoleSelect, type AdminRole } from "@/entities/signup";
+import { PRIVILEGED_ADMIN_EMAIL } from "@/shared/constants";
 
 export default function SignupView() {
   const router = useRouter();
@@ -14,9 +15,10 @@ export default function SignupView() {
   const [gradeHead, setGradeHead] = useState(false);
 
   // 회원가입은 첫 로그인(역할 미설정)인 사용자에게만 노출한다.
-  // 이미 가입(adminRole 보유)한 사용자가 /signup 에 접근하면 홈으로 돌려보낸다.
+  // 이미 가입(adminRole 보유)했거나 회원가입이 면제된 계정이 /signup 에 접근하면 홈으로 돌려보낸다.
   const { data: myInfo, isLoading: isMyInfoLoading } = useGetMyInfo();
-  const alreadySignedUp = !!myInfo?.adminRole;
+  const alreadySignedUp =
+    !!myInfo?.adminRole || myInfo?.email === PRIVILEGED_ADMIN_EMAIL;
 
   useEffect(() => {
     if (alreadySignedUp) router.replace("/");

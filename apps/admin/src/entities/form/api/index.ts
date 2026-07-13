@@ -17,7 +17,7 @@ export const getFormList = () =>
   apiClient.get<GetFormListResponse>("/api/form/admin");
 
 export const deleteForm = (formId: number) =>
-  apiClient.delete("/api/form/delete", { params: { formId } });
+  apiClient.delete(`/api/form/${formId}`);
 
 export const announceForm = (formId: number) =>
   apiClient.post("/api/form/announce", null, { params: { formId } });

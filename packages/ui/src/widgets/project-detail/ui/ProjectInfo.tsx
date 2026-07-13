@@ -20,7 +20,7 @@ interface ProjectInfoProps {
   };
   // 로고 영역과 설명 사이에 들어가는 AI 요약 배너 슬롯 (없으면 설명이 로고 바로 아래)
   summary?: ReactNode;
-  // 팀원 배지 클릭 핸들러 (예: client 상세에서 팀장이 팀원에게 팀장 양도).
+  // 팀원 배지 클릭 핸들러 (예: admin 상세에서 MASTER 관리자가 팀장을 양도).
   // 전달되면 팀원 배지가 클릭 가능해진다.
   onMemberClick?: (member: ProjectInfoMember) => void;
 }
@@ -71,8 +71,10 @@ export default function ProjectInfo({
               <span className="text-2xl font-medium text-gray-700">팀원</span>
             </div>
             <div className="flex flex-1 flex-wrap items-center gap-2">
-              {orderedMembers.map((member) =>
-                onMemberClick ? (
+              {orderedMembers.map((member) => {
+                // 팀장(LEADER)은 양도 대상이 아니므로 클릭 가능한 버튼으로 렌더링하지 않는다.
+                const isClickable = onMemberClick && member.role !== "LEADER";
+                return isClickable ? (
                   <button
                     key={member.userId}
                     type="button"
@@ -83,7 +85,7 @@ export default function ProjectInfo({
                       id={Number(member.studentNumber)}
                       name={member.name}
                       isEditable={false}
-                      color={member.role === "LEADER" ? "yellow" : "gray"}
+                      color="gray"
                     />
                   </button>
                 ) : (
@@ -94,8 +96,8 @@ export default function ProjectInfo({
                     isEditable={false}
                     color={member.role === "LEADER" ? "yellow" : "gray"}
                   />
-                ),
-              )}
+                );
+              })}
             </div>
           </div>
         </div>

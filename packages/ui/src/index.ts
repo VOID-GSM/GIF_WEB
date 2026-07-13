@@ -31,6 +31,7 @@ export {
   GRADES,
 } from "./components/GradeSelector/GradeSelector";
 export type { Grade } from "./components/GradeSelector/GradeSelector";
+export { default as GradeDropdown } from "./components/GradeDropdown/GradeDropdown";
 
 export { default as Navbar } from "./widgets/Navbar/ui/Navbar";
 export { default as Sidebar } from "./widgets/Navbar/ui/Sidebar";
@@ -53,6 +54,7 @@ export { default as Plus } from "./svg/Plus";
 export { default as Upload } from "./svg/Upload";
 export { default as File } from "./svg/File";
 export { default as Color } from "./svg/Color";
+export { default as Crown } from "./svg/Crown";
 
 export type { NavItem } from "./widgets/Navbar/model/type";
 export type { NavbarProps } from "./widgets/Navbar/model/type";
@@ -62,3 +64,8 @@ export { ADMIN_NAV_ITEMS, CLIENT_NAV_ITEMS } from "./widgets/Navbar/model/nav";
 export type { StyleOption } from "./components/Dropdown/StyleDropdown";
 
 export { default as RankView } from "./views/RankView";
+export { default as LandingView } from "./views/LandingView";
+export { default as AboutView } from "./views/AboutView";
+export { default as WinnersView } from "./views/WinnersView";
+export { default as VoidView } from "./views/VoidView";
+export { default as IntroLayout } from "./landing/IntroLayout";

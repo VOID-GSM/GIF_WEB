@@ -5,7 +5,6 @@ import type {
   ProjectDetail,
   ProjectResponse,
   ProjectSummaryResponse,
-  TransferLeaderRequest,
   UpdateProjectRequest,
   UserSearchResult,
 } from "../model/types";
@@ -70,14 +69,6 @@ export const updateProjectDescription = async (
   await apiClient.patch(`/api/project/${projectId}/description`, {
     description,
   });
-};
-
-export const transferLeader = async (
-  projectId: number,
-  newLeaderUserId: number,
-): Promise<void> => {
-  const body: TransferLeaderRequest = { newLeaderUserId };
-  await apiClient.patch(`/api/project/${projectId}/transfer-leader`, body);
 };
 
 export const searchUsers = async (keyword: string): Promise<UserSearchResult[]> => {

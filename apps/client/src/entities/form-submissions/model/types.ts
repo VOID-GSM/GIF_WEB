@@ -5,6 +5,7 @@ export interface FormDetailField {
   description: string;
   type: "TEXT" | "FILE" | "DATE" | "CALENDAR";
   orderIndex: number;
+  allowedExtensions?: string[]; // FILE 타입에서 client 가 제출 가능한 확장자
 }
 
 export interface GetFormDetailResponse {
@@ -97,6 +98,8 @@ export interface GetFormMySubmitResponse {
   projectId: number;
   teamName: string;
   submittedByUserId: number;
+  submittedByName: string;
+  submittedByStudentNumber: string;
   submittedAt: string;
   deadlineComplied: boolean;
   answers: SubmitAnswerItem[];

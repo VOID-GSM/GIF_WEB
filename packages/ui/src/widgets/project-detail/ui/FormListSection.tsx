@@ -14,13 +14,24 @@ interface FormListSectionProps {
   onFormClick?: (formId: number) => void;
 }
 
-// "2026-08-12" -> "2026.08.12"
-const formatDeadline = (deadline: string) => deadline.replace(/-/g, ".");
+// "2026-08-12T23:29:00" -> "2026.08.12 23:29" (날짜와 시간 분리, T 제거)
+const formatDeadline = (deadline: string) => {
+  if (!deadline) return "";
+  const [datePart, timePart] = deadline.split("T");
+  const date = datePart.replace(/-/g, ".");
+  if (!timePart) return date;
+  return `${date} ${timePart.slice(0, 5)}`;
+};
 
-// 마감일이 오늘(0시 기준)보다 이전이면 마감됨
+// 마감 시각이 지났으면 마감됨 — 시간까지 반영
+// - 시간 포함(...THH:mm:ss) → 해당 시각까지 / 날짜만 → 그날 자정(23:59:59, KST)까지
 const isOverdue = (deadline: string) => {
-  const now = new Date();
-  return new Date(deadline) < new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  if (!deadline) return false;
+  const hasTimezone =
+    deadline.includes("Z") || /[+-]\d{2}(?::?\d{2})?$/.test(deadline);
+  const iso = deadline.includes("T") ? deadline : `${deadline}T23:59:59`;
+  const endTime = new Date(hasTimezone ? iso : `${iso}+09:00`).getTime();
+  return !isNaN(endTime) && Date.now() > endTime;
 };
 
 // 양식 제출 목록 (admin·client 공용)

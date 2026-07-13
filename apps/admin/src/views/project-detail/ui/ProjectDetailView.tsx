@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -10,8 +10,14 @@ import { DeadlineStatusSection, FormListSection, ProjectInfo } from "@repo/ui";
 import { getDeadlineSummary, useGetForms } from "@/entities/form";
 import { getAdminSubmitDetail } from "@/entities/from-management/api/api";
 import { formKeys } from "@/entities/from-management/api/query";
-import { useGetProject } from "@/entities/project";
+import { useGetMyInfo } from "@/entities/mypage";
+import {
+  useGetProject,
+  useTransferLeader,
+  type ProjectMember,
+} from "@/entities/project";
 import AiSummarySection from "@/widgets/project-detail/ui/AiSummarySection";
+import LeaderTransferModal from "@/widgets/project-detail/ui/LeaderTransferModal";
 import MemoSection from "@/widgets/project-detail/ui/MemoSection";
 import ScoreAssignSection from "@/widgets/project-detail/ui/ScoreAssignSection";
 
@@ -28,7 +34,29 @@ export default function ProjectDetailView({
   const { data: project, isPending: isProjectPending, isError } =
     useGetProject(projectId);
   const { data: forms, isPending: isFormsPending } = useGetForms(projectId);
+  const { data: myInfo } = useGetMyInfo();
   const isPending = isProjectPending || isFormsPending;
+
+  // 팀장 양도는 아이디어페스티벌 담당(MASTER) 관리자만 가능하다.
+  const canTransferLeader = myInfo?.adminRole === "MASTER";
+  const { mutate: transferLeader, isPending: isTransferring } =
+    useTransferLeader(projectId);
+  const [transferTarget, setTransferTarget] = useState<ProjectMember | null>(
+    null,
+  );
+
+  // 팀원 클릭 시 양도 확인 모달 — 이미 팀장인 멤버는 제외
+  const handleMemberClick = (member: ProjectMember) => {
+    if (member.role === "LEADER") return;
+    setTransferTarget(member);
+  };
+
+  const handleConfirmTransfer = () => {
+    if (!transferTarget) return;
+    transferLeader(transferTarget.userId, {
+      onSuccess: () => setTransferTarget(null),
+    });
+  };
 
   // 양식 클릭 → 이 팀이 제출한 양식 상세로 이동.
   // forms 목록에는 submitId가 없어, 양식별 제출 내역을 조회해 이 프로젝트의 제출을 찾는다.
@@ -68,11 +96,20 @@ export default function ProjectDetailView({
   return (
     <div className="flex min-h-dvh justify-center bg-background px-4 pb-8 pt-[67px]">
       <div className="flex w-full min-w-0 max-w-[830px] flex-col">
+        <button
+          type="button"
+          onClick={() => router.back()}
+          className="mb-4 flex w-fit cursor-pointer items-center gap-2 text-lg font-semibold text-gray-700 transition-colors hover:text-gray-900"
+        >
+          ← 뒤로
+        </button>
+
         {/* 정보 영역 — 클라이언트 상세와 동일한 레이아웃 */}
         {/* AI 요약은 로고 영역과 설명 사이에 노출 */}
         <ProjectInfo
           project={project}
           summary={<AiSummarySection projectId={projectId} />}
+          onMemberClick={canTransferLeader ? handleMemberClick : undefined}
         />
 
         {/* 마감현황 · 양식 목록 (좌) / 메모 (우) */}
@@ -88,6 +125,15 @@ export default function ProjectDetailView({
         {/* 하단 — 역할별 점수 부여 버튼 */}
         <ScoreAssignSection projectId={projectId} />
       </div>
+
+      {transferTarget && (
+        <LeaderTransferModal
+          memberName={transferTarget.name}
+          isPending={isTransferring}
+          onConfirm={handleConfirmTransfer}
+          onClose={() => setTransferTarget(null)}
+        />
+      )}
     </div>
   );
 }

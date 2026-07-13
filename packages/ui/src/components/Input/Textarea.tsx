@@ -2,6 +2,8 @@ interface TextareaProps {
   title?: string;
   value?: string;
   onChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  onCompositionStart?: (e: React.CompositionEvent<HTMLTextAreaElement>) => void;
+  onCompositionEnd?: (e: React.CompositionEvent<HTMLTextAreaElement>) => void;
   rows?: number;
   maxLength?: number;
   className?: string;
@@ -11,6 +13,8 @@ export default function Textarea({
   title = "내용을 입력하세요",
   value,
   onChange,
+  onCompositionStart,
+  onCompositionEnd,
   rows,
   maxLength,
   className = "",
@@ -22,6 +26,8 @@ export default function Textarea({
       placeholder={title}
       value={value}
       onChange={onChange}
+      onCompositionStart={onCompositionStart}
+      onCompositionEnd={onCompositionEnd}
       rows={rows}
       maxLength={maxLength}
     />
