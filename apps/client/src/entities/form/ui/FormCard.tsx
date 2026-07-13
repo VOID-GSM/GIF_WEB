@@ -5,17 +5,24 @@ import { isDeadlinePassed } from "../lib/isDeadlinePassed";
 import type { FormSummary } from "../model/types";
 
 // 헤더 행과 데이터 행이 동일한 컬럼 폭을 공유하도록 그리드 정의를 한곳에서 관리한다.
-// 컬럼: 제목 / 마감 날짜 / 마감 시간 / 제출 여부 / 작업
+// 컬럼: 제목 / 마감 날짜 / 마감 시간 / 제출 여부 / 제출자 / 작업
 export const FORM_TABLE_GRID =
-  "grid grid-cols-[1fr_130px_84px_96px_88px] gap-4 items-center min-w-[640px]";
+  "grid grid-cols-[1fr_130px_84px_96px_100px_88px] gap-4 items-center min-w-[740px]";
 
 interface FormCardProps {
   form: FormSummary;
+  /** 우리 팀에서 이 양식을 제출한 팀원 이름 (미제출이면 undefined) */
+  submitterName?: string;
   onSubmit: (id: number) => void;
   onEdit: (id: number) => void;
 }
 
-export default function FormCard({ form, onSubmit, onEdit }: FormCardProps) {
+export default function FormCard({
+  form,
+  submitterName,
+  onSubmit,
+  onEdit,
+}: FormCardProps) {
   const { id, title, deadline, submitted } = form;
   const time = formatDeadlineTime(deadline);
   // 마감 후 이미 제출한 건은 수정 불가. (미제출은 마감 후에도 제출 가능 — 미준수로 판정)
@@ -46,6 +53,11 @@ export default function FormCard({ form, onSubmit, onEdit }: FormCardProps) {
           {submitted ? "제출" : "미제출"}
         </span>
       </div>
+
+      {/* 제출자 — 제출한 경우 팀원 이름, 미제출은 "—" */}
+      <span className="min-w-0 truncate text-sm text-gray-700">
+        {submitted ? (submitterName ?? "—") : "—"}
+      </span>
 
       {/* 작업 (작성 / 수정 / 보기) — 미제출은 마감 후에도 제출 가능(미준수), 제출한 건은 마감 후 수정 불가(보기만) */}
       <div className="flex justify-start">
