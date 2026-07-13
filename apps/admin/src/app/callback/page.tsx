@@ -5,7 +5,7 @@ import { Suspense, useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 import { useGetGoogleCallback } from "@/entities/auth";
-import { COOKIE_KEYS } from "@/shared/constants";
+import { COOKIE_KEYS, PRIVILEGED_ADMIN_EMAIL } from "@/shared/constants";
 import { setCookie } from "@/shared/utils";
 
 const CallbackContent = () => {
@@ -35,7 +35,9 @@ const CallbackContent = () => {
         if (!isMounted) return;
 
         setCookie(COOKIE_KEYS.ACCESS_TOKEN, data.accessToken);
-        router.replace(data.adminRole ? "/" : "/signup");
+        const skipSignup =
+          !!data.adminRole || data.email === PRIVILEGED_ADMIN_EMAIL;
+        router.replace(skipSignup ? "/" : "/signup");
       } catch (err) {
         if (!isMounted) return;
 

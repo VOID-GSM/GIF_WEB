@@ -12,6 +12,7 @@ import {
   usePostAdminInfo,
   type AdminRole,
 } from "@/entities/signup";
+import { PRIVILEGED_ADMIN_EMAIL } from "@/shared/constants";
 
 export default function TermsView() {
   const router = useRouter();
@@ -24,9 +25,10 @@ export default function TermsView() {
   const gradeHead = searchParams.get("gradeHead") === "true";
 
   const { data: myInfo, isLoading: isMyInfoLoading } = useGetMyInfo();
-  const alreadySignedUp = !!myInfo?.adminRole;
+  const alreadySignedUp =
+    !!myInfo?.adminRole || myInfo?.email === PRIVILEGED_ADMIN_EMAIL;
 
-  // 이미 가입한 사용자는 홈으로, 역할 정보 없이 직접 접근하면 회원가입으로 돌려보낸다.
+  // 이미 가입했거나 회원가입이 면제된 사용자는 홈으로, 역할 정보 없이 직접 접근하면 회원가입으로 돌려보낸다.
   useEffect(() => {
     if (alreadySignedUp) {
       router.replace("/");
