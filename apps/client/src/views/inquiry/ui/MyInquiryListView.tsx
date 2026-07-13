@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Chevron } from "@repo/ui";
-import { formatDeadline } from "@/entities/form/lib/formatDeadline";
+import { formatTimestamp } from "@/entities/form/lib/formatDeadline";
 import { useGetMyInquiries } from "@/entities/inquiry";
 import type { InquiryStatus } from "@/entities/inquiry";
 
@@ -89,7 +89,7 @@ export default function MyInquiryListView() {
                         {inquiry.title}
                       </span>
                       <span className="text-[12px] text-gray-400">
-                        {formatDeadline(inquiry.createdAt)}
+                        {formatTimestamp(inquiry.createdAt)}
                       </span>
                     </div>
                     <StatusPill status={inquiry.status} />
