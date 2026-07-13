@@ -15,6 +15,7 @@ type FieldWithId = {
   description: string;
   type: "TEXT" | "FILE" | "CALENDAR" | "";
   orderIndex: number;
+  allowedExtensions: string[];
 };
 
 // API는 "DATE"를 반환하지만 FormCard UI는 "CALENDAR"를 사용
@@ -49,6 +50,7 @@ function FormEditor({
         description: f.description,
         type: toUiType(f.type),
         orderIndex: f.orderIndex,
+        allowedExtensions: f.allowedExtensions ?? [],
       })),
   );
 
@@ -61,6 +63,7 @@ function FormEditor({
         description: "",
         type: "",
         orderIndex: prev.length,
+        allowedExtensions: [],
       },
     ]);
   };
@@ -87,11 +90,12 @@ function FormEditor({
           deadline,
           fields: fields
             .filter((f) => f.type !== "")
-            .map(({ title, description, type, orderIndex }) => ({
+            .map(({ title, description, type, orderIndex, allowedExtensions }) => ({
               title,
               description,
               type: type as UpdateFormField["type"],
               orderIndex,
+              ...(type === "FILE" ? { allowedExtensions } : {}),
             })),
         },
       },

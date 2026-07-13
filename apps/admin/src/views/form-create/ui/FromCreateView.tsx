@@ -19,6 +19,7 @@ type FieldWithId = {
   description: string;
   type: FieldType;
   orderIndex: number;
+  allowedExtensions: string[];
 };
 
 export default function FormCreateView() {
@@ -51,6 +52,16 @@ export default function FormCreateView() {
   const buildDeadline = () =>
     deadline && deadlineTime ? `${deadline}T${deadlineTime}:00` : "";
 
+  // 내부 id 를 제거하고, 허용 확장자는 FILE 타입에서만 전송한다.
+  const buildRequestFields = (): PostFormRequestField[] =>
+    fields.map((f) => ({
+      title: f.title,
+      description: f.description,
+      type: f.type,
+      orderIndex: f.orderIndex,
+      ...(f.type === "FILE" ? { allowedExtensions: f.allowedExtensions } : {}),
+    }));
+
   const [fields, setFields] = useState<FieldWithId[]>([
     {
       id: crypto.randomUUID(),
@@ -58,6 +69,7 @@ export default function FormCreateView() {
       description: "",
       type: "TEXT",
       orderIndex: 0,
+      allowedExtensions: [],
     },
   ]);
 
@@ -70,6 +82,7 @@ export default function FormCreateView() {
         description: "",
         type: "",
         orderIndex: prev.length,
+        allowedExtensions: [],
       },
     ]);
   };
@@ -110,7 +123,7 @@ export default function FormCreateView() {
       {
         title: formTitle,
         deadline: buildDeadline(),
-        fields: fields.map(({ ...rest }) => rest as PostFormRequestField),
+        fields: buildRequestFields(),
       },
       {
         onSuccess: (res) => {
@@ -139,7 +152,7 @@ export default function FormCreateView() {
         {
           title: formTitle,
           deadline: buildDeadline(),
-          fields: fields.map(({ ...rest }) => rest as PostFormRequestField),
+          fields: buildRequestFields(),
         },
         {
           onSuccess: (res) => {
