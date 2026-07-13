@@ -1560,15 +1560,14 @@ export const MOCK_PROJECTS: Project[] = [
     name: "GIF",
     teamName: "VOID",
     tagline: "GSM Idea Festival 통합 관리 플랫폼",
-    logo: "/gif/gif-l.png",
+    logo: "/gif/gif-logo.png",
     logoBg: "#ffffff",
     siteUrl: "https://gif.io.kr",
     leader: "김지유",
     demoVideoUrl: "/gif/gif-video.mp4",
     description:
       "광주소프트웨어마이스터고등학교 idea festival 관리 서비스\n\n" +
-      "GIF은 아이디어페스티벌 전 과정을 학생, 선생님 사이트로 나눠 통합한 서비스로, 팀원과 함께 사용자 중심 설계를 배울 수 있었습니다" +
-      "",
+      "GIF는 아이디어페스티벌 전 과정을 학생, 선생님 사이트로 나눠 통합한 서비스로, 팀원과 함께 사용자 중심 설계를 배울 수 있었습니다.",
     features: [
       {
         title: "프로젝트 팀 관리",
@@ -1609,7 +1608,7 @@ export const MOCK_PROJECTS: Project[] = [
         name: "김민아",
         role: "Front-end",
         description:
-          "양식 생성 · 조회 · 수정 페이지와 마이페이지의 개발을 담당했으며, 공통 UI 컴포넌트 구현 및 백엔드 API연동을 통해 기능을 개발했습니다. 또한 디자인 토큰을 적용하여 사용자 인터페이스를 구축했습니다.",
+          "양식 생성 · 조회 · 수정 페이지와 마이페이지의 개발을 담당했으며, 공통 UI 컴포넌트 구현 및 백엔드 API 연동을 통해 기능을 개발했습니다. 또한 디자인 토큰을 적용하여 사용자 인터페이스를 구축했습니다.",
         photo: "/gif/member/min.jpg",
         skills: [
           "Next.js",
@@ -1641,7 +1640,7 @@ export const MOCK_PROJECTS: Project[] = [
         name: "김수빈",
         role: "Back-end",
         description:
-          "DataGam OAth를 이용한 로그인/회원가입 기능을 구현하였씁니다. 선생님과 학생 역할을 세분화 하여 관리하였으며 선생님 역할별 점수 부여 · 조회 · 합계 계산 · 랭킹 기능도 구현하였습니다.",
+          "DataGsm OAuth를 이용한 로그인/회원가입 기능을 구현하였습니다. 선생님과 학생 역할을 세분화하여 관리하였으며 선생님 역할별 점수 부여 · 조회 · 합계 계산 · 랭킹 기능도 구현하였습니다.",
         photo: "/gif/member/subin.jpg",
         skills: [
           "java",
@@ -1658,7 +1657,7 @@ export const MOCK_PROJECTS: Project[] = [
         name: "이하경",
         role: "Back-end",
         description:
-          "프로젝트 생성 및 앵식 제출 시스템의 백엔드 API 설계 · 개발을 담당했고 AI 자동 요약 기증을 구현했습니다.",
+          "프로젝트 생성 및 양식 제출 시스템의 백엔드 API 설계 · 개발을 담당했고 AI 자동 요약 기능을 구현했습니다.",
         photo: "/gif/member/kyoung.jpg",
         skills: [
           "java",
@@ -1676,7 +1675,7 @@ export const MOCK_PROJECTS: Project[] = [
         description:
           "CI/CD 파이프라인 구축 및 관리, 클라우드 인프라 설정 및 모니터링을 담당했습니다. 또한, 애플리케이션의 배포 자동화와 성능 최적화에 기여했습니다.",
         photo: "/gif/member/chae.png",
-        skills: ["Doker"],
+        skills: ["Docker"],
         email: "s25026@gsm.hs.kr",
         portfolioUrl: "https://m.site.naver.com/2bD1w",
       },
