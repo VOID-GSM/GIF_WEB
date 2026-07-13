@@ -37,6 +37,7 @@ function WinnerAvatar({
         alt={winner.title}
         width={64}
         height={64}
+        unoptimized
         className="h-full w-full object-contain"
         onError={() => setFailed(true)}
       />
