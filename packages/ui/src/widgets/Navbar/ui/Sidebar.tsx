@@ -3,6 +3,7 @@ import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { SidebarProps } from "@repo/ui";
 import { removeCookieValue } from "@repo/lib";
+import ThemeToggle from "../../Theme/ui/ThemeToggle";
 
 export default function Sidebar({ navItems, isOpen, onClose }: SidebarProps) {
   const pathname = usePathname();
@@ -62,7 +63,7 @@ export default function Sidebar({ navItems, isOpen, onClose }: SidebarProps) {
               className={`w-full cursor-pointer rounded-lg px-4 py-3 text-left text-[16px] font-medium outline-none transition-colors duration-200 ${
                 isActive
                   ? "bg-yellow-100 text-yellow-700"
-                  : "text-gray-700 hover:bg-gray-100 focus-visible:bg-gray-100"
+                  : "text-gray-700 hover:bg-gray-100 focus-visible:bg-gray-100 dark:focus-visible:bg-gray-800"
               }`}
             >
               {label}
@@ -71,13 +72,17 @@ export default function Sidebar({ navItems, isOpen, onClose }: SidebarProps) {
         );
       })}
 
-      <button
-        type="button"
-        onClick={handleLogout}
-        className="mt-auto cursor-pointer px-4 py-3 text-left text-[16px] font-medium text-gray-500 outline-none transition-colors duration-200 hover:bg-gray-100 focus-visible:bg-gray-100 md:hidden"
-      >
-        로그아웃
-      </button>
+      <div className="mt-auto flex flex-col gap-1 pt-3">
+        <ThemeToggle />
+
+        <button
+          type="button"
+          onClick={handleLogout}
+          className="cursor-pointer px-4 py-3 text-left text-[16px] font-medium text-gray-500 outline-none transition-colors duration-200 hover:bg-gray-100 focus-visible:bg-gray-100 dark:focus-visible:bg-gray-800 md:hidden"
+        >
+          로그아웃
+        </button>
+      </div>
     </nav>
   );
 }

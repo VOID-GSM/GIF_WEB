@@ -76,7 +76,7 @@ export default function DatePicker({ value, onChange }: DatePickerProps) {
             >
               ‹
             </button>
-            <span className="text-[15px] font-medium">
+            <span className="text-[15px] font-medium dark:text-white">
               {year}년 {month + 1}월
             </span>
             <button

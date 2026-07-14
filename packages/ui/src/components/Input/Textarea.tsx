@@ -21,8 +21,9 @@ export default function Textarea({
 }: TextareaProps) {
   return (
     <textarea
-      className="w-full py-[13px] px-[16px] border border-gray-200 rounded-[10px] font-medium placeholder:text-gray-500 outline-none resize-none
-      transition-colors bg-white focus:border-yellow-600 [&:not(:placeholder-shown)]:border-yellow-600"
+      className="w-full py-[13px] px-[16px] border border-gray-200 rounded-[10px] font-medium placeholder:text-gray-500 outline-none resize-none text-black
+      transition-colors bg-white focus:border-yellow-600 [&:not(:placeholder-shown)]:border-yellow-600
+      dark:placeholder:text-gray-500 dark:focus:border-yellow-500 dark:[&:not(:placeholder-shown)]:border-yellow-500"
       placeholder={title}
       value={value}
       onChange={onChange}

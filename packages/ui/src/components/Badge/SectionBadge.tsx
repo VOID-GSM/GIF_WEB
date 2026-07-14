@@ -9,7 +9,7 @@ interface SectionBadgeProps {
 }
 
 const variantStyles: Record<SectionVariant, { wrap: string; text: string }> = {
-  active:   { wrap: "bg-green-50 border-success",    text: "text-green-dark" },
+  active:   { wrap: "bg-green-50 border-success",    text: "text-green-dark dark:text-[var(--color-success)]" },
   unscored: { wrap: "bg-orange-50 border-orange-400", text: "text-orange-700" },
   inactive: { wrap: "bg-gray-100 border-gray-200",    text: "text-gray-400"  },
 };

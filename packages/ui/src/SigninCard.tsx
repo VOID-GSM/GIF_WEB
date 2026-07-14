@@ -56,7 +56,7 @@ const PROVIDER_CONFIG: Record<
     description: "Google 계정으로 안전하게 로그인하세요!",
     buttonLabel: "Google로 로그인",
     buttonClassName:
-      "bg-white text-gray-700 border border-gray-200 shadow-[0_1px_3px_rgba(0,0,0,0.12)] transition hover:bg-gray-50 hover:shadow-[0_2px_6px_rgba(0,0,0,0.16)] active:scale-[0.99]",
+      "bg-white text-gray-700 border border-gray-200 shadow-[0_1px_3px_rgba(0,0,0,0.12)] transition hover:bg-gray-50 dark:hover:bg-gray-800 hover:shadow-[0_2px_6px_rgba(0,0,0,0.16)] active:scale-[0.99]",
     logo: <GoogleLogo />,
   },
 };
@@ -71,11 +71,9 @@ export default function SigninCard({
   return (
     <div className="flex flex-col md:flex-row shadow-new rounded-[20px] overflow-hidden w-full max-w-[360px] md:max-w-none md:w-auto">
       <div
-        className="flex flex-col justify-center px-8 py-8 md:w-[333px] md:px-10 md:py-[50px]"
-        style={{
-          background:
-            "radial-gradient(ellipse at 110% 50%, #fff79e 0%, #fffac7 32%, #fffef1 65%)",
-        }}
+        className="flex flex-col justify-center px-8 py-8 md:w-[333px] md:px-10 md:py-[50px]
+        bg-[radial-gradient(ellipse_at_110%_50%,_#fff79e_0%,_#fffac7_32%,_#fffef1_65%)]
+        dark:bg-[radial-gradient(ellipse_at_110%_50%,_rgba(248,232,0,0.12)_0%,_#262626_45%,_#171717_100%)]"
       >
         <div className="flex flex-col gap-6 md:gap-10 md:w-[253px]">
           <img
@@ -84,21 +82,21 @@ export default function SigninCard({
             className="w-[60px] h-10 object-contain"
           />
           <div className="flex flex-col gap-3 md:gap-5">
-            <p className="text-[12px] text-yellow-700">
+            <p className="text-[12px] text-[#ffc200] dark:text-yellow-300">
               GSM IdeaFestival 관리 시스템
             </p>
-            <p className="text-base font-semibold leading-normal text-black">
+            <p className="text-base font-semibold leading-normal text-[#000000] dark:text-white">
               GIF를 통해 아이디어 페스티벌을
               <br />
               원할하게 진행하세요!
             </p>
-            <p className="hidden md:block text-[12px] text-gray-600 leading-normal">
+            <p className="hidden md:block text-[12px] text-[#7b7b7b] dark:text-gray-300 leading-normal">
               프로젝트 보고서 제출부터 점수 관리, AI 요약 기능까지
               <br />
               아이디어 페스티벌 모든 진행을 GIF와 함께해요.
             </p>
           </div>
-          <p className="text-[10px] text-gray-500 font-medium">Team.VOID</p>
+          <p className="text-[10px] text-[#9d9d9d] dark:text-gray-500 font-medium">Team.VOID</p>
         </div>
       </div>
 
