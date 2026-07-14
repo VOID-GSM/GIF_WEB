@@ -89,10 +89,12 @@ export function CreateProjectView() {
         className="flex w-full max-w-[830px] flex-col gap-14"
       >
         <section className="flex flex-col gap-6 sm:flex-row sm:gap-8">
-          <FileUpload
-            onChange={setThumbnail}
-            className="mx-auto h-[160px] w-[240px]"
-          />
+          <div className="mx-auto flex w-[240px] shrink-0 flex-col gap-1.5">
+            <FileUpload onChange={setThumbnail} className="h-[160px] w-[240px]" />
+            <span className="text-center text-xs text-gray-400">
+              프로젝트 목록에 224 x 112px(2:1 비율)로 표시돼요. 비율이 다르면 잘릴 수 있어요.
+            </span>
+          </div>
 
           <div className="flex flex-1 flex-col gap-6">
             <div className="flex flex-col gap-1">
