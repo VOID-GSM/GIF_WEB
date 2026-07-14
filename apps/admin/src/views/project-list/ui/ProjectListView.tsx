@@ -13,6 +13,7 @@ import { useGetMyInfo } from "@/entities/mypage";
 import DeadlineCountdownCard from "@/widgets/dashboard/ui/DeadlineCountdownCard";
 import ScheduleTimelineCard from "@/widgets/dashboard/ui/ScheduleTimelineCard";
 import MyProjectCard from "@/widgets/dashboard/ui/MyProjectCard";
+import ProfileSummaryCard from "@/widgets/dashboard/ui/ProfileSummaryCard";
 
 export default function ProjectListView() {
   // 마지막으로 선택한 학년을 복원한다 (확정 전엔 null → 초기 학년 깜빡임 방지)
@@ -90,6 +91,7 @@ export default function ProjectListView() {
           </>
         )}
 
+        <ProfileSummaryCard />
         <DeadlineCountdownCard />
         <ScheduleTimelineCard />
       </div>
