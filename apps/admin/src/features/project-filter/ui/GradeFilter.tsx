@@ -15,6 +15,8 @@ export default function GradeFilter({ value, onChange }: GradeFilterProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (!isOpen) return;
+
     const close = (e: MouseEvent) => {
       if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
         setIsOpen(false);
@@ -22,7 +24,7 @@ export default function GradeFilter({ value, onChange }: GradeFilterProps) {
     };
     document.addEventListener("mousedown", close);
     return () => document.removeEventListener("mousedown", close);
-  }, []);
+  }, [isOpen]);
 
   return (
     <div ref={containerRef} className="relative">
