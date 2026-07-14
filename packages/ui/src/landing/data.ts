@@ -155,9 +155,9 @@ export const WINNERS: WinnerItem[] = [
     medal: "🥈",
     team: "기능반",
     title: "GSM Market",
-    desc: "학생들이 직접 물건을 사고팔며 교류하는 플리마켓입니다.",
+    desc: "GSM Market은 학생들이 직접 물건을 사고팔며 자유롭게 소통하는 교내 중심의 플리마켓 플랫폼입니다. 안 쓰는 물건에 새로운 가치를 더하고, 필요한 선후배 그리고 동기들과 따뜻한 교류를 나눌 수 있습니다.",
     // 이찬진이 팀장이라 맨 앞에 둔다.
-    members: ["이찬진", "조영재", "이진서"],
+    members: ["이찬진", "조영재", "이진서", "김성주"],
     logo: "/gsmmarket-logo.png",
   },
   {
