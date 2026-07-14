@@ -28,7 +28,7 @@ interface Props {
 const AREAS: ScoreArea[] = ["major", "report", "social"];
 
 const headerCellCx =
-  "px-4 h-9 flex items-center bg-[var(--color-yellow-50)] border-y border-[var(--color-yellow-600)] text-xs font-semibold text-[var(--color-gray-700)] sticky top-0 z-10";
+  "px-4 h-9 flex items-center bg-[var(--color-yellow-50)] border-y border-[var(--color-yellow-600)] text-xs font-semibold text-[var(--color-gray-700)] sticky top-0 z-10 dark:bg-yellow-500/10 dark:text-gray-300";
 
 export default function ScoreAssignTable({
   isLoading,
@@ -80,7 +80,7 @@ export default function ScoreAssignTable({
 
   if (isLoading) {
     return (
-      <div className="py-8 text-center text-sm text-[var(--color-gray-400)]">
+      <div className="py-8 text-center text-sm text-[var(--color-gray-400)] dark:text-gray-500">
         불러오는 중...
       </div>
     );
@@ -88,7 +88,7 @@ export default function ScoreAssignTable({
 
   if (teams.length === 0) {
     return (
-      <div className="py-8 text-center text-sm text-[var(--color-gray-400)]">
+      <div className="py-8 text-center text-sm text-[var(--color-gray-400)] dark:text-gray-500">
         해당하는 팀이 없습니다.
       </div>
     );
@@ -97,14 +97,14 @@ export default function ScoreAssignTable({
   return (
     <>
       {/* 모바일: 카드 레이아웃 (< sm) */}
-      <div className="sm:hidden flex flex-col divide-y divide-[var(--color-gray-100)]">
+      <div className="sm:hidden flex flex-col divide-y divide-[var(--color-gray-100)] dark:divide-gray-800">
         {teams.map((team) => (
           <div key={team.id} className="py-3 flex flex-col gap-2">
             <div className="flex flex-col gap-0.5">
-              <span className="text-xs font-semibold text-[var(--color-gray-500)]">
+              <span className="text-xs font-semibold text-[var(--color-gray-500)] dark:text-gray-400">
                 {team.teamName}
               </span>
-              <span className="text-sm text-[var(--color-gray-800)] line-clamp-2">
+              <span className="text-sm text-[var(--color-gray-800)] dark:text-gray-200 line-clamp-2">
                 {team.name}
               </span>
             </div>
@@ -124,13 +124,13 @@ export default function ScoreAssignTable({
 
           {teams.map((team) => (
             <Fragment key={team.id}>
-              <span className="border-t border-[var(--color-gray-100)] px-4 h-11 text-sm text-[var(--color-gray-800)] truncate flex items-center min-w-0">
+              <span className="border-t border-[var(--color-gray-100)] dark:border-gray-800 px-4 h-11 text-sm text-[var(--color-gray-800)] dark:text-gray-200 truncate flex items-center min-w-0">
                 {team.name}
               </span>
-              <span className="border-t border-[var(--color-gray-100)] px-4 h-11 text-sm text-[var(--color-gray-600)] flex items-center">
+              <span className="border-t border-[var(--color-gray-100)] dark:border-gray-800 px-4 h-11 text-sm text-[var(--color-gray-600)] dark:text-gray-400 flex items-center">
                 {team.teamName}
               </span>
-              <div className="border-t border-[var(--color-gray-100)] px-4 h-11 flex flex-nowrap items-center gap-2">
+              <div className="border-t border-[var(--color-gray-100)] dark:border-gray-800 px-4 h-11 flex flex-nowrap items-center gap-2">
                 {renderBadges(team)}
               </div>
             </Fragment>

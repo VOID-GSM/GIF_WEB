@@ -48,7 +48,7 @@ export default function ScoreAssignFilterBar({
       <div className="relative" ref={dropdownRef}>
         <button
           onClick={() => setDropdownOpen((prev) => !prev)}
-          className="flex items-center gap-1 w-fit py-[6.5px] px-[10px] rounded-[8px] text-[12px] border border-gray-500 text-gray-500 bg-white cursor-pointer"
+          className="flex items-center gap-1 w-fit py-[6.5px] px-[10px] rounded-[8px] text-[12px] border border-gray-500 text-gray-500 bg-white cursor-pointer dark:border-gray-600"
         >
           {selectedLabel}
           <Chevron className={`w-3 h-3 transition-transform ${dropdownOpen ? "rotate-180" : ""}`} />
@@ -59,8 +59,8 @@ export default function ScoreAssignFilterBar({
               <li key={value}>
                 <button
                   onClick={() => { onGradeChange(value); setDropdownOpen(false); }}
-                  className={`w-full text-left px-4 py-2 text-xs font-medium hover:bg-[var(--color-gray-100)] cursor-pointer ${
-                    grade === value ? "text-[var(--color-gray-900)]" : "text-[var(--color-gray-600)]"
+                  className={`w-full text-left px-4 py-2 text-xs font-medium hover:bg-[var(--color-gray-100)] dark:hover:bg-gray-800 cursor-pointer ${
+                    grade === value ? "text-[var(--color-gray-900)] dark:text-white" : "text-[var(--color-gray-600)] dark:text-gray-400"
                   }`}
                 >
                   {label}

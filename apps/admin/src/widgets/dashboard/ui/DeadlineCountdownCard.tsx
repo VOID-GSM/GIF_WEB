@@ -50,7 +50,7 @@ export default function DeadlineCountdownCard() {
         </p>
       ) : (
         <>
-          <p className="mt-2 text-[36px] font-bold tracking-[-0.5px] text-yellow-600">
+          <p className="mt-2 text-[36px] font-bold tracking-[-0.5px] text-yellow-600 dark:text-yellow-400">
             {getDDayLabel(nextForm.deadline)}
           </p>
           <p className="mt-1 text-[13px] text-gray-500">

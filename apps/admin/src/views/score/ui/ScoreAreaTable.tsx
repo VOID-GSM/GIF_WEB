@@ -19,7 +19,7 @@ export default function ScoreAreaTable({ isLoading, rows, onSelectScore }: Props
   return (
     <>
       {/* 모바일: 항목별 카드 레이아웃 */}
-      <div className="sm:hidden divide-y divide-[var(--color-gray-100)]">
+      <div className="sm:hidden divide-y divide-[var(--color-gray-100)] dark:divide-gray-800">
         {rows.map((row) => (
           <div key={row.key} className="py-3 flex flex-col gap-2">
             <span className="text-sm font-medium text-gray-800">{row.label}</span>
@@ -44,7 +44,7 @@ export default function ScoreAreaTable({ isLoading, rows, onSelectScore }: Props
             <span key={h} className="font-semibold text-gray-700 text-sm">{h}</span>
           ))}
         </div>
-        <div className="flex-1 flex flex-col divide-y divide-[var(--color-gray-100)] min-w-[340px]">
+        <div className="flex-1 flex flex-col divide-y divide-[var(--color-gray-100)] dark:divide-gray-800 min-w-[340px]">
           {rows.map((row) => (
             <div key={row.key} className="flex-1 grid grid-cols-[1fr_180px] gap-4 px-4 py-3 items-center">
               <span className="text-sm font-medium text-gray-800">{row.label}</span>

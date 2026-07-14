@@ -18,11 +18,13 @@ const STATUS_META: Record<
 > = {
   PENDING: {
     label: "답변 대기",
-    className: "bg-gray-100 text-gray-500 border-gray-200",
+    className:
+      "bg-gray-100 text-gray-500 border-gray-200",
   },
   ANSWERED: {
     label: "답변 완료",
-    className: "bg-yellow-50 text-yellow-700 border-yellow-600",
+    className:
+      "bg-yellow-50 text-yellow-700 border-yellow-600",
   },
 };
 
@@ -138,7 +140,7 @@ export default function AdminInquiryListView() {
                   type="button"
                   onClick={() => setPage((prev) => Math.max(prev - 1, 0))}
                   disabled={data.first}
-                  className="h-9 cursor-pointer rounded-[10px] border border-gray-200 bg-white px-4 text-[13px] font-medium text-gray-600 transition-colors hover:border-yellow-600 hover:bg-yellow-50 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-gray-200 disabled:hover:bg-white"
+                  className="h-9 cursor-pointer rounded-[10px] border border-gray-200 bg-white px-4 text-[13px] font-medium text-gray-600 transition-colors hover:border-yellow-600 hover:bg-yellow-50 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-gray-200 disabled:hover:bg-white dark:disabled:hover:border-gray-700 dark:disabled:hover:bg-gray-900"
                 >
                   이전
                 </button>
@@ -149,7 +151,7 @@ export default function AdminInquiryListView() {
                   type="button"
                   onClick={() => setPage((prev) => prev + 1)}
                   disabled={data.last}
-                  className="h-9 cursor-pointer rounded-[10px] border border-gray-200 bg-white px-4 text-[13px] font-medium text-gray-600 transition-colors hover:border-yellow-600 hover:bg-yellow-50 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-gray-200 disabled:hover:bg-white"
+                  className="h-9 cursor-pointer rounded-[10px] border border-gray-200 bg-white px-4 text-[13px] font-medium text-gray-600 transition-colors hover:border-yellow-600 hover:bg-yellow-50 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-gray-200 disabled:hover:bg-white dark:disabled:hover:border-gray-700 dark:disabled:hover:bg-gray-900"
                 >
                   다음
                 </button>
