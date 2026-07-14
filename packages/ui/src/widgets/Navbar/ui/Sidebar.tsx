@@ -15,6 +15,18 @@ export default function Sidebar({ navItems, isOpen, onClose }: SidebarProps) {
     router.refresh();
   };
 
+  // 경로가 겹치는 항목(예: /inquiry, /inquiry/admin)이 동시에 활성화되지 않도록
+  // 현재 경로에 매칭되는 항목 중 가장 구체적인(긴) 경로 하나만 활성으로 고른다.
+  const activePath = navItems
+    .map(({ path }) => path)
+    .filter(
+      (path) =>
+        path === "/"
+          ? pathname === "/"
+          : pathname === path || pathname.startsWith(`${path}/`),
+    )
+    .sort((a, b) => b.length - a.length)[0];
+
   return (
     <nav
       className={`fixed top-0 left-0 z-[100] flex h-screen w-[220px] flex-col gap-1 border-r border-gray-200 bg-white px-4 py-6
@@ -39,7 +51,7 @@ export default function Sidebar({ navItems, isOpen, onClose }: SidebarProps) {
       </button>
 
       {navItems.map(({ label, path }) => {
-        const isActive = pathname === path;
+        const isActive = path === activePath;
 
         return (
           <div key={path} className="mx-2 border-b border-gray-100">
