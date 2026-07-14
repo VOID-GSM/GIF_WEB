@@ -10,8 +10,9 @@ export const FORM_TABLE_GRID =
 
 interface FormCardProps {
   form: FormSummary;
-  onAnnounce: (id: number) => void;
-  onEdit: (id: number) => void;
+  // 공지·수정 권한(아이디어페스티벌 담당)이 있을 때만 전달 — 없으면 버튼을 렌더하지 않는다.
+  onAnnounce?: (id: number) => void;
+  onEdit?: (id: number) => void;
   // 삭제 권한이 있을 때만 전달 — 없으면 삭제 버튼을 렌더하지 않는다.
   onDelete?: (id: number) => void;
   onView?: (id: number) => void;
@@ -51,7 +52,7 @@ export default function FormCard({
           <span className="inline-flex h-8 items-center rounded-lg bg-gray-100 px-3 text-sm font-medium text-gray-500">
             공지됨
           </span>
-        ) : (
+        ) : onAnnounce ? (
           <button
             type="button"
             onClick={(e) => {
@@ -62,12 +63,16 @@ export default function FormCard({
           >
             공지하기
           </button>
+        ) : (
+          <span className="inline-flex h-8 items-center rounded-lg bg-gray-100 px-3 text-sm font-medium text-gray-500">
+            공지 전
+          </span>
         )}
       </div>
 
       {/* 관리 (수정 / 삭제) — 공지되면 수정이 사라져도 삭제가 밀리지 않도록 수정 자리를 고정 폭으로 유지 */}
       <div className="flex items-center justify-start gap-3">
-        {announced ? (
+        {announced || !onEdit ? (
           <span className="h-8 w-14" aria-hidden />
         ) : (
           <button

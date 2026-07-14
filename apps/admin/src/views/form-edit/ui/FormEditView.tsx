@@ -1,11 +1,13 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { FormCard, Plus, DatePicker } from "@repo/ui";
+import { toast } from "sonner";
 import { useUpdateForm, useGetFormById } from "@/entities/form-edit";
 import type { FormByIdResponse, UpdateFormField } from "@/entities/form-edit";
 import type { PostFormRequestField } from "@/entities/form-create";
+import { useGetMyInfo } from "@/entities/mypage";
 
 const FORM_TITLE_MAX_LENGTH = 50;
 
@@ -180,7 +182,43 @@ function FormEditor({
 }
 
 export default function FormEditView({ formId }: { formId: number }) {
+  const router = useRouter();
   const { data: formDetail, isLoading, isError } = useGetFormById(formId);
+
+  // 양식 수정은 아이디어페스티벌 담당(MASTER)만 가능 — 그 외 역할·에러는 목록으로 돌려보낸다.
+  const {
+    data: myInfo,
+    isLoading: isMyInfoLoading,
+    isError: isMyInfoError,
+  } = useGetMyInfo();
+  const canEdit = !isMyInfoError && myInfo?.adminRole === "MASTER";
+
+  useEffect(() => {
+    // 로딩이 끝났는데(정보 도착 또는 에러) 권한이 없으면 목록으로 보낸다.
+    if (!isMyInfoLoading && (myInfo || isMyInfoError) && !canEdit) {
+      toast.error("양식 수정 권한이 없습니다.");
+      router.replace("/form");
+    }
+  }, [isMyInfoLoading, myInfo, isMyInfoError, canEdit, router]);
+
+  // 권한 확인 중에는 로딩만, 에러·무권한이면 안내 후 리다이렉트 대기 (무한 로딩 방지)
+  if (isMyInfoLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <p className="text-gray-500">불러오는 중...</p>
+      </div>
+    );
+  }
+
+  if (!canEdit) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background px-5 text-gray-500 font-medium">
+        {isMyInfoError
+          ? "정보를 불러오지 못했습니다."
+          : "양식 수정 권한이 없습니다."}
+      </div>
+    );
+  }
 
   if (isLoading) {
     return (
