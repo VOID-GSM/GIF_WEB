@@ -21,7 +21,7 @@ export function formatDeadline(deadline: string) {
 export function formatTimestamp(timestamp: string) {
   if (!timestamp || typeof timestamp !== "string") return "";
   const hasTimezone =
-    timestamp.endsWith("Z") || /[+-]\d{2}:?\d{2}$/.test(timestamp);
+    timestamp.endsWith("Z") || /[+-]\d{2}(?::?\d{2})?$/.test(timestamp);
   const iso = timestamp.includes("T") ? timestamp : `${timestamp}T00:00:00`;
   const date = new Date(hasTimezone ? iso : `${iso}Z`);
   if (isNaN(date.getTime())) return formatDeadline(timestamp);
