@@ -13,15 +13,12 @@ function parseGrade(value: string | null): Grade {
     : GRADES[0];
 }
 
-let listeners: Array<() => void> = [];
+// storageKey별로 리스너를 분리해, 한 화면의 학년 변경이 다른 키를 쓰는 화면까지
+// 리렌더링시키지 않도록 한다.
+const listenersMap = new Map<string, Set<() => void>>();
 
-function subscribe(onChange: () => void) {
-  listeners.push(onChange);
-  window.addEventListener("storage", onChange);
-  return () => {
-    listeners = listeners.filter((listener) => listener !== onChange);
-    window.removeEventListener("storage", onChange);
-  };
+function notify(storageKey: string) {
+  listenersMap.get(storageKey)?.forEach((listener) => listener());
 }
 
 function getServerSnapshot(): string | null {
@@ -37,6 +34,27 @@ export function useStoredGrade(storageKey: string = DEFAULT_GRADE_STORAGE_KEY) {
     [storageKey],
   );
 
+  const subscribe = useCallback(
+    (onChange: () => void) => {
+      const listeners = listenersMap.get(storageKey) ?? new Set();
+      listeners.add(onChange);
+      listenersMap.set(storageKey, listeners);
+
+      // 다른 탭에서의 변경은 storage 이벤트로 전달되며, 해당 키만 반영한다.
+      const handleStorage = (e: StorageEvent) => {
+        if (e.key === storageKey) onChange();
+      };
+      window.addEventListener("storage", handleStorage);
+
+      return () => {
+        listeners.delete(onChange);
+        if (listeners.size === 0) listenersMap.delete(storageKey);
+        window.removeEventListener("storage", handleStorage);
+      };
+    },
+    [storageKey],
+  );
+
   const snapshot = useSyncExternalStore(
     subscribe,
     getSnapshot,
@@ -47,7 +65,7 @@ export function useStoredGrade(storageKey: string = DEFAULT_GRADE_STORAGE_KEY) {
   const setGrade = useCallback(
     (next: Grade) => {
       window.localStorage.setItem(storageKey, String(next));
-      listeners.forEach((listener) => listener());
+      notify(storageKey);
     },
     [storageKey],
   );
