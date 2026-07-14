@@ -35,7 +35,7 @@ export default function MyInquiryListView() {
   const { data, isPending, isError } = useGetMyInquiries();
 
   return (
-    <div className="flex min-h-[calc(100vh-60px)] w-full items-center justify-center bg-background px-4 py-8">
+    <div className="flex min-h-dvh w-full items-center justify-center bg-background px-4 py-8">
       <div className="w-full max-w-[600px]">
         <InquiryTabs />
 
