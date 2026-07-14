@@ -127,7 +127,7 @@ export default function FileField({
               }}
               width={15}
               height={15}
-              className="flex-shrink-0 text-gray-40 hover:text-gray-40/60 transition-colors cursor-pointer"
+              className="flex-shrink-0 text-gray-40 hover:opacity-60 transition-colors cursor-pointer"
             />
           )}
         </div>
