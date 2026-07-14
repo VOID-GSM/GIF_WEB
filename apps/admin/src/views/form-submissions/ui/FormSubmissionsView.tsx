@@ -68,7 +68,7 @@ export default function FormSubmissionsView({ formId }: Props) {
   });
 
   return (
-    <div className="flex flex-col items-center gap-8 px-4 py-6 sm:gap-12 sm:py-10">
+    <div className="min-h-screen flex flex-col items-center gap-8 px-4 py-6 sm:gap-12 sm:py-10 bg-background">
       {/* 880px 미만: [뒤로 / 미리보기] 한 줄 + 필터 아래 / 880px+: 필터 중앙, 양옆 버튼 */}
       <div className="flex w-full max-w-[800px] flex-col items-center gap-4 min-[880px]:relative min-[880px]:flex-row min-[880px]:justify-center min-[880px]:gap-0">
         <div className="flex w-full items-center justify-between min-[880px]:contents">
