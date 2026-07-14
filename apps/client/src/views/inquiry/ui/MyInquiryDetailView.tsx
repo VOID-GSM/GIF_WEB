@@ -38,7 +38,7 @@ export default function MyInquiryDetailView({
   const { mutate: download, isPending: isDownloading } = useDownloadFile();
 
   return (
-    <div className="flex min-h-[calc(100vh-60px)] w-full items-center justify-center bg-background px-4 py-8">
+    <div className="flex min-h-dvh w-full items-center justify-center bg-background px-4 py-8">
       <div className="w-full max-w-[600px]">
         {/* 상단 이동 */}
         <button

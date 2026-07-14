@@ -40,12 +40,12 @@ export default function FormListView() {
 
   return (
     <div
-      className={`flex min-h-[calc(100vh-60px)] flex-col items-center bg-background px-4 ${
+      className={`flex min-h-dvh flex-col items-center bg-background px-4 ${
         showMessage ? "justify-center" : "justify-start"
       }`}
     >
       <div
-        className={`flex max-h-[calc(100vh-160px)] w-full max-w-[848px] flex-col gap-5 overflow-y-auto px-2 py-6 sm:px-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden ${
+        className={`flex max-h-[calc(100dvh-160px)] w-full max-w-[848px] flex-col gap-5 overflow-y-auto px-2 py-6 sm:px-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden ${
           showMessage ? "" : "pt-[60px] sm:pt-[100px]"
         }`}
       >
