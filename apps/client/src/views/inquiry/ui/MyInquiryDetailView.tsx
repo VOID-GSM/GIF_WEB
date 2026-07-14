@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { Chevron, File as FileIcon } from "@repo/ui";
+import { Chevron, File as FileIcon, Markdown } from "@repo/ui";
 import { formatTimestamp } from "@/entities/form/lib/formatDeadline";
 import { useDownloadFile } from "@/entities/form-submissions/hooks/useDownloadFile";
 import { useGetMyInquiryDetail } from "@/entities/inquiry";
@@ -144,9 +144,7 @@ export default function MyInquiryDetailView({
                       </span>
                     )}
                   </div>
-                  <p className="whitespace-pre-wrap text-[13px] leading-relaxed text-gray-700">
-                    {data.answerContent}
-                  </p>
+                  <Markdown content={data.answerContent ?? ""} />
                 </div>
               )}
             </div>
