@@ -23,7 +23,9 @@ export default function FileAnswer({
     return <span className="text-gray-400">파일 없음</span>;
   }
 
-  const fileName = filePath.split("/").pop() || "file";
+  // 서버에 저장된 원본 파일명을 우선 사용하고, 없으면 경로 마지막(UUID)으로 폴백
+  const fileName =
+    answer?.originalFileName || filePath.split("/").pop() || "file";
   const fileUrl = resolveFileUrl(filePath);
 
   const handleDownload = async () => {
