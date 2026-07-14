@@ -18,13 +18,15 @@ export default function Navbar({ navItems }: NavbarProps) {
 
   return (
     <>
-      <button
-        type="button"
-        onClick={() => setIsSidebarOpen(true)}
-        className="fixed top-4 left-4 z-40 cursor-pointer md:hidden"
-      >
-        <Menu className="h-6 w-6 text-gray-600" />
-      </button>
+      <div className="fixed top-0 left-0 z-40 flex h-14 w-full items-center bg-background px-4 md:hidden">
+        <button
+          type="button"
+          onClick={() => setIsSidebarOpen(true)}
+          className="flex cursor-pointer items-center justify-center"
+        >
+          <Menu className="h-6 w-6 text-gray-600" />
+        </button>
+      </div>
 
       {isSidebarOpen && (
         <div
