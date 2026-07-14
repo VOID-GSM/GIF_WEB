@@ -278,7 +278,7 @@ export default function FormMySubmitView({ formId }: Props) {
       ) : (
         <div className="mx-auto flex flex-col w-full max-w-[560px] gap-4">
           <div className="flex flex-col gap-2">
-            <span className="flex justify-center text-[24px] font-semibold">
+            <span className="flex justify-center text-[24px] font-semibold text-gray-900">
               {formDetail.title}
             </span>
             <div className="flex flex-wrap gap-x-4 gap-y-1 text-[14px] font-medium">
@@ -313,7 +313,7 @@ export default function FormMySubmitView({ formId }: Props) {
                     key={fId}
                     className="flex flex-col py-6 px-6 sm:py-8 sm:px-12 border-t-5 border-yellow-600 bg-white rounded-[10px] shadow-new"
                   >
-                    <span className="text-[20px] font-semibold pb-2">
+                    <span className="text-[20px] font-semibold pb-2 text-gray-900">
                       {field.title}
                     </span>
                     {field.description && (

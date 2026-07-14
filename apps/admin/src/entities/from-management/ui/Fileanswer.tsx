@@ -63,7 +63,9 @@ export default function FileAnswer({
       <div className="flex gap-[22px]">
         <File />
         <div className="flex flex-col">
-          <span className="text-[14px] font-semibold">{fileName}</span>
+          <span className="text-[14px] font-semibold text-gray-900">
+            {fileName}
+          </span>
           <span className="text-[11px] text-gray-400">
             {downloading
               ? "다운로드 중..."
