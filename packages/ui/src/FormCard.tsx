@@ -162,7 +162,7 @@ export default function FormCard({ field, onChange, onDelete }: FormCardProps) {
                       onClick={() => toggleExtension(ext)}
                       className={`px-3 py-1.5 rounded-full text-[13px] border transition-colors cursor-pointer ${
                         selected
-                          ? "border-yellow-600 bg-yellow-600/10 text-yellow-700"
+                          ? "border-yellow-600 bg-yellow-600/10 text-yellow-700 dark:bg-yellow-500/15"
                           : "border-gray-200 bg-white text-gray-500 hover:border-gray-300"
                       }`}
                     >

@@ -16,8 +16,8 @@ export default function GrantButton({
       className={`flex items-center w-fit py-[6.5px] px-[10px] rounded-[8px] text-[12px] border cursor-pointer
         ${
           isActive
-            ? "bg-white border-yellow-600 text-yellow-600"
-            : "bg-white border-gray-500 text-gray-500"
+            ? "bg-white border-yellow-600 text-yellow-600 dark:text-yellow-400"
+            : "bg-white border-gray-500 text-gray-500 dark:border-gray-600"
         }`}
       onClick={onClick}
     >

@@ -34,7 +34,7 @@ export default function FormCard({
       onClick={announced ? () => onView?.(id) : undefined}
     >
       {/* 제목 */}
-      <span className="min-w-0 truncate text-base font-medium sm:text-lg">
+      <span className="min-w-0 truncate text-base font-medium text-gray-900 sm:text-lg">
         {title}
       </span>
 
@@ -94,7 +94,7 @@ export default function FormCard({
               e.stopPropagation();
               onDelete(id);
             }}
-            className="ml-4 cursor-pointer text-sm font-medium text-red-500 transition-colors duration-150 hover:text-red-600 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-300"
+            className="ml-4 cursor-pointer text-sm font-medium text-red-500 transition-colors duration-150 hover:text-red-600 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-300 dark:text-red-400 dark:hover:text-red-300"
           >
             삭제
           </button>

@@ -3,7 +3,14 @@
 import { ChangeEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Input, Textarea, File as FileIcon, Upload, Close } from "@repo/ui";
+import {
+  Input,
+  Textarea,
+  Markdown,
+  File as FileIcon,
+  Upload,
+  Close,
+} from "@repo/ui";
 import { usePostInquiry } from "@/entities/inquiry";
 import InquiryTabs from "./InquiryTabs";
 
@@ -23,6 +30,7 @@ export default function InquiryView() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [file, setFile] = useState<File | null>(null);
+  const [isPreview, setIsPreview] = useState(false);
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const selected = e.target.files?.[0];
@@ -54,6 +62,7 @@ export default function InquiryView() {
           setTitle("");
           setContent("");
           setFile(null);
+          setIsPreview(false);
           router.push("/inquiry/my");
         },
       },
@@ -106,9 +115,30 @@ export default function InquiryView() {
           {/* 내용 */}
           <div className="flex flex-col gap-1.5">
             <div className="flex items-center justify-between">
-              <label className="text-[13px] font-medium text-gray-700">
-                내용
-              </label>
+              <div className="flex items-center gap-1">
+                <button
+                  type="button"
+                  onClick={() => setIsPreview(false)}
+                  className={`rounded-full px-2.5 py-1 text-[12px] font-medium transition-colors ${
+                    !isPreview
+                      ? "bg-yellow-600 text-gray-900"
+                      : "text-gray-400 hover:text-gray-600"
+                  }`}
+                >
+                  작성
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIsPreview(true)}
+                  className={`rounded-full px-2.5 py-1 text-[12px] font-medium transition-colors ${
+                    isPreview
+                      ? "bg-yellow-600 text-gray-900"
+                      : "text-gray-400 hover:text-gray-600"
+                  }`}
+                >
+                  미리보기
+                </button>
+              </div>
               <span
                 className={`text-[11px] font-medium ${
                   content.length >= MAX_CONTENT_LENGTH
@@ -119,15 +149,27 @@ export default function InquiryView() {
                 {content.length}/{MAX_CONTENT_LENGTH}
               </span>
             </div>
-            <Textarea
-              title="문의 내용을 자세히 입력해주세요"
-              value={content}
-              onChange={(e) =>
-                setContent(e.target.value.slice(0, MAX_CONTENT_LENGTH))
-              }
-              rows={6}
-              maxLength={MAX_CONTENT_LENGTH}
-            />
+            {isPreview ? (
+              <div className="min-h-[144px] rounded-[10px] border border-gray-200 bg-white px-3.5 py-3">
+                {content.trim() ? (
+                  <Markdown content={content} />
+                ) : (
+                  <p className="text-[13px] text-gray-400">
+                    미리볼 내용이 없습니다.
+                  </p>
+                )}
+              </div>
+            ) : (
+              <Textarea
+                title="문의 내용을 자세히 입력해주세요 (마크다운 문법 지원)"
+                value={content}
+                onChange={(e) =>
+                  setContent(e.target.value.slice(0, MAX_CONTENT_LENGTH))
+                }
+                rows={6}
+                maxLength={MAX_CONTENT_LENGTH}
+              />
+            )}
           </div>
 
           {/* 첨부파일 */}
@@ -176,7 +218,7 @@ export default function InquiryView() {
                   disabled={isPending}
                 />
                 <Upload className="h-4 w-4 text-gray-400 transition-colors group-hover:text-yellow-700" />
-                <span className="text-[12px] font-medium text-gray-500 transition-colors group-hover:text-gray-700">
+                <span className="text-[12px] font-medium text-gray-500 transition-colors group-hover:text-gray-700 dark:group-hover:text-gray-200">
                   클릭하여 파일 첨부 (최대 10MB)
                 </span>
               </label>

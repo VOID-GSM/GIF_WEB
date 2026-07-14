@@ -176,7 +176,7 @@ export default function InquiryView() {
                   disabled={isPending}
                 />
                 <Upload className="h-4 w-4 text-gray-400 transition-colors group-hover:text-yellow-700" />
-                <span className="text-[12px] font-medium text-gray-500 transition-colors group-hover:text-gray-700">
+                <span className="text-[12px] font-medium text-gray-500 transition-colors group-hover:text-gray-700 dark:group-hover:text-gray-200">
                   클릭하여 파일 첨부 (최대 10MB)
                 </span>
               </label>

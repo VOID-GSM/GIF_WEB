@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { Chevron, File as FileIcon } from "@repo/ui";
+import { Chevron, File as FileIcon, Markdown } from "@repo/ui";
 import { formatTimestamp } from "@/entities/form/lib/formatDeadline";
 import { useDownloadFile } from "@/entities/form-submissions/hooks/useDownloadFile";
 import { useGetMyInquiryDetail } from "@/entities/inquiry";
@@ -13,11 +13,13 @@ const STATUS_META: Record<
 > = {
   PENDING: {
     label: "답변 대기",
-    className: "bg-gray-100 text-gray-500 border-gray-200",
+    className:
+      "bg-gray-100 text-gray-500 border-gray-200",
   },
   ANSWERED: {
     label: "답변 완료",
-    className: "bg-yellow-50 text-yellow-700 border-yellow-600",
+    className:
+      "bg-yellow-50 text-yellow-700 border-yellow-600",
   },
 };
 
@@ -69,11 +71,24 @@ export default function MyInquiryDetailView({
                 <h1 className="text-[19px] font-semibold tracking-[-0.3px] text-gray-900">
                   {data.title}
                 </h1>
-                <span
-                  className={`mt-1 shrink-0 rounded-full border px-2.5 py-0.5 text-[11px] font-medium ${STATUS_META[data.status].className}`}
-                >
-                  {STATUS_META[data.status].label}
-                </span>
+                <div className="mt-1 flex shrink-0 items-center gap-2">
+                  <span
+                    className={`rounded-full border px-2.5 py-0.5 text-[11px] font-medium ${STATUS_META[data.status].className}`}
+                  >
+                    {STATUS_META[data.status].label}
+                  </span>
+                  {data.status === "PENDING" && (
+                    <button
+                      type="button"
+                      onClick={() =>
+                        router.push(`/inquiry/my/${inquiryId}/edit`)
+                      }
+                      className="cursor-pointer rounded-[10px] border border-gray-200 px-3 py-1 text-[13px] font-medium text-gray-600 transition-colors hover:border-yellow-600 hover:text-yellow-700"
+                    >
+                      수정
+                    </button>
+                  )}
+                </div>
               </div>
               <p className="mt-1 text-[12px] text-gray-400">
                 {formatTimestamp(data.createdAt)}
@@ -86,9 +101,9 @@ export default function MyInquiryDetailView({
                 <span className="text-[13px] font-medium text-gray-700">
                   문의 내용
                 </span>
-                <p className="whitespace-pre-wrap rounded-[10px] border border-gray-200 bg-white px-3.5 py-3 text-[13px] leading-relaxed text-gray-700">
-                  {data.content}
-                </p>
+                <div className="rounded-[10px] border border-gray-200 bg-white px-3.5 py-3">
+                  <Markdown content={data.content} />
+                </div>
               </div>
 
               {/* 첨부파일 */}
@@ -144,9 +159,7 @@ export default function MyInquiryDetailView({
                       </span>
                     )}
                   </div>
-                  <p className="whitespace-pre-wrap text-[13px] leading-relaxed text-gray-700">
-                    {data.answerContent}
-                  </p>
+                  <Markdown content={data.answerContent ?? ""} />
                 </div>
               )}
             </div>

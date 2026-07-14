@@ -63,7 +63,7 @@ export default function ScheduleTimelineCard() {
     <section className="w-full rounded-xl bg-white p-6 shadow-[0_2px_6px_rgba(0,0,0,0.15)]">
       <h2 className="flex items-center gap-1.5 text-[15px] font-bold text-gray-900">
         전체
-        <span className="rounded-md bg-yellow-200 px-1.5 py-0.5">일정</span>
+        <span className="rounded-md bg-yellow-200 px-1.5 py-0.5 dark:text-yellow-200">일정</span>
       </h2>
       <p className="mt-1.5 text-[12px] text-gray-400">
         집중 기간에는 정규 수업 없이 페스티벌 준비에만 집중해요.
@@ -86,7 +86,7 @@ export default function ScheduleTimelineCard() {
               <span
                 className={`relative z-10 mt-1.5 h-[11px] w-[11px] shrink-0 rounded-full ${
                   highlighted
-                    ? "bg-yellow-600"
+                    ? "bg-yellow-600 dark:bg-yellow-400"
                     : "border-2 border-gray-300 bg-white"
                 }`}
               />

@@ -59,10 +59,10 @@ export default function GradeDropdown({
                   onGradeChange(value);
                   setDropdownOpen(false);
                 }}
-                className={`w-full cursor-pointer px-4 py-2 text-left text-xs font-medium hover:bg-[var(--color-gray-100)] ${
+                className={`w-full cursor-pointer px-4 py-2 text-left text-xs font-medium hover:bg-[var(--color-gray-100)] dark:hover:bg-gray-800 ${
                   grade === value
-                    ? "text-[var(--color-gray-900)]"
-                    : "text-[var(--color-gray-600)]"
+                    ? "text-[var(--color-gray-900)] dark:text-white"
+                    : "text-[var(--color-gray-600)] dark:text-gray-400"
                 }`}
               >
                 {label}

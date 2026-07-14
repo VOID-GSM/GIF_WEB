@@ -20,7 +20,7 @@ export default function ScoreAreaStats({ total, completed, pending }: Props) {
         >
           <p className="text-xs sm:text-sm text-gray-500 mb-1">{label}</p>
           <p className="leading-none">
-            <span className="text-xl sm:text-2xl font-bold text-orange-600">{value}</span>
+            <span className="text-xl sm:text-2xl font-bold text-orange-600 dark:text-orange-400">{value}</span>
             <span className="text-sm text-gray-400 ml-1">/ {total}</span>
           </p>
         </div>

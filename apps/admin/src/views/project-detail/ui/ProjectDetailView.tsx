@@ -85,7 +85,7 @@ export default function ProjectDetailView({
 
   if (isPending || isError || !project) {
     return (
-      <div className="flex min-h-dvh items-center justify-center px-4">
+      <div className="flex min-h-dvh items-center justify-center bg-background px-4">
         <p className="text-[14px] text-gray-600">
           {isError ? "프로젝트를 불러오지 못했습니다." : "불러오는 중..."}
         </p>

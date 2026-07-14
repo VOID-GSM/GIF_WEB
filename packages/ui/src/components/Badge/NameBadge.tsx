@@ -21,10 +21,10 @@ export default function NameBadge({
   return (
     <div
       className={`flex items-center w-fit h-9 rounded-full
-      ${resolvedColor === "gray" ? "bg-gray-200" : "bg-yellow-200"}
+      ${resolvedColor === "gray" ? "bg-gray-200" : "bg-[#fff695] dark:bg-yellow-600/35"}
       ${isEditable ? "px-4" : "px-[26.5px]"}`}
     >
-      <span className="font-medium">
+      <span className="font-medium text-gray-900">
         {id} {name}
       </span>
       {isEditable && (
