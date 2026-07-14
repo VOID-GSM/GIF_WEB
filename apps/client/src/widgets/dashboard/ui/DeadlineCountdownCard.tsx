@@ -3,15 +3,30 @@
 import { useGetFormList, formatDeadline } from "@/entities/form";
 import { useGetMyProject } from "@/entities/project";
 
+const HOUR_MS = 60 * 60 * 1000;
+const DAY_MS = 24 * HOUR_MS;
+
+// deadline은 시간 포함(YYYY-MM-DDTHH:mm:ss) 또는 날짜만(YYYY-MM-DD)의 KST 문자열이다.
+// 타임존이 없으면 KST(+09:00)로 간주해 파싱한다 (isDeadlinePassed와 동일한 규칙).
+function parseDeadline(deadline: string): Date {
+  const hasTimezone = deadline.includes("Z") || /[+-]\d{2}:?\d{2}$/.test(deadline);
+  const iso = deadline.includes("T") ? deadline : `${deadline}T23:59:59`;
+  return new Date(hasTimezone ? iso : `${iso}+09:00`);
+}
+
+// 마감까지 하루 이상 남았으면 D-day, 하루 안쪽으로 남았으면 남은 시간을 보여준다.
 function getDDayLabel(deadline: string): string {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const [year, month, day] = deadline.split("-").map(Number);
-  const target = new Date(year, month - 1, day);
-  const diffDays = Math.round((target.getTime() - today.getTime()) / 86400000);
-  if (diffDays === 0) return "D-DAY";
-  if (diffDays < 0) return `D+${Math.abs(diffDays)}`;
-  return `D-${diffDays}`;
+  const diffMs = parseDeadline(deadline).getTime() - Date.now();
+
+  if (diffMs <= 0) {
+    const diffDays = Math.floor(-diffMs / DAY_MS);
+    return diffDays === 0 ? "D-DAY" : `D+${diffDays}`;
+  }
+  if (diffMs < DAY_MS) {
+    const hours = Math.max(1, Math.ceil(diffMs / HOUR_MS));
+    return `${hours}시간 남음`;
+  }
+  return `D-${Math.ceil(diffMs / DAY_MS)}`;
 }
 
 export default function DeadlineCountdownCard() {
