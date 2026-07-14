@@ -3,6 +3,7 @@ import "./globals.css";
 import { Providers } from "./providers";
 // 1. Next.js 전용 Script 컴포넌트를 가져옵니다.
 import Script from "next/script";
+import { ThemeScript } from "@repo/ui";
 
 export default function RootLayout({
   children,
@@ -10,8 +11,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="ko">
+    <html lang="ko" suppressHydrationWarning>
       <head>
+        <ThemeScript />
         {/* 2. GTM 스크립트 추가 */}
         <Script
           id="gtm-script"
