@@ -9,7 +9,7 @@ import InquiryTabs from "./InquiryTabs";
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 const MAX_TITLE_LENGTH = 100;
-const MAX_CONTENT_LENGTH = 2000;
+const MAX_CONTENT_LENGTH = 1000;
 
 const formatFileSize = (bytes: number) => {
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)}KB`;
