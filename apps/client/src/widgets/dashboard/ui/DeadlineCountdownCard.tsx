@@ -18,12 +18,12 @@ function parseDeadline(deadline: string): Date {
 }
 
 // 마감이 지났으면 마감 표시, 1시간 이내면 분/초, 하루 이내면 시간, 그 외엔 D-day를 보여준다.
+// 마감이 지난 항목은 날짜가 바뀌면 nextForm 필터링에서 자연히 제외되므로 D+n은 표시하지 않는다.
 function getDDayLabel(deadline: string, now: number): string {
   const diffMs = parseDeadline(deadline).getTime() - now;
 
   if (diffMs <= 0) {
-    const diffDays = Math.floor(-diffMs / DAY_MS);
-    return diffDays === 0 ? "마감" : `D+${diffDays}`;
+    return "마감";
   }
   if (diffMs < HOUR_MS) {
     const minutes = Math.floor(diffMs / MINUTE_MS);
@@ -56,9 +56,9 @@ export default function DeadlineCountdownCard() {
     : false;
 
   useEffect(() => {
-    if (!hasActiveCountdown) return;
-
-    const timer = setInterval(() => setNow(Date.now()), 1000);
+    // 카운트다운 중엔 1초마다, 아니면 날짜 변경(자정 롤오버) 감지용으로 1분마다만 갱신한다.
+    const tickMs = hasActiveCountdown ? 1000 : MINUTE_MS;
+    const timer = setInterval(() => setNow(Date.now()), tickMs);
     return () => clearInterval(timer);
   }, [hasActiveCountdown]);
 
