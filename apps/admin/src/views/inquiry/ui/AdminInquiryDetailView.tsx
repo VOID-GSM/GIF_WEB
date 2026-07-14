@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Chevron, File as FileIcon, Textarea } from "@repo/ui";
-import { formatDeadline } from "@/entities/form/lib/formatDeadline";
+import { formatTimestamp } from "@/entities/form/lib/formatDeadline";
 import { useGetMyInfo } from "@/entities/mypage";
 import {
   useAnswerInquiry,
@@ -116,7 +116,7 @@ export default function AdminInquiryDetailView({
                 </span>
               </div>
               <p className="mt-1 text-[12px] text-gray-400">
-                {data.createdByName} · {formatDeadline(data.createdAt)}
+                {data.createdByName} · {formatTimestamp(data.createdAt)}
               </p>
             </div>
 
@@ -180,7 +180,7 @@ export default function AdminInquiryDetailView({
                     </span>
                     {data.answeredAt && (
                       <span className="text-[11px] text-gray-500">
-                        {formatDeadline(data.answeredAt)}
+                        {formatTimestamp(data.answeredAt)}
                       </span>
                     )}
                   </div>
