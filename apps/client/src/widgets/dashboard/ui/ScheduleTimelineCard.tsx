@@ -57,7 +57,7 @@ const SCHEDULE_STEPS: ScheduleStep[] = [
 ];
 
 export default function ScheduleTimelineCard() {
-  const todayStr = new Date().toISOString().slice(0, 10);
+  const todayStr = new Date().toLocaleDateString("sv-SE");
 
   return (
     <section className="w-full rounded-xl bg-white p-6 shadow-[0_2px_6px_rgba(0,0,0,0.15)]">

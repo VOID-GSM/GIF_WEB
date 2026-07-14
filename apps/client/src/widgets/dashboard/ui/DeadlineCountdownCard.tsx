@@ -6,7 +6,8 @@ import { useGetMyProject } from "@/entities/project";
 function getDDayLabel(deadline: string): string {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-  const target = new Date(deadline);
+  const [year, month, day] = deadline.split("-").map(Number);
+  const target = new Date(year, month - 1, day);
   const diffDays = Math.round((target.getTime() - today.getTime()) / 86400000);
   if (diffDays === 0) return "D-DAY";
   if (diffDays < 0) return `D+${Math.abs(diffDays)}`;
@@ -20,7 +21,7 @@ export default function DeadlineCountdownCard() {
 
   const loading = isProjectLoading || isFormsLoading;
 
-  const todayStr = new Date().toISOString().slice(0, 10);
+  const todayStr = new Date().toLocaleDateString("sv-SE");
   const nextForm = (forms ?? [])
     .filter((form) => form.deadline >= todayStr)
     .sort((a, b) => a.deadline.localeCompare(b.deadline))[0];
