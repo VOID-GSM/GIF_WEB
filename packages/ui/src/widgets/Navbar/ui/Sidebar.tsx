@@ -75,7 +75,7 @@ export default function Sidebar({ navItems, isOpen, onClose }: SidebarProps) {
       <button
         type="button"
         onClick={handleLogout}
-        className="mx-2 mt-2 cursor-pointer rounded-lg px-4 py-3 text-left text-[16px] font-medium text-gray-500 transition-colors duration-200 hover:bg-gray-100 md:hidden"
+        className="mx-2 mt-auto cursor-pointer rounded-lg px-4 py-3 text-left text-[16px] font-medium text-gray-500 transition-colors duration-200 hover:bg-gray-100 md:hidden"
       >
         로그아웃
       </button>
