@@ -109,7 +109,7 @@ export default function FileField({
               <File />
             </span>
             <div className="flex flex-col min-w-0">
-              <span className="text-[14px] font-semibold truncate">
+              <span className="text-[14px] font-semibold truncate text-gray-900">
                 {fileName}
               </span>
               <span className="text-[11px] text-gray-400">
