@@ -71,11 +71,24 @@ export default function MyInquiryDetailView({
                 <h1 className="text-[19px] font-semibold tracking-[-0.3px] text-gray-900">
                   {data.title}
                 </h1>
-                <span
-                  className={`mt-1 shrink-0 rounded-full border px-2.5 py-0.5 text-[11px] font-medium ${STATUS_META[data.status].className}`}
-                >
-                  {STATUS_META[data.status].label}
-                </span>
+                <div className="mt-1 flex shrink-0 items-center gap-2">
+                  <span
+                    className={`rounded-full border px-2.5 py-0.5 text-[11px] font-medium ${STATUS_META[data.status].className}`}
+                  >
+                    {STATUS_META[data.status].label}
+                  </span>
+                  {data.status === "PENDING" && (
+                    <button
+                      type="button"
+                      onClick={() =>
+                        router.push(`/inquiry/my/${inquiryId}/edit`)
+                      }
+                      className="cursor-pointer rounded-[10px] border border-gray-200 px-3 py-1 text-[13px] font-medium text-gray-600 transition-colors hover:border-yellow-600 hover:text-yellow-700"
+                    >
+                      수정
+                    </button>
+                  )}
+                </div>
               </div>
               <p className="mt-1 text-[12px] text-gray-400">
                 {formatTimestamp(data.createdAt)}
