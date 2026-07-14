@@ -44,17 +44,23 @@ export default function DeadlineCountdownCard() {
 
   const [now, setNow] = useState(() => Date.now());
 
-  useEffect(() => {
-    const timer = setInterval(() => setNow(Date.now()), 1000);
-    return () => clearInterval(timer);
-  }, []);
-
   const loading = isProjectLoading || isFormsLoading;
 
   const todayStr = new Date(now).toLocaleDateString("sv-SE");
   const nextForm = (forms ?? [])
     .filter((form) => form.deadline >= todayStr)
     .sort((a, b) => a.deadline.localeCompare(b.deadline))[0];
+
+  const hasActiveCountdown = nextForm
+    ? parseDeadline(nextForm.deadline).getTime() > now
+    : false;
+
+  useEffect(() => {
+    if (!hasActiveCountdown) return;
+
+    const timer = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(timer);
+  }, [hasActiveCountdown]);
 
   return (
     <section className="w-full rounded-xl bg-yellow-100 p-6 shadow-[0_2px_6px_rgba(0,0,0,0.15)]">
