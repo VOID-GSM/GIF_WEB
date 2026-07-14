@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { Chevron, File as FileIcon } from "@repo/ui";
-import { formatDeadline } from "@/entities/form/lib/formatDeadline";
+import { formatTimestamp } from "@/entities/form/lib/formatDeadline";
 import { useDownloadFile } from "@/entities/form-submissions/hooks/useDownloadFile";
 import { useGetMyInquiryDetail } from "@/entities/inquiry";
 import type { InquiryStatus } from "@/entities/inquiry";
@@ -76,7 +76,7 @@ export default function MyInquiryDetailView({
                 </span>
               </div>
               <p className="mt-1 text-[12px] text-gray-400">
-                {formatDeadline(data.createdAt)}
+                {formatTimestamp(data.createdAt)}
               </p>
             </div>
 
@@ -140,7 +140,7 @@ export default function MyInquiryDetailView({
                     </span>
                     {data.answeredAt && (
                       <span className="text-[11px] text-gray-500">
-                        {formatDeadline(data.answeredAt)}
+                        {formatTimestamp(data.answeredAt)}
                       </span>
                     )}
                   </div>

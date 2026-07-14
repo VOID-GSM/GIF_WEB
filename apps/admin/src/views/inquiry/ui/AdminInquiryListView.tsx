@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Chevron } from "@repo/ui";
-import { formatDeadline } from "@/entities/form/lib/formatDeadline";
+import { formatTimestamp } from "@/entities/form/lib/formatDeadline";
 import { useGetAdminInquiries } from "@/entities/inquiry";
 import type { InquiryStatus } from "@/entities/inquiry";
 import { useGetMyInfo } from "@/entities/mypage";
@@ -123,7 +123,7 @@ export default function AdminInquiryListView() {
                         </span>
                         <span className="text-[12px] text-gray-400">
                           {inquiry.createdByName} ·{" "}
-                          {formatDeadline(inquiry.createdAt)}
+                          {formatTimestamp(inquiry.createdAt)}
                         </span>
                       </div>
                       <StatusPill status={inquiry.status} />

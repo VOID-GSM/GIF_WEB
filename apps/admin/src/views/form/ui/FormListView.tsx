@@ -22,8 +22,13 @@ export default function FormListView() {
   // myInfo 로딩까지 함께 기다려 생성/삭제 버튼이 늦게 나타나는 레이아웃 시프트를 막는다.
   const isLoading = isFormsLoading || isMyInfoLoading;
 
-  // 양식 생성은 아이디어페스티벌 담당(MASTER)만 가능
-  const canCreate = myInfo?.adminRole === "MASTER";
+  // 양식 생성·공지·수정·삭제는 아이디어페스티벌 담당(MASTER)만 가능
+  const isMaster = myInfo?.adminRole === "MASTER";
+
+  // 일반 선생님은 공지된 양식만 볼 수 있고, 담당(MASTER)은 미공지 양식까지 모두 본다.
+  const visibleForms = isMaster
+    ? forms
+    : forms?.filter((form) => form.announced);
 
   const handleCreate = () => router.push("/form/create");
   const handleEdit = (id: number) => router.push(`/form/edit/${id}`);
@@ -32,7 +37,7 @@ export default function FormListView() {
   return (
     <div className="flex min-h-[calc(100dvh-60px)] flex-col items-center bg-background px-4 pt-12 pb-4 sm:pt-20">
       <div className="flex max-h-[calc(100vh-160px)] w-full max-w-[848px] flex-col overflow-y-auto px-2 py-6 sm:px-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-        {canCreate && (
+        {isMaster && (
           <div className="mb-6 flex justify-end">
             <button
               type="button"
@@ -50,7 +55,7 @@ export default function FormListView() {
           <p className="py-20 text-center text-gray-500">
             양식을 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.
           </p>
-        ) : !forms || forms.length === 0 ? (
+        ) : !visibleForms || visibleForms.length === 0 ? (
           <p className="py-20 text-center text-gray-500">
             등록된 양식이 없습니다.
           </p>
@@ -67,13 +72,13 @@ export default function FormListView() {
               <span className="text-sm font-semibold text-gray-700">관리</span>
             </div>
 
-            {forms.map((form) => (
+            {visibleForms.map((form) => (
               <FormCard
                 key={form.id}
                 form={form}
-                onAnnounce={announce}
-                onEdit={handleEdit}
-                onDelete={canCreate ? remove : undefined}
+                onAnnounce={isMaster ? announce : undefined}
+                onEdit={isMaster ? handleEdit : undefined}
+                onDelete={isMaster ? remove : undefined}
                 onView={handleView}
               />
             ))}

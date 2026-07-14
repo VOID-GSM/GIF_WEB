@@ -7,19 +7,17 @@ import {
   useAdminSubmitSummary,
 } from "@/entities/from-management/api/query";
 import { useGetProject } from "@/entities/project";
-import { formatDeadlineDate, formatDeadlineTime } from "@/entities/form";
+import {
+  formatDeadlineDate,
+  formatDeadlineTime,
+  formatTimestamp,
+} from "@/entities/form";
 import FileAnswer from "@/entities/from-management/ui/Fileanswer";
 import TextAnswer from "@/entities/from-management/ui/Textanswer";
 import CalendarAnswer from "@/entities/from-management/ui/Calendaranswer";
 import type { SubmitAnswer } from "@/entities/from-management/model/type";
 
 type Props = { formId: number; submitId: number };
-
-// "2026-06-18T15:37:06.163522" → "2026-06-18 15:37"
-function formatSubmittedAt(iso: string) {
-  const [date, time] = iso.split("T");
-  return time ? `${date} ${time.slice(0, 5)}` : date;
-}
 
 type AnswerItem = {
   fieldId: number;
@@ -124,7 +122,7 @@ export default function FormDetailView({ formId, submitId }: Props) {
                 </span>
                 {submission && (
                   <span className="text-[14px] font-medium text-gray-500">
-                    제출일: {formatSubmittedAt(submission.submittedAt)}
+                    제출일: {formatTimestamp(submission.submittedAt)}
                   </span>
                 )}
               </div>
