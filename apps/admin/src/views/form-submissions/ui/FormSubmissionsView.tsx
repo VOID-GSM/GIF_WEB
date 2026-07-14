@@ -153,7 +153,7 @@ export default function FormSubmissionsView({ formId }: Props) {
                 }}
               >
                 {/* 팀명 */}
-                <span className="min-w-0 truncate text-base font-medium">
+                <span className="min-w-0 truncate text-base font-medium text-gray-900">
                   {row.teamName}
                 </span>
 

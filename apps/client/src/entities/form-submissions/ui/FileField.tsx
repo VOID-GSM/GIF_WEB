@@ -109,7 +109,7 @@ export default function FileField({
               <File />
             </span>
             <div className="flex flex-col min-w-0">
-              <span className="text-[14px] font-semibold truncate">
+              <span className="text-[14px] font-semibold truncate text-gray-900">
                 {fileName}
               </span>
               <span className="text-[11px] text-gray-400">
@@ -127,7 +127,7 @@ export default function FileField({
               }}
               width={15}
               height={15}
-              className="flex-shrink-0 text-gray-40 hover:text-gray-40/60 transition-colors cursor-pointer"
+              className="flex-shrink-0 text-gray-40 hover:opacity-60 transition-colors cursor-pointer"
             />
           )}
         </div>
