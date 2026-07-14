@@ -1,7 +1,11 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+import { Logout } from "@repo/ui";
 import { useGetMyInfo } from "@/entities/mypage";
-import { useGetMyProject } from "@/entities/project";
+import { useGetMyProject, useGetProject } from "@/entities/project";
+import { COOKIE_KEYS } from "@/shared/constants";
+import { deleteCookie } from "@/shared/utils";
 
 const CLIENT_ROLE_LABEL: Record<string, string> = {
   LEADER: "팀장",
@@ -9,16 +13,33 @@ const CLIENT_ROLE_LABEL: Record<string, string> = {
 };
 
 export default function ProfileSummaryCard() {
+  const router = useRouter();
   const { data, isLoading, isError } = useGetMyInfo();
   const { data: myProjects, isLoading: isProjectsLoading } = useGetMyProject();
+  const projectId = data?.projectId || myProjects?.[0]?.id;
+  const hasProjectId = Number.isFinite(projectId);
+  const { data: projectDetail, isLoading: isProjectDetailLoading } =
+    useGetProject(projectId ?? NaN);
 
-  const teamName = myProjects?.[0]?.teamName ?? "";
-  const role =
-    teamName && data?.clientRole
-      ? (CLIENT_ROLE_LABEL[data.clientRole] ?? data.clientRole)
-      : "-";
+  // 소속 팀과 역할은 프로젝트 상세의 최신 멤버 정보를 우선 사용한다.
+  const teamName = projectDetail?.teamName ?? myProjects?.[0]?.teamName ?? "";
 
-  const loading = isLoading || isProjectsLoading;
+  const currentProjectRole = projectDetail?.members.find(
+    (member) => member.userId === data?.userId,
+  )?.role;
+  const displayRole = currentProjectRole ?? data?.clientRole;
+  const role = displayRole
+    ? (CLIENT_ROLE_LABEL[displayRole] ?? displayRole)
+    : "-";
+
+  const loading =
+    isLoading || isProjectsLoading || (hasProjectId && isProjectDetailLoading);
+
+  const handleLogout = () => {
+    deleteCookie(COOKIE_KEYS.ACCESS_TOKEN);
+    router.replace("/signin");
+    router.refresh();
+  };
 
   return (
     <section className="w-full rounded-xl bg-white p-6 shadow-[0_2px_6px_rgba(0,0,0,0.15)]">
@@ -52,6 +73,15 @@ export default function ProfileSummaryCard() {
           </dl>
         </>
       )}
+
+      <button
+        type="button"
+        onClick={handleLogout}
+        className="mt-5 flex h-[40px] w-full cursor-pointer items-center justify-center gap-2 rounded-[10px] bg-gray-100 text-[13px] font-medium text-gray-600 transition-colors hover:bg-gray-200 hover:text-gray-700"
+      >
+        <Logout className="h-[13px] w-[16px]" aria-hidden="true" />
+        로그아웃
+      </button>
     </section>
   );
 }

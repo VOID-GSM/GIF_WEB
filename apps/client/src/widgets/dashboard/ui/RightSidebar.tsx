@@ -1,7 +1,6 @@
 import ProfileSummaryCard from "./ProfileSummaryCard";
 import DeadlineCountdownCard from "./DeadlineCountdownCard";
 import ScheduleTimelineCard from "./ScheduleTimelineCard";
-import LogoutButton from "./LogoutButton";
 
 export default function RightSidebar() {
   return (
@@ -9,7 +8,6 @@ export default function RightSidebar() {
       <ProfileSummaryCard />
       <DeadlineCountdownCard />
       <ScheduleTimelineCard />
-      <LogoutButton />
     </aside>
   );
 }
