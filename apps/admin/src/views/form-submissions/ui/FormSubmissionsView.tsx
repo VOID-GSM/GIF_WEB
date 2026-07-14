@@ -1,8 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useGetFilteredProjects } from "@/entities/project";
-import type { Grade } from "@/entities/project";
+import { GRADES, useGetFilteredProjects, useStoredGrade } from "@/entities/project";
 import GradeFilter from "@/features/project-filter/ui/GradeFilter";
 import { formatDeadlineDate, formatDeadlineTime } from "@/entities/form";
 import {
@@ -21,7 +20,9 @@ type Props = { formId: number };
 type SubmissionFilter = "ALL" | "SUBMITTED" | "UNSUBMITTED";
 
 export default function FormSubmissionsView({ formId }: Props) {
-  const [selectedGrade, setSelectedGrade] = useState<Grade>(1);
+  // 마지막으로 선택한 학년을 복원한다 (확정 전엔 null → 초기 학년 깜빡임 방지)
+  const { grade: selectedGrade, setGrade: setSelectedGrade } =
+    useStoredGrade("formSubmissionsGrade");
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [submissionFilter, setSubmissionFilter] =
     useState<SubmissionFilter>("ALL");
@@ -32,13 +33,17 @@ export default function FormSubmissionsView({ formId }: Props) {
     setSubmissionFilter((prev) => (prev === value ? "ALL" : value));
   };
 
-  const { data: projects, isLoading: projectsLoading } =
-    useGetFilteredProjects(selectedGrade);
+  const { data: projects, isLoading: projectsLoading } = useGetFilteredProjects(
+    selectedGrade ?? GRADES[0],
+    selectedGrade !== null,
+  );
   const { data: submissions, isLoading: submissionsLoading } =
     useAdminSubmitDetail(formId);
   const { data: form } = useAdminFormDetail(formId);
 
-  const isLoading = projectsLoading || submissionsLoading;
+  // 학년 복원 전(null)에도 로딩으로 처리해 초기 깜빡임을 막는다
+  const isLoading =
+    selectedGrade === null || projectsLoading || submissionsLoading;
 
   // 마감 날짜/시간은 양식(form) 단위 값이라 행마다 동일 — 루프 밖에서 한 번만 계산한다.
   const deadlineDate = formatDeadlineDate(form?.deadline ?? "");
@@ -106,7 +111,10 @@ export default function FormSubmissionsView({ formId }: Props) {
             </button>
           </div>
         </div>
-        <GradeFilter value={selectedGrade} onChange={setSelectedGrade} />
+        <GradeFilter
+          value={selectedGrade ?? GRADES[0]}
+          onChange={setSelectedGrade}
+        />
       </div>
 
       {isLoading ? (
