@@ -31,7 +31,7 @@ export default function FormCard({
   return (
     <div className={`${FORM_TABLE_GRID} border-b border-gray-100 bg-white px-4 py-4 transition-colors hover:bg-yellow-50`}>
       {/* 제목 */}
-      <span className="min-w-0 truncate text-base font-medium sm:text-lg">
+      <span className="min-w-0 truncate text-base font-medium text-gray-900 sm:text-lg">
         {title}
       </span>
 
@@ -46,7 +46,7 @@ export default function FormCard({
         <span
           className={`inline-flex w-16 items-center justify-center rounded-lg border py-1 text-sm ${
             submitted
-              ? "border-yellow-600 bg-yellow-50"
+              ? "border-yellow-600 bg-yellow-50 text-gray-900"
               : "border-gray-200 bg-gray-100 text-gray-500"
           }`}
         >
@@ -68,8 +68,8 @@ export default function FormCard({
             editLocked
               ? "border-gray-200 bg-gray-100 text-gray-500 hover:bg-gray-200"
               : submitted
-                ? "border-orange-400 bg-orange-50 hover:bg-orange-100"
-                : "border-yellow-600 bg-yellow-50 hover:bg-yellow-100"
+                ? "border-orange-400 bg-orange-50 text-gray-900 hover:bg-orange-100"
+                : "border-yellow-600 bg-yellow-50 text-gray-900 hover:bg-yellow-100"
           }`}
         >
           {editLocked ? "보기" : submitted ? "수정" : "작성"}

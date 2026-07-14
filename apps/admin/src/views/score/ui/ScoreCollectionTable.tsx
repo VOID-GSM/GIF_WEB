@@ -36,23 +36,23 @@ export default function ScoreCollectionTable({ isLoading, isError, scoreRows }: 
       <div className="min-w-[40rem]">
         <div className="flex items-center bg-orange-50 h-9 sticky top-0 z-10">
           {/* 핵심 정보 */}
-          <div className="w-16 sm:w-20 md:w-24 shrink-0 text-center font-medium text-sm sm:text-base">
+          <div className="w-16 sm:w-20 md:w-24 shrink-0 text-center font-medium text-sm sm:text-base text-gray-900">
             등수
           </div>
-          <div className="flex-1 min-w-[6rem] text-center font-medium text-sm sm:text-base">
+          <div className="flex-1 min-w-[6rem] text-center font-medium text-sm sm:text-base text-gray-900">
             팀명
           </div>
           {/* 영역별 평균 */}
-          <div className="w-24 shrink-0 text-center font-medium text-sm sm:text-base">
+          <div className="w-24 shrink-0 text-center font-medium text-sm sm:text-base text-gray-900">
             전공
           </div>
-          <div className="w-24 shrink-0 text-center font-medium text-sm sm:text-base">
+          <div className="w-24 shrink-0 text-center font-medium text-sm sm:text-base text-gray-900">
             보고서
           </div>
-          <div className="w-24 shrink-0 text-center font-medium text-sm sm:text-base">
+          <div className="w-24 shrink-0 text-center font-medium text-sm sm:text-base text-gray-900">
             사회
           </div>
-          <div className="w-24 shrink-0 text-center font-medium text-sm sm:text-base">
+          <div className="w-24 shrink-0 text-center font-medium text-sm sm:text-base text-gray-900">
             총점수
           </div>
         </div>
@@ -66,10 +66,10 @@ export default function ScoreCollectionTable({ isLoading, isError, scoreRows }: 
               key={row.teamName}
               className="flex items-center h-11 border-t border-gray-100"
             >
-              <div className="w-16 sm:w-20 md:w-24 shrink-0 text-center font-medium text-sm sm:text-base">
+              <div className="w-16 sm:w-20 md:w-24 shrink-0 text-center font-medium text-sm sm:text-base text-gray-900">
                 {row.rank}
               </div>
-              <div className="flex-1 min-w-[6rem] text-center font-medium text-sm sm:text-base truncate">
+              <div className="flex-1 min-w-[6rem] text-center font-medium text-sm sm:text-base truncate text-gray-900">
                 {row.teamName}
               </div>
               {/* 영역별 평균 */}

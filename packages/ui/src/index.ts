@@ -64,6 +64,11 @@ export type { SidebarProps } from "./widgets/Navbar/model/type";
 export { ADMIN_NAV_ITEMS, CLIENT_NAV_ITEMS } from "./widgets/Navbar/model/nav";
 export type { StyleOption } from "./components/Dropdown/StyleDropdown";
 
+export { ThemeProvider, useTheme } from "./widgets/Theme/model/ThemeContext";
+export { default as ThemeScript } from "./widgets/Theme/ui/ThemeScript";
+export { default as ThemeToggle } from "./widgets/Theme/ui/ThemeToggle";
+export type { ThemeMode, ResolvedTheme } from "./widgets/Theme/model/type";
+
 export { default as RankView } from "./views/RankView";
 export { default as LandingView } from "./views/LandingView";
 export { default as AboutView } from "./views/AboutView";

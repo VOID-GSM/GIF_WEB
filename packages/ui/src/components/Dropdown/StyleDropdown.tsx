@@ -42,7 +42,7 @@ export default function StyleDropdown({ value, onChange }: StyleDropdownProps) {
           {Object.entries(STYLE_MAP).map(([key, label]) => (
             <li key={key}>
               <button
-                className="w-full text-left px-[10px] py-[12px] font-medium text-[12px] transition-colors hover:bg-gray-200 cursor-pointer"
+                className="w-full text-left px-[10px] py-[12px] font-medium text-[12px] transition-colors hover:bg-gray-200 cursor-pointer dark:text-gray-300"
                 onClick={() => handleSelect(key as StyleOption)}
               >
                 {label}

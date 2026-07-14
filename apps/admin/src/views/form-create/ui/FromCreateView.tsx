@@ -186,7 +186,7 @@ export default function FormCreateView() {
 
   return (
     <div className="min-h-screen flex flex-col items-center bg-background px-5">
-      <span className="pt-20 pb-8 font-semibold text-[24px]">
+      <span className="pt-20 pb-8 font-semibold text-[24px] text-gray-900">
         양식 생성하기
       </span>
       <div className="w-full max-w-[560px] flex flex-col pb-6 gap-4">
@@ -242,7 +242,7 @@ export default function FormCreateView() {
         ))}
 
         <button
-          className="w-full flex items-center justify-center py-3 gap-4 bg-white rounded-[10px] shadow-new font-medium cursor-pointer"
+          className="w-full flex items-center justify-center py-3 gap-4 bg-white rounded-[10px] shadow-new font-medium cursor-pointer dark:text-gray-300"
           onClick={handleAddField}
         >
           <Plus width={15} height={15} />
@@ -251,7 +251,7 @@ export default function FormCreateView() {
 
         <div className="w-full flex flex-col sm:flex-row gap-5 pb-20">
           <button
-            className="flex w-full items-center justify-center py-3 font-medium border border-yellow-700 bg-white rounded-[10px] cursor-pointer disabled:opacity-50"
+            className="flex w-full items-center justify-center py-3 font-medium border border-yellow-700 bg-white rounded-[10px] cursor-pointer disabled:opacity-50 dark:border-yellow-500 dark:text-gray-300"
             onClick={handleSave}
             disabled={isSaving}
           >

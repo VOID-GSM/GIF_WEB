@@ -13,11 +13,13 @@ const STATUS_META: Record<
 > = {
   PENDING: {
     label: "답변 대기",
-    className: "bg-gray-100 text-gray-500 border-gray-200",
+    className:
+      "bg-gray-100 text-gray-500 border-gray-200",
   },
   ANSWERED: {
     label: "답변 완료",
-    className: "bg-yellow-50 text-yellow-700 border-yellow-600",
+    className:
+      "bg-yellow-50 text-yellow-700 border-yellow-600",
   },
 };
 

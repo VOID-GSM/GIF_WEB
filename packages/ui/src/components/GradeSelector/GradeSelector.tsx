@@ -13,9 +13,10 @@ const containerClass =
   "inline-flex gap-2 sm:gap-3 md:gap-5 rounded-full p-1 sm:p-1.5 md:p-2 bg-white shadow-new";
 
 const buttonBaseClass =
-  "rounded-full px-4 sm:px-6 md:px-8 py-1 sm:py-1.5 md:py-2 text-sm sm:text-base md:text-xl font-medium transition-colors cursor-pointer";
+  "rounded-full px-4 sm:px-6 md:px-8 py-1 sm:py-1.5 md:py-2 text-sm sm:text-base md:text-xl font-medium transition-colors cursor-pointer text-gray-900";
 
-const buttonActiveClass = "border border-yellow-400 bg-yellow-50";
+const buttonActiveClass =
+  "border border-yellow-400 bg-yellow-50 dark:border-yellow-500 dark:text-white";
 const buttonInactiveClass = "border border-transparent";
 
 export default function GradeSelector({ grade, onGradeChange }: GradeSelectorProps) {
