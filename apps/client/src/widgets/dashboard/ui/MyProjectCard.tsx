@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { ProjectLogo } from "@repo/ui";
 
 import { useGetProject, type FilteredProject } from "@/entities/project";
 
@@ -15,18 +16,17 @@ export default function MyProjectCard({ project }: MyProjectCardProps) {
   return (
     <Link
       href={`/projects/${project.id}`}
-      className="flex h-[112px] w-full items-center overflow-hidden rounded-[12px] bg-white shadow-[0_2px_6px_rgba(0,0,0,0.15)] transition-all duration-200 ease-out hover:-translate-y-0.5 hover:shadow-lg"
+      className="flex w-full flex-col overflow-hidden rounded-[12px] bg-white shadow-[0_2px_6px_rgba(0,0,0,0.15)] transition-all duration-200 ease-out hover:-translate-y-0.5 hover:shadow-lg"
     >
-      <div className="h-[112px] w-[224px] shrink-0">
-        {/* logo는 외부 API에서 내려오는 동적 URL이라 next/image 대신 img 사용 */}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
+      <div className="h-[180px] w-full">
+        <ProjectLogo
           src={project.logo}
           alt={project.name}
           className="h-full w-full object-cover"
+          fallbackClassName="h-full w-full bg-white object-contain p-10"
         />
       </div>
-      <div className="flex h-full min-w-0 flex-1 flex-col justify-center gap-0.5 bg-yellow-50 pl-[20px] pr-[16px]">
+      <div className="flex flex-col gap-0.5 bg-yellow-50 px-5 py-4">
         <p className="truncate text-[18px] font-semibold tracking-[-0.5px] text-black">
           {project.name}
         </p>
