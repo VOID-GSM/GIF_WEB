@@ -11,7 +11,7 @@ const OPTIONS: { value: ThemeMode; label: string; Icon: typeof Sun }[] = [
 ];
 
 export default function ThemeToggle() {
-  const { theme, setTheme } = useTheme();
+  const { resolvedTheme, setTheme } = useTheme();
 
   return (
     <div
@@ -20,7 +20,7 @@ export default function ThemeToggle() {
       className="grid w-full grid-cols-2 gap-1 rounded-full border border-[var(--color-border)] bg-[var(--color-surface)] p-1"
     >
       {OPTIONS.map(({ value, label, Icon }) => {
-        const isActive = theme === value;
+        const isActive = resolvedTheme === value;
         return (
           <button
             key={value}
