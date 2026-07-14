@@ -21,6 +21,7 @@ export { default as NoticeButton } from "./components/Button/NoticeButton";
 
 export { default as Input } from "./components/Input/Input";
 export { default as Textarea } from "./components/Input/Textarea";
+export { default as Markdown } from "./components/Markdown/Markdown";
 export { default as FileUpload } from "./components/FileUpload/FileUpload";
 export { default as ProjectLogo } from "./components/ProjectLogo/ProjectLogo";
 
