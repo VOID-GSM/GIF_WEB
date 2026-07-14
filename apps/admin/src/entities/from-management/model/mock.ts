@@ -151,6 +151,7 @@ const emptyAnswerFields = {
   textAnswer: null,
   filePath: null,
   fileSize: null,
+  originalFileName: null,
   dateAnswer: null,
 };
 
@@ -159,8 +160,17 @@ function fileAnswer(
   fieldTitle: string,
   filePath: string,
   fileSize: number,
+  originalFileName: string | null = null,
 ): SubmitAnswer {
-  return { ...emptyAnswerFields, fieldId, fieldTitle, type: "FILE", filePath, fileSize };
+  return {
+    ...emptyAnswerFields,
+    fieldId,
+    fieldTitle,
+    type: "FILE",
+    filePath,
+    fileSize,
+    originalFileName,
+  };
 }
 
 function textAnswer(
@@ -194,7 +204,13 @@ export const mockSubmitDetailMap: Record<number, AdminSubmitDetail[]> = {
       submittedByUserId: 101,
       submittedAt: "2026-06-10T09:00:00.000Z",
       answers: [
-        fileAnswer(1, "팀 관련 사이트 QR코드", "/mock/void_report.pdf", 2048000),
+        fileAnswer(
+          1,
+          "팀 관련 사이트 QR코드",
+          "/mock/void_report.pdf",
+          2048000,
+          "VOID_보고서.pdf",
+        ),
         textAnswer(2, "프로젝트 이름", "저희 프로젝트 이름은 VOID 입니다"),
         calendarAnswer(3, "프로젝트 추진 일정", {
           eventName: "기획",

@@ -49,6 +49,8 @@ export interface SubmitAnswer {
   textAnswer: string | null;
   filePath: string | null;
   fileSize: number | null;
+  // 서버에 UUID로 저장된 파일의 사용자 업로드 당시 원본 파일명
+  originalFileName: string | null;
   dateAnswer: CalendarEventAnswer[] | null;
 }
 
