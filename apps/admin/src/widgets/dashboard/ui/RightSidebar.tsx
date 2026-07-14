@@ -4,7 +4,7 @@ import ScheduleTimelineCard from "./ScheduleTimelineCard";
 
 export default function RightSidebar() {
   return (
-    <aside className="hidden w-[340px] shrink-0 flex-col gap-6 py-10 md:flex">
+    <aside className="hidden w-[340px] shrink-0 flex-col gap-6 py-10 min-[900px]:flex">
       <ProfileSummaryCard />
       <DeadlineCountdownCard />
       <ScheduleTimelineCard />
