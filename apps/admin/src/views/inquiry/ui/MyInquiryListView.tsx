@@ -1,10 +1,10 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { Chevron } from "@repo/ui";
 import { formatTimestamp } from "@/entities/form/lib/formatDeadline";
 import { useGetMyInquiries } from "@/entities/inquiry";
 import type { InquiryStatus } from "@/entities/inquiry";
+import InquiryTabs from "./InquiryTabs";
 
 const STATUS_META: Record<
   InquiryStatus,
@@ -38,18 +38,7 @@ export default function MyInquiryListView() {
   return (
     <div className="flex min-h-[calc(100vh-60px)] w-full items-center justify-center bg-background px-4 py-8">
       <div className="w-full max-w-[600px]">
-        {/* 상단 이동 */}
-        <button
-          type="button"
-          onClick={() => router.push("/mypage")}
-          className="group -ml-1 flex items-center gap-1 text-[13px] font-medium text-gray-400 transition-colors hover:text-gray-600"
-        >
-          <Chevron
-            direction="left"
-            className="h-3.5 w-3.5 transition-transform group-hover:-translate-x-0.5"
-          />
-          내 정보
-        </button>
+        <InquiryTabs />
 
         {/* 헤더 */}
         <div className="mt-2.5 border-b border-gray-200 pb-4">
