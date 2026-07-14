@@ -4,6 +4,13 @@ export interface PostInquiryRequest {
   file?: File | null;
 }
 
+export interface UpdateInquiryRequest {
+  inquiryId: number;
+  title: string;
+  content: string;
+  file?: File | null;
+}
+
 export type InquiryStatus = "PENDING" | "ANSWERED";
 
 export interface ListInquiryResponse {
