@@ -55,14 +55,14 @@ export default function AdminInquiryListView() {
 
   if (isMyInfoLoading || !isPermitted) {
     return (
-      <div className="flex min-h-[calc(100vh-60px)] w-full items-center justify-center bg-background px-4 py-8">
+      <div className="flex min-h-dvh w-full items-center justify-center bg-background px-4 py-8">
         <p className="text-[13px] font-medium text-gray-400">불러오는 중</p>
       </div>
     );
   }
 
   return (
-    <div className="flex min-h-[calc(100vh-60px)] w-full items-center justify-center bg-background px-4 py-8">
+    <div className="flex min-h-dvh w-full items-center justify-center bg-background px-4 py-8">
       <div className="w-full max-w-[600px]">
         {/* 상단 이동 */}
         <button
