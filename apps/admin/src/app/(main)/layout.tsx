@@ -8,7 +8,7 @@ export default function MainLayout({
   return (
     <>
       <AdminNavbar />
-      <main className="pt-15">{children}</main>
+      <main className="md:pl-[220px]">{children}</main>
     </>
   );
 }

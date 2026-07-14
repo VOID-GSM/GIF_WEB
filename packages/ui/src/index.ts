@@ -34,7 +34,6 @@ export type { Grade } from "./components/GradeSelector/GradeSelector";
 export { default as GradeDropdown } from "./components/GradeDropdown/GradeDropdown";
 
 export { default as Navbar } from "./widgets/Navbar/ui/Navbar";
-export { default as Header } from "./widgets/Navbar/ui/Header";
 export { default as Sidebar } from "./widgets/Navbar/ui/Sidebar";
 export { default as ProjectInfo } from "./widgets/project-detail/ui/ProjectInfo";
 export { default as AiSummary } from "./widgets/project-detail/ui/AiSummary";
@@ -59,7 +58,6 @@ export { default as Crown } from "./svg/Crown";
 
 export type { NavItem } from "./widgets/Navbar/model/type";
 export type { NavbarProps } from "./widgets/Navbar/model/type";
-export type { HeaderProps } from "./widgets/Navbar/model/type";
 export type { SidebarProps } from "./widgets/Navbar/model/type";
 
 export { ADMIN_NAV_ITEMS, CLIENT_NAV_ITEMS } from "./widgets/Navbar/model/nav";

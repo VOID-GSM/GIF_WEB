@@ -3,8 +3,9 @@
 import { ChangeEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Input, Textarea, Chevron, File as FileIcon, Upload, Close } from "@repo/ui";
+import { Input, Textarea, File as FileIcon, Upload, Close } from "@repo/ui";
 import { usePostInquiry } from "@/entities/inquiry";
+import InquiryTabs from "./InquiryTabs";
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 const MAX_TITLE_LENGTH = 100;
@@ -53,7 +54,7 @@ export default function InquiryView() {
           setTitle("");
           setContent("");
           setFile(null);
-          router.push("/mypage");
+          router.push("/inquiry/my");
         },
       },
     );
@@ -62,18 +63,7 @@ export default function InquiryView() {
   return (
     <div className="flex min-h-[calc(100vh-60px)] w-full items-center justify-center bg-background px-4 py-8">
       <div className="w-full max-w-[600px]">
-        {/* 상단 이동 */}
-        <button
-          type="button"
-          onClick={() => router.push("/mypage")}
-          className="group -ml-1 flex items-center gap-1 text-[13px] font-medium text-gray-400 transition-colors hover:text-gray-600"
-        >
-          <Chevron
-            direction="left"
-            className="h-3.5 w-3.5 transition-transform group-hover:-translate-x-0.5"
-          />
-          내 정보
-        </button>
+        <InquiryTabs />
 
         {/* 헤더 */}
         <div className="mt-2.5 border-b border-gray-200 pb-4">
@@ -198,7 +188,7 @@ export default function InquiryView() {
         <div className="mt-6 flex items-center justify-end gap-2">
           <button
             type="button"
-            onClick={() => router.push("/mypage")}
+            onClick={() => router.push("/")}
             className="h-10 cursor-pointer rounded-[10px] px-4 text-[13px] font-medium text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-800"
           >
             취소

@@ -1,9 +1,9 @@
 "use client";
 import { useState } from "react";
 
-import { Header } from "@repo/ui";
 import { Sidebar } from "@repo/ui";
 import { NavbarProps } from "@repo/ui";
+import { Menu } from "@repo/ui";
 import { useGetScoreNotice } from "@repo/lib";
 
 export default function Navbar({ navItems }: NavbarProps) {
@@ -17,24 +17,27 @@ export default function Navbar({ navItems }: NavbarProps) {
   });
 
   return (
-    <div>
-      <Header
-        onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-        navItems={filteredNavItems}
-      />
-      <div>
-        {isSidebarOpen && (
-          <div
-            className="fixed inset-0 bg-black/5 z-[90] md:hidden"
-            onClick={() => setIsSidebarOpen(false)}
-          />
-        )}
-        <Sidebar
-          navItems={filteredNavItems}
-          isOpen={isSidebarOpen}
-          onClose={() => setIsSidebarOpen(false)}
+    <>
+      <button
+        type="button"
+        onClick={() => setIsSidebarOpen(true)}
+        className="fixed top-4 left-4 z-40 cursor-pointer md:hidden"
+      >
+        <Menu className="h-6 w-6 text-gray-600" />
+      </button>
+
+      {isSidebarOpen && (
+        <div
+          className="fixed inset-0 z-[90] bg-black/5 md:hidden"
+          onClick={() => setIsSidebarOpen(false)}
         />
-      </div>
-    </div>
+      )}
+
+      <Sidebar
+        navItems={filteredNavItems}
+        isOpen={isSidebarOpen}
+        onClose={() => setIsSidebarOpen(false)}
+      />
+    </>
   );
 }

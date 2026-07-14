@@ -35,7 +35,7 @@ export default function FormListView() {
   const handleView = (id: number) => router.push(`/form/submissions/${id}`);
 
   return (
-    <div className="flex min-h-[calc(100dvh-60px)] flex-col items-center bg-background px-4 pt-12 pb-4 sm:pt-20">
+    <div className="flex min-h-dvh flex-col items-center bg-background px-4 pt-12 pb-4 sm:pt-20">
       <div className="flex max-h-[calc(100vh-160px)] w-full max-w-[848px] flex-col overflow-y-auto px-2 py-6 sm:px-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {isMaster && (
           <div className="mb-6 flex justify-end">
