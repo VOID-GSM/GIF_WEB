@@ -173,7 +173,7 @@ export default function FormSubmissionsView({ formId }: Props) {
                   <span
                     className={`inline-flex w-16 items-center justify-center rounded-lg border py-1 text-sm ${
                       row.submitted
-                        ? "border-yellow-600 bg-yellow-50"
+                        ? "border-yellow-600 bg-yellow-50 text-gray-900"
                         : "border-gray-200 bg-gray-100 text-gray-500"
                     }`}
                   >
