@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { Chevron, File as FileIcon } from "@repo/ui";
+import { Chevron, File as FileIcon, Markdown } from "@repo/ui";
 import { formatTimestamp } from "@/entities/form/lib/formatDeadline";
 import { useDownloadFile } from "@/entities/form-submissions/hooks/useDownloadFile";
 import { useGetMyInquiryDetail } from "@/entities/inquiry";
@@ -86,9 +86,9 @@ export default function MyInquiryDetailView({
                 <span className="text-[13px] font-medium text-gray-700">
                   문의 내용
                 </span>
-                <p className="whitespace-pre-wrap rounded-[10px] border border-gray-200 bg-white px-3.5 py-3 text-[13px] leading-relaxed text-gray-700">
-                  {data.content}
-                </p>
+                <div className="rounded-[10px] border border-gray-200 bg-white px-3.5 py-3">
+                  <Markdown content={data.content} />
+                </div>
               </div>
 
               {/* 첨부파일 */}
@@ -144,9 +144,7 @@ export default function MyInquiryDetailView({
                       </span>
                     )}
                   </div>
-                  <p className="whitespace-pre-wrap text-[13px] leading-relaxed text-gray-700">
-                    {data.answerContent}
-                  </p>
+                  <Markdown content={data.answerContent ?? ""} />
                 </div>
               )}
             </div>
