@@ -281,7 +281,7 @@ export default function FormMySubmitView({ formId }: Props) {
             <span className="flex justify-center text-[24px] font-semibold text-gray-900">
               {formDetail.title}
             </span>
-            <div className="flex flex-wrap gap-x-4 gap-y-1 text-[14px] font-medium">
+            <div className="flex flex-wrap gap-x-4 gap-y-1 text-[14px] font-medium text-gray-900">
               <span>마감 날짜: {formatDeadlineDate(formDetail.deadline)}</span>
               {formatDeadlineTime(formDetail.deadline) && (
                 <span>
