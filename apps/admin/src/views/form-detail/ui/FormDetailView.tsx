@@ -33,7 +33,9 @@ function AnswerField({ item }: { item: AnswerItem }) {
 
   return (
     <div className="flex flex-col py-6 px-6 sm:py-8 sm:px-12 border-t-5 border-yellow-600 bg-white rounded-[10px] shadow-new">
-      <span className="text-[20px] font-semibold pb-2">{item.title}</span>
+      <span className="text-[20px] font-semibold pb-2 text-gray-900">
+        {item.title}
+      </span>
       {item.description && (
         <span className="font-medium text-gray-500 pb-4">
           {item.description}
@@ -110,12 +112,12 @@ export default function FormDetailView({ formId, submitId }: Props) {
       ) : (
         <div className="mx-auto flex flex-col w-full max-w-[560px] gap-6">
           <div className="flex flex-col">
-            <span className="mb-2 text-center text-[24px] font-semibold">
+            <span className="mb-2 text-center text-[24px] font-semibold text-gray-900">
               {formDetail.title}
             </span>
             <div className="flex items-center justify-between">
               <div className="flex flex-col">
-                <span className="text-[14px] font-medium">
+                <span className="text-[14px] font-medium text-gray-900">
                   마감 날짜: {formatDeadlineDate(formDetail.deadline)}
                   {formatDeadlineTime(formDetail.deadline) &&
                     ` · 마감 시간: ${formatDeadlineTime(formDetail.deadline)}`}
@@ -128,7 +130,7 @@ export default function FormDetailView({ formId, submitId }: Props) {
               </div>
               {submission && (
                 <div className="flex flex-col items-end">
-                  <span className="text-[24px] font-medium">
+                  <span className="text-[24px] font-medium text-gray-900">
                     {submission.teamName}
                   </span>
                   {submitterName && (
