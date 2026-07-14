@@ -39,7 +39,12 @@ jobs:
 
           # 이 서버는 docker-compose v1(하이픈) 사용, compose v2 미설치
           # 빌드 출력은 파일로 (SSH 연결 끊김 방지), build 후 down->up (v1+Docker29 recreate 버그 회피)
-          docker-compose build > /tmp/gif_build.log 2>&1 || { echo '=== build 실패 로그 ==='; tail -60 /tmp/gif_build.log; exit 1; }
+          # 손상된 빌드 캐시(overlay2 parent snapshot not found 등)로 실패하면 캐시를 비우고 1회 재시도한다
+          docker-compose build > /tmp/gif_build.log 2>&1 || {
+            echo '=== build 1차 실패, 빌드 캐시 정리 후 재시도 ==='
+            docker builder prune -af
+            docker-compose build > /tmp/gif_build.log 2>&1 || { echo '=== build 실패 로그 ==='; tail -60 /tmp/gif_build.log; exit 1; }
+          }
           docker-compose down --remove-orphans
           docker-compose up -d --no-build
           docker image prune -f
