@@ -30,16 +30,24 @@ const AREAS: ScoreArea[] = ["major", "report", "social"];
 const headerCellCx =
   "px-4 h-9 flex items-center bg-[var(--color-yellow-50)] border-y border-[var(--color-yellow-600)] text-xs font-semibold text-[var(--color-gray-700)] sticky top-0 z-10";
 
-export default function ScoreAssignTable({ isLoading, teams, allowedAreas }: Props) {
+export default function ScoreAssignTable({
+  isLoading,
+  teams,
+  allowedAreas,
+}: Props) {
   const router = useRouter();
 
   function renderBadges(team: TeamRow, compact = false) {
     return AREAS.map((area) => {
       const isAllowed = allowedAreas.includes(area);
-      const isScored  = team.scoredAreas?.includes(area) ?? false;
-      const variant   = isAllowed ? (isScored ? "active" : "unscored") : "inactive";
-      const label     = compact ? COMPACT_AREA_LABELS[area] : undefined;
-      const size      = compact ? "sm" : "md";
+      const isScored = team.scoredAreas?.includes(area) ?? false;
+      const variant = isAllowed
+        ? isScored
+          ? "active"
+          : "unscored"
+        : "inactive";
+      const label = compact ? COMPACT_AREA_LABELS[area] : undefined;
+      const size = compact ? "sm" : "md";
       return isAllowed ? (
         <button
           key={area}
@@ -50,11 +58,21 @@ export default function ScoreAssignTable({ isLoading, teams, allowedAreas }: Pro
           }
           className="shrink-0 cursor-pointer"
         >
-          <SectionBadge status={area} variant={variant} label={label} size={size} />
+          <SectionBadge
+            status={area}
+            variant={variant}
+            label={label}
+            size={size}
+          />
         </button>
       ) : (
         <div key={area} className="shrink-0 cursor-not-allowed">
-          <SectionBadge status={area} variant="inactive" label={label} size={size} />
+          <SectionBadge
+            status={area}
+            variant="inactive"
+            label={label}
+            size={size}
+          />
         </div>
       );
     });
@@ -90,14 +108,16 @@ export default function ScoreAssignTable({ isLoading, teams, allowedAreas }: Pro
                 {team.name}
               </span>
             </div>
-            <div className="flex flex-nowrap justify-center gap-3">{renderBadges(team, true)}</div>
+            <div className="flex flex-nowrap justify-center gap-3">
+              {renderBadges(team, true)}
+            </div>
           </div>
         ))}
       </div>
 
-      {/* 데스크탑: 테이블 레이아웃 (>= sm) */}
-      <div className="hidden sm:block w-full flex-1 min-h-0 overflow-y-auto">
-        <div className="grid grid-cols-[1fr_120px_minmax(200px,auto)] min-w-[520px]">
+      {/* 데스크탑: 테이블 레이아웃 (>= sm) - 좁아지면 가로 스크롤 */}
+      <div className="hidden sm:block w-full flex-1 min-h-0 overflow-auto">
+        <div className="grid w-full min-w-fit grid-cols-[minmax(200px,1fr)_120px_max-content]">
           <span className={headerCellCx}>프로젝트명</span>
           <span className={headerCellCx}>팀명</span>
           <span className={headerCellCx}>점수 부여</span>
@@ -110,7 +130,7 @@ export default function ScoreAssignTable({ isLoading, teams, allowedAreas }: Pro
               <span className="border-t border-[var(--color-gray-100)] px-4 h-11 text-sm text-[var(--color-gray-600)] flex items-center">
                 {team.teamName}
               </span>
-              <div className="border-t border-[var(--color-gray-100)] px-4 h-11 flex flex-wrap items-center gap-2">
+              <div className="border-t border-[var(--color-gray-100)] px-4 h-11 flex flex-nowrap items-center gap-2">
                 {renderBadges(team)}
               </div>
             </Fragment>
