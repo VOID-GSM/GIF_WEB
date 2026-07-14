@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Chevron, File as FileIcon, Textarea } from "@repo/ui";
+import { Chevron, File as FileIcon, Markdown, Textarea } from "@repo/ui";
 import { formatTimestamp } from "@/entities/form/lib/formatDeadline";
 import { useGetMyInfo } from "@/entities/mypage";
 import {
@@ -48,11 +48,13 @@ export default function AdminInquiryDetailView({
   const { mutate: download, isPending: isDownloading } = useDownloadInquiryFile();
 
   const [answerContent, setAnswerContent] = useState("");
+  const [isPreview, setIsPreview] = useState(false);
   // 새로운 문의가 로드되면 기존 답변으로 폼을 초기화한다. (렌더 중 상태 조정 패턴)
   const [loadedId, setLoadedId] = useState<number | null>(null);
   if (data && data.id !== loadedId) {
     setLoadedId(data.id);
     setAnswerContent(data.answerContent ?? "");
+    setIsPreview(false);
   }
 
   const canAnswer = myInfo?.email === PRIVILEGED_ADMIN_EMAIL;
@@ -66,7 +68,10 @@ export default function AdminInquiryDetailView({
     if (isAnswering) return;
     const trimmed = answerContent.trim();
     if (!trimmed) return;
-    answer({ inquiryId, body: { answerContent: trimmed } });
+    answer(
+      { inquiryId, body: { answerContent: trimmed } },
+      { onSuccess: () => setIsPreview(false) },
+    );
   };
 
   if (isMyInfoLoading || !canAnswer) {
@@ -184,18 +189,37 @@ export default function AdminInquiryDetailView({
                       </span>
                     )}
                   </div>
-                  <p className="whitespace-pre-wrap text-[13px] leading-relaxed text-gray-700">
-                    {data.answerContent}
-                  </p>
+                  <Markdown content={data.answerContent ?? ""} />
                 </div>
               )}
 
               {/* 답변 작성/수정 폼 */}
               <div className="mt-2 flex flex-col gap-1.5">
                 <div className="flex items-center justify-between">
-                  <span className="text-[13px] font-medium text-gray-700">
-                    {data.status === "ANSWERED" ? "답변 수정" : "답변 작성"}
-                  </span>
+                  <div className="flex items-center gap-1">
+                    <button
+                      type="button"
+                      onClick={() => setIsPreview(false)}
+                      className={`rounded-full px-2.5 py-1 text-[12px] font-medium transition-colors ${
+                        !isPreview
+                          ? "bg-yellow-600 text-gray-900"
+                          : "text-gray-400 hover:text-gray-600"
+                      }`}
+                    >
+                      작성
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setIsPreview(true)}
+                      className={`rounded-full px-2.5 py-1 text-[12px] font-medium transition-colors ${
+                        isPreview
+                          ? "bg-yellow-600 text-gray-900"
+                          : "text-gray-400 hover:text-gray-600"
+                      }`}
+                    >
+                      미리보기
+                    </button>
+                  </div>
                   <span
                     className={`text-[11px] font-medium ${
                       answerContent.length >= MAX_ANSWER_LENGTH
@@ -206,15 +230,27 @@ export default function AdminInquiryDetailView({
                     {answerContent.length}/{MAX_ANSWER_LENGTH}
                   </span>
                 </div>
-                <Textarea
-                  title="답변 내용을 입력해주세요"
-                  value={answerContent}
-                  onChange={(e) =>
-                    setAnswerContent(e.target.value.slice(0, MAX_ANSWER_LENGTH))
-                  }
-                  rows={6}
-                  maxLength={MAX_ANSWER_LENGTH}
-                />
+                {isPreview ? (
+                  <div className="min-h-[144px] rounded-[10px] border border-gray-200 bg-white px-3.5 py-3">
+                    {answerContent.trim() ? (
+                      <Markdown content={answerContent} />
+                    ) : (
+                      <p className="text-[13px] text-gray-400">
+                        미리볼 내용이 없습니다.
+                      </p>
+                    )}
+                  </div>
+                ) : (
+                  <Textarea
+                    title="답변 내용을 입력해주세요 (마크다운 문법 지원)"
+                    value={answerContent}
+                    onChange={(e) =>
+                      setAnswerContent(e.target.value.slice(0, MAX_ANSWER_LENGTH))
+                    }
+                    rows={6}
+                    maxLength={MAX_ANSWER_LENGTH}
+                  />
+                )}
                 <div className="mt-1 flex items-center justify-end">
                   <button
                     type="button"
