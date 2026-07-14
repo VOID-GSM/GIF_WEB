@@ -14,9 +14,7 @@ export default function Markdown({ content, className = "" }: MarkdownProps) {
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         components={{
-          p: ({ children }) => (
-            <p className="whitespace-pre-wrap my-2">{children}</p>
-          ),
+          p: ({ children }) => <p className="my-2">{children}</p>,
           strong: ({ children }) => (
             <strong className="font-semibold text-gray-900">{children}</strong>
           ),
@@ -59,7 +57,7 @@ export default function Markdown({ content, className = "" }: MarkdownProps) {
             </code>
           ),
           pre: ({ children }) => (
-            <pre className="my-2 overflow-x-auto rounded-[8px] bg-gray-100 p-3 text-[12px] text-gray-800">
+            <pre className="my-2 overflow-x-auto rounded-[8px] bg-gray-100 p-3 text-[12px] text-gray-800 [&_code]:bg-transparent [&_code]:p-0">
               {children}
             </pre>
           ),
