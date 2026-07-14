@@ -131,9 +131,9 @@ export default function AdminInquiryDetailView({
                 <span className="text-[13px] font-medium text-gray-700">
                   문의 내용
                 </span>
-                <p className="whitespace-pre-wrap rounded-[10px] border border-gray-200 bg-white px-3.5 py-3 text-[13px] leading-relaxed text-gray-700">
-                  {data.content}
-                </p>
+                <div className="rounded-[10px] border border-gray-200 bg-white px-3.5 py-3">
+                  <Markdown content={data.content} />
+                </div>
               </div>
 
               {/* 첨부파일 */}
