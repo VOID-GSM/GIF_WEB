@@ -124,10 +124,12 @@ export default function ProjectEditForm({
     >
       <section className="flex flex-col gap-6 sm:flex-row sm:gap-8">
         {isLeader ? (
-          <FileUpload
-            onChange={setThumbnail}
-            className="mx-auto h-[160px] w-[240px]"
-          />
+          <div className="mx-auto flex w-[240px] shrink-0 flex-col gap-1.5">
+            <FileUpload onChange={setThumbnail} className="h-[160px] w-[240px]" />
+            <span className="text-center text-xs text-gray-400">
+              프로젝트 목록에 224 x 112px(2:1 비율)로 표시돼요. 비율이 다르면 잘릴 수 있어요.
+            </span>
+          </div>
         ) : (
           // 팀원 — 로고 수정 불가, 기존 로고만 표시
           <div className="mx-auto h-[160px] w-[240px] shrink-0 overflow-hidden rounded-xl border border-gray-200 bg-gray-100">
