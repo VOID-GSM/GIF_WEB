@@ -17,7 +17,7 @@ type Props = {
 function PreviewField({ field }: { field: FormField }) {
   return (
     <div className="flex flex-col rounded-[10px] border-t-5 border-yellow-600 bg-white px-4 py-5 shadow-new sm:px-7 sm:py-6">
-      <span className="text-[16px] font-semibold sm:text-[18px]">
+      <span className="text-[16px] font-semibold text-gray-900 sm:text-[18px]">
         {field.title}
       </span>
       {field.description && (
