@@ -76,7 +76,7 @@ export const SCHEDULE: ScheduleItem[] = [
 
 export const STATS: StatItem[] = [
   { value: "26", label: "참가 팀" },
-  { value: "123", label: "참가 학생" },
+  { value: "133", label: "참가 학생" },
   { value: "1·2", label: "참가 학년" },
   { value: "3", label: "심사 영역" },
 ];

@@ -28,7 +28,7 @@ interface Props {
 const AREAS: ScoreArea[] = ["major", "report", "social"];
 
 const headerCellCx =
-  "px-4 h-9 flex items-center bg-[var(--color-yellow-50)] border-y border-[var(--color-yellow-600)] text-xs font-semibold text-[var(--color-gray-700)] sticky top-0 z-10 dark:bg-[var(--color-surface-secondary)] dark:text-gray-300 dark:border-yellow-500/20";
+  "px-4 h-9 flex items-center bg-[var(--color-yellow-50)] border-y border-[var(--color-yellow-600)] text-xs font-semibold text-[var(--color-gray-700)] sticky top-0 z-10 dark:bg-[#85782c] dark:text-gray-100 dark:border-yellow-500/20";
 
 export default function ScoreAssignTable({
   isLoading,

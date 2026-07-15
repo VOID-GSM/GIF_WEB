@@ -57,7 +57,7 @@ export default function Markdown({ content, className = "" }: MarkdownProps) {
             </code>
           ),
           pre: ({ children }) => (
-            <pre className="my-2 overflow-x-auto rounded-[8px] bg-gray-100 p-3 text-[12px] text-gray-800 [&_code]:bg-transparent [&_code]:p-0">
+            <pre className="my-2 whitespace-pre-wrap break-words rounded-[8px] bg-gray-100 p-3 text-[12px] text-gray-800 [&_code]:bg-transparent [&_code]:p-0">
               {children}
             </pre>
           ),
