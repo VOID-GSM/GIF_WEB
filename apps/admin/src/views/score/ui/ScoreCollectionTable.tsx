@@ -34,7 +34,7 @@ export default function ScoreCollectionTable({ isLoading, isError, scoreRows }: 
         - 모바일: 폭이 넘쳐 가로 스크롤이 생기고, 좌측 핵심 정보(등수/팀명)가 먼저 보인다.
       */}
       <div className="min-w-[40rem]">
-        <div className="flex items-center bg-orange-50 h-9 sticky top-0 z-10">
+        <div className="flex items-center bg-[var(--color-orange-50)] dark:bg-[var(--color-surface-secondary)] h-9 sticky top-0 z-10">
           {/* 핵심 정보 */}
           <div className="w-16 sm:w-20 md:w-24 shrink-0 text-center font-medium text-sm sm:text-base text-gray-900">
             등수
