@@ -58,7 +58,7 @@ export default function FormPreviewModal({ form, onClose }: Props) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4 md:left-[220px]"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4 md:pl-[220px]"
       onClick={onClose}
     >
       <div
