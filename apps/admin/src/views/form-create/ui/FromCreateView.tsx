@@ -48,9 +48,11 @@ export default function FormCreateView() {
   const [deadlineTime, setDeadlineTime] = useState("");
   const [savedFormId, setSavedFormId] = useState<number | null>(null);
 
-  // 날짜(YYYY-MM-DD) + 시각(HH:mm) → 백엔드 LocalDateTime 형식 "YYYY-MM-DDTHH:mm:ss"
+  // 날짜(YYYY-MM-DD) + 시각(HH:mm) → "YYYY-MM-DDTHH:mm:ss+09:00"
+  // 사용자가 고른 시각은 KST 기준이므로 KST(+09:00) 오프셋을 명시해 전송한다.
+  // 오프셋을 붙이지 않으면 서버가 UTC로 해석해 실제보다 9시간 뒤로 저장·표시된다.
   const buildDeadline = () =>
-    deadline && deadlineTime ? `${deadline}T${deadlineTime}:00` : "";
+    deadline && deadlineTime ? `${deadline}T${deadlineTime}:00+09:00` : "";
 
   // 내부 id 를 제거하고, 허용 확장자는 FILE 타입에서만 전송한다.
   const buildRequestFields = (): PostFormRequestField[] =>
