@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 
 import { AREA_LABELS, getAllowedAreas } from "@/entities/score";
 import { useGetMyInfo } from "@/entities/mypage";
+import { PRIVILEGED_ADMIN_EMAIL } from "@/shared/constants";
 
 interface ScoreAssignSectionProps {
   projectId: number;
@@ -17,8 +18,8 @@ export default function ScoreAssignSection({
   const router = useRouter();
   const { data: myInfo } = useGetMyInfo();
 
-  // 역할 정보가 아직 없으면 버튼을 렌더하지 않는다.
-  if (!myInfo?.adminRole) return null;
+  // 역할 정보가 아직 없거나, 단순 관리 계정(void 관리자)이면 버튼을 렌더하지 않는다.
+  if (!myInfo?.adminRole || myInfo.email === PRIVILEGED_ADMIN_EMAIL) return null;
 
   const areas = getAllowedAreas(myInfo.adminRole, myInfo.gradeHead);
   if (areas.length === 0) return null;

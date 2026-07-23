@@ -8,6 +8,7 @@ import { useGetFilteredProjects } from "@/entities/project";
 import type { Grade } from "@/entities/project";
 import { useScoreStatuses } from "@/entities/score";
 import { useGetMyInfo } from "@/entities/mypage";
+import { PRIVILEGED_ADMIN_EMAIL } from "@/shared/constants";
 import type { ScoreFilter, ScoreArea } from "./constants";
 import { getAllowedAreas } from "./constants";
 
@@ -31,10 +32,11 @@ export default function ScoreAssignView() {
   }
 
   const { data: myInfo, isLoading: isMyInfoLoading } = useGetMyInfo();
-  const allowedAreas: ScoreArea[] = getAllowedAreas(
-    myInfo?.adminRole,
-    myInfo?.gradeHead,
-  );
+  // void 관리자 계정은 실제 채점 권한이 없는 단순 관리 계정이라 항상 점수 부여가 불가능해야 한다.
+  const isPrivilegedAdmin = myInfo?.email === PRIVILEGED_ADMIN_EMAIL;
+  const allowedAreas: ScoreArea[] = isPrivilegedAdmin
+    ? []
+    : getAllowedAreas(myInfo?.adminRole, myInfo?.gradeHead);
 
   const { data: projects = [], isLoading: isProjectsLoading } = useGetFilteredProjects(grade);
 

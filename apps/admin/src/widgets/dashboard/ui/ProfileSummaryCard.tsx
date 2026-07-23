@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { Logout } from "@repo/ui";
 import { useGetMyInfo } from "@/entities/mypage";
-import { COOKIE_KEYS } from "@/shared/constants";
+import { COOKIE_KEYS, PRIVILEGED_ADMIN_EMAIL } from "@/shared/constants";
 import { deleteCookie } from "@/shared/utils";
 
 const ADMIN_ROLE_LABEL: Record<string, string> = {
@@ -15,6 +15,7 @@ const ADMIN_ROLE_LABEL: Record<string, string> = {
 export default function ProfileSummaryCard() {
   const router = useRouter();
   const { data, isLoading, isError } = useGetMyInfo();
+  const isPrivilegedAdmin = data?.email === PRIVILEGED_ADMIN_EMAIL;
 
   // 교과 역할과 학년부 부장 여부를 함께 표시한다. (예: "전공 교과 · 학년부 부장")
   const roleParts = [
@@ -46,7 +47,7 @@ export default function ProfileSummaryCard() {
           <h2 className="mt-1 text-[20px] font-semibold tracking-[-0.5px] text-gray-900">
             {data?.name ?? "-"}
             <span className="ml-1 text-[14px] font-medium text-gray-400">
-              선생님
+              {isPrivilegedAdmin ? "관리자" : "선생님"}
             </span>
           </h2>
 
