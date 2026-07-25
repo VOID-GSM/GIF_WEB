@@ -126,7 +126,7 @@ export default function DatePicker({ value, onChange }: DatePickerProps) {
                   onClick={() => handleSelect(day)}
                   className={`text-center text-[13px] py-[7px] rounded-[8px] transition-colors ${
                     isSelected(day)
-                      ? "bg-yellow-600 text-white font-medium"
+                      ? "bg-yellow-600 text-gray-900 font-medium"
                       : isToday(day)
                         ? "border border-yellow-600 text-yellow-700"
                         : "hover:bg-gray-100 text-gray-800"
