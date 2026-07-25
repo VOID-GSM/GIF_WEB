@@ -62,7 +62,7 @@ export default function Sidebar({ navItems, isOpen, onClose }: SidebarProps) {
               }}
               className={`w-full cursor-pointer rounded-lg px-4 py-3 text-left text-[16px] font-medium outline-none transition-colors duration-200 ${
                 isActive
-                  ? "bg-yellow-100 text-yellow-700"
+                  ? "bg-yellow-100 text-gray-900"
                   : "text-gray-700 hover:bg-gray-100 focus-visible:bg-gray-100 dark:focus-visible:bg-gray-800"
               }`}
             >

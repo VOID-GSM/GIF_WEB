@@ -82,7 +82,7 @@ export default function SigninCard({
             className="w-[60px] h-10 object-contain"
           />
           <div className="flex flex-col gap-3 md:gap-5">
-            <p className="text-[12px] text-[#ffc200] dark:text-yellow-300">
+            <p className="text-[12px] text-[#000000] dark:text-white">
               GSM IdeaFestival 관리 시스템
             </p>
             <p className="text-base font-semibold leading-normal text-[#000000] dark:text-white">
