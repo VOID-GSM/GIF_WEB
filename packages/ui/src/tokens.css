@@ -121,19 +121,19 @@
 }
 
 .dark .bg-yellow-50 {
-  background-color: rgb(237 201 38 / 0.1);
+  background-color: rgb(from var(--color-yellow-600) r g b / 0.1);
 }
 .dark .bg-yellow-100 {
-  background-color: rgb(237 201 38 / 0.1);
+  background-color: rgb(from var(--color-yellow-600) r g b / 0.1);
 }
 .dark .bg-yellow-200 {
-  background-color: rgb(237 201 38 / 0.2);
+  background-color: rgb(from var(--color-yellow-600) r g b / 0.2);
 }
 .dark .hover\:bg-yellow-50:hover {
-  background-color: rgb(237 201 38 / 0.15);
+  background-color: rgb(from var(--color-yellow-600) r g b / 0.15);
 }
 .dark .hover\:bg-yellow-100:hover {
-  background-color: rgb(237 201 38 / 0.2);
+  background-color: rgb(from var(--color-yellow-600) r g b / 0.2);
 }
 
 .dark .bg-orange-50 {
