@@ -24,6 +24,7 @@ export default function ScoreAssignView() {
     () => 1 as Grade,
   );
   const [scoreFilter, setScoreFilter] = useState<ScoreFilter>("all");
+  const [teamNameQuery, setTeamNameQuery] = useState("");
 
   function handleGradeChange(g: Grade) {
     localStorage.setItem(GRADE_STORAGE_KEY, String(g));
@@ -58,10 +59,14 @@ export default function ScoreAssignView() {
     })
     .sort((a, b) => a.teamName.localeCompare(b.teamName));
 
-  const teams = teamsWithScores.filter((t) => {
-    if (scoreFilter === "all") return true;
-    return scoreFilter === "complete" ? t.isComplete : !t.isComplete;
-  });
+  const teams = teamsWithScores
+    .filter((t) => {
+      if (scoreFilter === "all") return true;
+      return scoreFilter === "complete" ? t.isComplete : !t.isComplete;
+    })
+    .filter((t) =>
+      t.teamName.toLowerCase().includes(teamNameQuery.trim().toLowerCase()),
+    );
 
   return (
     <div className="h-dvh bg-background flex flex-col items-center justify-center px-4 sm:px-6">
@@ -73,6 +78,8 @@ export default function ScoreAssignView() {
             onGradeChange={handleGradeChange}
             scoreFilter={scoreFilter}
             onFilterChange={setScoreFilter}
+            teamNameQuery={teamNameQuery}
+            onTeamNameQueryChange={setTeamNameQuery}
           />
           <ScoreAssignTable isLoading={isLoading} teams={teams} allowedAreas={allowedAreas} />
         </div>

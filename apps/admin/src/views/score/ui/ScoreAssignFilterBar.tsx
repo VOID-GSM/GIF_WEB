@@ -21,6 +21,8 @@ interface Props {
   onGradeChange: (grade: Grade) => void;
   scoreFilter: ScoreFilter;
   onFilterChange: (filter: ScoreFilter) => void;
+  teamNameQuery: string;
+  onTeamNameQueryChange: (value: string) => void;
 }
 
 export default function ScoreAssignFilterBar({
@@ -28,6 +30,8 @@ export default function ScoreAssignFilterBar({
   onGradeChange,
   scoreFilter,
   onFilterChange,
+  teamNameQuery,
+  onTeamNameQueryChange,
 }: Props) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -81,6 +85,13 @@ export default function ScoreAssignFilterBar({
           />
         );
       })}
+      <input
+        type="text"
+        value={teamNameQuery}
+        onChange={(e) => onTeamNameQueryChange(e.target.value)}
+        placeholder="팀명 검색"
+        className="w-full sm:w-auto py-[6.5px] px-[10px] rounded-[8px] text-[12px] border border-gray-300 text-gray-700 bg-white placeholder:text-gray-400 focus:outline-none focus:border-gray-500 dark:border-gray-600"
+      />
       <div className="w-full sm:w-auto sm:ml-auto flex items-center gap-x-4 text-xs text-gray-500">
         {LEGEND.map(({ dot, label }) => (
           <span key={label} className="flex items-center gap-1.5">
