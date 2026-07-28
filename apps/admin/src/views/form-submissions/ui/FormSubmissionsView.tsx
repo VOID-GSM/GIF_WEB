@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { GRADES, useGetFilteredProjects, useStoredGrade } from "@/entities/project";
 import GradeFilter from "@/features/project-filter/ui/GradeFilter";
+import TeamFilter from "@/features/team-filter/ui/TeamFilter";
 import { formatDeadlineDate, formatDeadlineTime } from "@/entities/form";
 import {
   useAdminFormDetail,
@@ -26,6 +27,7 @@ export default function FormSubmissionsView({ formId }: Props) {
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [submissionFilter, setSubmissionFilter] =
     useState<SubmissionFilter>("ALL");
+  const [teamQuery, setTeamQuery] = useState("");
   const router = useRouter();
 
   // 같은 필터를 다시 누르면 선택 해제되어 전체 목록으로 돌아간다
@@ -61,11 +63,15 @@ export default function FormSubmissionsView({ formId }: Props) {
   });
 
   // 제출/미제출 필터 — 선택 없으면(ALL) 전체 목록을 그대로 보여준다
-  const filteredRows = rows.filter((row) => {
-    if (submissionFilter === "SUBMITTED") return row.submitted;
-    if (submissionFilter === "UNSUBMITTED") return !row.submitted;
-    return true;
-  });
+  const filteredRows = rows
+    .filter((row) => {
+      if (submissionFilter === "SUBMITTED") return row.submitted;
+      if (submissionFilter === "UNSUBMITTED") return !row.submitted;
+      return true;
+    })
+    .filter((row) =>
+      row.teamName.toLowerCase().includes(teamQuery.trim().toLowerCase()),
+    );
 
   return (
     <div className="min-h-screen flex flex-col items-center gap-8 px-4 py-6 sm:gap-12 sm:py-10 bg-background">
@@ -111,10 +117,17 @@ export default function FormSubmissionsView({ formId }: Props) {
             </button>
           </div>
         </div>
-        <GradeFilter
-          value={selectedGrade ?? GRADES[0]}
-          onChange={setSelectedGrade}
-        />
+        <div className="flex w-full items-center justify-center gap-2 min-[880px]:w-auto">
+          <GradeFilter
+            value={selectedGrade ?? GRADES[0]}
+            onChange={setSelectedGrade}
+          />
+          <TeamFilter
+            teamNames={rows.map((row) => row.teamName)}
+            value={teamQuery}
+            onChange={setTeamQuery}
+          />
+        </div>
       </div>
 
       {isLoading ? (
@@ -125,9 +138,11 @@ export default function FormSubmissionsView({ formId }: Props) {
         </div>
       ) : filteredRows.length === 0 ? (
         <div className="pt-20 text-gray-500 font-medium">
-          {submissionFilter === "SUBMITTED"
-            ? "제출한 팀이 없습니다."
-            : "미제출한 팀이 없습니다."}
+          {teamQuery.trim() !== ""
+            ? "일치하는 팀이 없습니다."
+            : submissionFilter === "SUBMITTED"
+              ? "제출한 팀이 없습니다."
+              : "미제출한 팀이 없습니다."}
         </div>
       ) : (
         <div className="w-full max-w-[800px] overflow-x-auto rounded-xl bg-white shadow [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
