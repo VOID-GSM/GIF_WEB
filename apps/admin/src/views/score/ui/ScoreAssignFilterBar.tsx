@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { Chevron, GrantButton } from "@repo/ui";
 import type { GrantStatus, Grade } from "@repo/ui";
 import type { ScoreFilter } from "./constants";
+import TeamFilter from "@/features/team-filter/ui/TeamFilter";
 
 const GRADE_OPTIONS: { value: Grade; label: string }[] = [
   { value: 1, label: "1학년" },
@@ -21,6 +22,9 @@ interface Props {
   onGradeChange: (grade: Grade) => void;
   scoreFilter: ScoreFilter;
   onFilterChange: (filter: ScoreFilter) => void;
+  teamNames: string[];
+  teamQuery: string;
+  onTeamQueryChange: (query: string) => void;
 }
 
 export default function ScoreAssignFilterBar({
@@ -28,6 +32,9 @@ export default function ScoreAssignFilterBar({
   onGradeChange,
   scoreFilter,
   onFilterChange,
+  teamNames,
+  teamQuery,
+  onTeamQueryChange,
 }: Props) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -70,6 +77,7 @@ export default function ScoreAssignFilterBar({
           </ul>
         )}
       </div>
+      <TeamFilter teamNames={teamNames} value={teamQuery} onChange={onTeamQueryChange} />
       {(["ungranted", "granted"] as GrantStatus[]).map((status) => {
         const filter: ScoreFilter = status === "ungranted" ? "incomplete" : "complete";
         return (
