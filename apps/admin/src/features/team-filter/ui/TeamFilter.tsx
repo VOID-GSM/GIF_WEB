@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { matchesTeamQuery } from "@/shared/utils";
 
 interface TeamFilterProps {
   teamNames: string[];
@@ -31,9 +32,7 @@ export default function TeamFilter({
     return () => document.removeEventListener("mousedown", close);
   }, [isOpen]);
 
-  const suggestions = teamNames.filter((name) =>
-    name.toLowerCase().includes(value.trim().toLowerCase()),
-  );
+  const suggestions = teamNames.filter((name) => matchesTeamQuery(name, value));
 
   return (
     <div ref={containerRef} className="relative w-full sm:w-[200px]">

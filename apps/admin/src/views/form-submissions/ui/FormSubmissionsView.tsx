@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { GRADES, useGetFilteredProjects, useStoredGrade } from "@/entities/project";
 import GradeFilter from "@/features/project-filter/ui/GradeFilter";
 import TeamFilter from "@/features/team-filter/ui/TeamFilter";
+import { matchesTeamQuery } from "@/shared/utils";
 import { formatDeadlineDate, formatDeadlineTime } from "@/entities/form";
 import {
   useAdminFormDetail,
@@ -69,9 +70,7 @@ export default function FormSubmissionsView({ formId }: Props) {
       if (submissionFilter === "UNSUBMITTED") return !row.submitted;
       return true;
     })
-    .filter((row) =>
-      row.teamName.toLowerCase().includes(teamQuery.trim().toLowerCase()),
-    );
+    .filter((row) => matchesTeamQuery(row.teamName, teamQuery));
 
   return (
     <div className="min-h-screen flex flex-col items-center gap-8 px-4 py-6 sm:gap-12 sm:py-10 bg-background">

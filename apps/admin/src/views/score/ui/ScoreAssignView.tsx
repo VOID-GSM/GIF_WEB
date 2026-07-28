@@ -9,6 +9,7 @@ import type { Grade } from "@/entities/project";
 import { useScoreStatuses } from "@/entities/score";
 import { useGetMyInfo } from "@/entities/mypage";
 import { PRIVILEGED_ADMIN_EMAIL } from "@/shared/constants";
+import { matchesTeamQuery } from "@/shared/utils";
 import type { ScoreFilter, ScoreArea } from "./constants";
 import { getAllowedAreas } from "./constants";
 
@@ -66,9 +67,7 @@ export default function ScoreAssignView() {
       if (scoreFilter === "all") return true;
       return scoreFilter === "complete" ? t.isComplete : !t.isComplete;
     })
-    .filter((t) =>
-      t.teamName.toLowerCase().includes(teamQuery.trim().toLowerCase()),
-    );
+    .filter((t) => matchesTeamQuery(t.teamName, teamQuery));
 
   return (
     <div className="h-dvh bg-background flex flex-col items-center justify-center px-4 sm:px-6">
