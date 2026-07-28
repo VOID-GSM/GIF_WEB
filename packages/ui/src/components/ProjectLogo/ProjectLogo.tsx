@@ -3,7 +3,7 @@
 import { useState } from "react";
 
 // 프로젝트 로고 미등록(빈 값) 또는 이미지 로드 실패 시 사용할 GIF 기본 로고
-const FALLBACK_LOGO = "/GIF.logo.png";
+const FALLBACK_LOGO = "/dark.GIF.logo.png";
 
 interface ProjectLogoProps {
   // 외부 API에서 내려오는 프로젝트 로고 URL (미등록이면 빈 값/undefined)
