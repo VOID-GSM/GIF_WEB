@@ -35,7 +35,7 @@ export default function TeamFilter({
   const suggestions = teamNames.filter((name) => matchesTeamQuery(name, value));
 
   return (
-    <div ref={containerRef} className="relative w-full sm:w-[200px]">
+    <div ref={containerRef} className="relative w-[140px] sm:w-[200px]">
       <input
         type="text"
         value={value}
