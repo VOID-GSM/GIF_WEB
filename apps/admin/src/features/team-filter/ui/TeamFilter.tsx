@@ -42,11 +42,11 @@ export default function TeamFilter({
         onChange={(e) => onChange(e.target.value)}
         onFocus={() => setIsOpen(true)}
         placeholder={placeholder}
-        className="h-[36px] w-full rounded-[10px] border border-gray-300 bg-white px-3 text-sm text-gray-700 outline-none transition-colors placeholder:text-gray-400 focus:border-yellow-600"
+        className="h-[36px] w-full rounded-[8px] border border-gray-500 bg-white px-3 text-sm text-gray-500 outline-none transition-colors placeholder:text-gray-500 focus:border-yellow-600 dark:border-gray-600"
       />
 
       {isOpen && value.trim() !== "" && suggestions.length > 0 && (
-        <ul className="absolute top-[calc(100%+6px)] left-0 z-20 max-h-[220px] w-full overflow-y-auto rounded-[10px] border border-gray-100 bg-white shadow-new">
+        <ul className="absolute top-[calc(100%+6px)] left-0 z-20 max-h-[220px] w-full overflow-y-auto rounded-[8px] border border-gray-100 bg-white shadow-new">
           {suggestions.map((name) => (
             <li key={name}>
               <button
