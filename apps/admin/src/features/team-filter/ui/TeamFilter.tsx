@@ -42,7 +42,7 @@ export default function TeamFilter({
         onChange={(e) => onChange(e.target.value)}
         onFocus={() => setIsOpen(true)}
         placeholder={placeholder}
-        className="h-[36px] w-full rounded-[8px] border border-gray-500 bg-white px-3 text-sm text-gray-500 outline-none transition-colors placeholder:text-gray-500 focus:border-yellow-600 dark:border-gray-600"
+        className="w-full rounded-[8px] border border-gray-500 bg-white px-[10px] py-[6.5px] text-[12px] text-gray-500 outline-none transition-colors placeholder:text-gray-500 focus:border-yellow-600 dark:border-gray-600"
       />
 
       {isOpen && value.trim() !== "" && suggestions.length > 0 && (
@@ -55,7 +55,7 @@ export default function TeamFilter({
                   onChange(name);
                   setIsOpen(false);
                 }}
-                className="w-full truncate px-3 py-2 text-left text-sm text-gray-700 transition-colors hover:bg-yellow-50"
+                className="w-full truncate px-[10px] py-2 text-left text-[12px] text-gray-700 transition-colors hover:bg-yellow-50"
               >
                 {name}
               </button>
