@@ -1,7 +1,12 @@
 "use client";
 import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { GRADES, useGetFilteredProjects, useStoredGrade } from "@/entities/project";
+import {
+  GRADES,
+  useGetFilteredProjects,
+  useStoredGrade,
+} from "@/entities/project";
 import GradeFilter from "@/features/project-filter/ui/GradeFilter";
 import TeamFilter from "@/features/team-filter/ui/TeamFilter";
 import { matchesTeamQuery } from "@/shared/utils";
@@ -23,8 +28,9 @@ type SubmissionFilter = "ALL" | "SUBMITTED" | "UNSUBMITTED";
 
 export default function FormSubmissionsView({ formId }: Props) {
   // 마지막으로 선택한 학년을 복원한다 (확정 전엔 null → 초기 학년 깜빡임 방지)
-  const { grade: selectedGrade, setGrade: setSelectedGrade } =
-    useStoredGrade("formSubmissionsGrade");
+  const { grade: selectedGrade, setGrade: setSelectedGrade } = useStoredGrade(
+    "formSubmissionsGrade",
+  );
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [submissionFilter, setSubmissionFilter] =
     useState<SubmissionFilter>("ALL");
@@ -151,50 +157,83 @@ export default function FormSubmissionsView({ formId }: Props) {
           >
             <span className="text-sm font-semibold text-gray-700">팀명</span>
             <span className="text-sm font-semibold text-gray-700">양식명</span>
-            <span className="text-sm font-semibold text-gray-700">마감 날짜</span>
-            <span className="text-sm font-semibold text-gray-700">마감 시간</span>
-            <span className="text-sm font-semibold text-gray-700">제출 여부</span>
+            <span className="text-sm font-semibold text-gray-700">
+              마감 날짜
+            </span>
+            <span className="text-sm font-semibold text-gray-700">
+              마감 시간
+            </span>
+            <span className="text-sm font-semibold text-gray-700">
+              제출 여부
+            </span>
           </div>
 
           {filteredRows.map((row) => (
-              <div
-                key={row.projectId}
-                className={`${SUBMISSION_TABLE_GRID} border-b border-gray-100 px-4 py-4 transition-colors hover:bg-yellow-50
+            <div
+              key={row.projectId}
+              className={`${SUBMISSION_TABLE_GRID} border-b border-gray-100 px-4 py-4 transition-colors hover:bg-yellow-50
                 ${row.submitted ? "cursor-pointer" : "cursor-not-allowed"}`}
-                onClick={() => {
-                  if (!row.submitted || row.submitId == null) return;
-                  router.push(`/form/submissions/${formId}/${row.submitId}`);
-                }}
-              >
-                {/* 팀명 */}
-                <span className="min-w-0 truncate text-base font-medium text-gray-900">
-                  {row.teamName}
-                </span>
+              onClick={() => {
+                if (!row.submitted || row.submitId == null) return;
+                router.push(`/form/submissions/${formId}/${row.submitId}`);
+              }}
+            >
+              {/* 팀명 */}
+              <span className="min-w-0 truncate text-base font-medium text-gray-900">
+                {row.teamName}
+              </span>
 
-                {/* 양식명 */}
-                <span className="min-w-0 truncate text-sm text-gray-700">
-                  {form?.title}
-                </span>
-
-                {/* 마감 날짜 */}
-                <span className="text-sm text-gray-700">{deadlineDate}</span>
-
-                {/* 마감 시간 */}
-                <span className="text-sm text-gray-700">{deadlineTime || "—"}</span>
-
-                {/* 제출 여부 */}
-                <div className="flex justify-start">
-                  <span
-                    className={`inline-flex w-16 items-center justify-center rounded-lg border py-1 text-sm ${
-                      row.submitted
-                        ? "border-yellow-600 bg-yellow-50 text-gray-900"
-                        : "border-gray-200 bg-gray-100 text-gray-500"
-                    }`}
+              {/* 양식명 */}
+              <span className="min-w-0 truncate text-base font-medium text-gray-900">
+                {row.projectId ? (
+                  <Link
+                    href={`/projects/${row.projectId}`}
+                    className="inline-block max-w-full truncate underline-offset-2 transition-colors hover:text-yellow-700 hover:underline"
+                    onClick={(e) => e.stopPropagation()}
                   >
-                    {row.submitted ? "제출" : "미제출"}
-                  </span>
-                </div>
+                    {row.teamName}
+                  </Link>
+                ) : (
+                  row.teamName
+                )}
+              </span>
+
+              {/* 양식명 */}
+              <span className="min-w-0 truncate text-sm text-gray-700">
+                {row.projectId ? (
+                  <Link
+                    href={`/projects/${row.projectId}`}
+                    className="inline-block max-w-full truncate underline-offset-2 transition-colors hover:text-yellow-700 hover:underline"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    {form?.title}
+                  </Link>
+                ) : (
+                  form?.title
+                )}
+              </span>
+
+              {/* 마감 날짜 */}
+              <span className="text-sm text-gray-700">{deadlineDate}</span>
+
+              {/* 마감 시간 */}
+              <span className="text-sm text-gray-700">
+                {deadlineTime || "—"}
+              </span>
+
+              {/* 제출 여부 */}
+              <div className="flex justify-start">
+                <span
+                  className={`inline-flex w-16 items-center justify-center rounded-lg border py-1 text-sm ${
+                    row.submitted
+                      ? "border-yellow-600 bg-yellow-50 text-gray-900"
+                      : "border-gray-200 bg-gray-100 text-gray-500"
+                  }`}
+                >
+                  {row.submitted ? "제출" : "미제출"}
+                </span>
               </div>
+            </div>
           ))}
         </div>
       )}
