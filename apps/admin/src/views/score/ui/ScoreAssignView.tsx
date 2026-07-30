@@ -9,6 +9,7 @@ import type { Grade } from "@/entities/project";
 import { useScoreStatuses } from "@/entities/score";
 import { useGetMyInfo } from "@/entities/mypage";
 import { PRIVILEGED_ADMIN_EMAIL } from "@/shared/constants";
+import { matchesTeamQuery } from "@/shared/utils";
 import type { ScoreFilter, ScoreArea } from "./constants";
 import { getAllowedAreas } from "./constants";
 
@@ -25,6 +26,7 @@ export default function ScoreAssignView() {
     () => 1 as Grade,
   );
   const [scoreFilter, setScoreFilter] = useState<ScoreFilter>("all");
+  const [teamQuery, setTeamQuery] = useState("");
 
   function handleGradeChange(g: Grade) {
     localStorage.setItem(GRADE_STORAGE_KEY, String(g));
@@ -60,10 +62,12 @@ export default function ScoreAssignView() {
     })
     .sort((a, b) => a.teamName.localeCompare(b.teamName));
 
-  const teams = teamsWithScores.filter((t) => {
-    if (scoreFilter === "all") return true;
-    return scoreFilter === "complete" ? t.isComplete : !t.isComplete;
-  });
+  const teams = teamsWithScores
+    .filter((t) => {
+      if (scoreFilter === "all") return true;
+      return scoreFilter === "complete" ? t.isComplete : !t.isComplete;
+    })
+    .filter((t) => matchesTeamQuery(t.teamName, teamQuery));
 
   return (
     <div className="h-dvh bg-background flex flex-col items-center justify-center px-4 sm:px-6">
@@ -75,6 +79,9 @@ export default function ScoreAssignView() {
             onGradeChange={handleGradeChange}
             scoreFilter={scoreFilter}
             onFilterChange={setScoreFilter}
+            teamNames={teamsWithScores.map((t) => t.teamName)}
+            teamQuery={teamQuery}
+            onTeamQueryChange={setTeamQuery}
           />
           <ScoreAssignTable isLoading={isLoading} teams={teams} allowedAreas={allowedAreas} />
         </div>
