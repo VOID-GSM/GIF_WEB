@@ -46,7 +46,7 @@ export default function Markdown({ content, className = "" }: MarkdownProps) {
               href={href}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-yellow-700 underline underline-offset-2 hover:text-yellow-900 dark:hover:text-yellow-300"
+              className="text-gray-900 underline underline-offset-2 hover:text-gray-600 dark:hover:text-gray-300"
             >
               {children}
             </a>

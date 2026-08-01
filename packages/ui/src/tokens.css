@@ -21,16 +21,16 @@
   --color-gray-40: #7f7f7f;
 
   /* yellow scale */
-  --color-yellow-900: #ff7c00;
-  --color-yellow-800: #ffa800;
-  --color-yellow-700: #ffc200;
-  --color-yellow-600: #ffdb00;
-  --color-yellow-500: #f8e800;
-  --color-yellow-400: #fbed3f;
-  --color-yellow-300: #fdf167;
-  --color-yellow-200: #fff695;
-  --color-yellow-100: #fffac0;
-  --color-yellow-50: #fffde5;
+  --color-yellow-900: #8e760b;
+  --color-yellow-800: #b3950f;
+  --color-yellow-700: #d9b412;
+  --color-yellow-600: #edc926;
+  --color-yellow-500: #efcf3e;
+  --color-yellow-400: #f2d65a;
+  --color-yellow-300: #f5df80;
+  --color-yellow-200: #f8e9a5;
+  --color-yellow-100: #fbf2cb;
+  --color-yellow-50: #fdf9e7;
 
   /* orange scale */
   --color-orange-900: #ea4b04;
@@ -121,19 +121,19 @@
 }
 
 .dark .bg-yellow-50 {
-  background-color: rgb(248 232 0 / 0.1);
+  background-color: rgb(from var(--color-yellow-600) r g b / 0.1);
 }
 .dark .bg-yellow-100 {
-  background-color: rgb(248 232 0 / 0.1);
+  background-color: rgb(from var(--color-yellow-600) r g b / 0.1);
 }
 .dark .bg-yellow-200 {
-  background-color: rgb(248 232 0 / 0.2);
+  background-color: rgb(from var(--color-yellow-600) r g b / 0.2);
 }
 .dark .hover\:bg-yellow-50:hover {
-  background-color: rgb(248 232 0 / 0.15);
+  background-color: rgb(from var(--color-yellow-600) r g b / 0.15);
 }
 .dark .hover\:bg-yellow-100:hover {
-  background-color: rgb(248 232 0 / 0.2);
+  background-color: rgb(from var(--color-yellow-600) r g b / 0.2);
 }
 
 .dark .bg-orange-50 {
