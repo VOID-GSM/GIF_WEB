@@ -1,4 +1,7 @@
+import Link from "next/link";
+
 interface ScoreRow {
+  projectId?: number;
   rank: number;
   teamName: string;
   majorAverage?: number;
@@ -70,7 +73,16 @@ export default function ScoreCollectionTable({ isLoading, isError, scoreRows }: 
                 {row.rank}
               </div>
               <div className="flex-1 min-w-[6rem] text-center font-medium text-sm sm:text-base truncate text-gray-900">
-                {row.teamName}
+                {row.projectId ? (
+                  <Link
+                    href={`/projects/${row.projectId}`}
+                    className="inline-block max-w-full truncate underline-offset-2 transition-colors hover:text-yellow-700 hover:underline"
+                  >
+                    {row.teamName}
+                  </Link>
+                ) : (
+                  row.teamName
+                )}
               </div>
               {/* 영역별 평균 */}
               <div className="w-24 shrink-0 text-center text-sm sm:text-base text-gray-600">

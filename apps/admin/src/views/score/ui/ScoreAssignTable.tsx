@@ -1,6 +1,7 @@
 "use client";
 
 import { Fragment } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { SectionBadge } from "@repo/ui";
 import type { ScoreArea } from "./constants";
@@ -101,12 +102,18 @@ export default function ScoreAssignTable({
         {teams.map((team) => (
           <div key={team.id} className="py-3 flex flex-col gap-2">
             <div className="flex flex-col gap-0.5">
-              <span className="text-xs font-semibold text-[var(--color-gray-500)] dark:text-gray-400">
+              <Link
+                href={`/projects/${team.id}`}
+                className="w-fit text-xs font-semibold text-[var(--color-gray-500)] underline-offset-2 transition-colors hover:text-[var(--color-yellow-700)] hover:underline dark:text-gray-400 dark:hover:text-yellow-300"
+              >
                 {team.teamName}
-              </span>
-              <span className="text-sm text-[var(--color-gray-800)] dark:text-gray-200 line-clamp-2">
+              </Link>
+              <Link
+                href={`/projects/${team.id}`}
+                className="text-sm text-[var(--color-gray-800)] underline-offset-2 transition-colors hover:text-[var(--color-yellow-700)] hover:underline dark:text-gray-200 dark:hover:text-yellow-300 line-clamp-2"
+              >
                 {team.name}
-              </span>
+              </Link>
             </div>
             <div className="flex flex-nowrap justify-center gap-3">
               {renderBadges(team, true)}
@@ -124,12 +131,22 @@ export default function ScoreAssignTable({
 
           {teams.map((team) => (
             <Fragment key={team.id}>
-              <span className="border-t border-[var(--color-gray-100)] dark:border-gray-800 px-4 h-11 text-sm text-[var(--color-gray-800)] dark:text-gray-200 truncate flex items-center min-w-0">
-                {team.name}
-              </span>
-              <span className="border-t border-[var(--color-gray-100)] dark:border-gray-800 px-4 h-11 text-sm text-[var(--color-gray-600)] dark:text-gray-400 flex items-center">
-                {team.teamName}
-              </span>
+              <div className="border-t border-[var(--color-gray-100)] dark:border-gray-800 px-4 h-11 text-sm text-[var(--color-gray-800)] dark:text-gray-200 flex items-center min-w-0">
+                <Link
+                  href={`/projects/${team.id}`}
+                  className="truncate underline-offset-2 transition-colors hover:text-[var(--color-yellow-700)] hover:underline dark:hover:text-yellow-300"
+                >
+                  {team.name}
+                </Link>
+              </div>
+              <div className="border-t border-[var(--color-gray-100)] dark:border-gray-800 px-4 h-11 text-sm text-[var(--color-gray-600)] dark:text-gray-400 flex items-center min-w-0">
+                <Link
+                  href={`/projects/${team.id}`}
+                  className="truncate underline-offset-2 transition-colors hover:text-[var(--color-yellow-700)] hover:underline dark:hover:text-yellow-300"
+                >
+                  {team.teamName}
+                </Link>
+              </div>
               <div className="border-t border-[var(--color-gray-100)] dark:border-gray-800 px-4 h-11 flex flex-nowrap items-center gap-2">
                 {renderBadges(team)}
               </div>
