@@ -11,6 +11,7 @@ import {
 } from "@/entities/project";
 import GradeFilter from "@/features/project-filter/ui/GradeFilter";
 import DeadlineCountdownCard from "@/widgets/dashboard/ui/DeadlineCountdownCard";
+import NoticeBanner from "@/widgets/dashboard/ui/NoticeBanner";
 import ScheduleTimelineCard from "@/widgets/dashboard/ui/ScheduleTimelineCard";
 import MyProjectCard from "@/widgets/dashboard/ui/MyProjectCard";
 import ProfileSummaryCard from "@/widgets/dashboard/ui/ProfileSummaryCard";
@@ -51,8 +52,10 @@ export default function ProjectBrowse() {
 
   return (
     <>
-      {/* 모바일: 내 프로젝트 → 자세히 보기 → 제출 마감 → 진행 일정 순으로 세로 배치 */}
+      {/* 모바일: 공지 배너 → 내 프로젝트 → 자세히 보기 → 제출 마감 → 진행 일정 순으로 세로 배치 */}
       <div className="flex min-h-dvh flex-col gap-8 bg-background px-4 pt-16 pb-6 min-[900px]:hidden">
+        <NoticeBanner />
+
         <GradeFilter value={grade} onChange={setGrade} />
 
         {isPending ? (
@@ -97,8 +100,10 @@ export default function ProjectBrowse() {
         <ScheduleTimelineCard />
       </div>
 
-      {/* 데스크톱: 기존 학년 필터 + 전체 그리드 */}
+      {/* 데스크톱: 공지 배너 + 학년 필터 + 전체 그리드 */}
       <div className="hidden min-h-dvh flex-col items-start gap-12 bg-background px-4 py-10 min-[900px]:flex">
+        <NoticeBanner />
+
         <GradeFilter value={grade} onChange={setGrade} />
 
         {isPending ? (
