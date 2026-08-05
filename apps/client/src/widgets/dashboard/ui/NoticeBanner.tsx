@@ -3,7 +3,7 @@
 import Link from "next/link";
 
 import { formatTimestamp } from "@/entities/form/lib/formatDeadline";
-import { useGetNotices } from "@/entities/notice";
+import { useVisibleNotices } from "@/entities/notice";
 
 /** formatTimestamp의 "2026. 08. 05 02:24"에서 시각을 떼고 날짜만 남긴다. */
 function formatDate(createdAt: string) {
@@ -11,7 +11,8 @@ function formatDate(createdAt: string) {
 }
 
 export default function NoticeBanner() {
-  const { data } = useGetNotices();
+  // 내 학년·팀이 대상인 공지만 대상으로 한다 (서버는 전체 목록을 내려준다)
+  const { data } = useVisibleNotices();
 
   // 서버 응답의 정렬 순서를 보장할 수 없어 createdAt(ISO 문자열) 기준 최신순으로 다시 정렬한다.
   const latestNotice = [...(data ?? [])].sort((a, b) =>

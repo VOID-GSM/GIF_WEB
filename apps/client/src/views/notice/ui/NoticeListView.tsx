@@ -3,12 +3,13 @@
 import { useRouter } from "next/navigation";
 
 import { formatTimestamp } from "@/entities/form/lib/formatDeadline";
-import { useGetNotices } from "@/entities/notice";
+import { useVisibleNotices } from "@/entities/notice";
 import NoticeTargetBadges from "./NoticeTargetBadges";
 
 export default function NoticeListView() {
   const router = useRouter();
-  const { data, isPending, isError } = useGetNotices();
+  // 내 학년·팀이 대상인 공지만 보여준다 (서버는 전체 목록을 내려준다)
+  const { data, isPending, isError } = useVisibleNotices();
 
   return (
     <div className="flex min-h-dvh w-full items-center justify-center bg-background px-4 py-8">
