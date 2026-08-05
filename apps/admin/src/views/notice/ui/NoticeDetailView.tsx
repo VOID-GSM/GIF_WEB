@@ -68,8 +68,8 @@ export default function NoticeDetailView({ noticeId }: NoticeDetailViewProps) {
               </div>
             </div>
 
-            {/* 내용 */}
-            <div className="mt-5 rounded-[10px] border border-gray-200 bg-white px-3.5 py-3">
+            {/* 내용 — 배경 없이 본문 그대로 흐르게 둔다 */}
+            <div className="mt-5">
               <Markdown content={data.content} />
             </div>
 
