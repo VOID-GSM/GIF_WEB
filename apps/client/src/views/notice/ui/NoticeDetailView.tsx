@@ -4,7 +4,11 @@ import { useRouter } from "next/navigation";
 import { Chevron, Markdown } from "@repo/ui";
 
 import { formatTimestamp } from "@/entities/form/lib/formatDeadline";
-import { useGetNoticeDetail } from "@/entities/notice";
+import {
+  isNoticeVisible,
+  useGetNoticeDetail,
+  useNoticeViewer,
+} from "@/entities/notice";
 import NoticeTargetBadges from "./NoticeTargetBadges";
 
 interface NoticeDetailViewProps {
@@ -14,6 +18,10 @@ interface NoticeDetailViewProps {
 export default function NoticeDetailView({ noticeId }: NoticeDetailViewProps) {
   const router = useRouter();
   const { data, isPending, isError } = useGetNoticeDetail(noticeId);
+  const { viewer, isPending: isViewerPending } = useNoticeViewer();
+
+  // 목록·배너에서 걸러도 URL로 직접 들어오면 열리므로 상세에서도 대상을 확인한다.
+  const isBlocked = !!data && !isNoticeVisible(data, viewer);
 
   return (
     <div className="flex min-h-dvh w-full items-center justify-center bg-background px-4 py-8">
@@ -31,7 +39,7 @@ export default function NoticeDetailView({ noticeId }: NoticeDetailViewProps) {
           공지사항
         </button>
 
-        {isPending ? (
+        {isPending || isViewerPending ? (
           <p className="py-16 text-center text-[13px] font-medium text-gray-400">
             불러오는 중
           </p>
@@ -39,6 +47,19 @@ export default function NoticeDetailView({ noticeId }: NoticeDetailViewProps) {
           <p className="py-16 text-center text-[13px] font-medium text-red-500">
             공지 내용을 불러오지 못했습니다.
           </p>
+        ) : isBlocked ? (
+          <div className="flex flex-col items-center gap-3 py-16">
+            <p className="text-[13px] font-medium text-gray-400">
+              내 학년·팀이 대상이 아닌 공지입니다.
+            </p>
+            <button
+              type="button"
+              onClick={() => router.push("/notice")}
+              className="cursor-pointer text-[13px] font-medium text-gray-600 underline underline-offset-2 transition-colors hover:text-gray-800"
+            >
+              공지사항 목록으로
+            </button>
+          </div>
         ) : (
           <>
             {/* 헤더 */}
