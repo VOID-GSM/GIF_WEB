@@ -19,7 +19,28 @@ export default function FileAnswer({
   const [downloading, setDownloading] = useState(false);
 
   const filePath = answer?.filePath;
+  // 파일 대신 외부 링크(URL)로 제출한 경우 링크는 textAnswer 로 내려온다.
+  const submittedUrl = answer?.textAnswer?.trim();
+
   if (!filePath) {
+    if (submittedUrl) {
+      return (
+        <a
+          href={submittedUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex w-full items-center gap-[22px] rounded-[10px] border border-gray-80 pl-[24px] pr-[30px] py-[15px] transition-colors hover:bg-gray-50"
+        >
+          <File />
+          <div className="flex min-w-0 flex-col">
+            <span className="truncate text-[14px] font-semibold text-gray-900">
+              {submittedUrl}
+            </span>
+            <span className="text-[11px] text-gray-400">외부 링크</span>
+          </div>
+        </a>
+      );
+    }
     return <span className="text-gray-400">파일 없음</span>;
   }
 
