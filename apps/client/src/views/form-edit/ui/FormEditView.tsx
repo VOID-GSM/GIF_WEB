@@ -1,6 +1,7 @@
 "use client";
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
+import { splitAllowedExtensions, isValidSubmissionUrl } from "@repo/ui";
 import {
   CalendarField,
   FileField,
@@ -92,6 +93,17 @@ export default function FormMySubmitView({ formId }: Props) {
     return texts;
   }, [mySubmit]);
 
+  // FILE 항목을 외부 링크로 제출한 경우, 링크는 textAnswer 로 내려온다.
+  const initialUrls = useMemo(() => {
+    const urls: Record<number, string> = {};
+    mySubmit?.answers.forEach((a) => {
+      if (a.type === "FILE" && a.textAnswer?.trim()) {
+        urls[a.fieldId] = a.textAnswer.trim();
+      }
+    });
+    return urls;
+  }, [mySubmit]);
+
   const initialCalendars = useMemo(() => {
     const calendars: Record<number, CalendarEvent[]> = {};
     const processed = new Set<number>();
@@ -115,12 +127,24 @@ export default function FormMySubmitView({ formId }: Props) {
   const [fileAnswers, setFileAnswers] = useState<Record<number, File | null>>(
     {},
   );
+  const [urlEdits, setUrlEdits] = useState<Record<number, string>>({});
   const [fieldErrors, setFieldErrors] = useState<Record<number, string>>({});
 
   const getTextValue = (fieldId: number) =>
     textEdits[fieldId] ?? initialTexts[fieldId] ?? "";
   const getCalendarValue = (fieldId: number) =>
     calendarEdits[fieldId] ?? initialCalendars[fieldId] ?? EMPTY_EVENTS;
+  const getUrlValue = (fieldId: number) =>
+    urlEdits[fieldId] ?? initialUrls[fieldId] ?? "";
+
+  // admin 이 URL 제출을 허용한 FILE 항목에서만 링크 값을 답변으로 인정한다.
+  const getSubmittedUrl = (
+    field: { allowedExtensions?: string[] },
+    fieldId: number,
+  ) => {
+    const { allowUrl } = splitAllowedExtensions(field.allowedExtensions);
+    return allowUrl ? getUrlValue(fieldId).trim() : "";
+  };
 
   const handleTextChange = (fieldId: number, value: string) => {
     setTextEdits((prev) => ({ ...prev, [fieldId]: value }));
@@ -130,6 +154,11 @@ export default function FormMySubmitView({ formId }: Props) {
   const handleFileChange = (fieldId: number, file: File | null) => {
     setFileAnswers((prev) => ({ ...prev, [fieldId]: file }));
     if (file) setFieldErrors((prev) => ({ ...prev, [fieldId]: "" }));
+  };
+
+  const handleUrlChange = (fieldId: number, url: string) => {
+    setUrlEdits((prev) => ({ ...prev, [fieldId]: url }));
+    if (url.trim()) setFieldErrors((prev) => ({ ...prev, [fieldId]: "" }));
   };
 
   const handleCalendarChange = (
@@ -143,6 +172,7 @@ export default function FormMySubmitView({ formId }: Props) {
     setTextEdits({});
     setCalendarEdits({});
     setFileAnswers({});
+    setUrlEdits({});
     setFieldErrors({});
     setIsEditing(false);
   };
@@ -159,11 +189,22 @@ export default function FormMySubmitView({ formId }: Props) {
         errors[fId] = "필수 항목입니다.";
       }
       if (type === "FILE") {
-        const hasNewFile = fileAnswers[fId] instanceof File;
-        const isDeleted = fileAnswers[fId] === null;
-        const hasOriginalFile = !!answerMap[fId]?.filePath;
-        if (isDeleted || (!hasNewFile && !hasOriginalFile)) {
-          errors[fId] = "파일을 첨부해주세요.";
+        const { allowUrl } = splitAllowedExtensions(field.allowedExtensions);
+        const url = getSubmittedUrl(field, fId);
+        if (url) {
+          if (!isValidSubmissionUrl(url)) {
+            errors[fId] =
+              "http:// 또는 https:// 로 시작하는 링크를 입력해주세요.";
+          }
+        } else {
+          const hasNewFile = fileAnswers[fId] instanceof File;
+          const isDeleted = fileAnswers[fId] === null;
+          const hasOriginalFile = !!answerMap[fId]?.filePath;
+          if (isDeleted || (!hasNewFile && !hasOriginalFile)) {
+            errors[fId] = allowUrl
+              ? "파일을 첨부하거나 외부 링크를 입력해주세요."
+              : "파일을 첨부해주세요.";
+          }
         }
       }
     });
@@ -181,6 +222,11 @@ export default function FormMySubmitView({ formId }: Props) {
         const type = field.type?.toUpperCase();
 
         if (type === "FILE") {
+          // 외부 링크로 제출한 항목은 textAnswer 로 보낸다. PATCH 는 answer 를
+          // 통째로 교체하므로 filePath 를 함께 보내지 않으면 기존 파일은 사라진다.
+          const url = getSubmittedUrl(field, fId);
+          if (url) return [{ fieldId: fId, textAnswer: url }];
+
           // 새 파일/삭제는 upload·delete 엔드포인트가 처리한다.
           // 그 외(파일을 안 건드린 경우)에는 PATCH 가 answer 를 통째로 교체하면서
           // 기존 파일이 사라지므로, filePath 를 함께 보내 보존한다.
@@ -230,8 +276,21 @@ export default function FormMySubmitView({ formId }: Props) {
       return;
     }
 
+    // 링크로 제출한 항목은 파일을 골라뒀더라도 업로드하지 않는다.
+    const urlSubmittedFieldIds = new Set(
+      (formDetail.fields ?? [])
+        .map((field) => [field, field.fieldId ?? field.id ?? 0] as const)
+        .filter(
+          ([field, fId]) =>
+            field.type?.toUpperCase() === "FILE" &&
+            !!getSubmittedUrl(field, fId),
+        )
+        .map(([, fId]) => fId),
+    );
+
     const fileEntries = Object.entries(fileAnswers).filter(
-      ([, f]) => f instanceof File,
+      ([fieldIdStr, f]) =>
+        f instanceof File && !urlSubmittedFieldIds.has(Number(fieldIdStr)),
     ) as [string, File][];
 
     if (fileEntries.length > 0) {
@@ -340,6 +399,8 @@ export default function FormMySubmitView({ formId }: Props) {
                     {field.type === "FILE" && (
                       <>
                         <FileField
+                          // 수정 진입/취소 시 파일·링크 탭 상태를 초기화한다.
+                          key={isEditing ? "editing" : "readonly"}
                           fieldId={fId}
                           file={hasNewFile ? (fileAnswers[fId] as File) : null}
                           filePath={serverFilePath}
@@ -350,7 +411,9 @@ export default function FormMySubmitView({ formId }: Props) {
                           submitId={mySubmit.submitId}
                           readOnly={!isEditing}
                           allowedExtensions={field.allowedExtensions}
+                          url={getUrlValue(fId)}
                           onChange={handleFileChange}
+                          onUrlChange={handleUrlChange}
                         />
                         {error && (
                           <span className="mt-1 text-[12px] text-red-500">
