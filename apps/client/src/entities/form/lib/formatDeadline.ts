@@ -12,18 +12,19 @@ export function formatDeadline(deadline: string) {
 }
 
 /**
- * 서버가 UTC로 내려주는 타임스탬프(createdAt·answeredAt·submittedAt 등)를
+ * 서버 타임스탬프(createdAt·answeredAt·submittedAt 등)를
  * KST(Asia/Seoul) 기준 "2026. 07. 14 02:24" 형태로 변환한다.
- * - 마감일(deadline)은 KST 문자열이라 formatDeadline을 그대로 쓰지만,
- *   서버 생성 시각은 UTC라 이 함수로 +9시간 변환해 표시해야 한다.
- * - 타임존 정보(Z 또는 ±HH:mm)가 없으면 UTC로 간주해 붙인 뒤 변환한다.
+ * - 타임존 정보(Z 또는 ±HH:mm)가 없으면 KST로 간주한다. 서버가 KST 벽시계 시각을
+ *   그대로 내려주기 때문에, UTC로 보고 +9시간을 더하면 9시간 앞선 시각이 표시된다.
+ *   (마감일 parseDeadline이 naive 문자열을 +09:00으로 파싱하는 것과 같은 규칙)
+ * - 타임존 정보가 있으면 그대로 파싱한 뒤 KST로 변환한다.
  */
 export function formatTimestamp(timestamp: string) {
   if (!timestamp || typeof timestamp !== "string") return "";
   const hasTimezone =
     timestamp.endsWith("Z") || /[+-]\d{2}(?::?\d{2})?$/.test(timestamp);
   const iso = timestamp.includes("T") ? timestamp : `${timestamp}T00:00:00`;
-  const date = new Date(hasTimezone ? iso : `${iso}Z`);
+  const date = new Date(hasTimezone ? iso : `${iso}+09:00`);
   if (isNaN(date.getTime())) return formatDeadline(timestamp);
 
   const parts = new Intl.DateTimeFormat("ko-KR", {
