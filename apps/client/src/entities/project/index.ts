@@ -13,7 +13,6 @@ export {
   updateProjectLink,
   deleteProjectLink,
 } from "./api/projectLinkApi";
-export { normalizeUrl, isValidUrl, getLinkHost } from "./lib/link";
 export { useCreateProject } from "./api/useCreateProject";
 export { useSearchUsers } from "./api/useSearchUsers";
 export { useGetProject } from "./api/useGetProject";

@@ -16,7 +16,7 @@ export const isValidUrl = (url: string): boolean => {
   }
 };
 
-// 링크 목록에 보조 정보로 노출할 호스트명 (www. 제거)
+// 링크에 보조 정보로 노출할 호스트명 (www. 제거)
 export const getLinkHost = (url: string): string => {
   try {
     return new URL(normalizeUrl(url)).hostname.replace(/^www\./, "");

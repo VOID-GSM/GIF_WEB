@@ -2,12 +2,10 @@
 
 import { useState } from "react";
 
-import { Close, Plus } from "@repo/ui";
+import { isValidUrl, normalizeUrl } from "@repo/lib";
+import { Close, Plus, ProjectLinkChip } from "@repo/ui";
 
 import {
-  getLinkHost,
-  isValidUrl,
-  normalizeUrl,
   useCreateProjectLink,
   useDeleteProjectLink,
   useGetProjectLinks,
@@ -141,38 +139,31 @@ function LinkChip({
   }
 
   return (
-    <span className="group inline-flex max-w-full items-center rounded-full border border-gray-200 bg-white py-1 pl-3 pr-3 text-xs font-medium transition-colors hover:border-gray-300">
-      <a
-        href={link.url}
-        target="_blank"
-        rel="noopener noreferrer"
-        title={getLinkHost(link.url)}
-        className="flex min-w-0 items-center gap-1 text-gray-700 transition-colors hover:text-gray-900"
-      >
-        <span className="truncate">{link.title}</span>
-        <span className="shrink-0 text-gray-400">↗</span>
-      </a>
-
-      {editable && (
-        <span className="ml-0 flex w-0 items-center overflow-hidden opacity-0 transition-all group-hover:ml-2 group-hover:w-auto group-hover:opacity-100">
-          <button
-            type="button"
-            onClick={onEdit}
-            className="cursor-pointer px-1 text-[11px] text-gray-500 transition-colors hover:text-gray-700"
-          >
-            수정
-          </button>
-          <button
-            type="button"
-            aria-label={`${link.title} 링크 삭제`}
-            onClick={() => setConfirming(true)}
-            className="cursor-pointer px-1 text-gray-400 transition-colors hover:text-gray-600"
-          >
-            <Close width={9} height={9} />
-          </button>
-        </span>
-      )}
-    </span>
+    <ProjectLinkChip
+      title={link.title}
+      url={link.url}
+      actions={
+        editable && (
+          <>
+            <button
+              type="button"
+              onClick={onEdit}
+              className="cursor-pointer px-1 text-[11px] text-gray-500 transition-colors hover:text-gray-700"
+            >
+              수정
+            </button>
+            <button
+              type="button"
+              aria-label={`${link.title} 링크 삭제`}
+              onClick={() => setConfirming(true)}
+              className="cursor-pointer px-1 text-gray-400 transition-colors hover:text-gray-600"
+            >
+              <Close width={9} height={9} />
+            </button>
+          </>
+        )
+      }
+    />
   );
 }
 
