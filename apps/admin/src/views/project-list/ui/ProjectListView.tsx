@@ -99,7 +99,7 @@ export default function ProjectListView() {
 
   return (
     <>
-      {/* 모바일: 공지 배너 → 내 프로젝트 → 자세히 보기 → 제출 마감 → 진행 일정 순으로 세로 배치 */}
+      {/* 모바일: 공지 배너 → 프로젝트 → 자세히 보기 → 제출 마감 → 진행 일정 순으로 세로 배치 */}
       <div className="flex min-h-dvh flex-col gap-8 bg-background px-4 pt-16 pb-6 min-[900px]:hidden">
         <NoticeBanner />
 
@@ -133,7 +133,7 @@ export default function ProjectListView() {
             <div className="flex flex-col gap-3">
               <div className="flex items-center justify-between">
                 <h2 className="text-[15px] font-semibold text-gray-900">
-                  내 프로젝트
+                  프로젝트
                 </h2>
                 <button
                   type="button"
