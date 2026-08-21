@@ -22,6 +22,8 @@ jobs:
           script: |
             const { owner, repo } = context.repo;
             const pull_number = context.payload.pull_request.number;
+            const prTitle = context.payload.pull_request.title || '';
+            const prBody = context.payload.pull_request.body || '';
 
             // ── 1) 이번 PR에서 변경된 파일(diff) 가져오기 ──────────────────────────
             const { data: files } = await github.rest.pulls.listFiles({
@@ -101,7 +103,12 @@ jobs:
               body: JSON.stringify({
                 system_instruction: { parts: [{ text: systemPrompt }] },
                 contents: [
-                  { role: 'user', parts: [{ text: `다음은 PR의 diff다:\n${diffForPrompt}` }] },
+                  {
+                    role: 'user',
+                    parts: [{
+                      text: `PR 제목: ${prTitle}\nPR 설명:\n${prBody || '(작성되지 않음)'}\n\n다음은 이 PR의 diff다. PR 제목/설명에 담긴 의도를 참고해서 리뷰해라:\n${diffForPrompt}`,
+                    }],
+                  },
                 ],
                 generationConfig: {
                   temperature: 0.2,
