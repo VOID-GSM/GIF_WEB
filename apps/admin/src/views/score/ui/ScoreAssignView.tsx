@@ -4,9 +4,11 @@ import { useState, useMemo, useSyncExternalStore } from "react";
 import ScoreTabNav from "./ScoreTabNav";
 import ScoreAssignFilterBar from "./ScoreAssignFilterBar";
 import ScoreAssignTable from "./ScoreAssignTable";
+import EvaluationPeriodBar from "./EvaluationPeriodBar";
+import type { EvaluationPeriodPayload } from "./evaluationPeriod";
 import { useGetFilteredProjects } from "@/entities/project";
 import type { Grade } from "@/entities/project";
-import { useScoreStatuses } from "@/entities/score";
+import { useScoreStatuses, useSetScorePeriod } from "@/entities/score";
 import { useGetMyInfo } from "@/entities/mypage";
 import { PRIVILEGED_ADMIN_EMAIL } from "@/shared/constants";
 import { matchesTeamQuery } from "@/shared/utils";
@@ -27,15 +29,25 @@ export default function ScoreAssignView() {
   );
   const [scoreFilter, setScoreFilter] = useState<ScoreFilter>("all");
   const [teamQuery, setTeamQuery] = useState("");
+  const [evaluationPeriod, setEvaluationPeriod] =
+    useState<EvaluationPeriodPayload | null>(null);
+  const { mutate: setScorePeriod } = useSetScorePeriod();
 
   function handleGradeChange(g: Grade) {
     localStorage.setItem(GRADE_STORAGE_KEY, String(g));
     window.dispatchEvent(new Event("storage"));
   }
 
+  function handlePeriodConfirmed(payload: EvaluationPeriodPayload) {
+    setScorePeriod(payload, {
+      onSuccess: () => setEvaluationPeriod(payload),
+    });
+  }
+
   const { data: myInfo, isLoading: isMyInfoLoading } = useGetMyInfo();
   // void 관리자 계정은 실제 채점 권한이 없는 단순 관리 계정이라 항상 점수 부여가 불가능해야 한다.
   const isPrivilegedAdmin = myInfo?.email === PRIVILEGED_ADMIN_EMAIL;
+  const canSetPeriod = myInfo?.adminRole === "MASTER";
   const allowedAreas: ScoreArea[] = isPrivilegedAdmin
     ? []
     : getAllowedAreas(myInfo?.adminRole, myInfo?.gradeHead);
@@ -82,7 +94,14 @@ export default function ScoreAssignView() {
             teamNames={teamsWithScores.map((t) => t.teamName)}
             teamQuery={teamQuery}
             onTeamQueryChange={setTeamQuery}
+            evaluationPeriod={evaluationPeriod}
           />
+          {!evaluationPeriod && (
+            <EvaluationPeriodBar
+              canSet={canSetPeriod}
+              onConfirmed={handlePeriodConfirmed}
+            />
+          )}
           <ScoreAssignTable isLoading={isLoading} teams={teams} allowedAreas={allowedAreas} />
         </div>
       </div>
