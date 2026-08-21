@@ -40,6 +40,22 @@ jobs:
               return;
             }
 
+            // ── 1-1) 이 봇이 이전 커밋들에서 이미 남긴 코멘트 위치를 파악한다 ──────────
+            //     커밋을 새로 푸시할 때마다 diff 전체를 다시 분석하다 보니, 아직
+            //     고쳐지지 않은 기존 문제까지 매번 새 코멘트로 중복 등록되는 걸 막는다.
+            const existingComments = await github.paginate(github.rest.pulls.listReviewComments, {
+              owner,
+              repo,
+              pull_number,
+              per_page: 100,
+            });
+
+            const alreadyCommented = new Set(
+              existingComments
+                .filter(c => c.user?.type === 'Bot')
+                .map(c => `${c.path}:${c.line ?? c.original_line}`)
+            );
+
             // ── 2) 각 파일의 diff에서 "실제로 코멘트를 달 수 있는 새 라인 번호" 집합을 만든다 ──
             //     GitHub 라인 코멘트는 diff에 나타난 라인에만 달 수 있으므로,
             //     AI가 준 라인 번호를 이 집합과 대조해서 검증한다.
@@ -161,6 +177,10 @@ jobs:
               }
               if (!validLines.has(c.line)) {
                 skipped.push({ ...c, reason: 'diff 범위 밖 라인' });
+                continue;
+              }
+              if (alreadyCommented.has(`${c.file}:${c.line}`)) {
+                skipped.push({ ...c, reason: '이미 이전 커밋에서 같은 위치에 코멘트를 남김' });
                 continue;
               }
               let body = `${categoryLabel[c.category] || '💬 리뷰'}\n${c.comment}`;
