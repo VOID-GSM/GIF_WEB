@@ -19,18 +19,19 @@ export default function Markdown({ content, className = "" }: MarkdownProps) {
             <strong className="font-semibold text-gray-900">{children}</strong>
           ),
           em: ({ children }) => <em className="italic">{children}</em>,
+          // 본문(13px) 대비 단계가 뚜렷하도록 크기·굵기를 벌린다 (21 / 17 / 15)
           h1: ({ children }) => (
-            <h1 className="mt-4 mb-2 text-[16px] font-semibold text-gray-900">
+            <h1 className="mt-6 mb-2.5 text-[21px] font-bold tracking-[-0.3px] text-gray-900">
               {children}
             </h1>
           ),
           h2: ({ children }) => (
-            <h2 className="mt-4 mb-2 text-[15px] font-semibold text-gray-900">
+            <h2 className="mt-5 mb-2 text-[17px] font-semibold tracking-[-0.2px] text-gray-900">
               {children}
             </h2>
           ),
           h3: ({ children }) => (
-            <h3 className="mt-3 mb-1.5 text-[14px] font-semibold text-gray-900">
+            <h3 className="mt-4 mb-1.5 text-[15px] font-semibold text-gray-900">
               {children}
             </h3>
           ),
@@ -46,7 +47,7 @@ export default function Markdown({ content, className = "" }: MarkdownProps) {
               href={href}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-yellow-700 underline underline-offset-2 hover:text-yellow-900 dark:hover:text-yellow-300"
+              className="text-gray-900 underline underline-offset-2 hover:text-gray-600 dark:hover:text-gray-300"
             >
               {children}
             </a>

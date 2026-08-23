@@ -107,7 +107,7 @@ export default function IntroHeader({
               className={`mx-2 cursor-pointer rounded-lg px-4 py-3 text-left font-medium transition-all duration-200
                 ${
                   pathname === path
-                    ? "bg-yellow-100 text-yellow-700"
+                    ? "bg-yellow-100 text-gray-900"
                     : "text-gray-700 hover:bg-gray-100"
                 }`}
             >

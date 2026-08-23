@@ -1,4 +1,7 @@
+import Link from "next/link";
+
 interface ScoreRow {
+  projectId?: number;
   rank: number;
   teamName: string;
   majorAverage?: number;
@@ -34,7 +37,7 @@ export default function ScoreCollectionTable({ isLoading, isError, scoreRows }: 
         - 모바일: 폭이 넘쳐 가로 스크롤이 생기고, 좌측 핵심 정보(등수/팀명)가 먼저 보인다.
       */}
       <div className="min-w-[40rem]">
-        <div className="flex items-center bg-[var(--color-orange-50)] dark:bg-[#85602c] h-9 sticky top-0 z-10">
+        <div className="flex items-center bg-[var(--color-yellow-50)] border-y border-[var(--color-yellow-600)] dark:bg-[#85782c] dark:border-yellow-500/20 h-9 sticky top-0 z-10">
           {/* 핵심 정보 */}
           <div className="w-16 sm:w-20 md:w-24 shrink-0 text-center font-medium text-sm sm:text-base text-gray-900">
             등수
@@ -70,7 +73,16 @@ export default function ScoreCollectionTable({ isLoading, isError, scoreRows }: 
                 {row.rank}
               </div>
               <div className="flex-1 min-w-[6rem] text-center font-medium text-sm sm:text-base truncate text-gray-900">
-                {row.teamName}
+                {row.projectId ? (
+                  <Link
+                    href={`/projects/${row.projectId}`}
+                    className="inline-block max-w-full truncate underline-offset-2 transition-colors hover:text-yellow-700 hover:underline"
+                  >
+                    {row.teamName}
+                  </Link>
+                ) : (
+                  row.teamName
+                )}
               </div>
               {/* 영역별 평균 */}
               <div className="w-24 shrink-0 text-center text-sm sm:text-base text-gray-600">

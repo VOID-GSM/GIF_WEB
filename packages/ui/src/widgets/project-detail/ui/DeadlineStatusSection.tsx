@@ -41,7 +41,7 @@ export default function DeadlineStatusSection({
         <StatCard
           label="전체"
           value={summary.total}
-          valueClassName="text-yellow-700"
+          valueClassName="text-gray-900"
         />
         <StatCard
           label="준수"

@@ -58,7 +58,7 @@ export default function TimePicker({ value, onChange }: TimePickerProps) {
                   onClick={() => handleHour(h)}
                   className={`text-center text-[14px] py-[7px] rounded-[8px] transition-colors ${
                     hour === h
-                      ? "bg-yellow-600 text-white font-medium"
+                      ? "bg-yellow-600 text-gray-900 font-medium"
                       : "hover:bg-gray-100 text-gray-800"
                   }`}
                 >
@@ -76,7 +76,7 @@ export default function TimePicker({ value, onChange }: TimePickerProps) {
                   onClick={() => handleMinute(m)}
                   className={`text-center text-[14px] py-[7px] rounded-[8px] transition-colors ${
                     minute === m
-                      ? "bg-yellow-600 text-white font-medium"
+                      ? "bg-yellow-600 text-gray-900 font-medium"
                       : "hover:bg-gray-100 text-gray-800"
                   }`}
                 >

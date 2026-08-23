@@ -24,6 +24,7 @@ export { default as Textarea } from "./components/Input/Textarea";
 export { default as Markdown } from "./components/Markdown/Markdown";
 export { default as FileUpload } from "./components/FileUpload/FileUpload";
 export { default as ProjectLogo } from "./components/ProjectLogo/ProjectLogo";
+export { default as ProjectLinkChip } from "./components/ProjectLink/ProjectLinkChip";
 
 export { default as StyleDropdown } from "./components/Dropdown/StyleDropdown";
 
