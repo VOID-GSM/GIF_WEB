@@ -113,32 +113,52 @@ jobs:
 
             const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${process.env.MODEL}:generateContent?key=${process.env.GEMINI_API_KEY}`;
 
-            const response = await fetch(endpoint, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                system_instruction: { parts: [{ text: systemPrompt }] },
-                contents: [
-                  {
-                    role: 'user',
-                    parts: [{
-                      text: `PR 제목: ${prTitle}\nPR 설명:\n${prBody || '(작성되지 않음)'}\n\n다음은 이 PR의 diff다. PR 제목/설명에 담긴 의도를 참고해서 리뷰해라:\n${diffForPrompt}`,
-                    }],
-                  },
-                ],
-                generationConfig: {
-                  temperature: 0.2,
-                  responseMimeType: 'application/json',
-                },
-              }),
-            });
+            // Gemini가 일시적으로 과부하(503)이거나 속도 제한(429)에 걸리면
+            // 몇 초 대기 후 자동으로 재시도한다. 그래도 안 되면 그때는 진짜로 실패시킨다.
+            async function callGeminiWithRetry(payload, maxRetries = 3) {
+              let lastError;
+              for (let attempt = 1; attempt <= maxRetries; attempt++) {
+                const response = await fetch(endpoint, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify(payload),
+                });
 
-            if (!response.ok) {
-              const text = await response.text();
-              throw new Error(`Gemini 호출 실패 (${response.status}): ${text}`);
+                if (response.ok) {
+                  return await response.json();
+                }
+
+                const text = await response.text();
+                lastError = new Error(`Gemini 호출 실패 (${response.status}): ${text}`);
+
+                if ((response.status === 429 || response.status === 503) && attempt < maxRetries) {
+                  const waitMs = attempt * 5000; // 5초, 10초 ...
+                  console.log(`Gemini 일시 장애(${response.status}), ${waitMs / 1000}초 후 재시도 (${attempt}/${maxRetries})`);
+                  await new Promise(r => setTimeout(r, waitMs));
+                  continue;
+                }
+
+                throw lastError;
+              }
+              throw lastError;
             }
 
-            const result = await response.json();
+            const result = await callGeminiWithRetry({
+              system_instruction: { parts: [{ text: systemPrompt }] },
+              contents: [
+                {
+                  role: 'user',
+                  parts: [{
+                    text: `PR 제목: ${prTitle}\nPR 설명:\n${prBody || '(작성되지 않음)'}\n\n다음은 이 PR의 diff다. PR 제목/설명에 담긴 의도를 참고해서 리뷰해라:\n${diffForPrompt}`,
+                  }],
+                },
+              ],
+              generationConfig: {
+                temperature: 0.2,
+                responseMimeType: 'application/json',
+              },
+            });
+
             const rawContent = result.candidates?.[0]?.content?.parts?.[0]?.text ?? '[]';
 
             // 모델이 코드블록(```json ... ```)으로 감싸는 경우 대비
