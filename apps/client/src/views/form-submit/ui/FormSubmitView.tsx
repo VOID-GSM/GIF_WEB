@@ -170,10 +170,10 @@ export default function FormSubmitView({ formId }: Props) {
       ) : (
         <div className="mx-auto flex flex-col w-full max-w-[560px] gap-4">
           <div className="flex flex-col gap-2">
-            <span className="flex justify-center text-[24px] font-semibold">
+            <span className="flex justify-center text-[24px] font-semibold text-gray-900">
               {formDetail.title}
             </span>
-            <div className="flex flex-wrap gap-x-4 gap-y-1 text-[14px] font-medium">
+            <div className="flex flex-wrap gap-x-4 gap-y-1 text-[14px] font-medium text-gray-900">
               <span>마감 날짜: {formatDeadlineDate(formDetail.deadline)}</span>
               {formatDeadlineTime(formDetail.deadline) && (
                 <span>마감 시간: {formatDeadlineTime(formDetail.deadline)}</span>
