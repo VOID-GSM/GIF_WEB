@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { useUpdateForm, useGetFormById } from "@/entities/form-edit";
 import type { FormByIdResponse, UpdateFormField } from "@/entities/form-edit";
 import type { PostFormRequestField } from "@/entities/form-create";
+import { formatDeadline } from "@/entities/form";
 import { useGetMyInfo } from "@/entities/mypage";
 
 const FORM_TITLE_MAX_LENGTH = 50;
@@ -145,7 +146,11 @@ function FormEditor({
         <div className="flex flex-col text-[14px] font-medium text-gray-600 gap-1">
           마감일 선택하기
           <div>
-            <DatePicker value={deadline} onChange={setDeadline} />
+            <DatePicker
+              value={deadline}
+              onChange={setDeadline}
+              displayValue={formatDeadline(deadline)}
+            />
           </div>
         </div>
       </div>
