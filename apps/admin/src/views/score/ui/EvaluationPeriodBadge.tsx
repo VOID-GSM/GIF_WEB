@@ -1,17 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import {
-  formatIsoKoreanDateTime,
-  type EvaluationPeriodPayload,
-} from "./evaluationPeriod";
 
-interface Props {
-  period: EvaluationPeriodPayload;
-}
-
-// 평가 기간이 설정된 뒤 필터 바에 남는 조회 전용 배지 — 클릭하면 설정된 날짜·시간만 보여준다.
-export default function EvaluationPeriodBadge({ period }: Props) {
+// 평가 기간이 설정된 뒤 필터 바에 남는 조회 전용 배지.
+// 정확한 날짜·시간을 조회하는 API가 없어 "설정 완료" 사실만 안내한다.
+export default function EvaluationPeriodBadge() {
   const [isOpen, setIsOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
 
@@ -37,12 +30,11 @@ export default function EvaluationPeriodBadge({ period }: Props) {
       </button>
 
       {isOpen && (
-        <div className="absolute top-[calc(100%+6px)] left-0 z-20 w-max rounded-[8px] border border-gray-200 bg-white px-3 py-2 shadow-new">
-          <p className="text-[10px] text-gray-400">보고서 영역 평가 시작: </p>
-          <p className="whitespace-nowrap text-[13px] font-medium text-gray-800">
-            {formatIsoKoreanDateTime(period.startDate)}
+        <div className="absolute top-[calc(100%+6px)] left-0 z-20 w-[260px] rounded-[8px] border border-gray-200 bg-white px-3 py-2 shadow-new">
+          <p className="text-[13px] font-medium text-gray-800">
+            보고서 영역 평가 시작일이 설정되었습니다.
           </p>
-          <p className="whitespace-nowrap pt-2 text-[13px] font-medium text-gray-800">
+          <p className="pt-2 text-[13px] font-medium text-gray-800">
             그외의 평가 항목은 아이디어페스티벌 시작 날짜부터 평가가 가능하며,
             모든 평가는 아이디어페스트벌 종료일에 마감됩니다.
           </p>

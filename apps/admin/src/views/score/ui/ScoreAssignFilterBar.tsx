@@ -6,7 +6,6 @@ import type { GrantStatus, Grade } from "@repo/ui";
 import type { ScoreFilter } from "./constants";
 import TeamFilter from "@/features/team-filter/ui/TeamFilter";
 import EvaluationPeriodBadge from "./EvaluationPeriodBadge";
-import type { EvaluationPeriodPayload } from "./evaluationPeriod";
 
 const GRADE_OPTIONS: { value: Grade; label: string }[] = [
   { value: 1, label: "1학년" },
@@ -27,7 +26,7 @@ interface Props {
   teamNames: string[];
   teamQuery: string;
   onTeamQueryChange: (query: string) => void;
-  evaluationPeriod: EvaluationPeriodPayload | null;
+  isPeriodSet: boolean;
 }
 
 export default function ScoreAssignFilterBar({
@@ -38,7 +37,7 @@ export default function ScoreAssignFilterBar({
   teamNames,
   teamQuery,
   onTeamQueryChange,
-  evaluationPeriod,
+  isPeriodSet,
 }: Props) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -93,7 +92,7 @@ export default function ScoreAssignFilterBar({
           />
         );
       })}
-      {evaluationPeriod && <EvaluationPeriodBadge period={evaluationPeriod} />}
+      {isPeriodSet && <EvaluationPeriodBadge />}
       <div className="w-full sm:w-auto sm:ml-auto flex items-center gap-x-4 text-xs text-gray-500">
         {LEGEND.map(({ dot, label }) => (
           <span key={label} className="flex items-center gap-1.5">

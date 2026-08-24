@@ -23,3 +23,20 @@ export function formatIsoKoreanDateTime(iso: string) {
   const mm = String(d.getMinutes()).padStart(2, "0");
   return `${d.getFullYear()}년 ${d.getMonth() + 1}월 ${d.getDate()}일 ${hh}:${mm}`;
 }
+
+// 조회용 GET 엔드포인트가 없어서 정확한 설정값 자체는 알 수 없다. 대신 "이 브라우저에서
+// 설정을 완료했거나, 이미 다른 담당자가 설정해둔 걸 확인했다"는 사실만 기억해 뒀다가
+// 안내 문구("설정이 완료되었습니다")만 보여준다 — 날짜·시간 값을 캐시하지 않으므로
+// useSyncExternalStore 스냅샷도 boolean이라 별도 참조 캐싱이 필요 없다.
+const PERIOD_SET_STORAGE_KEY = "score_report_period_set";
+
+export function getIsPeriodSetSnapshot(): boolean {
+  if (typeof window === "undefined") return false;
+  return localStorage.getItem(PERIOD_SET_STORAGE_KEY) === "1";
+}
+
+export function markPeriodAsSet() {
+  if (typeof window === "undefined") return;
+  localStorage.setItem(PERIOD_SET_STORAGE_KEY, "1");
+  window.dispatchEvent(new Event("storage"));
+}

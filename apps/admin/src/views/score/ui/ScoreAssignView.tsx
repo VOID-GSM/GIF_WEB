@@ -5,10 +5,14 @@ import ScoreTabNav from "./ScoreTabNav";
 import ScoreAssignFilterBar from "./ScoreAssignFilterBar";
 import ScoreAssignTable from "./ScoreAssignTable";
 import EvaluationPeriodBar from "./EvaluationPeriodBar";
-import type { EvaluationPeriodPayload } from "./evaluationPeriod";
+import {
+  getIsPeriodSetSnapshot,
+  markPeriodAsSet,
+  type EvaluationPeriodPayload,
+} from "./evaluationPeriod";
 import { useGetFilteredProjects } from "@/entities/project";
 import type { Grade } from "@/entities/project";
-import { useScoreStatuses, useSetScorePeriod } from "@/entities/score";
+import { isAlreadySetError, useScoreStatuses, useSetScorePeriod } from "@/entities/score";
 import { useGetMyInfo } from "@/entities/mypage";
 import { PRIVILEGED_ADMIN_EMAIL } from "@/shared/constants";
 import { matchesTeamQuery } from "@/shared/utils";
@@ -27,10 +31,15 @@ export default function ScoreAssignView() {
     () => (localStorage.getItem(GRADE_STORAGE_KEY) === "2" ? 2 : 1) as Grade,
     () => 1 as Grade,
   );
+  // 새로고침해도 "이미 설정됨" 상태가 유지되도록 로컬 저장값을 그대로 구독한다.
+  // 서버에 조회용 GET이 생기기 전까지의 임시 방편 — evaluationPeriod.ts 주석 참고.
+  const isPeriodSet = useSyncExternalStore(
+    subscribe,
+    getIsPeriodSetSnapshot,
+    () => false,
+  );
   const [scoreFilter, setScoreFilter] = useState<ScoreFilter>("all");
   const [teamQuery, setTeamQuery] = useState("");
-  const [evaluationPeriod, setEvaluationPeriod] =
-    useState<EvaluationPeriodPayload | null>(null);
   const { mutate: setScorePeriod } = useSetScorePeriod();
 
   function handleGradeChange(g: Grade) {
@@ -40,7 +49,11 @@ export default function ScoreAssignView() {
 
   function handlePeriodConfirmed(payload: EvaluationPeriodPayload) {
     setScorePeriod(payload, {
-      onSuccess: () => setEvaluationPeriod(payload),
+      onSuccess: () => markPeriodAsSet(),
+      // 다른 담당자가 이미 설정을 완료한 경우(409)에도 "실패"가 아니라 완료 상태로 반영한다.
+      onError: (error) => {
+        if (isAlreadySetError(error)) markPeriodAsSet();
+      },
     });
   }
 
@@ -94,9 +107,9 @@ export default function ScoreAssignView() {
             teamNames={teamsWithScores.map((t) => t.teamName)}
             teamQuery={teamQuery}
             onTeamQueryChange={setTeamQuery}
-            evaluationPeriod={evaluationPeriod}
+            isPeriodSet={isPeriodSet}
           />
-          {!evaluationPeriod && (
+          {!isPeriodSet && (
             <EvaluationPeriodBar
               canSet={canSetPeriod}
               onConfirmed={handlePeriodConfirmed}
