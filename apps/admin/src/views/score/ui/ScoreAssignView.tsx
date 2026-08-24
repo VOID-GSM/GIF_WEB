@@ -40,6 +40,10 @@ export default function ScoreAssignView() {
   );
   const [scoreFilter, setScoreFilter] = useState<ScoreFilter>("all");
   const [teamQuery, setTeamQuery] = useState("");
+  // 새로고침 전(같은 세션)에는 방금 설정한 값을 그대로 기억해서 배지에 정확한 날짜·시간을
+  // 보여준다. localStorage에는 boolean만 남기 때문에 새로고침하면 이 값은 사라진다.
+  const [confirmedPeriod, setConfirmedPeriod] =
+    useState<EvaluationPeriodPayload | null>(null);
   const { mutate: setScorePeriod } = useSetScorePeriod();
 
   function handleGradeChange(g: Grade) {
@@ -49,8 +53,12 @@ export default function ScoreAssignView() {
 
   function handlePeriodConfirmed(payload: EvaluationPeriodPayload) {
     setScorePeriod(payload, {
-      onSuccess: () => markPeriodAsSet(),
+      onSuccess: () => {
+        markPeriodAsSet();
+        setConfirmedPeriod(payload);
+      },
       // 다른 담당자가 이미 설정을 완료한 경우(409)에도 "실패"가 아니라 완료 상태로 반영한다.
+      // 이땐 실제 값을 모르므로 배지는 일반 완료 문구만 보여준다.
       onError: (error) => {
         if (isAlreadySetError(error)) markPeriodAsSet();
       },
@@ -108,6 +116,7 @@ export default function ScoreAssignView() {
             teamQuery={teamQuery}
             onTeamQueryChange={setTeamQuery}
             isPeriodSet={isPeriodSet}
+            confirmedPeriod={confirmedPeriod}
           />
           {!isPeriodSet && (
             <EvaluationPeriodBar
