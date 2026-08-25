@@ -1,13 +1,20 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
-import type { DatePickerProps } from "../model/type";
 
-export default function DatePicker({ value, onChange, displayValue }: DatePickerProps) {
+import { useEffect, useRef, useState } from "react";
+
+interface Props {
+  value: string;
+  onChange: (date: string) => void;
+}
+
+// 캘린더 드롭다운 로직은 @repo/ui DatePicker와 동일하다.
+// 트리거만 이 페이지의 "설정" 버튼과 같은 높이로 새로 만들고,
+// 팝오버는 점수 부여 테이블의 sticky 헤더(z-10)에 가리지 않도록 z-index를 높였다.
+export default function EvaluationDatePicker({ value, onChange }: Props) {
   const today = new Date();
   const [isOpen, setIsOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
 
-  // 바깥 영역 클릭 시 닫기
   useEffect(() => {
     if (!isOpen) return;
     const handleClickOutside = (e: MouseEvent) => {
@@ -18,10 +25,9 @@ export default function DatePicker({ value, onChange, displayValue }: DatePicker
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isOpen]);
+
   const [current, setCurrent] = useState(
-    value
-      ? new Date(value)
-      : new Date(today.getFullYear(), today.getMonth(), 1),
+    value ? new Date(value) : new Date(today.getFullYear(), today.getMonth(), 1),
   );
 
   const year = current.getFullYear();
@@ -56,64 +62,46 @@ export default function DatePicker({ value, onChange, displayValue }: DatePicker
   return (
     <div className="relative w-full" ref={rootRef}>
       <div
-        className="w-full flex items-center justify-between py-3 px-4 border border-gray-200 rounded-[10px] text-[18px] font-medium cursor-pointer outline-none bg-white"
+        className="w-full flex items-center justify-between py-[6.5px] px-[10px] border border-yellow-600 rounded-[8px] text-[12px] text-gray-500 bg-white cursor-pointer outline-none transition-colors"
         onClick={() => setIsOpen((prev) => !prev)}
       >
-        <span className={value ? "text-black" : "text-gray-500"}>
-          {(displayValue ?? value) || "날짜를 선택하세요"}
-        </span>
+        <span>{value || "날짜를 선택하세요"}</span>
       </div>
 
-      {/* 캘린더 */}
       {isOpen && (
-        <div className="absolute top-[calc(100%+4px)] left-0 z-10 w-full bg-white border border-gray-200 rounded-[10px] p-4 shadow-new">
-          {/* 헤더 */}
-          <div className="flex items-center justify-between mb-4">
+        <div className="absolute top-[calc(100%+4px)] left-0 z-30 w-full bg-white border border-gray-200 rounded-[10px] p-2 shadow-new">
+          <div className="flex items-center justify-between mb-1.5">
             <button
               type="button"
               onClick={() => changeMonth(-1)}
-              className="p-1 rounded-md text-gray-500 text-xl leading-none"
+              className="p-0.5 rounded-md text-gray-500 text-sm leading-none"
             >
               ‹
             </button>
-            <span className="text-[15px] font-medium dark:text-white">
+            <span className="text-[11px] font-medium dark:text-white">
               {year}년 {month + 1}월
             </span>
             <button
               type="button"
               onClick={() => changeMonth(1)}
-              className="p-1 rounded-md text-gray-500 text-xl leading-none"
+              className="p-0.5 rounded-md text-gray-500 text-sm leading-none"
             >
               ›
             </button>
           </div>
 
-          {/* 요일 */}
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(7, 1fr)",
-              marginBottom: "8px",
-            }}
-          >
+          <div className="grid grid-cols-7 gap-[2px] mb-1">
             {DAYS.map((d) => (
               <div
                 key={d}
-                className="text-center text-[12px] font-medium text-gray-400 pb-2"
+                className="text-center text-[9px] font-medium text-gray-400"
               >
                 {d}
               </div>
             ))}
           </div>
 
-          {/* 날짜 */}
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(7, 1fr)",
-              rowGap: "4px",
-            }}
-          >
+          <div className="grid grid-cols-7 gap-[2px]">
             {Array.from({ length: firstDay }).map((_, i) => (
               <div key={`empty-${i}`} />
             ))}
@@ -124,7 +112,7 @@ export default function DatePicker({ value, onChange, displayValue }: DatePicker
                   key={day}
                   type="button"
                   onClick={() => handleSelect(day)}
-                  className={`text-center text-[13px] py-[7px] rounded-[8px] transition-colors ${
+                  className={`aspect-square flex items-center justify-center text-[10px] rounded-[4px] transition-colors ${
                     isSelected(day)
                       ? "bg-yellow-600 text-gray-900 font-medium"
                       : isToday(day)
