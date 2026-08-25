@@ -1,6 +1,6 @@
 import { useRef, useEffect } from "react";
 
-const TEXT_MAX_LENGTH = 1000;
+const TEXT_MAX_LENGTH = 10000;
 
 interface TextFieldProps {
   fieldId: number;
