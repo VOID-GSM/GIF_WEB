@@ -59,6 +59,13 @@ export { default as Color } from "./svg/Color";
 export { default as Crown } from "./svg/Crown";
 
 export type { NavItem } from "./widgets/Navbar/model/type";
+
+export {
+  URL_SUBMISSION_FLAG,
+  ALLOWED_EXTENSION_OPTIONS,
+  splitAllowedExtensions,
+  isValidSubmissionUrl,
+} from "./lib/formFieldOptions";
 export type { NavbarProps } from "./widgets/Navbar/model/type";
 export type { SidebarProps } from "./widgets/Navbar/model/type";
 

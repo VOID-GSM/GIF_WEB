@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
+import { splitAllowedExtensions, isValidSubmissionUrl } from "@repo/ui";
 import {
   CalendarField,
   FileField,
@@ -38,6 +39,8 @@ export default function FormSubmitView({ formId }: Props) {
   const [fileAnswers, setFileAnswers] = useState<Record<number, File | null>>(
     {},
   );
+  // FILE 항목에 파일 대신 제출한 외부 링크 — 값이 있으면 파일보다 우선한다.
+  const [urlAnswers, setUrlAnswers] = useState<Record<number, string>>({});
   const [calendarAnswers, setCalendarAnswers] = useState<
     Record<number, CalendarEvent[]>
   >({});
@@ -53,8 +56,22 @@ export default function FormSubmitView({ formId }: Props) {
     if (file) setFieldErrors((prev) => ({ ...prev, [fieldId]: "" }));
   };
 
+  const handleUrlChange = (fieldId: number, url: string) => {
+    setUrlAnswers((prev) => ({ ...prev, [fieldId]: url }));
+    if (url.trim()) setFieldErrors((prev) => ({ ...prev, [fieldId]: "" }));
+  };
+
   const handleCalendarChange = (fieldId: number, events: CalendarEvent[]) =>
     setCalendarAnswers((prev) => ({ ...prev, [fieldId]: events }));
+
+  // 링크로 제출한 FILE 항목 — 파일 업로드 대신 textAnswer 로 전송한다.
+  const getSubmittedUrl = (
+    field: { allowedExtensions?: string[] },
+    fieldId: number,
+  ) => {
+    const { allowUrl } = splitAllowedExtensions(field.allowedExtensions);
+    return allowUrl ? (urlAnswers[fieldId] ?? "").trim() : "";
+  };
 
   const handleSubmit = async () => {
     if (!formDetail?.fields || !projectId) return;
@@ -65,8 +82,19 @@ export default function FormSubmitView({ formId }: Props) {
       if (field.type === "TEXT" && !textAnswers[fId]?.trim()) {
         errors[fId] = "필수 항목입니다.";
       }
-      if (field.type === "FILE" && !fileAnswers[fId]) {
-        errors[fId] = "파일을 첨부해주세요.";
+      if (field.type === "FILE") {
+        const { allowUrl } = splitAllowedExtensions(field.allowedExtensions);
+        const url = getSubmittedUrl(field, fId);
+        if (url) {
+          if (!isValidSubmissionUrl(url)) {
+            errors[fId] =
+              "http:// 또는 https:// 로 시작하는 링크를 입력해주세요.";
+          }
+        } else if (!fileAnswers[fId]) {
+          errors[fId] = allowUrl
+            ? "파일을 첨부하거나 외부 링크를 입력해주세요."
+            : "파일을 첨부해주세요.";
+        }
       }
     });
 
@@ -79,7 +107,11 @@ export default function FormSubmitView({ formId }: Props) {
     const answers: FormAnswerItem[] = formDetail.fields.flatMap(
       (field): FormAnswerItem[] => {
         const fId = field.fieldId ?? field.id ?? 0;
-        if (field.type === "FILE") return [];
+        if (field.type === "FILE") {
+          // 파일은 upload 엔드포인트가, 외부 링크는 textAnswer 가 담당한다.
+          const url = getSubmittedUrl(field, fId);
+          return url ? [{ fieldId: fId, textAnswer: url }] : [];
+        }
 
         if (field.type === "DATE" || field.type === "CALENDAR") {
           const events = calendarAnswers[fId] ?? [];
@@ -109,8 +141,20 @@ export default function FormSubmitView({ formId }: Props) {
     try {
       const submitId = await submitForm({ formId, projectId, answers });
 
+      // 링크로 제출한 항목은 파일을 골라뒀더라도 업로드하지 않는다.
+      const urlSubmittedFieldIds = new Set(
+        formDetail.fields
+          .map((field) => [field, field.fieldId ?? field.id ?? 0] as const)
+          .filter(
+            ([field, fId]) =>
+              field.type === "FILE" && !!getSubmittedUrl(field, fId),
+          )
+          .map(([, fId]) => fId),
+      );
+
       const fileEntries = Object.entries(fileAnswers).filter(
-        ([, file]) => file instanceof File,
+        ([fieldIdStr, file]) =>
+          file instanceof File && !urlSubmittedFieldIds.has(Number(fieldIdStr)),
       ) as [string, File][];
 
       if (fileEntries.length > 0) {
@@ -224,7 +268,9 @@ export default function FormSubmitView({ formId }: Props) {
                               : null
                           }
                           allowedExtensions={field.allowedExtensions}
+                          url={urlAnswers[fId] ?? ""}
                           onChange={handleFileChange}
+                          onUrlChange={handleUrlChange}
                         />
                         {error && (
                           <span className="mt-1 text-[12px] text-red-500">

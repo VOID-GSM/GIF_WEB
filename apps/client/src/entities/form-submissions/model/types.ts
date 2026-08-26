@@ -5,7 +5,7 @@ export interface FormDetailField {
   description: string;
   type: "TEXT" | "FILE" | "DATE" | "CALENDAR";
   orderIndex: number;
-  allowedExtensions?: string[]; // FILE 타입에서 client 가 제출 가능한 확장자
+  allowedExtensions?: string[]; // FILE 타입에서 client 가 제출 가능한 확장자 + "url"(외부 링크 제출 허용 플래그)
 }
 
 export interface GetFormDetailResponse {
