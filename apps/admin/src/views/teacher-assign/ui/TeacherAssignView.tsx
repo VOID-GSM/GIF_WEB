@@ -13,6 +13,7 @@ import {
 import {
   useAssignTeacher,
   useGetAllTeachers,
+  type AssignmentInfo,
   type TeacherListResponse,
 } from "@/entities/teacher";
 import { useGetMyInfo } from "@/entities/mypage";
@@ -51,14 +52,14 @@ export default function TeacherAssignView() {
     isError: isProjectsError,
   } = useGetFilteredProjects(grade ?? GRADES[0], grade !== null && isMaster);
 
+  const [selectedProject, setSelectedProject] =
+    useState<FilteredProject | null>(null);
+
   const {
     data: teachers,
     isLoading: isTeachersLoading,
     isError: isTeachersError,
-  } = useGetAllTeachers(isMaster);
-
-  const [selectedProject, setSelectedProject] =
-    useState<FilteredProject | null>(null);
+  } = useGetAllTeachers(isMaster && !!selectedProject, selectedProject?.id);
 
   const visibleProjects = projects?.filter((p) => p.grade === grade);
 
@@ -268,17 +269,25 @@ function AssignPanelList({
 
           return (
             <ul className="flex flex-col gap-2">
-              {teacherSource.map((teacher) => (
-                <TeacherOptionRow
-                  key={teacher.id}
-                  teacher={teacher}
-                  disabled={
-                    assignedTeacherId !== undefined &&
-                    assignedTeacherId !== teacher.id
-                  }
-                  onClick={() => setConfirmTeacher(teacher)}
-                />
-              ))}
+              {teacherSource.map((teacher) => {
+                const assignmentInfo = getProjectAssignmentInfo(
+                  teacher.assignmentInfo,
+                  project,
+                );
+
+                return (
+                  <TeacherOptionRow
+                    key={teacher.id}
+                    teacher={teacher}
+                    assignmentInfo={assignmentInfo}
+                    disabled={
+                      assignedTeacherId !== undefined &&
+                      assignedTeacherId !== teacher.id
+                    }
+                    onClick={() => setConfirmTeacher(teacher)}
+                  />
+                );
+              })}
             </ul>
           );
         })()
@@ -295,6 +304,25 @@ function AssignPanelList({
       )}
     </div>
   );
+}
+
+function getProjectAssignmentInfo(
+  assignmentInfo: AssignmentInfo | undefined,
+  project: FilteredProject,
+) {
+  if (!assignmentInfo) return undefined;
+
+  if (assignmentInfo.projectId !== undefined) {
+    return assignmentInfo.projectId === project.id ? assignmentInfo : undefined;
+  }
+
+  if (assignmentInfo.teamName !== undefined) {
+    return assignmentInfo.teamName === project.teamName
+      ? assignmentInfo
+      : undefined;
+  }
+
+  return undefined;
 }
 
 // 모바일 하단 시트 — 열리면 화면 절반 높이로 뜨고, 손잡이를 위로 끌면 전체화면까지 확장된다.
@@ -423,13 +451,21 @@ function ProjectSelectCard({
 
 function TeacherOptionRow({
   teacher,
+  assignmentInfo,
   disabled,
   onClick,
 }: {
   teacher: TeacherListResponse;
+  assignmentInfo?: AssignmentInfo;
   disabled: boolean;
   onClick: () => void;
 }) {
+  const descriptionParts = [
+    ADMIN_ROLE_LABEL[teacher.adminRole] ?? teacher.adminRole,
+    teacher.isGradeHead ? "학년부장" : null,
+    teacher.adminTeam || null,
+  ].filter(Boolean);
+
   return (
     <li>
       <button
@@ -443,29 +479,28 @@ function TeacherOptionRow({
             {teacher.name}
           </p>
           <p className="truncate text-[12px] text-gray-500">
-            {ADMIN_ROLE_LABEL[teacher.adminRole] ?? teacher.adminRole}
-            {teacher.adminTeam ? ` · ${teacher.adminTeam}` : ""}
+            {descriptionParts.join(" · ")}
           </p>
-          {teacher.assignmentInfo?.status === "REJECTED" &&
-            teacher.assignmentInfo.rejectReason && (
+          {assignmentInfo?.status === "REJECTED" &&
+            assignmentInfo.rejectReason && (
               <p
                 className="mt-0.5 truncate text-[12px] text-red-600"
-                title={teacher.assignmentInfo.rejectReason}
+                title={assignmentInfo.rejectReason}
               >
-                거절 사유: {teacher.assignmentInfo.rejectReason}
+                거절 사유: {assignmentInfo.rejectReason}
               </p>
             )}
         </div>
 
-        {teacher.assignmentInfo && (
+        {assignmentInfo && (
           <span
             className={`shrink-0 rounded-full px-2.5 py-1 text-[12px] font-medium ${
-              ASSIGNMENT_STATUS_STYLE[teacher.assignmentInfo.status] ??
+              ASSIGNMENT_STATUS_STYLE[assignmentInfo.status] ??
               "bg-gray-50 text-gray-600"
             }`}
           >
-            {ASSIGNMENT_STATUS_LABEL[teacher.assignmentInfo.status] ??
-              teacher.assignmentInfo.status}
+            {ASSIGNMENT_STATUS_LABEL[assignmentInfo.status] ??
+              assignmentInfo.status}
           </span>
         )}
       </button>

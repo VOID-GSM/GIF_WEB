@@ -7,9 +7,12 @@ import type {
   TeacherListResponse,
 } from "@/entities/teacher/model/type";
 
-export const getAllTeachers = async (): Promise<TeacherListResponse[]> => {
+export const getAllTeachers = async (
+  projectId?: number,
+): Promise<TeacherListResponse[]> => {
   const { data } = await apiClient.get<TeacherListResponse[]>(
     "/api/admin/teachers",
+    projectId ? { params: { projectId } } : undefined,
   );
   return data;
 };

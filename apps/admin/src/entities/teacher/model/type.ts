@@ -7,6 +7,9 @@ export type AdminRole =
 export type AssignmentStatus = "PENDING" | "ACCEPTED" | "REJECTED";
 
 export interface AssignmentInfo {
+  projectId?: number;
+  projectName?: string;
+  teamName?: string;
   status: AssignmentStatus;
   rejectReason?: string;
 }
