@@ -2,6 +2,7 @@ import { apiClient } from "@repo/lib";
 
 import type {
   AssignProjectTeacherRequest,
+  MyTeacherAssignmentResponse,
   RespondAssignmentRequest,
   TeacherListResponse,
 } from "@/entities/teacher/model/type";
@@ -17,6 +18,15 @@ export const assignTeacher = async (
   body: AssignProjectTeacherRequest,
 ): Promise<void> => {
   await apiClient.post<void>("/api/admin/teachers/assign", body);
+};
+
+export const getMyAssignments = async (): Promise<
+  MyTeacherAssignmentResponse[]
+> => {
+  const { data } = await apiClient.get<MyTeacherAssignmentResponse[]>(
+    "/api/teachers/assignments/my",
+  );
+  return data;
 };
 
 export const respondAssignment = async (

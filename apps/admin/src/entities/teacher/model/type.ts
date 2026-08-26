@@ -38,3 +38,13 @@ export interface RespondAssignmentRequest {
   status: AssignmentStatus;
   rejectReason?: string;
 }
+
+// GET /api/teachers/assignments/my — 로그인한 admin 본인에게 온 배정 목록
+export interface MyTeacherAssignmentResponse {
+  assignmentId: number;
+  projectId: number;
+  projectName: string;
+  teamName: string;
+  status: AssignmentStatus;
+  rejectReason?: string;
+}
