@@ -193,7 +193,7 @@ export default function FormSubmitView({ formId }: Props) {
                     key={fId}
                     className="flex flex-col py-6 px-6 sm:py-8 sm:px-12 border-t-5 border-yellow-600 bg-white rounded-[10px] shadow-new"
                   >
-                    <span className="text-[20px] font-semibold pb-2">
+                    <span className="text-[20px] font-semibold pb-2 text-gray-900">
                       {field.title}
                     </span>
                     <span className="font-medium text-gray-500 pb-4">
