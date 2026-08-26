@@ -446,6 +446,15 @@ function TeacherOptionRow({
             {ADMIN_ROLE_LABEL[teacher.adminRole] ?? teacher.adminRole}
             {teacher.adminTeam ? ` · ${teacher.adminTeam}` : ""}
           </p>
+          {teacher.assignmentInfo?.status === "REJECTED" &&
+            teacher.assignmentInfo.rejectReason && (
+              <p
+                className="mt-0.5 truncate text-[12px] text-red-600"
+                title={teacher.assignmentInfo.rejectReason}
+              >
+                거절 사유: {teacher.assignmentInfo.rejectReason}
+              </p>
+            )}
         </div>
 
         {teacher.assignmentInfo && (
