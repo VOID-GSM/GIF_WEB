@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { createPortal } from "react-dom";
 
 interface AssignConfirmModalProps {
@@ -18,6 +19,15 @@ export default function AssignConfirmModal({
   onConfirm,
   onClose,
 }: AssignConfirmModalProps) {
+  // 모달이 떠 있는 동안 뒤 배경(body)이 스크롤되지 않게 막는다.
+  useEffect(() => {
+    const original = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = original;
+    };
+  }, []);
+
   // 배정 패널(aside)이 transform(translate-x)을 가지고 있어 새로운 containing block이 되므로,
   // 이 모달을 그 안에서 그냥 fixed로 띄우면 화면이 아니라 패널 기준으로 위치가 잡혀버린다.
   // document.body에 포털로 그려서 항상 뷰포트 정중앙에 뜨도록 한다.
