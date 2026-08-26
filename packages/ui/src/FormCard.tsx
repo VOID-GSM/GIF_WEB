@@ -46,6 +46,7 @@ const STYLE_LABEL: Record<StyleOption, string> = {
 const ALLOWED_EXTENSION_OPTIONS = [
   "pdf",
   "hwp",
+  "hwpx",
   "docx",
   "pptx",
   "xlsx",

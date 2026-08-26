@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { useUpdateForm, useGetFormById } from "@/entities/form-edit";
 import type { FormByIdResponse, UpdateFormField } from "@/entities/form-edit";
 import type { PostFormRequestField } from "@/entities/form-create";
+import { formatDeadline } from "@/entities/form";
 import { useGetMyInfo } from "@/entities/mypage";
 
 const FORM_TITLE_MAX_LENGTH = 50;
@@ -109,7 +110,7 @@ function FormEditor({
 
   return (
     <div className="min-h-screen flex flex-col items-center bg-background px-5">
-      <span className="pt-20 pb-8 font-semibold text-[24px]">
+      <span className="pt-20 pb-8 font-semibold text-[24px] text-gray-900">
         양식 수정하기
       </span>
       <div className="w-full max-w-[560px] flex flex-col pb-6 gap-4">
@@ -145,7 +146,11 @@ function FormEditor({
         <div className="flex flex-col text-[14px] font-medium text-gray-600 gap-1">
           마감일 선택하기
           <div>
-            <DatePicker value={deadline} onChange={setDeadline} />
+            <DatePicker
+              value={deadline}
+              onChange={setDeadline}
+              displayValue={formatDeadline(deadline)}
+            />
           </div>
         </div>
       </div>
@@ -233,7 +238,7 @@ export default function FormEditView({ formId }: { formId: number }) {
       <div className="min-h-screen flex flex-col items-center justify-center gap-4 bg-background">
         <p className="text-gray-500">양식 정보를 불러올 수 없습니다.</p>
         <button
-          className="px-6 py-2 rounded-lg border border-gray-300 text-sm font-medium cursor-pointer"
+          className="px-6 py-2 rounded-lg border border-gray-300 text-sm font-medium cursor-pointer text-gray-900"
           onClick={() => window.location.reload()}
         >
           다시 시도

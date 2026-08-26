@@ -377,7 +377,7 @@ export default function FormMySubmitView({ formId }: Props) {
             {isEditing ? (
               <>
                 <button
-                  className="flex w-full items-center justify-center py-3 font-medium border border-yellow-600 bg-white rounded-[10px] cursor-pointer"
+                  className="flex w-full items-center justify-center py-3 font-medium border border-yellow-600 bg-white text-gray-900 rounded-[10px] cursor-pointer"
                   onClick={handleCancel}
                 >
                   취소
