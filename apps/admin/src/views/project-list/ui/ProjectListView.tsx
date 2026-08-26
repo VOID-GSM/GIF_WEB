@@ -19,6 +19,7 @@ import NoticeBanner from "@/widgets/dashboard/ui/NoticeBanner";
 import ScheduleTimelineCard from "@/widgets/dashboard/ui/ScheduleTimelineCard";
 import MyProjectCard from "@/widgets/dashboard/ui/MyProjectCard";
 import ProfileSummaryCard from "@/widgets/dashboard/ui/ProfileSummaryCard";
+import MyAssignmentNotice from "@/widgets/teacher-assign/ui/MyAssignmentNotice";
 
 const SUBMISSION_OPTIONS = ["전체", "제출", "미제출"] as const;
 const SCORE_OPTIONS = ["전체", "채점", "미채점"] as const;
@@ -102,6 +103,7 @@ export default function ProjectListView() {
       {/* 모바일: 공지 배너 → 프로젝트 → 자세히 보기 → 제출 마감 → 진행 일정 순으로 세로 배치 */}
       <div className="flex min-h-dvh flex-col gap-8 bg-background px-4 pt-16 pb-6 min-[900px]:hidden">
         <NoticeBanner />
+        <MyAssignmentNotice />
 
         <div className="flex flex-wrap gap-2">
           <GradeFilter value={grade} onChange={setGrade} />
@@ -169,6 +171,7 @@ export default function ProjectListView() {
       {/* 데스크톱: 공지 배너 + 학년 필터 + 전체 그리드 */}
       <div className="hidden min-h-dvh flex-col items-start gap-12 bg-background px-4 py-10 min-[900px]:flex">
         <NoticeBanner />
+        <MyAssignmentNotice />
 
         <div className="flex flex-wrap gap-3">
           <GradeFilter value={grade} onChange={setGrade} />

@@ -11,10 +11,6 @@ interface RespondAssignmentVariables {
   body: RespondAssignmentRequest;
 }
 
-// NOTE: PATCH /api/teachers/assignments/{assignmentId} API 자체는 구현돼 있지만,
-// 이 훅을 호출할 어떤 화면에서도 로그인한 admin 본인의 assignmentId를 얻어올 방법이
-// 아직 없다 (GET /api/auth/me, GET /api/admin/teachers 어디에도 assignmentId가 없음).
-// 백엔드에 "내 배정 목록 조회" API가 추가되면 그때 수락/거절 UI와 함께 연결한다.
 export function useRespondAssignment() {
   const queryClient = useQueryClient();
 
