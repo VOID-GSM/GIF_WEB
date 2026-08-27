@@ -180,11 +180,6 @@ export default function FormSubmissionsView({ formId }: Props) {
             >
               {/* 팀명 */}
               <span className="min-w-0 truncate text-base font-medium text-gray-900">
-                {row.teamName}
-              </span>
-
-              {/* 양식명 */}
-              <span className="min-w-0 truncate text-base font-medium text-gray-900">
                 {row.projectId ? (
                   <Link
                     href={`/projects/${row.projectId}`}
@@ -200,17 +195,7 @@ export default function FormSubmissionsView({ formId }: Props) {
 
               {/* 양식명 */}
               <span className="min-w-0 truncate text-sm text-gray-700">
-                {row.projectId ? (
-                  <Link
-                    href={`/projects/${row.projectId}`}
-                    className="inline-block max-w-full truncate underline-offset-2 transition-colors hover:text-yellow-700 hover:underline"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    {form?.title}
-                  </Link>
-                ) : (
-                  form?.title
-                )}
+                {form?.title}
               </span>
 
               {/* 마감 날짜 */}
