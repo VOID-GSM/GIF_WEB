@@ -210,7 +210,7 @@ function FormEditor({
         ))}
 
         <button
-          className="w-full flex items-center justify-center py-3 gap-4 bg-white rounded-[10px] shadow-new font-medium cursor-pointer"
+          className="w-full flex items-center justify-center py-3 gap-4 bg-white rounded-[10px] shadow-new font-medium cursor-pointer dark:text-gray-300"
           onClick={handleAddField}
         >
           <Plus width={15} height={15} />
