@@ -25,6 +25,7 @@ type AnswerItem = {
   description: string;
   type: "TEXT" | "FILE" | "CALENDAR";
   orderIndex: number;
+  required: boolean;
   answers: SubmitAnswer[];
 };
 
@@ -35,6 +36,13 @@ function AnswerField({ item }: { item: AnswerItem }) {
     <div className="flex flex-col py-6 px-6 sm:py-8 sm:px-12 border-t-5 border-yellow-600 bg-white rounded-[10px] shadow-new">
       <span className="text-[20px] font-semibold pb-2 text-gray-900">
         {item.title}
+        {item.required ? (
+          <span className="ml-1 text-red-500">*</span>
+        ) : (
+          <span className="ml-2 text-[14px] font-medium text-gray-400">
+            (선택)
+          </span>
+        )}
       </span>
       {item.description && (
         <span className="font-medium text-gray-500 pb-4">
@@ -87,6 +95,8 @@ export default function FormDetailView({ formId, submitId }: Props) {
         description: meta?.description ?? "",
         type,
         orderIndex: meta?.orderIndex ?? Number.MAX_SAFE_INTEGER,
+        // required 를 내려주지 않는 구버전 양식은 필수로 간주한다.
+        required: meta?.required ?? true,
         answers,
       };
     })

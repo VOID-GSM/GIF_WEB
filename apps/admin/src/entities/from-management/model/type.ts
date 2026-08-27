@@ -24,6 +24,8 @@ export interface FormField {
   description: string;
   type: "TEXT" | "FILE" | "CALENDAR";
   orderIndex: number;
+  /** 필수 항목 여부 — required 를 내려주지 않는 구버전 양식은 필수로 간주한다 */
+  required?: boolean;
   allowedExtensions?: string[]; // FILE 타입에서 client 가 제출 가능한 확장자
 }
 
