@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { usePostForm, useAnnounceForm } from "@/entities/form-create";
 import type { PostFormRequestField } from "@/entities/form-create";
 import { useGetMyInfo } from "@/entities/mypage";
+import { useFieldReorder } from "@/features/form-field-reorder";
 
 const FORM_TITLE_MAX_LENGTH = 50;
 
@@ -78,6 +79,9 @@ export default function FormCreateView() {
       allowedExtensions: [],
     },
   ]);
+
+  const { draggingId, handleDragStart, handleDragEnter, handleDragEnd } =
+    useFieldReorder(setFields);
 
   const handleAddField = () => {
     setFields((prev) => [
@@ -245,6 +249,10 @@ export default function FormCreateView() {
             field={field}
             onChange={handleChange}
             onDelete={handleDeleteField}
+            onDragStart={handleDragStart}
+            onDragEnter={handleDragEnter}
+            onDragEnd={handleDragEnd}
+            isDragging={draggingId === field.id}
           />
         ))}
 

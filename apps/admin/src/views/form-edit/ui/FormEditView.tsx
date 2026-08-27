@@ -9,6 +9,7 @@ import type { FormByIdResponse, UpdateFormField } from "@/entities/form-edit";
 import type { PostFormRequestField } from "@/entities/form-create";
 import { formatDeadline } from "@/entities/form";
 import { useGetMyInfo } from "@/entities/mypage";
+import { useFieldReorder } from "@/features/form-field-reorder";
 import AnnouncedSaveConfirmModal from "./AnnouncedSaveConfirmModal";
 
 const FORM_TITLE_MAX_LENGTH = 50;
@@ -65,6 +66,9 @@ function FormEditor({
         allowedExtensions: f.allowedExtensions ?? [],
       })),
   );
+
+  const { draggingId, handleDragStart, handleDragEnter, handleDragEnd } =
+    useFieldReorder(setFields);
 
   const handleAddField = () => {
     setFields((prev) => [
@@ -198,6 +202,10 @@ function FormEditor({
             field={field}
             onChange={handleChange}
             onDelete={handleDeleteField}
+            onDragStart={handleDragStart}
+            onDragEnter={handleDragEnter}
+            onDragEnd={handleDragEnd}
+            isDragging={draggingId === field.id}
           />
         ))}
 
