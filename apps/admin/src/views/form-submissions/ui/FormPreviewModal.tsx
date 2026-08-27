@@ -31,7 +31,7 @@ function PreviewField({ field }: { field: FormField }) {
         )}
       </span>
       {field.description && (
-        <span className="pb-3 pt-1 text-sm font-medium text-gray-500 sm:text-base">
+        <span className="pb-3 pt-1 text-sm font-medium text-gray-500 sm:text-base whitespace-pre-wrap">
           {field.description}
         </span>
       )}
