@@ -209,6 +209,18 @@
 .dark .text-orange-700 {
   color: var(--color-orange-300);
 }
+.dark .placeholder\:text-gray-500::placeholder {
+  color: var(--color-gray-400);
+}
+
+/*
+ * 예외: bg-yellow-600과 동일한 이유로, bg-yellow-400(캘린더 오늘 날짜 표시 등) 위의
+ * 어두운 글자도 다크모드에서 흰 글자로 바뀌면 안 된다.
+ */
+.dark .bg-yellow-400.text-black,
+.dark .bg-yellow-400.text-gray-900 {
+  color: var(--color-gray-900);
+}
 
 .dark .border-gray-100 {
   border-color: var(--color-gray-800);
