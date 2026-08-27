@@ -18,8 +18,12 @@ type FieldWithId = {
   description: string;
   type: "TEXT" | "FILE" | "CALENDAR" | "";
   orderIndex: number;
+  required: boolean;
   allowedExtensions: string[];
 };
+
+// 새 항목은 기본적으로 필수 — admin 이 토글로 선택 항목으로 바꿀 수 있다.
+const DEFAULT_REQUIRED = true;
 
 // API는 "DATE"를 반환하지만 FormCard UI는 "CALENDAR"를 사용
 function toUiType(apiType: string): "TEXT" | "FILE" | "CALENDAR" | "" {
@@ -53,6 +57,8 @@ function FormEditor({
         description: f.description,
         type: toUiType(f.type),
         orderIndex: f.orderIndex,
+        // required 를 내려주지 않는 구버전 양식은 필수로 간주한다.
+        required: f.required ?? DEFAULT_REQUIRED,
         allowedExtensions: f.allowedExtensions ?? [],
       })),
   );
@@ -66,6 +72,7 @@ function FormEditor({
         description: "",
         type: "",
         orderIndex: prev.length,
+        required: DEFAULT_REQUIRED,
         allowedExtensions: [],
       },
     ]);
@@ -93,13 +100,23 @@ function FormEditor({
           deadline,
           fields: fields
             .filter((f) => f.type !== "")
-            .map(({ title, description, type, orderIndex, allowedExtensions }) => ({
-              title,
-              description,
-              type: type as UpdateFormField["type"],
-              orderIndex,
-              ...(type === "FILE" ? { allowedExtensions } : {}),
-            })),
+            .map(
+              ({
+                title,
+                description,
+                type,
+                orderIndex,
+                required,
+                allowedExtensions,
+              }) => ({
+                title,
+                description,
+                type: type as UpdateFormField["type"],
+                orderIndex,
+                required,
+                ...(type === "FILE" ? { allowedExtensions } : {}),
+              }),
+            ),
         },
       },
       {

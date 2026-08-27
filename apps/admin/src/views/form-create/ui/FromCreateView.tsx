@@ -19,8 +19,12 @@ type FieldWithId = {
   description: string;
   type: FieldType;
   orderIndex: number;
+  required: boolean;
   allowedExtensions: string[];
 };
+
+// 새 항목은 기본적으로 필수 — admin 이 토글로 선택 항목으로 바꿀 수 있다.
+const DEFAULT_REQUIRED = true;
 
 export default function FormCreateView() {
   const router = useRouter();
@@ -59,6 +63,7 @@ export default function FormCreateView() {
       description: f.description,
       type: f.type,
       orderIndex: f.orderIndex,
+      required: f.required,
       ...(f.type === "FILE" ? { allowedExtensions: f.allowedExtensions } : {}),
     }));
 
@@ -69,6 +74,7 @@ export default function FormCreateView() {
       description: "",
       type: "TEXT",
       orderIndex: 0,
+      required: DEFAULT_REQUIRED,
       allowedExtensions: [],
     },
   ]);
@@ -82,6 +88,7 @@ export default function FormCreateView() {
         description: "",
         type: "",
         orderIndex: prev.length,
+        required: DEFAULT_REQUIRED,
         allowedExtensions: [],
       },
     ]);

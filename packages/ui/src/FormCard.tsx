@@ -12,6 +12,8 @@ interface PostFormRequestField {
   description: string;
   type: "TEXT" | "FILE" | "CALENDAR" | "";
   orderIndex: number;
+  /** 학생이 반드시 답변해야 하는 항목인지 여부 (false면 비워둔 채 제출 가능) */
+  required: boolean;
   allowedExtensions?: string[]; // FILE 타입에서 client 가 제출 가능한 확장자
 }
 
@@ -85,6 +87,10 @@ export default function FormCard({ field, onChange, onDelete }: FormCardProps) {
       ? current.filter((e) => e !== ext)
       : [...current, ext];
     onChange(field.id, { allowedExtensions: next });
+  };
+
+  const toggleRequired = () => {
+    onChange(field.id, { required: !field.required });
   };
 
   return (
@@ -174,6 +180,34 @@ export default function FormCard({ field, onChange, onDelete }: FormCardProps) {
               </div>
             </div>
           )}
+          <div className="flex items-center justify-between pt-2">
+            <div className="flex flex-col">
+              <span className="text-[13px] font-medium text-gray-500">
+                필수 항목
+              </span>
+              <span className="text-[12px] text-gray-400">
+                {field.required
+                  ? "학생이 반드시 답변해야 합니다."
+                  : "학생이 비워둔 채 제출할 수 있습니다."}
+              </span>
+            </div>
+            <button
+              type="button"
+              role="switch"
+              aria-checked={field.required}
+              aria-label="필수 항목 여부"
+              onClick={toggleRequired}
+              className={`relative h-6 w-11 shrink-0 rounded-full transition-colors cursor-pointer ${
+                field.required ? "bg-yellow-600" : "bg-gray-200"
+              }`}
+            >
+              <span
+                className={`absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${
+                  field.required ? "translate-x-5" : "translate-x-0"
+                }`}
+              />
+            </button>
+          </div>
         </div>
         <div className="flex justify-end">
           <Close
