@@ -62,5 +62,7 @@ export interface AdminSubmitDetail {
   teamName: string;
   submittedByUserId: number;
   submittedAt: string;
+  /** 기한 내 제출 여부 — 담당(MASTER)·VOID 계정이 준수/미준수를 직접 바꿀 수 있다 */
+  deadlineComplied: boolean;
   answers: SubmitAnswer[];
 }
