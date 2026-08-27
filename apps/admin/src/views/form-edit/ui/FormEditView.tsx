@@ -9,6 +9,8 @@ import type { FormByIdResponse, UpdateFormField } from "@/entities/form-edit";
 import type { PostFormRequestField } from "@/entities/form-create";
 import { formatDeadline } from "@/entities/form";
 import { useGetMyInfo } from "@/entities/mypage";
+import { useFieldReorder } from "@/features/form-field-reorder";
+import AnnouncedSaveConfirmModal from "./AnnouncedSaveConfirmModal";
 
 const FORM_TITLE_MAX_LENGTH = 50;
 
@@ -18,8 +20,12 @@ type FieldWithId = {
   description: string;
   type: "TEXT" | "FILE" | "CALENDAR" | "";
   orderIndex: number;
+  required: boolean;
   allowedExtensions: string[];
 };
+
+// 새 항목은 기본적으로 필수 — admin 이 토글로 선택 항목으로 바꿀 수 있다.
+const DEFAULT_REQUIRED = true;
 
 // API는 "DATE"를 반환하지만 FormCard UI는 "CALENDAR"를 사용
 function toUiType(apiType: string): "TEXT" | "FILE" | "CALENDAR" | "" {
@@ -43,6 +49,8 @@ function FormEditor({
   // composition 세션이 깨져 마지막 글자가 누락되거나 조합이 끊길 수 있다.
   const isTitleComposing = useRef(false);
   const [deadline, setDeadline] = useState(formDetail.deadline);
+  // 공지된 양식은 학생에게 이미 노출된 상태라 저장 전에 한 번 더 확인받는다.
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [fields, setFields] = useState<FieldWithId[]>(() =>
     formDetail.fields
       .slice()
@@ -53,9 +61,14 @@ function FormEditor({
         description: f.description,
         type: toUiType(f.type),
         orderIndex: f.orderIndex,
+        // required 를 내려주지 않는 구버전 양식은 필수로 간주한다.
+        required: f.required ?? DEFAULT_REQUIRED,
         allowedExtensions: f.allowedExtensions ?? [],
       })),
   );
+
+  const { draggingId, handleDragStart, handleDragEnter, handleDragEnd } =
+    useFieldReorder(setFields);
 
   const handleAddField = () => {
     setFields((prev) => [
@@ -66,6 +79,7 @@ function FormEditor({
         description: "",
         type: "",
         orderIndex: prev.length,
+        required: DEFAULT_REQUIRED,
         allowedExtensions: [],
       },
     ]);
@@ -84,7 +98,7 @@ function FormEditor({
     );
   };
 
-  const handleSave = () => {
+  const submit = () => {
     updateForm(
       {
         formId,
@@ -93,19 +107,40 @@ function FormEditor({
           deadline,
           fields: fields
             .filter((f) => f.type !== "")
-            .map(({ title, description, type, orderIndex, allowedExtensions }) => ({
-              title,
-              description,
-              type: type as UpdateFormField["type"],
-              orderIndex,
-              ...(type === "FILE" ? { allowedExtensions } : {}),
-            })),
+            .map(
+              ({
+                title,
+                description,
+                type,
+                orderIndex,
+                required,
+                allowedExtensions,
+              }) => ({
+                title,
+                description,
+                type: type as UpdateFormField["type"],
+                orderIndex,
+                required,
+                ...(type === "FILE" ? { allowedExtensions } : {}),
+              }),
+            ),
         },
       },
       {
-        onSuccess: () => router.push("/form"),
+        onSuccess: () => {
+          setIsConfirmOpen(false);
+          router.push("/form");
+        },
       },
     );
+  };
+
+  const handleSave = () => {
+    if (formDetail.announced) {
+      setIsConfirmOpen(true);
+      return;
+    }
+    submit();
   };
 
   return (
@@ -114,6 +149,12 @@ function FormEditor({
         양식 수정하기
       </span>
       <div className="w-full max-w-[560px] flex flex-col pb-6 gap-4">
+        {formDetail.announced && (
+          <div className="rounded-[10px] border border-yellow-600 bg-yellow-600/10 px-4 py-3 text-[14px] font-medium text-gray-700 dark:bg-yellow-500/15 dark:text-gray-300">
+            이미 공지된 양식입니다. 수정 내용은 학생에게 즉시 반영되며, 이미
+            제출된 답변에 영향을 줄 수 있습니다.
+          </div>
+        )}
         <div className="flex flex-col text-[14px] font-medium text-gray-600 gap-1">
           제목 입력하기
           <input
@@ -161,6 +202,10 @@ function FormEditor({
             field={field}
             onChange={handleChange}
             onDelete={handleDeleteField}
+            onDragStart={handleDragStart}
+            onDragEnter={handleDragEnter}
+            onDragEnd={handleDragEnd}
+            isDragging={draggingId === field.id}
           />
         ))}
 
@@ -182,6 +227,14 @@ function FormEditor({
           </button>
         </div>
       </div>
+
+      {isConfirmOpen && (
+        <AnnouncedSaveConfirmModal
+          isPending={isSaving}
+          onConfirm={submit}
+          onClose={() => setIsConfirmOpen(false)}
+        />
+      )}
     </div>
   );
 }
