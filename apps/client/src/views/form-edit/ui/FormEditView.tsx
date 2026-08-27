@@ -10,6 +10,7 @@ import {
   usePatchFormSubmit,
   usePostFormUpload,
   useGetFormDetail,
+  isFieldRequired,
 } from "@/entities/form-submissions/index";
 import type {
   SubmitAnswerItem,
@@ -150,11 +151,12 @@ export default function FormMySubmitView({ formId }: Props) {
   const handlePatch = async () => {
     if (!mySubmit || !formDetail?.fields) return;
 
-    // Validate
+    // Validate — 선택 항목(required=false)은 비워둔 채 저장할 수 있다.
     const errors: Record<number, string> = {};
     formDetail.fields.forEach((field) => {
       const fId = field.fieldId ?? field.id ?? 0;
       const type = field.type?.toUpperCase();
+      if (!isFieldRequired(field)) return;
       if (type === "TEXT" && !getTextValue(fId).trim()) {
         errors[fId] = "필수 항목입니다.";
       }
@@ -170,7 +172,7 @@ export default function FormMySubmitView({ formId }: Props) {
 
     if (Object.keys(errors).length > 0) {
       setFieldErrors(errors);
-      toast.error("모든 항목을 작성해주세요.");
+      toast.error("필수 항목을 모두 작성해주세요.");
       return;
     }
 
@@ -299,6 +301,7 @@ export default function FormMySubmitView({ formId }: Props) {
                 const fId = field.fieldId ?? field.id ?? index;
                 const existingAnswer = answerMap[fId];
                 const error = fieldErrors[fId];
+                const required = isFieldRequired(field);
 
                 // Compute filePath: hide when deleted or replaced with new file
                 const isFileDeleted = fileAnswers[fId] === null;
@@ -315,6 +318,13 @@ export default function FormMySubmitView({ formId }: Props) {
                   >
                     <span className="text-[20px] font-semibold pb-2 text-gray-900">
                       {field.title}
+                      {required ? (
+                        <span className="ml-1 text-red-500">*</span>
+                      ) : (
+                        <span className="ml-2 text-[14px] font-medium text-gray-400">
+                          (선택)
+                        </span>
+                      )}
                     </span>
                     {field.description && (
                       <span className="font-medium text-gray-500 pb-4">

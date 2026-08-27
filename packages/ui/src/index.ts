@@ -50,6 +50,7 @@ export { default as TimePicker } from "./widgets/Calendar/ui/TimePicker";
 export { default as Chevron } from "./svg/Chevron";
 export { default as DashedBorder } from "./svg/DashedBorder";
 export { default as Close } from "./svg/Close";
+export { default as DragHandle } from "./svg/DragHandle";
 export { default as Logout } from "./svg/Logout";
 export { default as Menu } from "./svg/Menu";
 export { default as Plus } from "./svg/Plus";
