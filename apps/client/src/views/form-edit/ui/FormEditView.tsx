@@ -327,7 +327,7 @@ export default function FormMySubmitView({ formId }: Props) {
                       )}
                     </span>
                     {field.description && (
-                      <span className="font-medium text-gray-500 pb-4">
+                      <span className="font-medium text-gray-500 pb-4 whitespace-pre-wrap">
                         {field.description}
                       </span>
                     )}
