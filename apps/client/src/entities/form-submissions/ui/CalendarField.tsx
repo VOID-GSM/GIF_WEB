@@ -280,7 +280,7 @@ export default function CalendarField({
 
       <div className="flex items-center justify-between mb-[10px]">
         <button
-          className="px-1 text-gray-500 sm:px-2 sm:pl-6"
+          className="px-1 text-gray-500 cursor-pointer sm:px-2 sm:pl-6"
           onClick={() => setCurrentMonth(new Date(year, month - 1))}
         >
           {"<"}
@@ -297,7 +297,7 @@ export default function CalendarField({
           ))}
         </div>
         <button
-          className="px-1 text-gray-500 sm:px-2 sm:pr-6"
+          className="px-1 text-gray-500 cursor-pointer sm:px-2 sm:pr-6"
           onClick={() => setCurrentMonth(new Date(year, month + 1))}
         >
           {">"}
