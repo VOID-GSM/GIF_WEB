@@ -155,12 +155,34 @@
 .dark .text-green-700 {
   color: rgb(134 239 172);
 }
+.dark .border-green-200 {
+  border-color: rgb(125 220 30 / 0.4);
+}
 
+.dark .bg-blue-50 {
+  background-color: rgb(96 165 250 / 0.1);
+}
 .dark .bg-blue-100 {
   background-color: rgb(96 165 250 / 0.15);
 }
 .dark .text-blue-700 {
   color: rgb(147 197 253);
+}
+.dark .border-blue-200 {
+  border-color: rgb(96 165 250 / 0.4);
+}
+
+.dark .bg-purple-50 {
+  background-color: rgb(167 139 250 / 0.1);
+}
+.dark .bg-purple-100 {
+  background-color: rgb(167 139 250 / 0.15);
+}
+.dark .text-purple-700 {
+  color: rgb(196 181 253);
+}
+.dark .border-purple-200 {
+  border-color: rgb(167 139 250 / 0.4);
 }
 
 .dark .bg-red-50 {
@@ -171,6 +193,9 @@
 }
 .dark .text-red-600 {
   color: rgb(252 165 165);
+}
+.dark .border-red-200 {
+  border-color: rgb(239 68 68 / 0.4);
 }
 
 .dark .text-black {
@@ -230,6 +255,9 @@
 
 .dark .text-yellow-700 {
   color: var(--color-yellow-300);
+}
+.dark .border-yellow-300 {
+  border-color: rgb(from var(--color-yellow-600) r g b / 0.5);
 }
 .dark .text-orange-700 {
   color: var(--color-orange-300);
