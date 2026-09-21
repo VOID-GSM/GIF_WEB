@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import type { GetNotificationResponse } from "@repo/lib";
 import {
   NOTIFICATION_RETENTION_DAYS,
+  resolveNotificationTarget,
   useGetNotificationUnreadCount,
   useGetNotifications,
   usePushSubscription,
@@ -43,12 +44,24 @@ export default function NotificationPanel({
   const hasUnread = unreadCount > 0;
 
   // 읽음 처리는 서버 응답을 기다리지 않고, 이동할 경로가 있으면 바로 넘어간다.
-  const handleSelect = ({ id, isRead, url }: GetNotificationResponse) => {
+  const handleSelect = ({
+    id,
+    isRead,
+    targetUrl,
+  }: GetNotificationResponse) => {
     if (!isRead) readNotification(id);
-    if (!url) return;
+
+    const target = resolveNotificationTarget(targetUrl);
+    if (!target) return;
 
     onClose();
-    router.push(url);
+
+    // 절대 URL 은 다른 앱이나 외부 링크라 라우터로 이동할 수 없다.
+    if (target.type === "external") {
+      window.location.href = target.href;
+      return;
+    }
+    router.push(target.href);
   };
 
   return (

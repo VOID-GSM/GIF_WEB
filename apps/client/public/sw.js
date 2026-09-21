@@ -33,7 +33,8 @@ self.addEventListener("push", (event) => {
       badge: "/logo.png",
       // 같은 알림이 중복 수신돼도 한 개만 보이도록 id 를 태그로 쓴다.
       tag: payload.tag || `gif-notification-${payload.id ?? Date.now()}`,
-      data: { url: payload.url || "/" },
+      // 서버는 targetUrl 과 url 을 함께 보낸다. 조회 API 와 같은 targetUrl 을 우선한다.
+      data: { url: payload.targetUrl || payload.url || "/" },
     }),
   );
 });

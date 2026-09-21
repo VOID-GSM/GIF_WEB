@@ -1,6 +1,7 @@
 "use client";
 
 import type { GetNotificationResponse } from "@repo/lib";
+import { resolveNotificationTarget } from "@repo/lib";
 
 import { formatNotificationTime } from "../lib/formatNotificationTime";
 
@@ -13,10 +14,10 @@ export default function NotificationItem({
   notification,
   onSelect,
 }: NotificationItemProps) {
-  const { title, body, isRead, createdAt, url } = notification;
+  const { title, body, isRead, createdAt, targetUrl } = notification;
 
   // 읽은 알림이어도 이동할 경로가 있으면 다시 눌러 이동할 수 있어야 한다.
-  const isInteractive = !isRead || Boolean(url);
+  const isInteractive = !isRead || Boolean(resolveNotificationTarget(targetUrl));
 
   return (
     <li className="border-b border-gray-100 last:border-b-0">
