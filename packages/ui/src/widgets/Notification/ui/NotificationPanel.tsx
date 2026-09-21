@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import type { GetNotificationResponse } from "@repo/lib";
 import {
   NOTIFICATION_RETENTION_DAYS,
-  isWithinNotificationRetention,
   useGetNotificationUnreadCount,
   useGetNotifications,
   usePushSubscription,
@@ -37,21 +36,11 @@ export default function NotificationPanel({
   const { isSupported, isSubscribed, isChecking, isPending, togglePush } =
     usePushSubscription();
 
-  const loadedNotifications = data?.pages.flatMap((page) => page.content) ?? [];
-  const notifications = loadedNotifications.filter(({ createdAt }) =>
-    isWithinNotificationRetention(createdAt),
-  );
-
-  // 목록이 최신순이라 보관 기간을 벗어난 항목이 한 번 나오면 그 뒤는 모두 오래된 알림이다.
-  const hasExpiredNotification =
-    loadedNotifications.length !== notifications.length;
-  const canLoadMore = hasNextPage && !hasExpiredNotification;
+  // 보관 기간은 서버가 days 로 잘라서 내려주므로 여기서 다시 거르지 않는다.
+  const notifications = data?.pages.flatMap((page) => page.content) ?? [];
 
   const unreadCount = unreadCountData?.unreadCount ?? 0;
   const hasUnread = unreadCount > 0;
-  // 배지의 안 읽음 개수는 기간 제한이 없어서, 목록이 비었는데 배지만 남는 상황이 생긴다.
-  // 왜 그런지와 어떻게 정리하는지를 빈 목록에서 안내한다.
-  const hasOnlyExpiredUnread = hasUnread && notifications.length === 0;
 
   // 읽음 처리는 서버 응답을 기다리지 않고, 이동할 경로가 있으면 바로 넘어간다.
   const handleSelect = ({ id, isRead, url }: GetNotificationResponse) => {
@@ -116,15 +105,9 @@ export default function NotificationPanel({
         )}
 
         {!isLoading && !isError && notifications.length === 0 && (
-          <div className="px-4 py-10 text-center text-[13px] text-gray-500">
-            <p>최근 {NOTIFICATION_RETENTION_DAYS}일 동안 도착한 알림이 없어요.</p>
-            {hasOnlyExpiredUnread && (
-              <p className="mt-1 text-[12px] text-gray-400">
-                {NOTIFICATION_RETENTION_DAYS}일이 지난 안 읽은 알림 {unreadCount}
-                건은 모두 읽기로 정리할 수 있어요.
-              </p>
-            )}
-          </div>
+          <p className="px-4 py-10 text-center text-[13px] text-gray-500">
+            최근 {NOTIFICATION_RETENTION_DAYS}일 동안 도착한 알림이 없어요.
+          </p>
         )}
 
         {notifications.length > 0 && (
@@ -139,7 +122,7 @@ export default function NotificationPanel({
           </ul>
         )}
 
-        {canLoadMore && (
+        {hasNextPage && (
           <button
             type="button"
             onClick={() => fetchNextPage()}

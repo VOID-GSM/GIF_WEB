@@ -26,7 +26,13 @@ export interface GetNotificationUnreadCountResponse {
   unreadCount: number;
 }
 
-export interface GetNotificationsParams {
+// 조회 기간. 목록·안 읽은 개수·일괄 읽기가 모두 같은 값을 써야
+// 배지 숫자와 목록이 어긋나지 않는다.
+export interface NotificationDaysParams {
+  days?: number;
+}
+
+export interface GetNotificationsParams extends NotificationDaysParams {
   page: number;
   size: number;
 }
