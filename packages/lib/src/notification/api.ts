@@ -35,3 +35,11 @@ export const patchNotificationRead = async (
 ): Promise<void> => {
   await apiClient.patch(`/api/notifications/${notificationId}/read`);
 };
+
+export const patchAllNotificationsRead = async ({
+  days = NOTIFICATION_RETENTION_DAYS,
+}: NotificationDaysParams = {}): Promise<void> => {
+  await apiClient.patch("/api/notifications/read-all", null, {
+    params: { days },
+  });
+};
