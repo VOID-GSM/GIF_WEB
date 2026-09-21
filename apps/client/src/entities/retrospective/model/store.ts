@@ -60,7 +60,10 @@ const AUTHOR_META = {
   grade: 2,
   classNumber: 1,
   teamNumber: 3,
+  projectId: 3,
+  teamName: "코드브릿지",
   part: "프론트엔드",
+  authorName: "김민준",
 };
 
 function toEntity(
@@ -73,9 +76,12 @@ function toEntity(
     id: base?.id ?? payload.id ?? createId(),
     title: payload.title,
     content: payload.content,
+    authorName:
+      payload.authorName ?? base?.authorName ?? AUTHOR_META.authorName,
     summary: toSummary(payload.content),
     category: payload.category,
     visibility: payload.visibility,
+    tags: payload.tags,
     relatedWorks: payload.relatedWorks,
     bookmarkCount: base?.bookmarkCount ?? 0,
     isBookmarked: base?.isBookmarked ?? false,

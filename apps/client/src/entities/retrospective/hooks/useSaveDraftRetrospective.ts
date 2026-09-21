@@ -1,30 +1,27 @@
-// TODO(backend): 실제 API 연동 시 이 훅의 내부 구현만 TanStack Query로 교체 (컴포넌트 사용부는 변경 불필요)
 "use client";
 
-import { useCallback, useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 
-import { saveDraftRetrospective } from "../model/store";
-import type {
-  DetailRetrospectiveResponse,
-  UpsertRetrospectiveRequest,
-} from "../model/type";
-
-interface MutateOptions {
-  onSuccess?: (data: DetailRetrospectiveResponse) => void;
-}
+import {
+  createDraftRetrospective,
+  updateDraftRetrospective,
+} from "../api/retrospectiveApi";
+import type { UpsertRetrospectiveRequest } from "../model/type";
 
 export function useSaveDraftRetrospective() {
-  const [isPending, setIsPending] = useState(false);
+  const queryClient = useQueryClient();
 
-  const mutate = useCallback(
-    (payload: UpsertRetrospectiveRequest, options?: MutateOptions) => {
-      setIsPending(true);
-      const saved = saveDraftRetrospective(payload);
-      setIsPending(false);
-      options?.onSuccess?.(saved);
+  return useMutation({
+    mutationFn: async (payload: UpsertRetrospectiveRequest) => {
+      if (payload.id === undefined) return createDraftRetrospective(payload);
+      await updateDraftRetrospective(payload.id, payload);
+      return payload.id;
     },
-    [],
-  );
-
-  return { mutate, isPending };
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["retrospective", "draft"] });
+      toast.success("임시 저장했습니다.");
+    },
+    onError: () => toast.error("임시 저장에 실패했습니다."),
+  });
 }

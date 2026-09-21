@@ -59,5 +59,4 @@ export const CATEGORY_COLOR: Record<RetrospectiveCategory, string> = {
 export const SORT_OPTIONS: { value: RetrospectiveSort; label: string }[] = [
   { value: "LATEST", label: "최신순" },
   { value: "OLDEST", label: "오래된순" },
-  { value: "BOOKMARK", label: "북마크순" },
 ];

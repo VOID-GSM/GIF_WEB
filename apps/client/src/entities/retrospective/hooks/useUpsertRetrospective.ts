@@ -1,30 +1,27 @@
-// TODO(backend): 실제 API 연동 시 이 훅의 내부 구현만 TanStack Query로 교체 (컴포넌트 사용부는 변경 불필요)
 "use client";
 
-import { useCallback, useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 
-import { upsertRetrospective } from "../model/store";
-import type {
-  DetailRetrospectiveResponse,
-  UpsertRetrospectiveRequest,
-} from "../model/type";
-
-interface MutateOptions {
-  onSuccess?: (data: DetailRetrospectiveResponse) => void;
-}
+import {
+  createRetrospective,
+  updateRetrospective,
+} from "../api/retrospectiveApi";
+import type { UpsertRetrospectiveRequest } from "../model/type";
 
 export function useUpsertRetrospective() {
-  const [isPending, setIsPending] = useState(false);
+  const queryClient = useQueryClient();
 
-  const mutate = useCallback(
-    (payload: UpsertRetrospectiveRequest, options?: MutateOptions) => {
-      setIsPending(true);
-      const created = upsertRetrospective(payload);
-      setIsPending(false);
-      options?.onSuccess?.(created);
+  return useMutation({
+    mutationFn: async (payload: UpsertRetrospectiveRequest) => {
+      if (payload.id === undefined) return createRetrospective(payload);
+      await updateRetrospective(payload.id, payload);
+      return payload.id;
     },
-    [],
-  );
-
-  return { mutate, isPending };
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["retrospective"] });
+      toast.success("회고록을 저장했습니다.");
+    },
+    onError: () => toast.error("회고록 저장에 실패했습니다."),
+  });
 }

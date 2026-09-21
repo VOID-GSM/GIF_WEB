@@ -1,24 +1,19 @@
-// TODO(backend): 실제 API 연동 시 이 훅의 내부 구현만 TanStack Query로 교체 (컴포넌트 사용부는 변경 불필요)
 "use client";
 
-import { useCallback, useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 
-import { toggleBookmark } from "../model/store";
-import type { DetailRetrospectiveResponse } from "../model/type";
-
-interface MutateOptions {
-  onSuccess?: (data: DetailRetrospectiveResponse) => void;
-}
+import { toggleRetrospectiveBookmark } from "../api/retrospectiveApi";
 
 export function useToggleBookmark() {
-  const [isPending, setIsPending] = useState(false);
+  const queryClient = useQueryClient();
 
-  const mutate = useCallback((id: number, options?: MutateOptions) => {
-    setIsPending(true);
-    const updated = toggleBookmark(id);
-    setIsPending(false);
-    if (updated) options?.onSuccess?.(updated);
-  }, []);
-
-  return { mutate, isPending };
+  return useMutation({
+    mutationFn: toggleRetrospectiveBookmark,
+    onSuccess: (_data, id) => {
+      queryClient.invalidateQueries({ queryKey: ["retrospective"] });
+      queryClient.invalidateQueries({ queryKey: ["retrospective", id] });
+    },
+    onError: () => toast.error("북마크 변경에 실패했습니다."),
+  });
 }

@@ -30,4 +30,5 @@ export type {
   DetailRetrospectiveResponse,
   RetrospectiveQueryParams,
   UpsertRetrospectiveRequest,
+  RetrospectivePageResponse,
 } from "./model/type";

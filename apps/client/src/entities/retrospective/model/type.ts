@@ -14,7 +14,7 @@ export type RetrospectiveCategoryFilter = RetrospectiveCategory | "ALL";
 
 export type RetrospectiveVisibility = "PUBLIC" | "PRIVATE";
 
-export type RetrospectiveSort = "LATEST" | "OLDEST" | "BOOKMARK";
+export type RetrospectiveSort = "LATEST" | "OLDEST";
 
 export type RelatedWorkType = "ISSUE" | "PR";
 
@@ -31,6 +31,7 @@ export interface RelatedWork {
 /** GET /api/retrospective — 회고록 목록 */
 export interface ListRetrospectiveResponse {
   id: number;
+  projectId?: number;
   title: string;
   summary: string;
   category: RetrospectiveCategory;
@@ -38,7 +39,10 @@ export interface ListRetrospectiveResponse {
   grade: number;
   classNumber: number;
   teamNumber: number;
+  teamName?: string;
   part: string;
+  tags?: string[];
+  authorName: string;
   bookmarkCount: number;
   isBookmarked: boolean;
   createdAt: string;
@@ -66,7 +70,20 @@ export interface UpsertRetrospectiveRequest {
   id?: number;
   title: string;
   content: string;
+  authorName?: string;
   category: RetrospectiveCategory;
   visibility: RetrospectiveVisibility;
+  tags: string[];
   relatedWorks: RelatedWork[];
+}
+
+export interface RetrospectivePageResponse {
+  content: ListRetrospectiveResponse[];
+  totalElements: number;
+  totalPages: number;
+  number: number;
+  size: number;
+  first: boolean;
+  last: boolean;
+  empty: boolean;
 }
