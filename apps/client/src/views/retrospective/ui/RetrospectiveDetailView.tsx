@@ -80,9 +80,18 @@ export default function RetrospectiveDetailView({
 
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <span className="text-[12px] text-gray-400">
-                  {data.grade}학년 · {data.classNumber}반 · {data.teamNumber}
-                  팀 · {data.part} · {data.createdAt.slice(0, 10)}
+                  {data.authorName} · {data.grade}학년 · {data.part} ·{" "}
+                  {data.createdAt.slice(0, 10)}
                 </span>
+
+                {data.teamName && data.projectId !== undefined && (
+                  <Link
+                    href={`/projects/${data.projectId}`}
+                    className="text-[12px] font-medium text-gray-500 underline decoration-gray-300 underline-offset-2 transition-colors hover:text-yellow-700 hover:decoration-yellow-600"
+                  >
+                    {data.teamName}
+                  </Link>
+                )}
 
                 <button
                   type="button"

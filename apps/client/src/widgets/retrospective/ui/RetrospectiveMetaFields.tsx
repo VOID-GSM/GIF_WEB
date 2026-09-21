@@ -12,6 +12,8 @@ interface RetrospectiveMetaFieldsProps {
   onVisibilityChange: (visibility: RetrospectiveVisibility) => void;
   title: string;
   onTitleChange: (title: string) => void;
+  tags: string[];
+  onTagsChange: (tags: string[]) => void;
 }
 
 export default function RetrospectiveMetaFields({
@@ -21,8 +23,28 @@ export default function RetrospectiveMetaFields({
   onVisibilityChange,
   title,
   onTitleChange,
+  tags,
+  onTagsChange,
 }: RetrospectiveMetaFieldsProps) {
   const isPublic = visibility === "PUBLIC";
+
+  const addTag = (value: string) => {
+    const tag = value.trim().replace(/^#/, "");
+    if (!tag || tags.includes(tag) || tags.length >= 5) return;
+    onTagsChange([...tags, tag]);
+  };
+
+  const handleTagKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key !== "Enter" && event.key !== ",") return;
+    event.preventDefault();
+    addTag(event.currentTarget.value);
+    event.currentTarget.value = "";
+  };
+
+  const handleTagBlur = (event: React.FocusEvent<HTMLInputElement>) => {
+    addTag(event.currentTarget.value);
+    event.currentTarget.value = "";
+  };
 
   return (
     <>
@@ -85,6 +107,39 @@ export default function RetrospectiveMetaFields({
           placeholder="제목을 입력하세요"
           className="w-full rounded-[10px] border border-gray-200 bg-white px-4 py-3 text-[15px] font-semibold text-black outline-none transition-colors placeholder:font-medium placeholder:text-gray-400 focus:border-yellow-600"
         />
+      </div>
+
+      <div>
+        <label
+          htmlFor="retrospective-tags"
+          className="mb-1 block text-[12px] font-medium text-gray-500"
+        >
+          태그
+        </label>
+        <div className="flex min-h-[44px] flex-wrap items-center gap-1.5 rounded-[10px] border border-gray-200 bg-white px-3 py-2 transition-colors focus-within:border-yellow-600">
+          {tags.map((tag) => (
+            <button
+              key={tag}
+              type="button"
+              onClick={() => onTagsChange(tags.filter((item) => item !== tag))}
+              aria-label={`${tag} 태그 삭제`}
+              className="cursor-pointer rounded-full bg-yellow-50 px-2 py-1 text-[12px] font-medium text-yellow-800 transition-colors hover:bg-yellow-100"
+            >
+              #{tag} ×
+            </button>
+          ))}
+          <input
+            id="retrospective-tags"
+            type="text"
+            onKeyDown={handleTagKeyDown}
+            onBlur={handleTagBlur}
+            placeholder={tags.length ? "태그 추가" : "태그를 입력하고 Enter"}
+            className="min-w-[140px] flex-1 bg-transparent py-1 text-[13px] font-medium text-black outline-none placeholder:text-gray-400"
+          />
+        </div>
+        <p className="mt-1 text-[11px] text-gray-400">
+          최대 5개까지 추가할 수 있어요.
+        </p>
       </div>
     </>
   );

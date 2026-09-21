@@ -5,6 +5,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { Chevron } from "@repo/ui";
 
+import { useGetMe } from "@/entities/auth";
 import {
   useSaveDraftRetrospective,
   useUpsertRetrospective,
@@ -31,10 +32,12 @@ export default function RetrospectiveWriteView() {
     useState<RetrospectiveVisibility>("PUBLIC");
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [tags, setTags] = useState<string[]>([]);
   const [relatedWorks, setRelatedWorks] = useState<RelatedWork[]>([]);
   const [isDraftModalOpen, setIsDraftModalOpen] = useState(false);
   const [editorMode, setEditorMode] = useState<EditorMode>("write");
   const isSplit = editorMode === "split";
+  const { data: me } = useGetMe();
 
   const { mutate: submit, isPending: isSubmitting } = useUpsertRetrospective();
   const { mutate: saveDraft, isPending: isSavingDraft } =
@@ -44,8 +47,10 @@ export default function RetrospectiveWriteView() {
     id: draftId,
     title: title.trim(),
     content,
+    authorName: me?.name,
     category,
     visibility,
+    tags,
     relatedWorks,
   });
 
@@ -55,6 +60,7 @@ export default function RetrospectiveWriteView() {
     setVisibility(draft.visibility);
     setTitle(draft.title);
     setContent(draft.content);
+    setTags(draft.tags ?? []);
     setRelatedWorks(draft.relatedWorks);
     setIsDraftModalOpen(false);
     toast.success("임시 저장한 내용을 불러왔습니다.");
@@ -68,7 +74,7 @@ export default function RetrospectiveWriteView() {
 
     saveDraft(buildPayload(), {
       onSuccess: (saved) => {
-        setDraftId(saved.id);
+        setDraftId(saved);
         toast.success("임시 저장했습니다.");
       },
     });
@@ -134,6 +140,8 @@ export default function RetrospectiveWriteView() {
               onVisibilityChange={setVisibility}
               title={title}
               onTitleChange={setTitle}
+              tags={tags}
+              onTagsChange={setTags}
             />
 
             <RetrospectiveEditor

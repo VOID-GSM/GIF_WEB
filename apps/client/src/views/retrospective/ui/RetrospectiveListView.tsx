@@ -63,7 +63,7 @@ export default function RetrospectiveListView() {
         </div>
 
         {/* 목록 — 이 영역만 스크롤된다 */}
-        <div className="thin-scrollbar mt-5 flex-1 overflow-y-auto">
+        <div className="thin-scrollbar -mx-1 mt-3 flex-1 overflow-y-auto px-1 pt-2">
           {isLoading ? (
             <p className="py-16 text-center text-[13px] font-medium text-gray-400">
               불러오는 중
