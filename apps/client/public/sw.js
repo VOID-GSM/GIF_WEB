@@ -31,8 +31,10 @@ self.addEventListener("push", (event) => {
       body: payload.body || "",
       icon: "/logo.png",
       badge: "/logo.png",
-      // 같은 알림이 중복 수신돼도 한 개만 보이도록 id 를 태그로 쓴다.
-      tag: payload.tag || `gif-notification-${payload.id ?? Date.now()}`,
+      // 서버가 tag 를 주면 같은 알림이 중복 수신돼도 한 개만 보인다.
+      // 푸시 payload 에는 id 가 없어서(DB 저장 전 발송) 없을 때는 매번 다른 태그가 되고,
+      // 그때는 중복 알림이 각각 표시된다.
+      tag: payload.tag || `gif-notification-${Date.now()}`,
       // 서버는 targetUrl 과 url 을 함께 보낸다. 조회 API 와 같은 targetUrl 을 우선한다.
       data: { url: payload.targetUrl || payload.url || "/" },
     }),
