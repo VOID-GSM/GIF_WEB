@@ -74,7 +74,7 @@ export default function EditorToolbar({ onItemClick }: EditorToolbarProps) {
             className={`flex h-7 w-8 cursor-pointer items-center justify-center rounded-[6px] text-gray-600 transition-all duration-150 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-yellow-600 ${
               item.disabled
                 ? "opacity-40 hover:bg-transparent"
-                : "hover:scale-110 hover:bg-white hover:text-gray-900"
+                : "hover:scale-110 hover:bg-white hover:text-gray-900 dark:hover:bg-gray-700 dark:hover:text-white"
             }`}
           >
             {item.icon}

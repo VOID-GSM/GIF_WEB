@@ -125,12 +125,18 @@ export default function RetrospectiveDetailView({
             </div>
 
             {/* AI 요약 */}
-            <div className="animate-fade-in-up mt-5" style={{ animationDelay: "20ms" }}>
+            <div
+              className="animate-fade-in-up mt-5"
+              style={{ animationDelay: "20ms" }}
+            >
               <AiSummaryCard content={data.content} />
             </div>
 
             {/* 본문 */}
-            <div className="animate-fade-in-up mt-6" style={{ animationDelay: "40ms" }}>
+            <div
+              className="animate-fade-in-up mt-6"
+              style={{ animationDelay: "40ms" }}
+            >
               <Markdown content={data.content} className="text-[14px]" />
             </div>
 
@@ -145,7 +151,10 @@ export default function RetrospectiveDetailView({
                 </h2>
                 <ul className="mt-2 flex flex-wrap gap-2">
                   {data.relatedWorks.map((work) => (
-                    <li key={work.id} className="w-full sm:w-[260px]">
+                    <li
+                      key={`${work.type}-${work.number}`}
+                      className="w-full sm:w-[260px]"
+                    >
                       <RelatedWorkCard work={work} />
                     </li>
                   ))}

@@ -78,7 +78,7 @@ export default function RelatedWorkAddForm({
   };
 
   return (
-    <div className="animate-fade-in-up flex flex-col gap-2 rounded-[10px] border border-gray-200 bg-gray-100 p-2.5">
+    <div className="animate-fade-in-up flex flex-col gap-2 rounded-[10px] border border-gray-200 bg-gray-100 p-2.5 dark:border-gray-700 dark:bg-gray-800">
       <div>
         <label htmlFor="related-work-link" className="sr-only">
           GitHub 이슈·PR 링크
@@ -87,10 +87,13 @@ export default function RelatedWorkAddForm({
           id="related-work-link"
           type="text"
           inputMode="url"
+          spellCheck={false}
+          autoCapitalize="none"
+          autoCorrect="off"
           value={link}
           onChange={(e) => void handleLinkChange(e.target.value)}
           placeholder="GitHub 이슈·PR 링크를 붙여넣으면 자동으로 채워져요 (선택)"
-          className="w-full rounded-[8px] border border-gray-200 bg-white px-2.5 py-1.5 text-[12px] font-medium text-black outline-none placeholder:text-gray-400 focus:border-yellow-600"
+          className="w-full rounded-[8px] border border-gray-200 bg-white px-2.5 py-1.5 text-[12px] font-medium text-black outline-none placeholder:text-gray-400 focus:border-yellow-600 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:placeholder:text-gray-500"
         />
         <p className="mt-1 text-[11px] text-gray-400">
           공개 저장소의 이슈·PR만 제목을 자동으로 가져올 수 있어요. 비공개
@@ -103,8 +106,8 @@ export default function RelatedWorkAddForm({
         )}
         {titleFetchFailed && (
           <p className="mt-1 text-[11px] text-red-500" aria-live="polite">
-            비공개 저장소이거나 찾을 수 없어 제목을 자동으로 가져오지
-            못했어요. 제목을 직접 입력해주세요.
+            비공개 저장소이거나 찾을 수 없어 제목을 자동으로 가져오지 못했어요.
+            제목을 직접 입력해주세요.
           </p>
         )}
       </div>
@@ -133,7 +136,7 @@ export default function RelatedWorkAddForm({
           value={number}
           onChange={(e) => setNumber(e.target.value)}
           placeholder="번호"
-          className="w-[80px] shrink-0 rounded-[8px] border border-gray-200 bg-white px-2 py-1.5 text-[12px] font-medium text-black outline-none placeholder:text-gray-400 focus:border-yellow-600"
+          className="w-[80px] shrink-0 rounded-[8px] border border-gray-200 bg-white px-2 py-1.5 text-[12px] font-medium text-black outline-none placeholder:text-gray-400 focus:border-yellow-600 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:placeholder:text-gray-500"
         />
 
         <label htmlFor="related-work-title" className="sr-only">
@@ -145,7 +148,7 @@ export default function RelatedWorkAddForm({
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="제목을 직접 입력해도 돼요"
-          className="min-w-[140px] flex-1 rounded-[8px] border border-gray-200 bg-white px-2 py-1.5 text-[12px] font-medium text-black outline-none placeholder:text-gray-400 focus:border-yellow-600"
+          className="min-w-[140px] flex-1 rounded-[8px] border border-gray-200 bg-white px-2 py-1.5 text-[12px] font-medium text-black outline-none placeholder:text-gray-400 focus:border-yellow-600 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:placeholder:text-gray-500"
         />
 
         <button
