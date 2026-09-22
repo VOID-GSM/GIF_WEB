@@ -45,6 +45,7 @@ export interface ListRetrospectiveResponse {
   authorName: string;
   bookmarkCount: number;
   isBookmarked: boolean;
+  isMine?: boolean;
   createdAt: string;
 }
 
@@ -62,6 +63,8 @@ export interface RetrospectiveQueryParams {
   sort?: RetrospectiveSort;
   /** true면 내가 북마크한 회고록만 조회한다 */
   bookmarkedOnly?: boolean;
+  /** true면 내가 작성한 회고록만 조회한다 */
+  mineOnly?: boolean;
 }
 
 /** POST·PATCH /api/retrospective — 회고록 작성·수정 */

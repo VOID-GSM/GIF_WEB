@@ -31,6 +31,7 @@ interface ServerRetrospectiveBase {
   part: string;
   bookmarkCount: number;
   isBookmarked: boolean;
+  isMine?: boolean;
   authorName: string;
   createdAt: string;
 }
@@ -39,9 +40,16 @@ type ServerListRetrospectiveResponse = ServerRetrospectiveBase;
 
 interface ServerDetailRetrospectiveResponse extends ServerRetrospectiveBase {
   content: string;
-  relatedWorks: RelatedWork[];
+  relatedWorks: ServerRelatedWork[];
   isDraft: boolean;
   isMine: boolean;
+}
+
+interface ServerRelatedWork extends Omit<RelatedWork, "id" | "url"> {
+  id?: number;
+  url?: string;
+  link?: string;
+  githubUrl?: string;
 }
 
 interface ServerBookmarkToggleResponse {
@@ -82,6 +90,7 @@ function mapListResponse(
     part: response.part,
     bookmarkCount: response.bookmarkCount,
     isBookmarked: response.isBookmarked,
+    isMine: response.isMine ?? false,
     authorName: response.authorName,
     createdAt: response.createdAt,
   };
@@ -93,7 +102,13 @@ function mapDetailResponse(
   return {
     ...mapListResponse(response),
     content: response.content,
-    relatedWorks: response.relatedWorks.map((work) => ({ ...work })),
+    relatedWorks: response.relatedWorks.map((work, index) => ({
+      id: work.id ?? index,
+      type: work.type,
+      number: work.number,
+      title: work.title,
+      url: work.url ?? work.link ?? work.githubUrl,
+    })),
     isDraft: response.isDraft,
   };
 }
@@ -104,10 +119,11 @@ function toServerBody(payload: UpsertRetrospectiveRequest) {
     visibility: payload.visibility,
     title: payload.title,
     content: payload.content,
-    relatedWorks: payload.relatedWorks.map(({ type, number, title }) => ({
+    relatedWorks: payload.relatedWorks.map(({ type, number, title, url }) => ({
       type,
       number,
       title,
+      url,
     })),
   };
 }
@@ -132,6 +148,7 @@ export async function getRetrospectives(
           : undefined,
       keyword: params.keyword?.trim() || undefined,
       sort: params.sort,
+      mine: params.mineOnly || undefined,
       page: 0,
       size: 100,
     },
