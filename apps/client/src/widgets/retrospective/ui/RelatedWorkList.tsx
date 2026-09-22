@@ -23,8 +23,8 @@ export default function RelatedWorkList({
     setIsAdding(false);
   };
 
-  const handleRemove = (id: number) => {
-    onChange(relatedWorks.filter((work) => work.id !== id));
+  const handleRemove = (indexToRemove: number) => {
+    onChange(relatedWorks.filter((_, index) => index !== indexToRemove));
   };
 
   return (
@@ -32,9 +32,12 @@ export default function RelatedWorkList({
       <h2 className="text-[14px] font-semibold text-gray-900">관련 작업</h2>
 
       <ul className="flex flex-wrap gap-2">
-        {relatedWorks.map((work) => (
-          <li key={work.id} className="w-full sm:w-[260px]">
-            <RelatedWorkCard work={work} onRemove={handleRemove} />
+        {relatedWorks.map((work, index) => (
+          <li
+            key={`${work.type}-${work.number}-${work.url ?? work.title}-${index}`}
+            className="w-full sm:w-[260px]"
+          >
+            <RelatedWorkCard work={work} onRemove={() => handleRemove(index)} />
           </li>
         ))}
 
