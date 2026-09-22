@@ -52,7 +52,7 @@ export default function RetrospectiveDetailView({
             </p>
             <Link
               href="/retrospective"
-              className="text-[13px] font-medium text-yellow-700 underline underline-offset-2 hover:text-yellow-800"
+              className="cursor-pointer text-[13px] font-medium text-yellow-700 underline underline-offset-2 hover:text-yellow-800"
             >
               목록으로 돌아가기
             </Link>
@@ -78,20 +78,34 @@ export default function RetrospectiveDetailView({
                 {data.title || "제목 없음"}
               </h1>
 
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                <span className="text-[12px] text-gray-400">
-                  {data.authorName} · {data.grade}학년 · {data.part} ·{" "}
-                  {data.createdAt.slice(0, 10)}
-                </span>
+              <div className="flex flex-wrap items-center gap-3">
+                <div className="flex flex-wrap items-center gap-3">
+                  <span className="text-[12px] text-gray-400">
+                    {data.authorName} · {data.grade}학년 · {data.part} ·{" "}
+                    {data.createdAt.slice(0, 10)}
+                  </span>
 
-                {data.teamName && data.projectId !== undefined && (
-                  <Link
-                    href={`/projects/${data.projectId}`}
-                    className="text-[12px] font-medium text-gray-500 underline decoration-gray-300 underline-offset-2 transition-colors hover:text-yellow-700 hover:decoration-yellow-600"
-                  >
-                    {data.teamName}
-                  </Link>
-                )}
+                  {data.isMine && (
+                    <button
+                      type="button"
+                      onClick={() =>
+                        router.push(`/retrospective/write?id=${data.id}`)
+                      }
+                      className="cursor-pointer rounded-full border border-gray-200 bg-white px-2.5 py-1 text-[12px] font-medium text-gray-500 transition-colors hover:border-yellow-600 hover:text-yellow-700"
+                    >
+                      수정
+                    </button>
+                  )}
+
+                  {data.teamName && data.projectId !== undefined && (
+                    <Link
+                      href={`/projects/${data.projectId}`}
+                      className="cursor-pointer text-[12px] font-medium text-gray-500 underline decoration-gray-300 underline-offset-2 transition-colors hover:text-yellow-700 hover:decoration-yellow-600"
+                    >
+                      {data.teamName}
+                    </Link>
+                  )}
+                </div>
 
                 <button
                   type="button"
@@ -101,7 +115,7 @@ export default function RetrospectiveDetailView({
                   aria-label={
                     data.isBookmarked ? "북마크 취소" : "북마크에 추가"
                   }
-                  className={`flex shrink-0 cursor-pointer items-center gap-1 rounded-full border px-2.5 py-1 text-[12px] font-medium transition-all duration-150 hover:scale-105 active:brightness-95 disabled:cursor-not-allowed ${
+                  className={`ml-auto flex shrink-0 cursor-pointer items-center gap-1 rounded-full border px-2.5 py-1 text-[12px] font-medium transition-all duration-150 hover:scale-105 active:brightness-95 disabled:cursor-not-allowed ${
                     data.isBookmarked
                       ? "border-yellow-600 bg-yellow-50 text-yellow-700"
                       : "border-gray-200 bg-white text-gray-500 hover:border-gray-300 hover:text-gray-700"

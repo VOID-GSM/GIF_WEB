@@ -1,12 +1,13 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { startTransition, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Chevron } from "@repo/ui";
 
 import { useGetMe } from "@/entities/auth";
 import {
+  useGetRetrospectiveDetail,
   useSaveDraftRetrospective,
   useUpsertRetrospective,
   type DetailRetrospectiveResponse,
@@ -23,10 +24,19 @@ import RetrospectiveEditor, {
 import RetrospectiveFormActions from "@/widgets/retrospective/ui/RetrospectiveFormActions";
 import RetrospectiveMetaFields from "@/widgets/retrospective/ui/RetrospectiveMetaFields";
 
-export default function RetrospectiveWriteView() {
+interface RetrospectiveWriteViewProps {
+  retrospectiveId?: number;
+}
+
+export default function RetrospectiveWriteView({
+  retrospectiveId,
+}: RetrospectiveWriteViewProps) {
   const router = useRouter();
 
   const [draftId, setDraftId] = useState<number | undefined>(undefined);
+  const [editingId, setEditingId] = useState<number | undefined>(
+    retrospectiveId,
+  );
   const [category, setCategory] = useState<RetrospectiveCategory>("FEATURE");
   const [visibility, setVisibility] =
     useState<RetrospectiveVisibility>("PUBLIC");
@@ -38,13 +48,28 @@ export default function RetrospectiveWriteView() {
   const [editorMode, setEditorMode] = useState<EditorMode>("write");
   const isSplit = editorMode === "split";
   const { data: me } = useGetMe();
+  const { data: retrospective } = useGetRetrospectiveDetail(retrospectiveId);
 
   const { mutate: submit, isPending: isSubmitting } = useUpsertRetrospective();
   const { mutate: saveDraft, isPending: isSavingDraft } =
     useSaveDraftRetrospective();
 
+  useEffect(() => {
+    if (!retrospective || retrospective.isDraft) return;
+
+    startTransition(() => {
+      setEditingId(retrospective.id);
+      setCategory(retrospective.category);
+      setVisibility(retrospective.visibility);
+      setTitle(retrospective.title);
+      setContent(retrospective.content);
+      setTags(retrospective.tags ?? []);
+      setRelatedWorks(retrospective.relatedWorks);
+    });
+  }, [retrospective]);
+
   const buildPayload = () => ({
-    id: draftId,
+    id: editingId ?? draftId,
     title: title.trim(),
     content,
     authorName: me?.name,
@@ -92,7 +117,6 @@ export default function RetrospectiveWriteView() {
 
     submit(buildPayload(), {
       onSuccess: () => {
-        toast.success("회고록을 작성했습니다.");
         router.push("/retrospective");
       },
     });
@@ -117,7 +141,7 @@ export default function RetrospectiveWriteView() {
         {/* 헤더 */}
         <div className="mt-2 flex flex-wrap items-center justify-between gap-3 border-b border-gray-200 pb-4">
           <h1 className="text-[19px] font-semibold tracking-[-0.3px] text-gray-900">
-            새 회고록 작성
+            {editingId ? "회고록 수정" : "새 회고록 작성"}
           </h1>
           <button
             type="button"
@@ -172,6 +196,7 @@ export default function RetrospectiveWriteView() {
           isSavingDraft={isSavingDraft}
           onSubmit={handleSubmit}
           isSubmitting={isSubmitting}
+          isEditing={Boolean(editingId)}
         />
       </div>
 

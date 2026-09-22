@@ -3,6 +3,7 @@ interface RetrospectiveFormActionsProps {
   isSavingDraft: boolean;
   onSubmit: () => void;
   isSubmitting: boolean;
+  isEditing?: boolean;
 }
 
 export default function RetrospectiveFormActions({
@@ -10,6 +11,7 @@ export default function RetrospectiveFormActions({
   isSavingDraft,
   onSubmit,
   isSubmitting,
+  isEditing = false,
 }: RetrospectiveFormActionsProps) {
   return (
     <div className="mt-6 flex justify-end gap-2 border-t border-gray-200 pt-4">
@@ -27,7 +29,7 @@ export default function RetrospectiveFormActions({
         disabled={isSubmitting}
         className="cursor-pointer rounded-[10px] bg-yellow-600 px-4 py-2 text-[13px] font-medium text-gray-900 transition-all duration-150 hover:-translate-y-0.5 hover:bg-yellow-700 hover:shadow active:brightness-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-600 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0"
       >
-        작성 완료
+        {isEditing ? "수정 완료" : "작성 완료"}
       </button>
     </div>
   );
