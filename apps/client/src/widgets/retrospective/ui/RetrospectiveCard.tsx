@@ -38,7 +38,7 @@ export default function RetrospectiveCard({
     >
       <Link
         href={`/retrospective/${retrospective.id}`}
-        className="flex flex-1 flex-col gap-3"
+        className="flex flex-1 cursor-pointer flex-col gap-3"
       >
         <div className="flex items-center gap-1.5">
           <span
@@ -70,7 +70,7 @@ export default function RetrospectiveCard({
           {teamName && projectId !== undefined && (
             <Link
               href={`/projects/${projectId}`}
-              className="mt-1 block w-fit max-w-full truncate text-[12px] font-medium text-gray-500 underline decoration-gray-300 underline-offset-2 transition-colors hover:text-yellow-700 hover:decoration-yellow-600"
+              className="mt-1 block w-fit max-w-full cursor-pointer truncate text-[12px] font-medium text-gray-500 underline decoration-gray-300 underline-offset-2 transition-colors hover:text-yellow-700 hover:decoration-yellow-600"
             >
               {teamName}
             </Link>

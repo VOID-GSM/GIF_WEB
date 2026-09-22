@@ -17,12 +17,14 @@ export default function RetrospectiveListView() {
   const [keyword, setKeyword] = useState("");
   const [sort, setSort] = useState<RetrospectiveSort>("LATEST");
   const [bookmarkedOnly, setBookmarkedOnly] = useState(false);
+  const [mineOnly, setMineOnly] = useState(false);
 
   const { data, isLoading } = useGetRetrospectives({
     category,
     keyword,
     sort,
     bookmarkedOnly,
+    mineOnly,
   });
 
   return (
@@ -59,6 +61,8 @@ export default function RetrospectiveListView() {
             onSortChange={setSort}
             bookmarkedOnly={bookmarkedOnly}
             onBookmarkedOnlyChange={setBookmarkedOnly}
+            mineOnly={mineOnly}
+            onMineOnlyChange={setMineOnly}
           />
         </div>
 
@@ -70,9 +74,11 @@ export default function RetrospectiveListView() {
             </p>
           ) : data.length === 0 ? (
             <p className="py-16 text-center text-[13px] font-medium text-gray-400">
-              {bookmarkedOnly
-                ? "북마크한 회고록이 없습니다"
-                : "검색 결과가 없습니다"}
+              {mineOnly
+                ? "내가 작성한 회고록이 없습니다"
+                : bookmarkedOnly
+                  ? "북마크한 회고록이 없습니다"
+                  : "검색 결과가 없습니다"}
             </p>
           ) : (
             <ul className="grid grid-cols-1 gap-3 pb-4 sm:grid-cols-2 lg:grid-cols-3">

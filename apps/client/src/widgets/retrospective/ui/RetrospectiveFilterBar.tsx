@@ -17,6 +17,8 @@ interface RetrospectiveFilterBarProps {
   onSortChange: (sort: RetrospectiveSort) => void;
   bookmarkedOnly: boolean;
   onBookmarkedOnlyChange: (bookmarkedOnly: boolean) => void;
+  mineOnly: boolean;
+  onMineOnlyChange: (mineOnly: boolean) => void;
 }
 
 export default function RetrospectiveFilterBar({
@@ -28,6 +30,8 @@ export default function RetrospectiveFilterBar({
   onSortChange,
   bookmarkedOnly,
   onBookmarkedOnlyChange,
+  mineOnly,
+  onMineOnlyChange,
 }: RetrospectiveFilterBarProps) {
   return (
     <div className="flex flex-col gap-3">
@@ -111,6 +115,19 @@ export default function RetrospectiveFilterBar({
             <path d="M6 4h12v16l-6-4-6 4V4z" />
           </svg>
           북마크만
+        </button>
+
+        <button
+          type="button"
+          aria-pressed={mineOnly}
+          onClick={() => onMineOnlyChange(!mineOnly)}
+          className={`shrink-0 cursor-pointer rounded-[10px] border px-3 py-2.5 text-[13px] font-medium transition-all duration-150 hover:scale-105 active:brightness-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-600 ${
+            mineOnly
+              ? "border-yellow-600 bg-yellow-50 text-yellow-700"
+              : "border-gray-200 bg-white text-gray-500 hover:border-gray-300 hover:text-gray-700"
+          }`}
+        >
+          내 회고
         </button>
       </div>
     </div>

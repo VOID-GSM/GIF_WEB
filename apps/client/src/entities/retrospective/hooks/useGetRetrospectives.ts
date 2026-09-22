@@ -15,7 +15,9 @@ export function useGetRetrospectives(params: RetrospectiveQueryParams = {}) {
 
   const data =
     query.data?.content.filter(
-      (item) => !params.bookmarkedOnly || item.isBookmarked,
+      (item) =>
+        (!params.bookmarkedOnly || item.isBookmarked) &&
+        (!params.mineOnly || item.isMine),
     ) ?? [];
 
   return { ...query, data };
