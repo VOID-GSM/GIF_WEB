@@ -6,4 +6,4 @@ import type {
 } from "@/entities/mypage/model/type";
 
 export const updateClientInfo = (body: UpdateClientInfoRequest) =>
-  apiClient.patch<PatchMyInfoResponse>("/api/auth/me", body);
+  apiClient.patch<PatchMyInfoResponse>("/api/users/me", body);
