@@ -65,6 +65,7 @@ export { default as Plus } from "./svg/Plus";
 export { default as Upload } from "./svg/Upload";
 export { default as File } from "./svg/File";
 export { default as Color } from "./svg/Color";
+export { default as Coin } from "./svg/Coin";
 export { default as Crown } from "./svg/Crown";
 export { default as Festival } from "./svg/Festival";
 export { default as GeneralSubject } from "./svg/GeneralSubject";
