@@ -6,7 +6,7 @@ import type {
   GetGoogleCallbackResponse,
 } from "../model/types";
 
-export const getMyInfo = () => apiClient.get<GetMyInfoResponse>("/api/auth/me");
+export const getMyInfo = () => apiClient.get<GetMyInfoResponse>("/api/users/me");
 
 export const getGoogleCallback = (params: GetGoogleCallbackParams) =>
   apiClient.get<GetGoogleCallbackResponse>("/api/auth/google/callback", {
