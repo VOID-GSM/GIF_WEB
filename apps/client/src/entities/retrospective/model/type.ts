@@ -1,5 +1,4 @@
 // 회고록 도메인 타입
-// TODO(backend): 실제 API 스펙 확정 시 이 파일의 타입을 서버 응답에 맞춰 조정한다.
 
 export type RetrospectiveCategory =
   | "FEATURE"
@@ -14,7 +13,7 @@ export type RetrospectiveCategoryFilter = RetrospectiveCategory | "ALL";
 
 export type RetrospectiveVisibility = "PUBLIC" | "PRIVATE";
 
-export type RetrospectiveSort = "LATEST" | "OLDEST";
+export type RetrospectiveSort = "LATEST" | "OLDEST" | "BOOKMARK";
 
 export type RelatedWorkType = "ISSUE" | "PR";
 
