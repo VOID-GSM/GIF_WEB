@@ -48,17 +48,28 @@ export default function RetrospectiveWriteView({
   const [editorMode, setEditorMode] = useState<EditorMode>("write");
   const isSplit = editorMode === "split";
   const { data: me } = useGetMe();
-  const { data: retrospective } = useGetRetrospectiveDetail(retrospectiveId);
+  const { data: retrospective, isError: isRetrospectiveError } =
+    useGetRetrospectiveDetail(retrospectiveId ?? draftId);
 
   const { mutate: submit, isPending: isSubmitting } = useUpsertRetrospective();
   const { mutate: saveDraft, isPending: isSavingDraft } =
     useSaveDraftRetrospective();
 
   useEffect(() => {
-    if (!retrospective || retrospective.isDraft) return;
+    if (!retrospective) return;
+
+    if (retrospective.isDraft) {
+      toast.success("임시 저장한 내용을 불러왔습니다.");
+    }
 
     startTransition(() => {
-      setEditingId(retrospective.id);
+      if (retrospective.isDraft) {
+        setDraftId(retrospective.id);
+        setEditingId(undefined);
+      } else {
+        setEditingId(retrospective.id);
+        setDraftId(undefined);
+      }
       setCategory(retrospective.category);
       setVisibility(retrospective.visibility);
       setTitle(retrospective.title);
@@ -67,6 +78,12 @@ export default function RetrospectiveWriteView({
       setRelatedWorks(retrospective.relatedWorks);
     });
   }, [retrospective]);
+
+  useEffect(() => {
+    if (draftId !== undefined && isRetrospectiveError) {
+      toast.error("임시 저장한 내용을 불러오지 못했습니다.");
+    }
+  }, [draftId, isRetrospectiveError]);
 
   const buildPayload = () => ({
     id: editingId ?? draftId,
@@ -81,14 +98,7 @@ export default function RetrospectiveWriteView({
 
   const handleSelectDraft = (draft: DetailRetrospectiveResponse) => {
     setDraftId(draft.id);
-    setCategory(draft.category);
-    setVisibility(draft.visibility);
-    setTitle(draft.title);
-    setContent(draft.content);
-    setTags(draft.tags ?? []);
-    setRelatedWorks(draft.relatedWorks);
     setIsDraftModalOpen(false);
-    toast.success("임시 저장한 내용을 불러왔습니다.");
   };
 
   const handleSaveDraft = () => {
@@ -97,7 +107,7 @@ export default function RetrospectiveWriteView({
       return;
     }
 
-    saveDraft(buildPayload(), {
+    saveDraft({ ...buildPayload(), id: draftId }, {
       onSuccess: (saved) => {
         setDraftId(saved);
         toast.success("임시 저장했습니다.");
@@ -106,6 +116,13 @@ export default function RetrospectiveWriteView({
   };
 
   const handleSubmit = () => {
+    if (draftId !== undefined && editingId === undefined) {
+      toast.error(
+        "임시 저장 글을 작성 완료로 전환하는 API가 아직 제공되지 않습니다.",
+      );
+      return;
+    }
+
     if (!title.trim()) {
       toast.error("제목을 입력해주세요.");
       return;
