@@ -5,6 +5,7 @@ export {
 export { useGetRetrospectiveDetail } from "./hooks/useGetRetrospectiveDetail";
 export { useGetDraftRetrospectives } from "./hooks/useGetDraftRetrospectives";
 export { useUpsertRetrospective } from "./hooks/useUpsertRetrospective";
+export { useDeleteRetrospective } from "./hooks/useDeleteRetrospective";
 export { useSaveDraftRetrospective } from "./hooks/useSaveDraftRetrospective";
 export { useDeleteDraftRetrospective } from "./hooks/useDeleteDraftRetrospective";
 export { useToggleBookmark } from "./hooks/useToggleBookmark";

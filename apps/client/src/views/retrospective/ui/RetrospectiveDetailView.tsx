@@ -7,6 +7,7 @@ import { Chevron, Markdown } from "@repo/ui";
 import {
   CATEGORY_COLOR,
   CATEGORY_LABELS,
+  useDeleteRetrospective,
   useGetRetrospectiveDetail,
   useToggleBookmark,
 } from "@/entities/retrospective";
@@ -24,6 +25,22 @@ export default function RetrospectiveDetailView({
   const { data, isLoading } = useGetRetrospectiveDetail(id);
   const { mutate: toggleBookmark, isPending: isBookmarking } =
     useToggleBookmark();
+  const { mutate: deleteRetrospective, isPending: isDeleting } =
+    useDeleteRetrospective();
+
+  const handleDelete = (id: number) => {
+    if (
+      !window.confirm(
+        "이 회고록을 삭제하시겠습니까? 삭제 후에는 복구할 수 없습니다.",
+      )
+    ) {
+      return;
+    }
+
+    deleteRetrospective(id, {
+      onSuccess: () => router.push("/retrospective"),
+    });
+  };
 
   return (
     <div className="flex min-h-dvh w-full justify-center bg-background px-4 py-8">
@@ -86,15 +103,25 @@ export default function RetrospectiveDetailView({
                   </span>
 
                   {data.isMine && (
-                    <button
-                      type="button"
-                      onClick={() =>
-                        router.push(`/retrospective/write?id=${data.id}`)
-                      }
-                      className="cursor-pointer rounded-full border border-gray-200 bg-white px-2.5 py-1 text-[12px] font-medium text-gray-500 transition-colors hover:border-yellow-600 hover:text-yellow-700"
-                    >
-                      수정
-                    </button>
+                    <>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          router.push(`/retrospective/write?id=${data.id}`)
+                        }
+                        className="cursor-pointer rounded-full border border-gray-200 bg-white px-2.5 py-1 text-[12px] font-medium text-gray-500 transition-colors hover:border-yellow-600 hover:text-yellow-700"
+                      >
+                        수정
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleDelete(data.id)}
+                        disabled={isDeleting}
+                        className="cursor-pointer rounded-full border border-gray-200 bg-white px-2.5 py-1 text-[12px] font-medium text-gray-500 transition-colors hover:border-red-300 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-50"
+                      >
+                        {isDeleting ? "삭제 중" : "삭제"}
+                      </button>
+                    </>
                   )}
 
                   {data.teamName && data.projectId !== undefined && (
