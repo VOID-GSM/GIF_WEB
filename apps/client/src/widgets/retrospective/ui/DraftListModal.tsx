@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect } from "react";
-import { toast } from "sonner";
 
 import {
   CATEGORY_LABELS,
@@ -13,11 +12,14 @@ import {
 interface DraftListModalProps {
   onClose: () => void;
   onSelect: (draft: DetailRetrospectiveResponse) => void;
+  /** 임시 저장 글을 삭제한 뒤 호출된다 (지금 편집 중인 글이면 부모가 draftId를 초기화한다) */
+  onDeleted?: (id: number) => void;
 }
 
 export default function DraftListModal({
   onClose,
   onSelect,
+  onDeleted,
 }: DraftListModalProps) {
   const { data: drafts } = useGetDraftRetrospectives();
   const { mutate: deleteDraft } = useDeleteDraftRetrospective();
@@ -33,8 +35,9 @@ export default function DraftListModal({
   }, [onClose]);
 
   const handleDelete = (id: number) => {
+    // 성공·실패 토스트는 useDeleteDraftRetrospective에서 띄운다
     deleteDraft(id, {
-      onSuccess: () => toast.success("임시 저장 글을 삭제했습니다."),
+      onSuccess: () => onDeleted?.(id),
     });
   };
 

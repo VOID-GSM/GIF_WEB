@@ -107,22 +107,18 @@ export default function RetrospectiveWriteView({
       return;
     }
 
+    // 성공 토스트는 useSaveDraftRetrospective에서 띄운다
     saveDraft({ ...buildPayload(), id: draftId }, {
-      onSuccess: (saved) => {
-        setDraftId(saved);
-        toast.success("임시 저장했습니다.");
-      },
+      onSuccess: (saved) => setDraftId(saved),
     });
   };
 
-  const handleSubmit = () => {
-    if (draftId !== undefined && editingId === undefined) {
-      toast.error(
-        "임시 저장 글을 작성 완료로 전환하는 API가 아직 제공되지 않습니다.",
-      );
-      return;
-    }
+  const handleDraftDeleted = (id: number) => {
+    // 지금 편집 중인 임시 저장 글을 지웠다면, 다음 임시 저장은 새 글로 만든다
+    if (id === draftId) setDraftId(undefined);
+  };
 
+  const handleSubmit = () => {
     if (!title.trim()) {
       toast.error("제목을 입력해주세요.");
       return;
@@ -132,11 +128,17 @@ export default function RetrospectiveWriteView({
       return;
     }
 
-    submit(buildPayload(), {
-      onSuccess: () => {
-        router.push("/retrospective");
+    // 임시 저장 글이면 새 글로 작성하고, 작성이 끝나면 임시 저장 글을 지운다
+    submit(
+      editingId !== undefined
+        ? buildPayload()
+        : { ...buildPayload(), id: undefined, draftId },
+      {
+        onSuccess: () => {
+          router.push("/retrospective");
+        },
       },
-    });
+    );
   };
 
   return (
@@ -221,6 +223,7 @@ export default function RetrospectiveWriteView({
         <DraftListModal
           onClose={() => setIsDraftModalOpen(false)}
           onSelect={handleSelectDraft}
+          onDeleted={handleDraftDeleted}
         />
       )}
     </div>

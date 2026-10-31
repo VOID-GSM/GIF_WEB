@@ -77,6 +77,8 @@ export interface UpsertRetrospectiveRequest {
   visibility: RetrospectiveVisibility;
   tags: string[];
   relatedWorks: RelatedWork[];
+  /** 임시 저장 글을 작성 완료할 때, 새 글 작성 후 삭제할 임시 저장 글 id */
+  draftId?: number;
 }
 
 export interface RetrospectivePageResponse {
