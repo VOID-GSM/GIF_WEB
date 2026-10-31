@@ -1,7 +1,15 @@
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
+import rehypeSanitize, { defaultSchema } from "rehype-sanitize";
 import remarkBreaks from "remark-breaks";
 import remarkGfm from "remark-gfm";
+
+// 사용자가 쓴 HTML 중 허용한 태그·속성만 남긴다 (iframe·script·form·이벤트 속성 등은 제거).
+// 기본(GitHub 기준) 목록에 밑줄 문법용 <u>만 추가한다.
+const sanitizeSchema = {
+  ...defaultSchema,
+  tagNames: [...(defaultSchema.tagNames ?? []), "u"],
+};
 
 interface MarkdownProps {
   content: string;
@@ -15,7 +23,7 @@ export default function Markdown({ content, className = "" }: MarkdownProps) {
     >
       <ReactMarkdown
         remarkPlugins={[remarkGfm, remarkBreaks]}
-        rehypePlugins={[rehypeRaw]}
+        rehypePlugins={[rehypeRaw, [rehypeSanitize, sanitizeSchema]]}
         components={{
           p: ({ children }) => <p className="my-2">{children}</p>,
           u: ({ children }) => <u>{children}</u>,
