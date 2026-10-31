@@ -17,4 +17,5 @@ export const CLIENT_NAV_ITEMS: NavItem[] = [
   { label: "양식", path: "/form" },
   { label: "등수", path: "/rank" },
   { label: "문의", path: "/inquiry" },
+  { label: "역량검사", path: "/assessment" },
 ];
