@@ -34,6 +34,9 @@ interface ServerRetrospectiveBase {
   isMine?: boolean;
   authorName: string;
   createdAt: string;
+  tags?: string[] | null;
+  projectId?: number;
+  teamName?: string;
 }
 
 type ServerListRetrospectiveResponse = ServerRetrospectiveBase;
@@ -93,6 +96,9 @@ function mapListResponse(
     isMine: response.isMine ?? false,
     authorName: response.authorName,
     createdAt: response.createdAt,
+    tags: response.tags ?? [],
+    projectId: response.projectId,
+    teamName: response.teamName,
   };
 }
 
@@ -119,11 +125,12 @@ function toServerBody(payload: UpsertRetrospectiveRequest) {
     visibility: payload.visibility,
     title: payload.title,
     content: payload.content,
-    relatedWorks: payload.relatedWorks.map(({ type, number, title, url }) => ({
+    tags: payload.tags,
+    // 서버 RelatedWorkRequest는 type·number·title만 받는다 (url을 보내면 400)
+    relatedWorks: payload.relatedWorks.map(({ type, number, title }) => ({
       type,
       number,
       title,
-      url,
     })),
   };
 }
@@ -148,6 +155,7 @@ export async function getRetrospectives(
           : undefined,
       keyword: params.keyword?.trim() || undefined,
       sort: params.sort,
+      bookmarkedOnly: params.bookmarkedOnly || undefined,
       page: 0,
       size: 100,
     },
