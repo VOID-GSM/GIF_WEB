@@ -16,5 +16,6 @@ export const CLIENT_NAV_ITEMS: NavItem[] = [
   { label: "공지", path: "/notice" },
   { label: "양식", path: "/form" },
   { label: "등수", path: "/rank" },
+  { label: "회고록", path: "/retrospective" },
   { label: "문의", path: "/inquiry" },
 ];

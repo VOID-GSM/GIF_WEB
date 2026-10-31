@@ -1,4 +1,6 @@
 import ReactMarkdown from "react-markdown";
+import rehypeRaw from "rehype-raw";
+import remarkBreaks from "remark-breaks";
 import remarkGfm from "remark-gfm";
 
 interface MarkdownProps {
@@ -12,9 +14,11 @@ export default function Markdown({ content, className = "" }: MarkdownProps) {
       className={`text-[13px] leading-relaxed text-gray-700 [&>*:first-child]:mt-0 [&>*:last-child]:mb-0 ${className}`}
     >
       <ReactMarkdown
-        remarkPlugins={[remarkGfm]}
+        remarkPlugins={[remarkGfm, remarkBreaks]}
+        rehypePlugins={[rehypeRaw]}
         components={{
           p: ({ children }) => <p className="my-2">{children}</p>,
+          u: ({ children }) => <u>{children}</u>,
           strong: ({ children }) => (
             <strong className="font-semibold text-gray-900">{children}</strong>
           ),

@@ -23,6 +23,19 @@ export interface ProjectStat {
   label: string;
 }
 
+export interface ProjectComment {
+  id: number;
+  author: string;
+  content: string;
+  createdAt: string;
+}
+
+export interface ProjectEngagement {
+  views: number;
+  likes: number;
+  comments: ProjectComment[];
+}
+
 export interface Project {
   id: number;
   name: string; // 프로젝트 명
@@ -37,6 +50,7 @@ export interface Project {
   features: ProjectFeature[]; // 프로젝트 기능
   members: ProjectMember[]; // 프로젝트 팀원
   stats?: ProjectStat[]; // 프로젝트 지표 (없을 수 있음)
+  engagement?: ProjectEngagement; // 조회수·좋아요·댓글 (API 연동 전 임시 데이터)
   siteUrl?: string; // 프로젝트 사이트 링크 (없을 수 있음)
   demoVideoUrl?: string; // 프로젝트 시연 영상 (없을 수 있음)
   photos?: string[]; // 시연 사진(스크린샷) — 영상 대신 사진으로 소개하는 프로젝트용 (없을 수 있음)
