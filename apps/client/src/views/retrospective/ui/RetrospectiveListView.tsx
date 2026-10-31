@@ -10,6 +10,7 @@ import {
 } from "@/entities/retrospective";
 import RetrospectiveCard from "@/widgets/retrospective/ui/RetrospectiveCard";
 import RetrospectiveFilterBar from "@/widgets/retrospective/ui/RetrospectiveFilterBar";
+import { useDebounce } from "@/shared/hooks/useDebounce";
 
 export default function RetrospectiveListView() {
   const router = useRouter();
@@ -19,9 +20,12 @@ export default function RetrospectiveListView() {
   const [bookmarkedOnly, setBookmarkedOnly] = useState(false);
   const [mineOnly, setMineOnly] = useState(false);
 
+  // 검색어는 입력이 멈춘 뒤에만 요청한다 (키를 누를 때마다 API를 부르지 않도록)
+  const debouncedKeyword = useDebounce(keyword);
+
   const { data, isLoading } = useGetRetrospectives({
     category,
-    keyword,
+    keyword: debouncedKeyword,
     sort,
     bookmarkedOnly,
     mineOnly,
