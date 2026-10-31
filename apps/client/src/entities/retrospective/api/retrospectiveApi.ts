@@ -40,7 +40,7 @@ type ServerListRetrospectiveResponse = ServerRetrospectiveBase;
 
 interface ServerDetailRetrospectiveResponse extends ServerRetrospectiveBase {
   content: string;
-  relatedWorks: ServerRelatedWork[];
+  relatedWorks?: ServerRelatedWork[] | null;
   isDraft: boolean;
   isMine: boolean;
 }
@@ -102,7 +102,7 @@ function mapDetailResponse(
   return {
     ...mapListResponse(response),
     content: response.content,
-    relatedWorks: response.relatedWorks.map((work, index) => ({
+    relatedWorks: (response.relatedWorks ?? []).map((work, index) => ({
       id: work.id ?? index,
       type: work.type,
       number: work.number,
