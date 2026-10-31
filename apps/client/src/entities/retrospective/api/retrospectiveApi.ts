@@ -42,7 +42,7 @@ interface ServerRetrospectiveBase {
 type ServerListRetrospectiveResponse = ServerRetrospectiveBase;
 
 interface ServerDetailRetrospectiveResponse extends ServerRetrospectiveBase {
-  content: string;
+  content?: string | null;
   relatedWorks?: ServerRelatedWork[] | null;
   isDraft: boolean;
   isMine: boolean;
@@ -107,7 +107,7 @@ function mapDetailResponse(
 ): DetailRetrospectiveResponse {
   return {
     ...mapListResponse(response),
-    content: response.content,
+    content: response.content ?? "",
     relatedWorks: (response.relatedWorks ?? []).map((work, index) => ({
       id: work.id ?? index,
       type: work.type,
@@ -193,15 +193,12 @@ export async function updateRetrospective(
 export async function getDraftRetrospectives(): Promise<
   DetailRetrospectiveResponse[]
 > {
-  const { data } = await apiClient.get<ServerListRetrospectiveResponse[]>(
+  // 임시 저장 글은 단건 조회 API가 없고(상세 API는 404), 목록이 본문까지 담은 상세 형태로 내려온다.
+  // 그래서 목록 응답을 그대로 상세로 변환해 불러오기에 쓴다.
+  const { data } = await apiClient.get<ServerDetailRetrospectiveResponse[]>(
     "/api/retrospective/draft",
   );
-  return data.map((item) => ({
-    ...mapListResponse(item),
-    content: "",
-    relatedWorks: [],
-    isDraft: true,
-  }));
+  return data.map((item) => ({ ...mapDetailResponse(item), isDraft: true }));
 }
 
 export async function createDraftRetrospective(
