@@ -68,12 +68,19 @@ export default function RetrospectiveWriteView({
   useEffect(() => {
     if (!retrospective) return;
 
+    // 주소(/retrospective/write?id=...)로 직접 들어와도 남의 글은 수정 화면을 열지 않는다
+    if (!retrospective.isMine) {
+      toast.error("본인이 작성한 회고록만 수정할 수 있습니다.");
+      router.replace(`/retrospective/${retrospective.id}`);
+      return;
+    }
+
     startTransition(() => {
       setEditingId(retrospective.id);
       setDraftId(undefined);
       fillForm(retrospective);
     });
-  }, [retrospective]);
+  }, [retrospective, router]);
 
   const buildPayload = () => ({
     id: editingId ?? draftId,
