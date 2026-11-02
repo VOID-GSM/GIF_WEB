@@ -58,3 +58,17 @@ export const hasSameApplicationServerKey = (
   if (current.length !== applicationServerKey.length) return false;
   return current.every((byte, index) => byte === applicationServerKey[index]);
 };
+
+// 이미 허용된 기기는 서버 구독 정보가 유실됐을 수 있어 탭마다 한 번 다시 등록해 동기화한다.
+// 탭마다 한 번이면 충분해서 sessionStorage 로 중복 호출을 막는다.
+export const PUSH_SYNC_FLAG_KEY = "gif:push-subscription-synced";
+
+// 로그아웃하면 다음 사용자가 같은 탭에서 로그인해도 다시 동기화되도록 플래그를 지운다.
+export const clearPushSyncFlag = (): void => {
+  if (typeof window === "undefined") return;
+  try {
+    sessionStorage.removeItem(PUSH_SYNC_FLAG_KEY);
+  } catch {
+    // sessionStorage 를 쓸 수 없는 환경이면 지울 것도 없다.
+  }
+};

@@ -12,14 +12,11 @@ import {
 import {
   hasSameApplicationServerKey,
   isPushSupported,
+  PUSH_SYNC_FLAG_KEY,
   registerPushServiceWorker,
   toCreatePushSubscriptionRequest,
   urlBase64ToUint8Array,
 } from "./lib";
-
-// 이미 허용된 기기는 서버 구독 정보가 유실됐을 수 있어 한 번 다시 등록해 동기화한다.
-// 탭마다 한 번이면 충분해서 sessionStorage 로 중복 호출을 막는다.
-const SYNC_FLAG_KEY = "gif:push-subscription-synced";
 
 const subscribeOnDevice = async (): Promise<PushSubscription> => {
   const registration = await registerPushServiceWorker();
@@ -71,11 +68,11 @@ export function usePushSubscription() {
 
         setIsSubscribed(Boolean(subscription));
 
-        if (subscription && !sessionStorage.getItem(SYNC_FLAG_KEY)) {
+        if (subscription && !sessionStorage.getItem(PUSH_SYNC_FLAG_KEY)) {
           await postPushSubscription(
             toCreatePushSubscriptionRequest(subscription),
           );
-          sessionStorage.setItem(SYNC_FLAG_KEY, "true");
+          sessionStorage.setItem(PUSH_SYNC_FLAG_KEY, "true");
         }
       } catch {
         // 초기 동기화 실패는 조용히 넘기고 사용자가 직접 다시 켤 수 있게 둔다.
@@ -102,7 +99,7 @@ export function usePushSubscription() {
 
       const subscription = await subscribeOnDevice();
       await postPushSubscription(toCreatePushSubscriptionRequest(subscription));
-      sessionStorage.setItem(SYNC_FLAG_KEY, "true");
+      sessionStorage.setItem(PUSH_SYNC_FLAG_KEY, "true");
     },
     onSuccess: () => {
       setIsSubscribed(true);
@@ -125,7 +122,7 @@ export function usePushSubscription() {
 
       await deletePushSubscription({ endpoint: subscription.endpoint });
       await subscription.unsubscribe();
-      sessionStorage.removeItem(SYNC_FLAG_KEY);
+      sessionStorage.removeItem(PUSH_SYNC_FLAG_KEY);
     },
     onSuccess: () => {
       setIsSubscribed(false);

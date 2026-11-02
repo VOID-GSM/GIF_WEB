@@ -1,5 +1,7 @@
 import axios from "axios";
 
+import { clearPushSyncFlag } from "./push/lib";
+
 export const getCookieValue = (key: string): string | null => {
   if (typeof window === "undefined") return null;
   const match = document.cookie.match(
@@ -53,6 +55,7 @@ const redirectToSignIn = () => {
   // 만료된 인증 정보 제거
   removeCookieValue("access_token");
   removeCookieValue("client_role");
+  clearPushSyncFlag();
 
   const { pathname } = window.location;
   const isPublic = PUBLIC_PATHS.some((path) => pathname.startsWith(path));
