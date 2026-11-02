@@ -26,18 +26,33 @@ self.addEventListener("push", (event) => {
   const payload = parsePayload(event);
   const title = payload.title || "GIF 알림";
 
+  // 열려 있는 탭이 벨 배지·목록을 바로 다시 불러오도록 알린다.
+  // (메시지 형식은 packages/lib 의 useNotificationPushListener 와 맞춘다.)
+  const notifyClients = async () => {
+    const clientList = await self.clients.matchAll({
+      type: "window",
+      includeUncontrolled: true,
+    });
+    clientList.forEach((client) =>
+      client.postMessage({ type: "NOTIFICATION_RECEIVED" }),
+    );
+  };
+
   event.waitUntil(
-    self.registration.showNotification(title, {
-      body: payload.body || "",
-      icon: "/logo.png",
-      badge: "/logo.png",
-      // 서버가 tag 를 주면 같은 알림이 중복 수신돼도 한 개만 보인다.
-      // 지금은 서버 payload 에 tag·id 가 없어서 매번 다른 태그가 되고,
-      // 중복 알림이 각각 표시된다. (서버에 tag 추가 요청: VOID-GSM/GIF_SERVER#213)
-      tag: payload.tag || `gif-notification-${Date.now()}`,
-      // 서버는 targetUrl 과 url 을 함께 보낸다. 조회 API 와 같은 targetUrl 을 우선한다.
-      data: { url: payload.targetUrl || payload.url || "/" },
-    }),
+    Promise.all([
+      notifyClients(),
+      self.registration.showNotification(title, {
+        body: payload.body || "",
+        icon: "/logo.png",
+        badge: "/logo.png",
+        // 서버가 tag 를 주면 같은 알림이 중복 수신돼도 한 개만 보인다.
+        // 지금은 서버 payload 에 tag·id 가 없어서 매번 다른 태그가 되고,
+        // 중복 알림이 각각 표시된다. (서버에 tag 추가 요청: VOID-GSM/GIF_SERVER#213)
+        tag: payload.tag || `gif-notification-${Date.now()}`,
+        // 서버는 targetUrl 과 url 을 함께 보낸다. 조회 API 와 같은 targetUrl 을 우선한다.
+        data: { url: payload.targetUrl || payload.url || "/" },
+      }),
+    ]),
   );
 });
 

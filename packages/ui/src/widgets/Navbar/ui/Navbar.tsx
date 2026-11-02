@@ -5,12 +5,18 @@ import { Sidebar } from "@repo/ui";
 import { NavbarProps } from "@repo/ui";
 import { Menu } from "@repo/ui";
 import NotificationBell from "../../Notification/ui/NotificationBell";
-import { useGetScoreNotice, useSyncPushSubscription } from "@repo/lib";
+import {
+  useGetScoreNotice,
+  useNotificationPushListener,
+  useSyncPushSubscription,
+} from "@repo/lib";
 
 export default function Navbar({ navItems }: NavbarProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  // 알림 벨은 모바일·데스크톱에 두 번 렌더링되므로 동기화는 Navbar 에서 한 번만 실행한다.
+  // 알림 벨은 모바일·데스크톱에 두 번 렌더링되므로
+  // 구독 동기화와 푸시 수신 처리는 Navbar 에서 한 번만 실행한다.
   useSyncPushSubscription();
+  useNotificationPushListener();
   const { data: notice } = useGetScoreNotice();
   const isRankPublished = notice?.isPublished ?? false;
 

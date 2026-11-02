@@ -12,6 +12,7 @@ export * from "./notification/useGetNotifications";
 export * from "./notification/useGetNotificationUnreadCount";
 export * from "./notification/useReadNotification";
 export * from "./notification/useReadAllNotifications";
+export * from "./notification/useNotificationPushListener";
 export * from "./push/types";
 export * from "./push/api";
 export * from "./push/lib";
