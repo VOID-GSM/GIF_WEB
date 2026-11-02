@@ -33,7 +33,7 @@ interface ServerRetrospectiveBase {
   isBookmarked: boolean;
   isMine?: boolean;
   authorName: string;
-  createdAt: string;
+  createdAt: string | number[];
   tags?: string[] | null;
   projectId?: number;
   teamName?: string;
@@ -78,6 +78,17 @@ const categoryFromServer: Record<ServerCategory, RetrospectiveCategory> = {
   PORTFOLIO: "PORTFOLIO",
 };
 
+/**
+ * 서버가 LocalDateTime을 배열([2026, 11, 2, 14, 16, 12, 486710000])로 내려주는 경우가 있어
+ * 화면에서 쓰는 ISO 문자열("2026-11-02T14:16:12")로 맞춘다. 문자열이면 그대로 둔다.
+ */
+function toIsoString(value: string | number[]): string {
+  if (!Array.isArray(value)) return value;
+  const [year, month = 1, day = 1, hour = 0, minute = 0, second = 0] = value;
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${year}-${pad(month)}-${pad(day)}T${pad(hour)}:${pad(minute)}:${pad(second)}`;
+}
+
 function mapListResponse(
   response: ServerListRetrospectiveResponse,
 ): ListRetrospectiveResponse {
@@ -95,7 +106,7 @@ function mapListResponse(
     isBookmarked: response.isBookmarked,
     isMine: response.isMine ?? false,
     authorName: response.authorName,
-    createdAt: response.createdAt,
+    createdAt: toIsoString(response.createdAt),
     tags: response.tags ?? [],
     projectId: response.projectId,
     teamName: response.teamName,
