@@ -10,6 +10,7 @@ import {
   postPushSubscription,
 } from "./api";
 import {
+  clearPushSyncFlag,
   hasSameApplicationServerKey,
   isPushSupported,
   PUSH_SYNC_FLAG_KEY,
@@ -120,9 +121,16 @@ export function usePushSubscription() {
       const subscription = await registration.pushManager.getSubscription();
       if (!subscription) return;
 
-      await deletePushSubscription({ endpoint: subscription.endpoint });
+      // 서버에 구독 정보가 이미 없거나(404) 오류가 나도 기기 구독은 반드시 끊어야
+      // 버튼이 '기기 알림 끄기'에 갇히지 않는다.
+      // 기기 구독이 끊기면 그 endpoint 로는 더 이상 푸시가 전달되지 않으므로 서버 오류는 넘긴다.
+      try {
+        await deletePushSubscription({ endpoint: subscription.endpoint });
+      } catch {
+        // 서버 정리 실패는 무시하고 기기 해제를 이어간다.
+      }
       await subscription.unsubscribe();
-      sessionStorage.removeItem(PUSH_SYNC_FLAG_KEY);
+      clearPushSyncFlag();
     },
     onSuccess: () => {
       setIsSubscribed(false);
