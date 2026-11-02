@@ -69,17 +69,11 @@ self.addEventListener("notificationclick", (event) => {
         includeUncontrolled: true,
       });
 
-      // 이미 열려 있는 탭이 있으면 새 창 대신 그 탭을 재사용한다.
+      // 같은 페이지가 이미 열려 있으면 그 탭만 앞으로 가져온다.
       const sameUrlClient = clientList.find((client) => client.url === targetUrl);
       if (sameUrlClient) return sameUrlClient.focus();
 
-      const openedClient = clientList[0];
-      if (openedClient) {
-        await openedClient.focus();
-        if ("navigate" in openedClient) return openedClient.navigate(targetUrl);
-        return undefined;
-      }
-
+      // 다른 탭을 navigate() 로 옮기면 작성 중이던 입력이 사라질 수 있어 항상 새 탭으로 연다.
       return self.clients.openWindow(targetUrl);
     })(),
   );
