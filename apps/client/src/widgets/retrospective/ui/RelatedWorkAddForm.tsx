@@ -25,7 +25,9 @@ export default function RelatedWorkAddForm({
   onCancel,
 }: RelatedWorkAddFormProps) {
   const [isFetchingTitle, setIsFetchingTitle] = useState(false);
-  const [titleFetchFailed, setTitleFetchFailed] = useState(false);
+  const [titleFetchError, setTitleFetchError] = useState<
+    "rate-limit" | "not-found" | null
+  >(null);
   const [link, setLink] = useState("");
   const [type, setType] = useState<RelatedWorkType>("ISSUE");
   const [number, setNumber] = useState("");
@@ -35,7 +37,7 @@ export default function RelatedWorkAddForm({
 
   const handleLinkChange = async (value: string) => {
     setLink(value);
-    setTitleFetchFailed(false);
+    setTitleFetchError(null);
     const parsed = parseGithubUrl(value);
     if (!parsed) {
       setUrl(undefined);
@@ -51,15 +53,26 @@ export default function RelatedWorkAddForm({
 
     const requestId = ++fetchRequestId.current;
     setIsFetchingTitle(true);
-    const fetchedTitle = await fetchGithubTitle(parsed);
+    const result = await fetchGithubTitle(parsed);
     if (requestId !== fetchRequestId.current) return; // 이미 다른 입력으로 대체됨
 
     setIsFetchingTitle(false);
-    if (fetchedTitle) {
-      setTitle(fetchedTitle);
+    if ("title" in result) {
+      setTitle(result.title);
     } else {
-      setTitleFetchFailed(true);
+      setTitleFetchError(result.error);
     }
+  };
+
+  // 링크로 채운 뒤 유형·번호를 직접 바꾸면 링크가 다른 이슈·PR을 가리키게 되므로 url을 비운다
+  const handleTypeChange = (value: RelatedWorkType) => {
+    setType(value);
+    setUrl(undefined);
+  };
+
+  const handleNumberChange = (value: string) => {
+    setNumber(value);
+    setUrl(undefined);
   };
 
   const handleAdd = () => {
@@ -104,10 +117,11 @@ export default function RelatedWorkAddForm({
             제목을 가져오는 중...
           </p>
         )}
-        {titleFetchFailed && (
+        {titleFetchError && (
           <p className="mt-1 text-[11px] text-red-500" aria-live="polite">
-            비공개 저장소이거나 찾을 수 없어 제목을 자동으로 가져오지 못했어요.
-            제목을 직접 입력해주세요.
+            {titleFetchError === "rate-limit"
+              ? "요청이 많아 제목을 가져오지 못했어요. 잠시 후 다시 시도하거나 제목을 직접 입력해주세요."
+              : "비공개 저장소이거나 찾을 수 없어 제목을 자동으로 가져오지 못했어요. 제목을 직접 입력해주세요."}
           </p>
         )}
       </div>
@@ -120,7 +134,7 @@ export default function RelatedWorkAddForm({
           id="related-work-type"
           value={type}
           options={TYPE_OPTIONS}
-          onChange={setType}
+          onChange={handleTypeChange}
           ariaLabel="작업 유형"
           size="sm"
           className="w-[92px] shrink-0"
@@ -134,7 +148,7 @@ export default function RelatedWorkAddForm({
           type="number"
           min={1}
           value={number}
-          onChange={(e) => setNumber(e.target.value)}
+          onChange={(e) => handleNumberChange(e.target.value)}
           placeholder="번호"
           className="w-[80px] shrink-0 rounded-[8px] border border-gray-200 bg-white px-2 py-1.5 text-[12px] font-medium text-black outline-none placeholder:text-gray-400 focus:border-yellow-600 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:placeholder:text-gray-500"
         />

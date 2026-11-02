@@ -24,19 +24,28 @@ export function parseGithubUrl(input: string): ParsedGithubWork | null {
   };
 }
 
-/** 공개 GitHub API로 이슈·PR 제목을 가져온다. 실패하면 null을 반환한다. */
+export type GithubTitleResult =
+  | { title: string }
+  | { error: "rate-limit" | "not-found" };
+
+/**
+ * 공개 GitHub API로 이슈·PR 제목을 가져온다.
+ * 로그인 없는 요청은 IP당 1시간 60회 제한이 있어서(학교 와이파이처럼 같은 IP를 쓰면 금방 넘음)
+ * 403·429는 "not-found"와 구분해 돌려준다.
+ */
 export async function fetchGithubTitle(
   parsed: ParsedGithubWork,
-): Promise<string | null> {
+): Promise<GithubTitleResult> {
   try {
     const res = await fetch(
       `https://api.github.com/repos/${parsed.owner}/${parsed.repo}/issues/${parsed.number}`,
       { headers: { Accept: "application/vnd.github+json" } },
     );
-    if (!res.ok) return null;
+    if (res.status === 403 || res.status === 429) return { error: "rate-limit" };
+    if (!res.ok) return { error: "not-found" };
     const data = (await res.json()) as { title?: string };
-    return data.title ?? null;
+    return data.title ? { title: data.title } : { error: "not-found" };
   } catch {
-    return null;
+    return { error: "not-found" };
   }
 }
