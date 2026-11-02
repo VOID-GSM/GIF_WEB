@@ -44,10 +44,13 @@ self.addEventListener("push", (event) => {
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
 
-  const targetUrl = new URL(
-    event.notification.data?.url || "/",
-    self.location.origin,
-  ).href;
+  // "//evil.com", "/\evil.com" 은 base 를 줘도 외부 도메인으로 해석된다.
+  // 스킴(https: 등)이 없는 값은 앞쪽 / \ 를 지우고 / 하나만 붙여 같은 사이트 경로로 만든다.
+  const rawUrl = String(event.notification.data?.url || "/").trim();
+  const safeUrl = /^[a-z][a-z\d+.-]*:/i.test(rawUrl)
+    ? rawUrl
+    : `/${rawUrl.replace(/^[/\\]+/, "")}`;
+  const targetUrl = new URL(safeUrl, self.location.origin).href;
 
   event.waitUntil(
     (async () => {

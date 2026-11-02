@@ -24,9 +24,11 @@ export const resolveNotificationTarget = (
   }
 
   if (!parsed) {
+    // "//evil.com", "/\evil.com" 처럼 앞에 / 나 \ 가 여러 개면 브라우저가 외부 도메인으로 해석한다.
+    // 앞쪽 / \ 를 모두 지우고 / 하나만 붙여 항상 같은 사이트 안의 경로가 되게 한다.
     return {
       type: "internal",
-      href: trimmed.startsWith("/") ? trimmed : `/${trimmed}`,
+      href: `/${trimmed.replace(/^[/\\]+/, "")}`,
     };
   }
 
