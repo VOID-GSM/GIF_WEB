@@ -4,7 +4,7 @@
 export const NOTIFICATION_RETENTION_DAYS = 7;
 
 // targetUrl 은 앱 내 상대 경로가 기본이지만 절대 URL 이 올 수도 있다.
-// 절대 URL 은 Next 라우터로 이동할 수 없어 구분해서 처리해야 한다.
+// 다른 사이트의 절대 URL 은 Next 라우터로 이동할 수 없어 구분해서 처리해야 한다.
 export type NotificationTarget =
   | { type: "internal"; href: string }
   | { type: "external"; href: string };
@@ -34,6 +34,14 @@ export const resolveNotificationTarget = (
 
   // javascript: 같은 스킴으로는 이동하지 않는다.
   if (parsed.protocol !== "http:" && parsed.protocol !== "https:") return null;
+
+  // 같은 사이트의 절대 URL 은 라우터로 이동해야 새로고침 없이 캐시·앱 상태가 유지된다.
+  if (typeof window !== "undefined" && parsed.origin === window.location.origin) {
+    return {
+      type: "internal",
+      href: `${parsed.pathname}${parsed.search}${parsed.hash}`,
+    };
+  }
 
   return { type: "external", href: parsed.href };
 };
