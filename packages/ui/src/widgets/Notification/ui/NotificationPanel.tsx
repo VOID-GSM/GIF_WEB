@@ -31,7 +31,8 @@ export default function NotificationPanel({
     fetchNextPage,
   } = useGetNotifications();
   const { data: unreadCountData } = useGetNotificationUnreadCount();
-  const { mutate: readNotification } = useReadNotification();
+  const { mutate: readNotification, mutateAsync: readNotificationAsync } =
+    useReadNotification();
   const { mutate: readAllNotifications, isPending: isReadingAll } =
     useReadAllNotifications();
   const { isSupported, isSubscribed, isChecking, isPending, togglePush } =
@@ -43,24 +44,28 @@ export default function NotificationPanel({
   const unreadCount = unreadCountData?.unreadCount ?? 0;
   const hasUnread = unreadCount > 0;
 
-  // 읽음 처리는 서버 응답을 기다리지 않고, 이동할 경로가 있으면 바로 넘어간다.
-  const handleSelect = ({
+  const handleSelect = async ({
     id,
     isRead,
     targetUrl,
   }: GetNotificationResponse) => {
-    if (!isRead) readNotification(id);
-
     const target = resolveNotificationTarget(targetUrl);
-    if (!target) return;
 
-    onClose();
-
-    // 절대 URL 은 다른 앱이나 외부 링크라 라우터로 이동할 수 없다.
-    if (target.type === "external") {
+    // 외부 이동은 문서가 바뀌면서 진행 중인 요청이 끊길 수 있어 읽음 처리를 기다린 뒤 이동한다.
+    // 실패해도 이동은 해야 하므로 오류는 넘긴다(토스트는 훅에서 띄운다).
+    if (target?.type === "external") {
+      if (!isRead) await readNotificationAsync(id).catch(() => undefined);
+      onClose();
+      // 절대 URL 은 다른 앱이나 외부 링크라 라우터로 이동할 수 없다.
       window.location.href = target.href;
       return;
     }
+
+    // 앱 안 이동은 요청이 끊기지 않으므로 서버 응답을 기다리지 않고 바로 넘어간다.
+    if (!isRead) readNotification(id);
+    if (!target) return;
+
+    onClose();
     router.push(target.href);
   };
 
