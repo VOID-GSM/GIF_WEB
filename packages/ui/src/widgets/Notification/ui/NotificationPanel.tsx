@@ -28,6 +28,7 @@ export default function NotificationPanel({
     isError,
     hasNextPage,
     isFetchingNextPage,
+    isFetchNextPageError,
     fetchNextPage,
   } = useGetNotifications();
   const { data: unreadCountData } = useGetNotificationUnreadCount();
@@ -116,7 +117,8 @@ export default function NotificationPanel({
           </p>
         )}
 
-        {isError && (
+        {/* '더 보기' 실패에도 isError 가 true 가 되므로, 전체 오류는 받은 알림이 없을 때만 보여준다. */}
+        {isError && notifications.length === 0 && (
           <p className="px-4 py-10 text-center text-[13px] text-gray-500">
             알림을 불러오지 못했어요. 잠시 후 다시 시도해주세요.
           </p>
@@ -147,7 +149,11 @@ export default function NotificationPanel({
             disabled={isFetchingNextPage}
             className="w-full cursor-pointer border-t border-gray-100 px-4 py-3 text-[12px] font-medium text-gray-600 transition-colors hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {isFetchingNextPage ? "불러오는 중..." : "이전 알림 더 보기"}
+            {isFetchingNextPage
+              ? "불러오는 중..."
+              : isFetchNextPageError
+                ? "불러오지 못했어요. 다시 시도"
+                : "이전 알림 더 보기"}
           </button>
         )}
       </div>
