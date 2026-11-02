@@ -32,8 +32,8 @@ self.addEventListener("push", (event) => {
       icon: "/logo.png",
       badge: "/logo.png",
       // 서버가 tag 를 주면 같은 알림이 중복 수신돼도 한 개만 보인다.
-      // 푸시 payload 에는 id 가 없어서(DB 저장 전 발송) 없을 때는 매번 다른 태그가 되고,
-      // 그때는 중복 알림이 각각 표시된다.
+      // 지금은 서버 payload 에 tag·id 가 없어서 매번 다른 태그가 되고,
+      // 중복 알림이 각각 표시된다. (서버에 tag 추가 요청: VOID-GSM/GIF_SERVER#213)
       tag: payload.tag || `gif-notification-${Date.now()}`,
       // 서버는 targetUrl 과 url 을 함께 보낸다. 조회 API 와 같은 targetUrl 을 우선한다.
       data: { url: payload.targetUrl || payload.url || "/" },
