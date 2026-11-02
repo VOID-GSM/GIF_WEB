@@ -50,7 +50,17 @@ self.addEventListener("notificationclick", (event) => {
   const safeUrl = /^[a-z][a-z\d+.-]*:/i.test(rawUrl)
     ? rawUrl
     : `/${rawUrl.replace(/^[/\\]+/, "")}`;
-  const targetUrl = new URL(safeUrl, self.location.origin).href;
+  // javascript: 같은 스킴이나 파싱되지 않는 값이면 이동하지 않고 메인(/)으로 보낸다.
+  // (packages/lib 의 resolveNotificationTarget 과 같은 규칙)
+  let targetUrl = new URL("/", self.location.origin).href;
+  try {
+    const parsedUrl = new URL(safeUrl, self.location.origin);
+    if (parsedUrl.protocol === "http:" || parsedUrl.protocol === "https:") {
+      targetUrl = parsedUrl.href;
+    }
+  } catch {
+    // 잘못된 URL 은 기본값(/) 그대로 둔다.
+  }
 
   event.waitUntil(
     (async () => {
