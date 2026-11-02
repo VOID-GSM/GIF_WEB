@@ -35,6 +35,8 @@ export default function RetrospectiveMetaFields({
   };
 
   const handleTagKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    // 한글 조합 중에 누른 Enter는 무시한다 (마지막 글자가 남거나 태그가 두 번 생김)
+    if (event.nativeEvent.isComposing) return;
     if (event.key !== "Enter" && event.key !== ",") return;
     event.preventDefault();
     addTag(event.currentTarget.value);
