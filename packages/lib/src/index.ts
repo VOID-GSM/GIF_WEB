@@ -17,3 +17,4 @@ export * from "./push/api";
 export * from "./push/lib";
 export * from "./push/usePushSubscription";
 export * from "./push/releasePushSubscription";
+export * from "./push/useSyncPushSubscription";

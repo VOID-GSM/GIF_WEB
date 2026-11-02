@@ -4,41 +4,18 @@ import { useMutation } from "@tanstack/react-query";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 
-import {
-  deletePushSubscription,
-  getVapidPublicKey,
-  postPushSubscription,
-} from "./api";
+import { deletePushSubscription, postPushSubscription } from "./api";
 import {
   clearPushSyncFlag,
-  hasSameApplicationServerKey,
   isPushSupported,
   PUSH_SYNC_FLAG_KEY,
   registerPushServiceWorker,
   toCreatePushSubscriptionRequest,
-  urlBase64ToUint8Array,
 } from "./lib";
+import { subscribeOnDevice } from "./subscribeOnDevice";
 
-const subscribeOnDevice = async (): Promise<PushSubscription> => {
-  const registration = await registerPushServiceWorker();
-  const applicationServerKey = urlBase64ToUint8Array(await getVapidPublicKey());
-
-  let subscription = await registration.pushManager.getSubscription();
-
-  if (subscription && !hasSameApplicationServerKey(subscription, applicationServerKey)) {
-    await subscription.unsubscribe();
-    subscription = null;
-  }
-
-  return (
-    subscription ??
-    (await registration.pushManager.subscribe({
-      userVisibleOnly: true,
-      applicationServerKey,
-    }))
-  );
-};
-
+// 알림 패널의 '기기 알림 받기/끄기' 버튼 상태와 동작.
+// 서버와의 재동기화는 패널과 무관하게 useSyncPushSubscription 이 맡는다.
 export function usePushSubscription() {
   const [isSupported, setIsSupported] = useState(false);
   const [permission, setPermission] = useState<NotificationPermission>("default");
@@ -48,7 +25,7 @@ export function usePushSubscription() {
   useEffect(() => {
     let isActive = true;
 
-    const syncSubscription = async () => {
+    const checkSubscription = async () => {
       if (!isPushSupported()) {
         setIsChecking(false);
         return;
@@ -68,21 +45,14 @@ export function usePushSubscription() {
         if (!isActive) return;
 
         setIsSubscribed(Boolean(subscription));
-
-        if (subscription && !sessionStorage.getItem(PUSH_SYNC_FLAG_KEY)) {
-          await postPushSubscription(
-            toCreatePushSubscriptionRequest(subscription),
-          );
-          sessionStorage.setItem(PUSH_SYNC_FLAG_KEY, "true");
-        }
       } catch {
-        // 초기 동기화 실패는 조용히 넘기고 사용자가 직접 다시 켤 수 있게 둔다.
+        // 상태 확인 실패는 조용히 넘기고 사용자가 직접 다시 켤 수 있게 둔다.
       } finally {
         if (isActive) setIsChecking(false);
       }
     };
 
-    syncSubscription();
+    checkSubscription();
 
     return () => {
       isActive = false;
