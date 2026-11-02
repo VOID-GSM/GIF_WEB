@@ -21,7 +21,7 @@ export default function DraftListModal({
   onSelect,
   onDeleted,
 }: DraftListModalProps) {
-  const { data: drafts } = useGetDraftRetrospectives();
+  const { data: drafts, isLoading, isError } = useGetDraftRetrospectives();
   const { mutate: deleteDraft } = useDeleteDraftRetrospective();
 
   // Escape로 닫을 수 있게 한다
@@ -70,7 +70,15 @@ export default function DraftListModal({
           </button>
         </div>
 
-        {drafts.length === 0 ? (
+        {isLoading ? (
+          <p className="py-12 text-center text-[13px] font-medium text-gray-400">
+            불러오는 중...
+          </p>
+        ) : isError ? (
+          <p className="py-12 text-center text-[13px] font-medium text-red-500">
+            임시 저장 목록을 불러오지 못했습니다.
+          </p>
+        ) : drafts.length === 0 ? (
           <p className="py-12 text-center text-[13px] font-medium text-gray-400">
             임시 저장된 글이 없습니다.
           </p>
