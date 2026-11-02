@@ -10,5 +10,7 @@ export interface DeletePushSubscriptionRequest {
   endpoint: string;
 }
 
-// GET /api/push/vapid-key — { publicKey: "..." } 형태의 단일 문자열 맵
-export type VapidKeyResponse = Record<string, string>;
+// GET /api/push/vapid-key — 서버가 Map.of("publicKey", ...) 로 내려준다.
+export interface VapidKeyResponse {
+  publicKey: string;
+}
