@@ -11,6 +11,7 @@ export function useGetThynItems() {
   return useQuery({
     queryKey: THYN_ITEMS_QUERY_KEY,
     queryFn: getItems,
-    select: (items) => items.map(toThynItem),
+    // 위치 정보(THYN_ASSETS)가 없는 아이템은 띤에 그릴 수 없어 사지 못하게 목록에서 뺀다
+    select: (items) => items.map(toThynItem).filter((item) => item.placement),
   });
 }
