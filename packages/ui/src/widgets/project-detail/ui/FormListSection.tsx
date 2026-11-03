@@ -14,8 +14,22 @@ interface FormListSectionProps {
   onFormClick?: (formId: number) => void;
 }
 
+// deadline을 "YYYY-MM-DDTHH:mm:ss" 문자열로 맞춘다.
+// 타입은 string이지만 서버가 배열([년, 월, 일, 시, 분, 초])·null 등으로 내려주는 경우가 있어 대응한다.
+const toDeadlineString = (deadline: unknown): string => {
+  if (typeof deadline === "string") return deadline;
+  if (!Array.isArray(deadline) || deadline.length < 3) return "";
+  const pad = (value: unknown) => String(value ?? 0).padStart(2, "0");
+  const [year, month, day, hour, minute, second] = deadline;
+  const date = `${year}-${pad(month)}-${pad(day)}`;
+  return deadline.length > 3
+    ? `${date}T${pad(hour)}:${pad(minute)}:${pad(second)}`
+    : date;
+};
+
 // "2026-08-12T23:29:00" -> "2026.08.12 23:29" (날짜와 시간 분리, T 제거)
-const formatDeadline = (deadline: string) => {
+const formatDeadline = (rawDeadline: string) => {
+  const deadline = toDeadlineString(rawDeadline);
   if (!deadline) return "";
   const [datePart, timePart] = deadline.split("T");
   const date = datePart.replace(/-/g, ".");
@@ -25,7 +39,8 @@ const formatDeadline = (deadline: string) => {
 
 // 마감 시각이 지났으면 마감됨 — 시간까지 반영
 // - 시간 포함(...THH:mm:ss) → 해당 시각까지 / 날짜만 → 그날 자정(23:59:59, KST)까지
-const isOverdue = (deadline: string) => {
+const isOverdue = (rawDeadline: string) => {
+  const deadline = toDeadlineString(rawDeadline);
   if (!deadline) return false;
   const hasTimezone =
     deadline.includes("Z") || /[+-]\d{2}(?::?\d{2})?$/.test(deadline);

@@ -5,6 +5,7 @@ import ProjectHero from "@/widgets/project-detail/ui/ProjectHero";
 import ProjectAbout from "@/widgets/project-detail/ui/ProjectAbout";
 import ProjectFeatures from "@/widgets/project-detail/ui/ProjectFeatures";
 import ProjectTeam from "@/widgets/project-detail/ui/ProjectTeam";
+import ProjectEngagement from "@/widgets/project-detail/ui/ProjectEngagement";
 
 interface ProjectDetailViewProps {
   projectId: number;
@@ -54,6 +55,10 @@ export default function ProjectDetailView({
 
           <section className="border-t border-gray-100 py-14 md:py-16">
             <ProjectTeam members={project.members} leader={project.leader} />
+          </section>
+
+          <section className="border-t border-gray-100 py-14 md:py-16">
+            <ProjectEngagement engagement={project.engagement} />
           </section>
         </div>
       </div>

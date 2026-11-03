@@ -2,15 +2,18 @@
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { SidebarProps } from "@repo/ui";
-import { removeCookieValue } from "@repo/lib";
+import { releasePushSubscription, removeCookieValue } from "@repo/lib";
 import ThemeToggle from "../../Theme/ui/ThemeToggle";
 import Logout from "../../../svg/Logout";
+import NotificationBell from "../../Notification/ui/NotificationBell";
 
 export default function Sidebar({ navItems, isOpen, onClose }: SidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    // 토큰이 있어야 서버 구독을 해제할 수 있어 쿠키보다 먼저 정리한다.
+    await releasePushSubscription();
     removeCookieValue("access_token");
     onClose();
     router.replace("/signin");
@@ -34,22 +37,27 @@ export default function Sidebar({ navItems, isOpen, onClose }: SidebarProps) {
         transition-transform duration-300 ease-out
         ${isOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}
     >
-      <button
-        className="mb-6 flex items-center px-2 transition hover:opacity-80 cursor-pointer"
-        onClick={() => {
-          router.push("/");
-          onClose();
-        }}
-      >
-        <Image
-          src="/logo.png"
-          alt="logo"
-          width={56}
-          height={37}
-          loading="eager"
-          style={{ width: 56, height: 37 }}
-        />
-      </button>
+      <div className="mb-6 flex items-center justify-between px-2">
+        <button
+          className="flex items-center transition hover:opacity-80 cursor-pointer"
+          onClick={() => {
+            router.push("/");
+            onClose();
+          }}
+        >
+          <Image
+            src="/logo.png"
+            alt="logo"
+            width={56}
+            height={37}
+            loading="eager"
+            style={{ width: 56, height: 37 }}
+          />
+        </button>
+
+        {/* 모바일에서는 상단 헤더(Navbar)에 벨이 있으므로 사이드바에서는 숨긴다. */}
+        <NotificationBell align="left" className="hidden md:block" />
+      </div>
 
       {navItems.map(({ label, path }) => {
         const isActive = path === activePath;

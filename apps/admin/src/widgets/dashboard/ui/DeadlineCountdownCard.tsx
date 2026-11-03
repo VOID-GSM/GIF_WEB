@@ -42,8 +42,11 @@ export default function DeadlineCountdownCard() {
   const [now, setNow] = useState(() => Date.now());
 
   const todayStr = new Date(now).toLocaleDateString("sv-SE");
+  // deadline이 문자열이 아닌 값(null 등)으로 오면 문자열 비교·localeCompare가 깨지므로 제외한다.
   const nextForm = (forms ?? [])
-    .filter((form) => form.deadline >= todayStr)
+    .filter(
+      (form) => typeof form.deadline === "string" && form.deadline >= todayStr,
+    )
     .sort((a, b) => a.deadline.localeCompare(b.deadline))[0];
 
   const hasActiveCountdown = nextForm
