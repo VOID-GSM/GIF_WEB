@@ -104,9 +104,10 @@ export default function ThynClosetPanel({
                         item={item}
                         mode={mode}
                         selected={equipped[item.category] === item.id}
-                        // 옷장은 보유 아이템만 입을 수 있고, 상점은 모두 입혀 볼 수 있다
+                        // 옷장은 보유 아이템만 입을 수 있고, 상점은 모두 입혀 볼 수 있다.
+                        // 상점에서 입혀 본 미보유 아이템은 옷장에서도 눌러서 벗을 수 있다.
                         onClick={
-                          mode === "shop" || isOwned(item)
+                          mode === "shop" || isOwned(item) || equipped[item.category] === item.id
                             ? () => onToggleItem(item)
                             : undefined
                         }
