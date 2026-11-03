@@ -16,7 +16,7 @@ interface ThynPreviewPanelProps {
 }
 
 const buttonBase =
-  "h-[36px] w-full rounded-[9px] text-[16px] font-semibold leading-[1.2] tracking-[-0.4px] disabled:cursor-default";
+  "h-[36px] w-full rounded-[9px] text-[16px] font-semibold leading-[1.2] tracking-[-0.4px] disabled:cursor-default disabled:opacity-50";
 
 export default function ThynPreviewPanel({
   equippedItems,
@@ -84,7 +84,7 @@ export default function ThynPreviewPanel({
             type="button"
             onClick={onBuy}
             disabled={shortage > 0 || isBuying}
-            className={`${buttonBase} bg-yellow-600 text-black disabled:opacity-50`}
+            className={`${buttonBase} bg-yellow-600 text-black`}
           >
             {isBuying ? "구매 중..." : "구매하기"}
           </button>
