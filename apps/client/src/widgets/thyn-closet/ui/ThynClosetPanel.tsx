@@ -22,6 +22,13 @@ interface ThynClosetPanelProps {
 
 const isOwned = (item: ThynItem) => item.owned || item.isDefault;
 
+/**
+ * 한 줄에 최대 6개(카테고리별 최대 아이템 수)까지 카드를 늘려 빈 공간을 채운다.
+ * 좁은 화면에서는 카드가 110px보다 작아지지 않게 한 줄의 개수를 줄인다.
+ */
+const ITEM_GRID =
+  "grid grid-cols-[repeat(auto-fill,minmax(max(110px,calc((100%-5*21px)/6)),1fr))] gap-[21px]";
+
 export default function ThynClosetPanel({
   mode,
   items,
@@ -97,7 +104,7 @@ export default function ThynClosetPanel({
               ) : categoryItems.length === 0 ? (
                 <p className="text-[13px] text-gray-500">아직 아이템이 없어요.</p>
               ) : (
-                <ul className="flex flex-wrap gap-[21px]">
+                <ul className={ITEM_GRID}>
                   {visibleItems.map((item) => (
                     <li key={item.id}>
                       <ThynItemCard

@@ -33,10 +33,11 @@ export default function ThynItemCard({
       aria-pressed={onClick ? selected : undefined}
       aria-label={`${item.name} ${statusLabel}`}
       title={item.name}
-      className="relative h-[99px] w-[75px] shrink-0 overflow-hidden rounded-[9px] border border-gray-300 bg-white enabled:cursor-pointer disabled:cursor-default"
+      // 너비는 목록 칸에 맞춰 늘어나고, 이미지 영역은 정사각형을 유지한다
+      className="flex w-full flex-col overflow-hidden rounded-[9px] border border-gray-300 bg-white enabled:cursor-pointer disabled:cursor-default"
     >
       <span
-        className={`absolute -left-px -top-px flex size-[75px] items-center justify-center overflow-hidden rounded-[9px] bg-white ${
+        className={`-mx-px -mt-px flex aspect-square items-center justify-center overflow-hidden rounded-[9px] bg-white ${
           selected ? "border-2 border-yellow-600" : "border border-gray-300"
         }`}
       >
@@ -44,15 +45,15 @@ export default function ThynItemCard({
         <img
           src={item.src}
           alt=""
-          className={`${isFace ? "size-[75px] max-w-none" : "max-h-[57px] max-w-[69px]"} ${muted ? "grayscale" : ""}`}
+          className={`${isFace ? "size-full max-w-none" : "h-[72%] w-[88%] object-contain"} ${muted ? "grayscale" : ""}`}
         />
       </span>
 
-      <span className="absolute inset-x-0 top-[74px] flex h-[23px] items-center text-[13px] font-semibold leading-[1.2] tracking-[-0.3px] text-black">
+      <span className="flex h-[28px] items-center text-[14px] font-semibold leading-[1.2] tracking-[-0.3px] text-black">
         {mode === "shop" && !owned ? (
-          <span className="flex w-full items-center gap-2 pl-1">
+          <span className="flex w-full items-center gap-2 pl-2">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/thyn/coin.svg" alt="" width={15} height={15} />
+            <img src="/thyn/coin.svg" alt="" width={16} height={16} />
             <span className="font-bold">{item.price}</span>
           </span>
         ) : (
