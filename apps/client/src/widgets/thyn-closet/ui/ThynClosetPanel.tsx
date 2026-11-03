@@ -67,7 +67,7 @@ export default function ThynClosetPanel({
       </nav>
 
       {/* 아이템 목록 */}
-      <div className="flex min-w-0 flex-1 flex-col gap-6 overflow-y-auto px-7 py-[18px]">
+      <div className="flex min-w-0 flex-1 flex-col gap-6 overflow-y-auto px-7 py-[18px] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {THYN_CATEGORIES.map(({ key, label }) => {
           const categoryItems = items.filter((item) => item.category === key);
           const ownedCount = categoryItems.filter(isOwned).length;

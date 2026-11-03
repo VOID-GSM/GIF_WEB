@@ -46,7 +46,7 @@ export default function ThynPreviewPanel({
       </div>
 
       {/* 최대 높이에 닿으면 주문서만 스크롤된다 */}
-      <div className="min-h-0 flex-auto overflow-y-auto">
+      <div className="min-h-0 flex-auto overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {hasTryOn && (
           <div className="mb-[15px] flex flex-col gap-2 rounded-[9px] border border-gray-300 px-3 py-2.5 text-[13px] font-semibold leading-[1.2] tracking-[-0.3px]">
             <p className="text-gray-600">입혀 본 아이템</p>
