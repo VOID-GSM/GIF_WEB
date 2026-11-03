@@ -98,7 +98,7 @@ export default function ThynView() {
                   role="tab"
                   aria-selected={isActive}
                   onClick={() => setTab(key)}
-                  className={`h-[36px] w-[120px] rounded-[9px] text-[16px] font-semibold leading-[1.2] tracking-[-0.4px] ${
+                  className={`h-[36px] w-[120px] cursor-pointer rounded-[9px] text-[16px] font-semibold leading-[1.2] tracking-[-0.4px] ${
                     isActive
                       ? "bg-yellow-600 text-black"
                       : "border border-gray-300 bg-white text-gray-600"

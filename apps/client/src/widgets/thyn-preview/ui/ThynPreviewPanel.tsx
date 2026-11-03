@@ -16,7 +16,7 @@ interface ThynPreviewPanelProps {
 }
 
 const buttonBase =
-  "h-[36px] w-full rounded-[9px] text-[16px] font-semibold leading-[1.2] tracking-[-0.4px] disabled:cursor-default disabled:opacity-50";
+  "h-[36px] w-full rounded-[9px] text-[16px] font-semibold leading-[1.2] tracking-[-0.4px] enabled:cursor-pointer disabled:cursor-default disabled:opacity-50";
 
 export default function ThynPreviewPanel({
   equippedItems,
