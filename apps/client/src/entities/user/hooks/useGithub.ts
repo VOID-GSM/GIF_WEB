@@ -17,7 +17,11 @@ export function useConnectGithub() {
     mutationFn: connectGithub,
     onSuccess: (user) => {
       queryClient.setQueryData(CURRENT_USER_QUERY_KEY, user);
-      toast.success(`@${user.githubUsername} 계정이 연동되었어요.`);
+      toast.success(
+        user.githubUsername
+          ? `@${user.githubUsername} 계정이 연동되었어요.`
+          : "GitHub 계정이 연동되었어요.",
+      );
     },
     // 실패 안내는 콜백 화면의 인라인 에러 카드가 맡는다 (토스트와 중복 표시 방지).
   });
