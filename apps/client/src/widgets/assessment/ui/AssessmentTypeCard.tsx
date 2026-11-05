@@ -53,16 +53,18 @@ export default function AssessmentTypeCard({
         {assessment.description}
       </p>
 
-      <Image
-        src={assessment.image}
-        alt=""
-        width={1536}
-        height={1024}
-        sizes="(min-width: 640px) 320px, 90vw"
-        className={`mx-auto mt-2 h-[120px] w-auto object-contain transition-transform duration-300 ${
-          selected ? "scale-[1.03]" : "group-hover:scale-[1.02]"
-        }`}
-      />
+      {/* 카드 높이가 늘어나면 이미지도 함께 커진다 */}
+      <div className="relative mt-2 min-h-[120px] flex-1">
+        <Image
+          src={assessment.image}
+          alt=""
+          fill
+          sizes="(min-width: 640px) 320px, 90vw"
+          className={`object-contain transition-transform duration-300 ${
+            selected ? "scale-[1.03]" : "group-hover:scale-[1.02]"
+          }`}
+        />
+      </div>
 
       {selected && (
         <span

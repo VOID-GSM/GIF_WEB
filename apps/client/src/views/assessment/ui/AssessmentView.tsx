@@ -44,7 +44,7 @@ export default function AssessmentView() {
   };
 
   return (
-    <div className="min-h-dvh w-full bg-background px-4 py-8 md:px-8 md:py-10">
+    <div className="flex min-h-dvh w-full items-center bg-background px-4 py-8 md:px-8 md:py-10">
       <div className="mx-auto w-full max-w-[1120px]">
         {/* 헤더 */}
         <header className="mb-6 flex flex-wrap items-end justify-between gap-4">
@@ -53,7 +53,8 @@ export default function AssessmentView() {
               역량검사
             </h1>
             <p className="mt-1 text-[14px] text-gray-600">
-              검사를 끝까지 진행하면 코인을 얻을 수 있어요!
+              짧은 게임을 풀며 작업 기억·공간 지각 같은 문제 해결 역량을
+              확인하는 검사예요.
             </p>
           </div>
           <CoinBalanceBadge />
@@ -62,9 +63,10 @@ export default function AssessmentView() {
         <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_360px]">
           {/* 검사 설정 */}
           <section className="flex flex-col gap-6 rounded-[20px] bg-white p-5 shadow md:p-7">
-            <div>
+            {/* 사이드가 더 길 때 남는 높이를 유형 카드가 채운다 */}
+            <div className="flex flex-1 flex-col">
               <StepTitle step={1} title="검사 유형 선택" />
-              <div className="mt-3 grid gap-3 sm:grid-cols-2">
+              <div className="mt-3 grid flex-1 gap-3 sm:grid-cols-2">
                 {ASSESSMENTS.map((a) => (
                   <AssessmentTypeCard
                     key={a.type}
