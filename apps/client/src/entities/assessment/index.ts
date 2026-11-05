@@ -5,6 +5,7 @@ export {
   BASE_REWARD_COIN,
   REWARD_PER_CORRECT,
   getMaxReward,
+  getReward,
 } from "./model/constants";
 export type {
   AssessmentType,

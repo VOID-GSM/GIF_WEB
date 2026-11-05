@@ -7,6 +7,8 @@ export interface AssessmentMeta {
   description: string;
   image: string;
   tone: "yellow" | "orange";
+  // 검사 진행 페이지(/assessment/[type])가 준비됐는지
+  playable: boolean;
 }
 
 // 랭킹 API 가 준비되면 이 형태로 받아 RankingCard 에 그대로 넘긴다.
