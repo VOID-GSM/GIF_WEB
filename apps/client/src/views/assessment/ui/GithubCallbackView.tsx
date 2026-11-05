@@ -19,19 +19,25 @@ export default function GithubCallbackView() {
 
     const code = searchParams.get("code");
     const state = searchParams.get("state");
+    // 사용자가 GitHub 인가 화면에서 취소하면 code 없이 error=access_denied 로 돌아온다.
+    const oauthError = searchParams.get("error");
     const savedState = sessionStorage.getItem(GITHUB_OAUTH_STATE_KEY);
     sessionStorage.removeItem(GITHUB_OAUTH_STATE_KEY);
 
-    const isValid = !!code && !!state && state === savedState;
+    const isValid = !oauthError && !!code && !!state && state === savedState;
+    const invalidMessage =
+      oauthError === "access_denied"
+        ? "GitHub 연동을 취소했어요."
+        : oauthError
+          ? "GitHub 연동에 실패했습니다."
+          : "잘못된 연동 요청입니다.";
 
     (isValid
       ? connect({ code })
-      : Promise.reject(new Error("잘못된 연동 요청입니다.")))
+      : Promise.reject(new Error(invalidMessage)))
       .then(() => router.replace("/assessment"))
       .catch(() =>
-        setError(
-          isValid ? "GitHub 연동에 실패했습니다." : "잘못된 연동 요청입니다.",
-        ),
+        setError(isValid ? "GitHub 연동에 실패했습니다." : invalidMessage),
       );
   }, [searchParams, connect, router]);
 
