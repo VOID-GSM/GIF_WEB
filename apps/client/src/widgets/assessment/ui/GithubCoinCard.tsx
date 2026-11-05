@@ -13,7 +13,7 @@ import GithubIcon from "@/shared/ui/GithubIcon";
 import { redirectToGithubAuthorize } from "@/shared/utils/githubOAuth";
 
 export default function GithubCoinCard() {
-  const { data: user, isPending } = useGetCurrentUser();
+  const { data: user, isPending, isError, refetch } = useGetCurrentUser();
   const { mutate: sync, isPending: isSyncing } = useSyncGithub();
   const { mutate: disconnect, isPending: isDisconnecting } =
     useDisconnectGithub();
@@ -47,6 +47,20 @@ export default function GithubCoinCard() {
 
       {isPending ? (
         <div className="mt-4 h-[56px] animate-pulse rounded-[14px] bg-gray-100" />
+      ) : isError || !user ? (
+        // 조회 실패를 '미연동'으로 오해해 연동 버튼을 보여주지 않도록 별도 상태로 둔다.
+        <div className="mt-4 flex items-center justify-between gap-2 rounded-[12px] bg-gray-100 p-2.5">
+          <p className="text-[13px] text-gray-600">
+            연동 정보를 불러오지 못했어요.
+          </p>
+          <button
+            type="button"
+            onClick={() => refetch()}
+            className="shrink-0 rounded-[9px] bg-white px-3 py-2 text-[13px] font-semibold text-gray-900 shadow-sm transition-colors hover:bg-gray-50"
+          >
+            다시 시도
+          </button>
+        </div>
       ) : isConnected ? (
         <div className="mt-4 flex items-center gap-2.5 rounded-[12px] bg-gray-100 p-2.5">
           {user.githubAvatarUrl ? (
