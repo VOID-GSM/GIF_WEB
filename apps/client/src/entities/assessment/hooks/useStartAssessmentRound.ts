@@ -7,10 +7,11 @@ import { startAssessmentRound } from "../api/assessmentApi";
 import type { AssessmentType } from "../model/types";
 
 // 검사 페이지는 URL의 문자열 roundId로 읽으므로 키를 문자열로 맞춘다.
+// 랭킹(["assessment", ...]) 무효화에 휩쓸리지 않도록 prefix 를 분리한다.
 export const assessmentRoundQueryKey = (
   type: AssessmentType,
   roundId: number | string,
-) => ["assessment", type, "round", String(roundId)] as const;
+) => ["assessment-round", type, String(roundId)] as const;
 
 interface StartRoundVariables {
   type: AssessmentType;
