@@ -39,4 +39,6 @@ export interface GetMyInfoResponse {
   projectId: number;
 }
 
-export type GetMeResponse = Omit<SignInResponse, "accessToken">;
+export type GetMeResponse = Omit<SignInResponse, "accessToken"> & {
+  coinBalance: number;
+};
