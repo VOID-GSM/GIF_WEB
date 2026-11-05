@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { toast } from "sonner";
 import { Coin } from "@repo/ui";
 
@@ -17,6 +18,14 @@ export default function GithubCoinCard() {
   const { mutate: sync, isPending: isSyncing } = useSyncGithub();
   const { mutate: disconnect, isPending: isDisconnecting } =
     useDisconnectGithub();
+  // 작은 링크라 오클릭이 쉬워, 한 번 더 확인받은 뒤 해제한다.
+  const [isConfirmingDisconnect, setIsConfirmingDisconnect] = useState(false);
+
+  const handleDisconnect = () => {
+    disconnect(undefined, {
+      onSettled: () => setIsConfirmingDisconnect(false),
+    });
+  };
 
   const handleConnect = () => {
     if (!redirectToGithubAuthorize()) {
@@ -82,14 +91,36 @@ export default function GithubCoinCard() {
             <p className="truncate text-[14px] font-semibold text-gray-900">
               @{user.githubUsername}
             </p>
-            <button
-              type="button"
-              onClick={() => disconnect()}
-              disabled={isMutating}
-              className="text-[12px] text-gray-500 underline-offset-2 hover:text-gray-700 hover:underline disabled:opacity-50"
-            >
-              연동 해제
-            </button>
+            {isConfirmingDisconnect ? (
+              <div className="flex items-center gap-1.5 text-[12px]">
+                <span className="text-gray-600">정말 해제할까요?</span>
+                <button
+                  type="button"
+                  onClick={handleDisconnect}
+                  disabled={isMutating}
+                  className="font-semibold text-red-500 hover:text-red-600 disabled:opacity-50"
+                >
+                  {isDisconnecting ? "해제 중…" : "해제"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIsConfirmingDisconnect(false)}
+                  disabled={isDisconnecting}
+                  className="text-gray-500 hover:text-gray-700 disabled:opacity-50"
+                >
+                  취소
+                </button>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setIsConfirmingDisconnect(true)}
+                disabled={isMutating}
+                className="text-[12px] text-gray-500 underline-offset-2 hover:text-gray-700 hover:underline disabled:opacity-50"
+              >
+                연동 해제
+              </button>
+            )}
           </div>
           <button
             type="button"
