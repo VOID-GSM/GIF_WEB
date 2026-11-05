@@ -82,12 +82,21 @@ function RankingRow({
 interface AssessmentRankingCardProps {
   // 같은 문항 수로 푼 기록끼리만 순위를 매긴다.
   questionCount: number;
+  // 왼쪽에서 고른 검사 유형. 바뀌면 탭도 따라가고, 탭은 사용자가 따로 바꿀 수도 있다.
+  selectedType: AssessmentType | null;
 }
 
 export default function AssessmentRankingCard({
   questionCount,
+  selectedType,
 }: AssessmentRankingCardProps) {
-  const [tab, setTab] = useState<AssessmentType>("cat-chase");
+  const [tab, setTab] = useState<AssessmentType>(selectedType ?? "cat-chase");
+  const [prevSelectedType, setPrevSelectedType] = useState(selectedType);
+  // effect 대신 렌더 중에 prop 변화를 감지해 탭을 맞춘다 (추가 렌더·깜빡임 없음).
+  if (selectedType !== prevSelectedType) {
+    setPrevSelectedType(selectedType);
+    if (selectedType) setTab(selectedType);
+  }
   const { data, isPending, isError, isPlaceholderData } =
     useGetAssessmentRanking(tab, questionCount);
   const entries = data?.rankings ?? [];

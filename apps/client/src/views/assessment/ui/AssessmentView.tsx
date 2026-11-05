@@ -113,7 +113,7 @@ export default function AssessmentView() {
           {/* 사이드 */}
           <aside className="flex flex-col gap-5">
             <GithubCoinCard />
-            <AssessmentRankingCard questionCount={count} />
+            <AssessmentRankingCard questionCount={count} selectedType={type} />
           </aside>
         </div>
       </div>
