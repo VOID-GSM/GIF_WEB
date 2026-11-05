@@ -7,8 +7,22 @@ export {
   getMaxReward,
   getReward,
 } from "./model/constants";
+export {
+  useGetAssessmentRanking,
+  ASSESSMENT_RANKING_QUERY_KEY,
+} from "./hooks/useGetAssessmentRanking";
+export {
+  useStartAssessmentRound,
+  assessmentRoundQueryKey,
+} from "./hooks/useStartAssessmentRound";
 export type {
   AssessmentType,
   AssessmentMeta,
   AssessmentRankingEntry,
+  AssessmentRankingResponse,
+  StartAssessmentRoundRequest,
+  StartCatChaseRoundResponse,
+  StartRoadMakingRoundResponse,
+  CatChaseQuestion,
+  RoadMakingProblem,
 } from "./model/types";
