@@ -9,6 +9,7 @@ import {
   DEFAULT_QUESTION_COUNT,
   REWARD_PER_CORRECT,
   getMaxReward,
+  useStartAssessmentRound,
   type AssessmentType,
 } from "@/entities/assessment";
 import {
@@ -24,9 +25,22 @@ export default function AssessmentView() {
   const [type, setType] = useState<AssessmentType | null>(null);
   const [count, setCount] = useState(DEFAULT_QUESTION_COUNT);
 
+  const { mutate: startRound, isPending: isStarting } =
+    useStartAssessmentRound();
+
+  const selected = ASSESSMENTS.find((a) => a.type === type);
+  // 진행 페이지가 없는 검사는 라운드를 만들지 않는다 (만들면 404 + 버려진 라운드가 남음).
+  const canStart = !!selected?.playable && !isStarting;
+
   const handleStart = () => {
-    if (!type) return;
-    router.push(`/assessment/${type}?count=${count}`);
+    if (!type || !canStart) return;
+    startRound(
+      { type, questionCount: count },
+      {
+        onSuccess: ({ roundId }) =>
+          router.push(`/assessment/${type}?roundId=${roundId}`),
+      },
+    );
   };
 
   return (
@@ -68,7 +82,7 @@ export default function AssessmentView() {
                 <QuestionCountSelector value={count} onChange={setCount} />
               </div>
               <p className="mt-2.5 flex flex-wrap gap-x-2 gap-y-1 text-[12px] text-gray-500">
-                <span>다 틀려도 {BASE_REWARD_COIN}코인</span>
+                <span>1문항 이상 맞히면 기본 {BASE_REWARD_COIN}코인</span>
                 <span aria-hidden>·</span>
                 <span>맞힐 때마다 +{REWARD_PER_CORRECT}코인</span>
                 <span aria-hidden>·</span>
@@ -81,17 +95,23 @@ export default function AssessmentView() {
             <button
               type="button"
               onClick={handleStart}
-              disabled={!type}
+              disabled={!canStart}
               className="h-12 w-full rounded-[12px] bg-yellow-600 text-[16px] font-semibold tracking-[-0.5px] text-white transition-colors hover:bg-yellow-700 disabled:cursor-not-allowed disabled:bg-gray-300"
             >
-              {type ? "시작하기" : "검사 유형을 선택해주세요"}
+              {!type
+                ? "검사 유형을 선택해주세요"
+                : !selected?.playable
+                  ? "곧 열릴 예정이에요"
+                  : isStarting
+                    ? "검사 준비 중…"
+                    : "시작하기"}
             </button>
           </section>
 
           {/* 사이드 */}
           <aside className="flex flex-col gap-5">
             <GithubCoinCard />
-            <AssessmentRankingCard />
+            <AssessmentRankingCard questionCount={count} />
           </aside>
         </div>
       </div>
