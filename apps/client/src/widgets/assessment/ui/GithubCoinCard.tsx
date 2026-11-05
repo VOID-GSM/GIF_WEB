@@ -25,6 +25,8 @@ export default function GithubCoinCard() {
   };
 
   const isConnected = !!user?.githubUsername;
+  // 동기화 응답이 해제보다 늦게 오면 setQueryData 로 '연동됨'이 되살아나므로 둘을 함께 막는다.
+  const isMutating = isSyncing || isDisconnecting;
 
   return (
     <section className="rounded-[20px] bg-white p-5 shadow">
@@ -83,7 +85,7 @@ export default function GithubCoinCard() {
             <button
               type="button"
               onClick={() => disconnect()}
-              disabled={isDisconnecting}
+              disabled={isMutating}
               className="text-[12px] text-gray-500 underline-offset-2 hover:text-gray-700 hover:underline disabled:opacity-50"
             >
               연동 해제
@@ -92,7 +94,7 @@ export default function GithubCoinCard() {
           <button
             type="button"
             onClick={() => sync()}
-            disabled={isSyncing}
+            disabled={isMutating}
             className="shrink-0 rounded-[9px] bg-yellow-600 px-3 py-2 text-[13px] font-semibold text-white transition-colors hover:bg-yellow-700 disabled:opacity-60"
           >
             {isSyncing ? "동기화 중…" : "커밋 동기화"}
