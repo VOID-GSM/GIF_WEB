@@ -5,6 +5,7 @@ import { Coin, Crown } from "@repo/ui";
 
 import {
   ASSESSMENTS,
+  useGetAssessmentRanking,
   type AssessmentRankingEntry,
   type AssessmentType,
 } from "@/entities/assessment";
@@ -39,16 +40,61 @@ function RankBadge({ rank }: { rank: number }) {
   );
 }
 
+const GRID = "grid grid-cols-[44px_1fr_60px_60px]";
+
+function RankingRow({
+  entry,
+  isMe,
+}: {
+  entry: AssessmentRankingEntry;
+  isMe: boolean;
+}) {
+  return (
+    <li
+      className={`${GRID} items-center border-t border-gray-200 px-2 py-2 text-[14px] ${
+        isMe ? "bg-yellow-50" : ""
+      }`}
+    >
+      <span className="flex justify-center font-semibold text-gray-900">
+        <RankBadge rank={entry.rank} />
+      </span>
+      <span className="flex min-w-0 items-baseline gap-1.5 pl-2">
+        <span className="truncate font-semibold text-gray-900">
+          {isMe ? "나" : entry.name}
+        </span>
+        {entry.grade != null && (
+          <span className="shrink-0 text-[12px] text-gray-500">
+            {entry.grade}학년
+          </span>
+        )}
+      </span>
+      <span className="text-center text-gray-600 tabular-nums">
+        {entry.correctCount}/{entry.totalCount}
+      </span>
+      <span className="flex items-center justify-center gap-1 text-gray-900 tabular-nums">
+        <Coin width={16} height={16} aria-hidden />
+        {entry.earnedCoin}
+      </span>
+    </li>
+  );
+}
+
 interface AssessmentRankingCardProps {
-  // 유형별 랭킹. 서버 API 가 생기기 전에는 비어 있다.
-  rankings?: Partial<Record<AssessmentType, AssessmentRankingEntry[]>>;
+  // 같은 문항 수로 푼 기록끼리만 순위를 매긴다.
+  questionCount: number;
 }
 
 export default function AssessmentRankingCard({
-  rankings = {},
+  questionCount,
 }: AssessmentRankingCardProps) {
   const [tab, setTab] = useState<AssessmentType>("cat-chase");
-  const entries = rankings[tab] ?? [];
+  const { data, isPending, isError, isPlaceholderData } =
+    useGetAssessmentRanking(tab, questionCount);
+  const entries = data?.rankings ?? [];
+  const me = data?.me ?? null;
+  // rank는 사용자마다 고유하므로(서버에서 동점 재정렬) rank로 내 행을 찾는다.
+  // 상위 목록에 내가 없으면 맨 아래에 내 순위를 따로 보여준다.
+  const isMeInTop = !!me && entries.some((e) => e.rank === me.rank);
 
   return (
     <section className="rounded-[20px] bg-white p-5 shadow">
@@ -79,18 +125,30 @@ export default function AssessmentRankingCard({
         </div>
       </div>
       <p className="mt-0.5 text-[12px] text-gray-500">
-        푼 문항 중 맞힌 문항으로 순위를 매겨요.
+        {questionCount}문항 기록 중 맞힌 문항으로 순위를 매겨요.
       </p>
 
       <div className="mt-3 overflow-hidden rounded-[14px] border border-gray-200">
-        <div className="grid grid-cols-[44px_1fr_60px_60px] bg-yellow-100 px-2 py-2.5 text-[12px] font-medium text-gray-600">
+        <div className={`${GRID} bg-yellow-100 px-2 py-2.5 text-[12px] font-medium text-gray-600`}>
           <span className="text-center">순위</span>
           <span className="pl-2">이름</span>
           <span className="text-center">맞힌 수</span>
           <span className="text-center">코인</span>
         </div>
 
-        {entries.length === 0 ? (
+        {isPending ? (
+          <ul aria-busy>
+            {Array.from({ length: 3 }, (_, i) => (
+              <li key={i} className="border-t border-gray-200 px-3 py-2.5">
+                <div className="h-5 animate-pulse rounded bg-gray-100" />
+              </li>
+            ))}
+          </ul>
+        ) : isError ? (
+          <p className="px-4 py-9 text-center text-[13px] text-gray-500">
+            랭킹을 불러오지 못했어요.
+          </p>
+        ) : entries.length === 0 ? (
           <div className="flex flex-col items-center gap-1 px-4 py-9 text-center">
             <p className="text-[14px] font-medium text-gray-700">
               아직 기록이 없어요
@@ -100,36 +158,18 @@ export default function AssessmentRankingCard({
             </p>
           </div>
         ) : (
-          <ul>
+          <ul
+            aria-busy={isPlaceholderData}
+            className={`transition-opacity ${isPlaceholderData ? "opacity-50" : ""}`}
+          >
             {entries.map((entry) => (
-              <li
-                key={`${entry.rank}-${entry.name}`}
-                className={`grid grid-cols-[44px_1fr_60px_60px] items-center border-t border-gray-200 px-2 py-2 text-[14px] ${
-                  entry.isMe ? "bg-yellow-50" : ""
-                }`}
-              >
-                <span className="flex justify-center font-semibold text-gray-900">
-                  <RankBadge rank={entry.rank} />
-                </span>
-                <span className="flex min-w-0 items-baseline gap-1.5 pl-2">
-                  <span className="truncate font-semibold text-gray-900">
-                    {entry.isMe ? "나" : entry.name}
-                  </span>
-                  {entry.grade && (
-                    <span className="shrink-0 text-[12px] text-gray-500">
-                      {entry.grade}학년
-                    </span>
-                  )}
-                </span>
-                <span className="text-center text-gray-600 tabular-nums">
-                  {entry.correctCount}/{entry.totalCount}
-                </span>
-                <span className="flex items-center justify-center gap-1 text-gray-900 tabular-nums">
-                  <Coin width={16} height={16} aria-hidden />
-                  {entry.coin}
-                </span>
-              </li>
+              <RankingRow
+                key={entry.rank}
+                entry={entry}
+                isMe={entry.rank === me?.rank}
+              />
             ))}
+            {me && !isMeInTop && <RankingRow entry={me} isMe />}
           </ul>
         )}
       </div>
