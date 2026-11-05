@@ -6,6 +6,7 @@ export {
   REWARD_PER_CORRECT,
   getMaxReward,
   getReward,
+  COIN_PER_COMMIT,
 } from "./model/constants";
 export {
   useGetAssessmentRanking,

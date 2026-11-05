@@ -37,6 +37,9 @@ export const REWARD_PER_CORRECT = 10;
 export const getMaxReward = (questionCount: number) =>
   BASE_REWARD_COIN + REWARD_PER_CORRECT * questionCount;
 
+// GitHub 연동 이후 새로 생긴 커밋 1개당 코인 (서버 CoinSyncService 기준)
+export const COIN_PER_COMMIT = 10;
+
 // 중간에 이탈하거나 모두 틀리면 0코인
 export const getReward = (completed: boolean, correctCount: number) =>
   !completed || correctCount <= 0

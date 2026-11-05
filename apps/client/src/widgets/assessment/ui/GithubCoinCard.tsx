@@ -1,7 +1,9 @@
 "use client";
 
 import { toast } from "sonner";
+import { Coin } from "@repo/ui";
 
+import { COIN_PER_COMMIT } from "@/entities/assessment";
 import {
   useDisconnectGithub,
   useGetCurrentUser,
@@ -35,6 +37,13 @@ export default function GithubCoinCard() {
       <p className="mt-0.5 text-[13px] text-gray-600">
         GitHub 커밋이 늘어날수록 코인이 쌓여요.
       </p>
+
+      <div className="mt-3 flex items-center gap-2 rounded-[12px] bg-yellow-50 px-3 py-2.5">
+        <Coin width={18} height={18} aria-hidden />
+        <p className="text-[14px] font-semibold text-gray-900">
+          커밋 1개당 +{COIN_PER_COMMIT}코인
+        </p>
+      </div>
 
       {isPending ? (
         <div className="mt-4 h-[56px] animate-pulse rounded-[14px] bg-gray-100" />
