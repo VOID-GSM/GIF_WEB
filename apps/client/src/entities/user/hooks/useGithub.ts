@@ -46,6 +46,7 @@ export function useSyncGithub() {
   return useMutation({
     // sync 응답에는 이번 획득량이 없어(서버가 사용자 정보만 반환) 잔액 차이로 계산한다.
     // 오래된 캐시 대신 sync 직전 잔액을 서버에서 받아 비교해야 다른 경로로 얻은 코인이 섞이지 않는다.
+    // TODO: 서버 sync 응답에 earnedCoin 이 추가되면(VOID-GSM/GIF_SERVER#230) 사전 조회를 제거하고 응답 값을 쓴다.
     mutationFn: async () => {
       const before = await getCurrentUser();
       const user = await syncGithub();
