@@ -3,6 +3,8 @@ export type {
   ProjectMember,
   ProjectFeature,
   ProjectStat,
+  ProjectComment,
+  ProjectEngagement,
 } from "./model/types";
 export { MOCK_PROJECTS } from "./model/mock";
 export { getProjectById } from "./model/mock";

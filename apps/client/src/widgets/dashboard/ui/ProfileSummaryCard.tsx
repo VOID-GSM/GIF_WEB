@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { releasePushSubscription } from "@repo/lib";
 import { Logout } from "@repo/ui";
 import { useGetMyInfo } from "@/entities/mypage";
 import { useGetMyProject, useGetProject } from "@/entities/project";
@@ -35,7 +36,9 @@ export default function ProfileSummaryCard() {
   const loading =
     isLoading || isProjectsLoading || (hasProjectId && isProjectDetailLoading);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    // 토큰이 있어야 서버 구독을 해제할 수 있어 쿠키보다 먼저 정리한다.
+    await releasePushSubscription();
     deleteCookie(COOKIE_KEYS.ACCESS_TOKEN);
     router.replace("/signin");
     router.refresh();

@@ -88,6 +88,18 @@ export const MOCK_PROJECTS: Project[] = [
         portfolioUrl: "https://github.com/bost02",
       },
     ],
+    engagement: {
+      views: 128,
+      likes: 42,
+      comments: [
+        {
+          id: 1,
+          author: "GIF 운영팀",
+          content: "실제 서버에서 동작하는 모습이 인상적이에요!",
+          createdAt: "2026. 09. 22.",
+        },
+      ],
+    },
   },
   {
     id: 2,
