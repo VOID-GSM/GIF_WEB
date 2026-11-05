@@ -19,9 +19,7 @@ export function useConnectGithub() {
       queryClient.setQueryData(CURRENT_USER_QUERY_KEY, user);
       toast.success(`@${user.githubUsername} 계정이 연동되었어요.`);
     },
-    onError: () => {
-      toast.error("GitHub 연동에 실패했습니다. 다시 시도해주세요.");
-    },
+    // 실패 안내는 콜백 화면의 인라인 에러 카드가 맡는다 (토스트와 중복 표시 방지).
   });
 }
 
