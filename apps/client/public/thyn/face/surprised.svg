@@ -1,0 +1,13 @@
+<svg width="100" height="100" viewBox="128 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M157 20C159.407 13.963 165.378 5.51123 170 20" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" stroke="black"/>
+<path d="M186 20C188.593 13.963 195.022 5.51123 200 20" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" stroke="black"/>
+<path d="M162.5 63C168.299 63 173 54.7173 173 44.5C173 34.2827 168.299 26 162.5 26C156.701 26 152 34.2827 152 44.5C152 54.7173 156.701 63 162.5 63Z" fill="white" stroke-width="3" stroke="black"/>
+<path d="M193.5 63C199.299 63 204 54.7173 204 44.5C204 34.2827 199.299 26 193.5 26C187.701 26 183 34.2827 183 44.5C183 54.7173 187.701 63 193.5 63Z" fill="white" stroke-width="3" stroke="black"/>
+<ellipse cx="163" cy="45" rx="6" ry="9" fill="black"/>
+<ellipse cx="194" cy="45" rx="6" ry="9" fill="black"/>
+<path d="M184 75C184 81.6274 181.538 87 178.5 87C175.462 87 173 81.6274 173 75C173 68.3726 175.462 63 178.5 63C181.538 63 184 68.3726 184 75Z" fill="#FF6FA6"/>
+<mask id="stroke0_101_217" fill="white">
+<path d="M184 75C184 81.6274 181.538 87 178.5 87C175.462 87 173 81.6274 173 75C173 68.3726 175.462 63 178.5 63C181.538 63 184 68.3726 184 75Z"/>
+</mask>
+<path d="M184 75C184 81.6274 181.538 87 178.5 87C175.462 87 173 81.6274 173 75C173 68.3726 175.462 63 178.5 63C181.538 63 184 68.3726 184 75Z" stroke-width="6" stroke="black" mask="url(#stroke0_101_217)"/>
+</svg>
