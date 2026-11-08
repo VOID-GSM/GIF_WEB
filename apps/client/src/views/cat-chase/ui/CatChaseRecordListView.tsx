@@ -5,12 +5,11 @@ import Link from "next/link";
 import { useGetCatChaseRounds } from "@/entities/cat-chase";
 import { formatTimestamp } from "@/entities/form";
 
-export default function CatChaseRecordListView() {
-  const { data, isPending, isError } = useGetCatChaseRounds();
+import { RoundStatusBadge } from "./CatChaseResult";
 
-  const rounds = [...(data ?? [])].sort((a, b) =>
-    b.createdAt.localeCompare(a.createdAt),
-  );
+export default function CatChaseRecordListView() {
+  // 서버가 최신순으로 내려준다.
+  const { data: rounds = [], isPending, isError } = useGetCatChaseRounds();
 
   return (
     <div className="min-h-dvh w-full bg-background px-4 py-8 md:px-8 md:py-10">
@@ -21,11 +20,11 @@ export default function CatChaseRecordListView() {
               고양이 술래잡기 기록
             </h1>
             <p className="mt-1 text-[14px] text-gray-600">
-              문항을 눌러 정답과 내 판단을 확인해보세요.
+              기록을 눌러 문항별 정답과 내 판단을 확인해보세요.
             </p>
           </div>
           <Link
-            href="/assessment/cat-chase"
+            href="/assessment"
             className="flex h-10 items-center rounded-[10px] bg-yellow-600 px-4 text-[15px] font-semibold text-white transition-colors hover:bg-yellow-700"
           >
             검사 하러 가기
@@ -35,8 +34,8 @@ export default function CatChaseRecordListView() {
         <section className="overflow-hidden rounded-[20px] bg-white shadow">
           <div className="hidden grid-cols-[1fr_100px_100px_100px] gap-4 border-b border-gray-200 px-6 py-3 text-[13px] font-medium text-gray-500 sm:grid">
             <span>진행 일시</span>
-            <span className="text-center">쥐</span>
-            <span className="text-center">고양이</span>
+            <span className="text-center">맞힌 문항</span>
+            <span className="text-center">받은 코인</span>
             <span className="text-center">상태</span>
           </div>
 
@@ -59,28 +58,28 @@ export default function CatChaseRecordListView() {
               {rounds.map((round) => (
                 <li key={round.roundId}>
                   <Link
-                    href={`/assessment/cat-chase/records/${round.roundId}`}
+                    // 진행 중인 검사는 이어서 풀 수 있게 검사 화면으로 보낸다.
+                    href={
+                      round.finished
+                        ? `/assessment/cat-chase/records/${round.roundId}`
+                        : `/assessment/cat-chase?roundId=${round.roundId}`
+                    }
                     className="grid grid-cols-[1fr_auto] items-center gap-x-4 gap-y-1 px-6 py-4 transition-colors hover:bg-gray-100 sm:grid-cols-[1fr_100px_100px_100px]"
                   >
                     <span className="text-[15px] font-medium text-gray-800 tabular-nums">
                       {formatTimestamp(round.createdAt)}
                     </span>
-                    <span className="hidden text-center text-[15px] text-gray-700 sm:block">
-                      {round.mouseCount}마리
+                    <span className="hidden text-center text-[15px] text-gray-700 tabular-nums sm:block">
+                      {round.correctCount} / {round.questionCount}
                     </span>
-                    <span className="hidden text-center text-[15px] text-gray-700 sm:block">
-                      {round.catCount}마리
+                    <span className="hidden text-center text-[15px] text-gray-700 tabular-nums sm:block">
+                      {round.earnedCoin}코인
                     </span>
                     <span className="flex justify-center">
-                      <span
-                        className={`rounded-full px-2.5 py-0.5 text-[12px] font-semibold ${
-                          round.answered
-                            ? "bg-yellow-100 text-yellow-900"
-                            : "bg-gray-100 text-gray-500"
-                        }`}
-                      >
-                        {round.answered ? "제출 완료" : "미제출"}
-                      </span>
+                      <RoundStatusBadge
+                        finished={round.finished}
+                        completed={round.completed}
+                      />
                     </span>
                   </Link>
                 </li>
