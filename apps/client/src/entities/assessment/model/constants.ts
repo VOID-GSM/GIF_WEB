@@ -8,7 +8,7 @@ export const ASSESSMENTS: AssessmentMeta[] = [
     description: "쥐가 숨은 자리를 기억하고 찾아내요",
     image: "/assessment/cat-chase.png",
     tone: "yellow",
-    playable: false,
+    playable: true,
   },
   {
     type: "road-making",
