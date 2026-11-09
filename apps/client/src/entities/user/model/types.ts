@@ -6,6 +6,8 @@ export interface CurrentUserResponse {
   studentNumber: string;
   grade: string | null;
   role: string;
+  // STUDENT / TEACHER / EXTERNAL
+  accountType: "STUDENT" | "TEACHER" | "EXTERNAL" | null;
   clientRole: string | null;
   clientTeam: string | null;
   projectId: number | null;
