@@ -1,15 +1,34 @@
-import { Navbar, CLIENT_NAV_ITEMS } from "@repo/ui";
+import { cookies } from "next/headers";
+
+import { Navbar, CLIENT_NAV_ITEMS, type NavItem } from "@repo/ui";
+
+import { AuthSessionProvider, isAccountType } from "@/entities/auth";
+import { COOKIE_KEYS, PUBLIC_HOME_PATH } from "@/shared/constants";
+
 import { Providers } from "../providers";
 // 1. Next.js전용 Script 컴포넌트를 import 합니다.
 import Script from "next/script";
 
-export default function MainLayout({
+// 비로그인·외부 사용자는 공개 프로젝트 목록만 이용한다.
+const PUBLIC_NAV_ITEMS: NavItem[] = [
+  { label: "프로젝트", path: PUBLIC_HOME_PATH },
+];
+
+export default async function MainLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  // 공개 페이지(프로젝트 목록·상세)도 이 레이아웃을 쓰므로 로그인 상태에 따라 메뉴를 나눈다.
+  const cookieStore = await cookies();
+  const isLoggedIn = cookieStore.has(COOKIE_KEYS.ACCESS_TOKEN);
+  const rawAccountType = cookieStore.get(COOKIE_KEYS.ACCOUNT_TYPE)?.value;
+  const accountType = isAccountType(rawAccountType) ? rawAccountType : null;
+  const isPublicOnly = !isLoggedIn || accountType === "EXTERNAL";
+
   return (
     <Providers>
+      <AuthSessionProvider isLoggedIn={isLoggedIn} accountType={accountType}>
       {/* 2. Google Tag Manager 스크립트 추가 */}
       <Script
         id="gtm-script"
@@ -35,8 +54,13 @@ export default function MainLayout({
         />
       </noscript>
 
-      <Navbar navItems={CLIENT_NAV_ITEMS} />
+      <Navbar
+        navItems={isPublicOnly ? PUBLIC_NAV_ITEMS : CLIENT_NAV_ITEMS}
+        isGuest={!isLoggedIn}
+        homePath={isPublicOnly ? PUBLIC_HOME_PATH : "/"}
+      />
       <main className="md:pl-[220px]">{children}</main>
+      </AuthSessionProvider>
     </Providers>
   );
 }
