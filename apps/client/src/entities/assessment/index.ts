@@ -16,7 +16,26 @@ export {
   useStartAssessmentRound,
   assessmentRoundQueryKey,
 } from "./hooks/useStartAssessmentRound";
+export {
+  useRoadMakingRound,
+  useSubmitRoadMakingAnswer,
+  useFinishRoadMakingRound,
+  useRecoverRoadMakingProblem,
+  RoadMakingRoundEndedError,
+} from "./hooks/useRoadMaking";
+export {
+  ROAD_MAKING_COLORS,
+  ROAD_MAKING_TIME_LIMIT_SECONDS,
+} from "./model/roadMaking";
 export type {
+  BoardPosition,
+  RoadMakingColor,
+  RoadMakingDirection,
+  RoadMakingVehicle,
+  RoadMakingPerson,
+  RoadMakingVehicleResult,
+  RoadMakingRoundResult,
+  SubmitRoadMakingAnswerResponse,
   AssessmentType,
   AssessmentMeta,
   AssessmentRankingEntry,
