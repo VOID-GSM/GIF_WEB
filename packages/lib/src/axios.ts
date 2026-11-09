@@ -52,26 +52,32 @@ const PUBLIC_PATHS = ["/signin", "/callback"];
 const redirectToSignIn = () => {
   if (typeof window === "undefined") return;
 
-  // 만료된 인증 정보 제거
+  // 만료된 인증 정보 제거 (쿠키 이름은 각 앱의 COOKIE_KEYS 값과 일치시킬 것)
   removeCookieValue("access_token");
   removeCookieValue("client_role");
+  removeCookieValue("account_type");
   clearPushSyncFlag();
 
-  const { pathname } = window.location;
+  const { pathname, search } = window.location;
   const isPublic = PUBLIC_PATHS.some((path) => pathname.startsWith(path));
   if (isPublic) return;
 
-  window.location.href = "/signin";
+  // 다시 로그인하면 보던 페이지로 돌아올 수 있도록 현재 경로를 넘긴다.
+  const returnTo = encodeURIComponent(`${pathname}${search}`);
+  window.location.href = `/signin?redirect=${returnTo}`;
 };
 
 apiClient.interceptors.response.use(
   (res) => res,
   (error) => {
     // 세션 만료(401)일 때만 로그인 페이지로 이동한다.
+    // 토큰 없이 보낸 요청(비로그인 사용자의 공개 페이지 조회)의 401은 만료가 아니므로
+    // 강제로 이동시키지 않고 각 요청에서 처리하도록 그대로 전파한다.
     // 403(권한 없음/금지)은 인증은 유효한 상태이므로 로그아웃 대상이 아니며,
     // 각 요청의 onError(토스트 등)에서 처리하도록 그대로 전파한다.
     const status = error?.response?.status;
-    if (status === 401) {
+    const hadToken = Boolean(error?.config?.headers?.Authorization);
+    if (status === 401 && hadToken) {
       redirectToSignIn();
     }
     return Promise.reject(error);
