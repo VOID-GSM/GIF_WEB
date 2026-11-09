@@ -3,6 +3,7 @@ import { apiClient } from "@repo/lib";
 import type {
   CreateProjectRequest,
   ProjectDetail,
+  ProjectDetailResponse,
   ProjectResponse,
   ProjectSummaryResponse,
   UpdateProjectRequest,
@@ -34,8 +35,19 @@ export const getMyProject = async (): Promise<ProjectResponse> => {
   return data;
 };
 
+// 교내 사용자 전용 화면(수정·대시보드)에서 쓰는 상세 — 팀원 userId·학번이 포함된다.
 export const getProject = async (projectId: number): Promise<ProjectDetail> => {
   const { data } = await apiClient.get<ProjectDetail>(
+    `/api/project/${projectId}`,
+  );
+  return data;
+};
+
+// 공개 상세 — 비로그인·외부 사용자는 팀원 userId·학번이 빠진 응답을 받는다.
+export const getPublicProject = async (
+  projectId: number,
+): Promise<ProjectDetailResponse> => {
+  const { data } = await apiClient.get<ProjectDetailResponse>(
     `/api/project/${projectId}`,
   );
   return data;
