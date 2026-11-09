@@ -5,8 +5,7 @@ import { releasePushSubscription } from "@repo/lib";
 import { Logout } from "@repo/ui";
 import { useGetMyInfo } from "@/entities/mypage";
 import { useGetMyProject, useGetProject } from "@/entities/project";
-import { COOKIE_KEYS } from "@/shared/constants";
-import { deleteCookie } from "@/shared/utils";
+import { clearAuthCookies } from "@/shared/utils";
 
 const CLIENT_ROLE_LABEL: Record<string, string> = {
   LEADER: "팀장",
@@ -39,7 +38,7 @@ export default function ProfileSummaryCard() {
   const handleLogout = async () => {
     // 토큰이 있어야 서버 구독을 해제할 수 있어 쿠키보다 먼저 정리한다.
     await releasePushSubscription();
-    deleteCookie(COOKIE_KEYS.ACCESS_TOKEN);
+    clearAuthCookies();
     router.replace("/signin");
     router.refresh();
   };
