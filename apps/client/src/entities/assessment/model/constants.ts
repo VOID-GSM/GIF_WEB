@@ -17,7 +17,7 @@ export const ASSESSMENTS: AssessmentMeta[] = [
     description: "울타리를 세워 차가 목적지에 닿게 해요",
     image: "/assessment/road-making.png",
     tone: "orange",
-    playable: false,
+    playable: true,
   },
 ];
 
