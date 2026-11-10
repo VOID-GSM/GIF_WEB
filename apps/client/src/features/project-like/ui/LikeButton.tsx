@@ -22,7 +22,7 @@ export default function LikeButton({
   return (
     <button
       type="button"
-      onClick={() => requireLogin(() => toggle.mutate())}
+      onClick={() => requireLogin(() => toggle.mutate(isLiked))}
       disabled={toggle.isPending}
       aria-pressed={isLiked}
       aria-label={isLiked ? "좋아요 취소" : "좋아요"}

@@ -23,7 +23,7 @@ export const increaseProjectView = async (
   return data;
 };
 
-export const toggleProjectLike = async (
+export const likeProject = async (
   projectId: number,
 ): Promise<LikeResponse> => {
   const { data } = await apiClient.post<LikeResponse>(

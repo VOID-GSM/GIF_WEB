@@ -5,15 +5,17 @@ import { toast } from "sonner";
 
 import { engagementQueryKeys } from "../model/queryKeys";
 import type { ProjectEngagementFields } from "../model/types";
-import { toggleProjectLike } from "./engagementApi";
+import { likeProject, unlikeProject } from "./engagementApi";
 
+// 현재 좋아요 상태(isLiked)에 따라 POST(좋아요) / DELETE(취소)를 보낸다.
 export function useToggleProjectLike(projectId: number) {
   const queryClient = useQueryClient();
   const detailKey = engagementQueryKeys.projectDetail(projectId);
 
   return useMutation({
-    mutationFn: () => toggleProjectLike(projectId),
-    onMutate: async () => {
+    mutationFn: (isLiked: boolean) =>
+      isLiked ? unlikeProject(projectId) : likeProject(projectId),
+    onMutate: async (isLiked) => {
       await queryClient.cancelQueries({ queryKey: detailKey });
       const previous =
         queryClient.getQueryData<ProjectEngagementFields>(detailKey);
@@ -22,8 +24,8 @@ export function useToggleProjectLike(projectId: number) {
         old
           ? {
               ...old,
-              isLiked: !old.isLiked,
-              likeCount: Math.max(0, old.likeCount + (old.isLiked ? -1 : 1)),
+              isLiked: !isLiked,
+              likeCount: Math.max(0, old.likeCount + (isLiked ? -1 : 1)),
             }
           : old,
       );

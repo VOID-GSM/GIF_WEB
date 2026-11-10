@@ -1,6 +1,6 @@
 export {
   increaseProjectView,
-  toggleProjectLike,
+  likeProject,
   unlikeProject,
   getProjectComments,
   createProjectComment,
