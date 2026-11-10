@@ -3,7 +3,7 @@
 import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 
-import { SigninCard } from "@repo/ui";
+import { LanguageToggle, SigninCard } from "@repo/ui";
 
 import type { OAuthProvider } from "@/entities/auth";
 import { OAUTH_SESSION_KEYS, SEARCH_PARAM_KEYS } from "@/shared/constants";
@@ -31,7 +31,10 @@ export default function SigninView() {
   };
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-background p-4 md:p-0">
+    <main className="relative min-h-screen flex items-center justify-center bg-background p-4 md:p-0">
+      <div className="absolute top-4 right-4 md:top-6 md:right-6">
+        <LanguageToggle />
+      </div>
       <SigninCard
         onLogin={() => startLogin("dg")}
         secondary={{

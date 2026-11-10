@@ -101,6 +101,7 @@ export type { StyleOption } from "./components/Dropdown/StyleDropdown";
 export { ThemeProvider, useTheme } from "./widgets/Theme/model/ThemeContext";
 export { default as ThemeScript } from "./widgets/Theme/ui/ThemeScript";
 export { default as ThemeToggle } from "./widgets/Theme/ui/ThemeToggle";
+export { default as LanguageToggle } from "./widgets/Language/ui/LanguageToggle";
 export type { ThemeMode, ResolvedTheme } from "./widgets/Theme/model/type";
 
 export { default as RankView } from "./views/RankView";
