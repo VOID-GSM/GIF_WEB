@@ -2,6 +2,8 @@
 
 import { createContext, useContext, useMemo, type ReactNode } from "react";
 
+import { setSessionExpected } from "@repo/lib";
+
 import type { AccountType } from "./types";
 
 interface AuthSessionValue {
@@ -34,6 +36,10 @@ export function AuthSessionProvider({
   accountType,
   children,
 }: AuthSessionProviderProps) {
+  // 로그인 화면이면 토큰 쿠키가 만료돼 빠진 요청의 401 도 세션 만료로 처리하게 한다.
+  // 하위 컴포넌트의 첫 요청보다 먼저 반영되도록 effect 가 아닌 렌더 중에 알린다.
+  if (typeof window !== "undefined") setSessionExpected(isLoggedIn);
+
   const value = useMemo(
     () => ({ isLoggedIn, accountType }),
     [isLoggedIn, accountType],
