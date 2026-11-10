@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { releasePushSubscription } from "@repo/lib";
 import { Logout } from "@repo/ui";
@@ -46,7 +47,15 @@ export default function ProfileSummaryCard() {
 
   return (
     <section className="w-full rounded-xl bg-white p-6 shadow-[0_2px_6px_rgba(0,0,0,0.15)]">
-      <span className="text-[13px] font-medium text-gray-400">내 프로필</span>
+      <div className="flex items-center justify-between">
+        <span className="text-[13px] font-medium text-gray-400">내 프로필</span>
+        <Link
+          href="/mypage"
+          className="text-[13px] font-medium text-gray-400 transition-colors hover:text-gray-700"
+        >
+          마이페이지
+        </Link>
+      </div>
 
       {loading ? (
         <p className="mt-4 text-[14px] text-gray-500">불러오는 중...</p>

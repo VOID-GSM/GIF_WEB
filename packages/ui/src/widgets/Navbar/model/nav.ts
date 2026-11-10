@@ -20,4 +20,5 @@ export const CLIENT_NAV_ITEMS: NavItem[] = [
   { label: "문의", path: "/inquiry" },
   { label: "역량검사", path: "/assessment" },
   { label: "Thyn 꾸미기", path: "/thyn" },
+  { label: "마이페이지", path: "/mypage" },
 ];
