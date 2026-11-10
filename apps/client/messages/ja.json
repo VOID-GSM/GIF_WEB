@@ -224,8 +224,8 @@
     "toast": {
       "created": "お問い合わせを受け付けました。",
       "createError": "お問い合わせの送信に失敗しました。もう一度お試しください。",
-      "updated": "お問い合わせを修正しました。",
-      "updateError": "お問い合わせの修正に失敗しました。もう一度お試しください。"
+      "updated": "お問い合わせを更新しました。",
+      "updateError": "お問い合わせの更新に失敗しました。もう一度お試しください。"
     },
     "tabs": {
       "create": "お問い合わせ",
@@ -252,14 +252,14 @@
       "detail": "お問い合わせ詳細",
       "loading": "読み込み中",
       "loadError": "お問い合わせ内容を読み込めませんでした。",
-      "answeredLocked": "回答済みのお問い合わせは修正できません。",
+      "answeredLocked": "回答済みのお問い合わせは編集できません。",
       "backToDetail": "詳細に戻る",
-      "editTitle": "お問い合わせを修正",
-      "editDesc": "登録したお問い合わせ内容を修正できます。",
+      "editTitle": "お問い合わせを編集",
+      "editDesc": "登録したお問い合わせ内容を編集できます。",
       "existingAttachment": "既存の添付ファイル:",
       "replaceHint": "クリックして新しいファイルに差し替え（最大10MB）",
-      "updating": "修正中...",
-      "update": "修正完了"
+      "updating": "更新中...",
+      "update": "編集完了"
     },
     "my": {
       "status": {
@@ -269,7 +269,7 @@
       "title": "お問い合わせ履歴",
       "loading": "読み込み中",
       "detailLoadError": "お問い合わせ内容を読み込めませんでした。",
-      "edit": "修正",
+      "edit": "編集",
       "content": "お問い合わせ内容",
       "attachment": "添付ファイル",
       "answer": "回答",
@@ -286,12 +286,12 @@
       "linkCreateError": "リンクの追加に失敗しました。",
       "linkDeleted": "リンクを削除しました。",
       "linkDeleteError": "リンクの削除に失敗しました。",
-      "updated": "プロジェクトを修正しました。",
-      "updateError": "プロジェクトの修正に失敗しました。",
-      "descriptionUpdated": "プロジェクトの説明を修正しました。",
-      "descriptionUpdateError": "プロジェクトの説明の修正に失敗しました。",
-      "linkUpdated": "リンクを修正しました。",
-      "linkUpdateError": "リンクの修正に失敗しました。"
+      "updated": "プロジェクトを更新しました。",
+      "updateError": "プロジェクトの更新に失敗しました。",
+      "descriptionUpdated": "プロジェクトの説明を更新しました。",
+      "descriptionUpdateError": "プロジェクトの説明の更新に失敗しました。",
+      "linkUpdated": "リンクを更新しました。",
+      "linkUpdateError": "リンクの更新に失敗しました。"
     },
     "card": {
       "likes": "いいね数",
@@ -396,7 +396,7 @@
       "draftSaveError": "下書き保存に失敗しました。",
       "bookmarkError": "ブックマークの変更に失敗しました。",
       "created": "振り返りを作成しました。",
-      "updated": "振り返りを修正しました。",
+      "updated": "振り返りを更新しました。",
       "saveError": "振り返りの保存に失敗しました。"
     },
     "category": {
@@ -512,7 +512,7 @@
     },
     "form": {
       "saveDraft": "下書き保存",
-      "update": "修正完了",
+      "update": "編集完了",
       "create": "作成完了"
     },
     "detail": {
@@ -522,7 +522,7 @@
       "notFound": "存在しないか、削除された振り返りです。",
       "backToList": "一覧に戻る",
       "private": "非公開",
-      "edit": "修正",
+      "edit": "編集",
       "unbookmark": "ブックマーク解除",
       "bookmark": "ブックマークに追加",
       "relatedWork": "関連作業",
@@ -541,13 +541,13 @@
       "emptySearch": "検索結果がありません"
     },
     "write": {
-      "notOwner": "自分が作成した振り返りのみ修正できます。",
+      "notOwner": "自分が作成した振り返りのみ編集できます。",
       "draftLoaded": "下書きを読み込みました。",
       "titleOrContentRequired": "タイトルか内容を入力してください。",
       "titleRequired": "タイトルを入力してください。",
       "contentRequired": "内容を入力してください。",
       "breadcrumb": "振り返り",
-      "editTitle": "振り返りを修正",
+      "editTitle": "振り返りを編集",
       "createTitle": "新しい振り返りを作成",
       "drafts": "下書き一覧"
     }
@@ -659,12 +659,12 @@
       "submitted": "提出済み",
       "notSubmitted": "未提出",
       "view": "見る",
-      "edit": "修正",
+      "edit": "編集",
       "write": "作成"
     },
     "calendar": {
       "month": "{month}月",
-      "edit": "修正する",
+      "edit": "編集する",
       "add": "追加する"
     },
     "field": {
@@ -694,16 +694,16 @@
       "optional": "（任意）",
       "deadlineDate": "締切日: {date}",
       "deadlineTime": "締切時間: {time}",
-      "updateError": "修正に失敗しました。もう一度お試しください。",
+      "updateError": "更新に失敗しました。もう一度お試しください。",
       "uploadErrorEdit": "ファイルのアップロードに失敗しました。許可されたファイル形式（最大10MB）か確認してからもう一度お試しください。",
-      "updated": "回答を修正しました。",
+      "updated": "回答を更新しました。",
       "submissionLoadError": "提出情報を読み込めません。",
       "cancel": "キャンセル",
       "saving": "保存中...",
       "complete": "完了する",
       "closed": "締め切られたフォームです。閲覧のみ可能です。",
-      "edit": "修正する",
-      "uploadErrorSubmit": "ファイルのアップロードに失敗しました。修正ページでファイルを再アップロードしてください。",
+      "edit": "編集する",
+      "uploadErrorSubmit": "ファイルのアップロードに失敗しました。編集ページでファイルを再アップロードしてください。",
       "submittedToast": "回答を提出しました。",
       "submitError": "提出に失敗しました。もう一度お試しください。",
       "back": "← 戻る",

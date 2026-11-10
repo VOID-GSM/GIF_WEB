@@ -26,7 +26,7 @@
   "badge": {
     "deadlineBefore": "締切前",
     "deadline": "締切",
-    "edit": "修正",
+    "edit": "編集",
     "complete": "完了",
     "write": "作成",
     "section": {
@@ -149,7 +149,7 @@
     "cancel": "キャンセル",
     "save": "保存",
     "delete": "削除",
-    "edit": "修正"
+    "edit": "編集"
   },
   "datePicker": {
     "weekdays": "日,月,火,水,木,金,土",
