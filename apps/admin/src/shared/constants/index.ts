@@ -2,5 +2,5 @@ export const COOKIE_KEYS = {
   ACCESS_TOKEN: "access_token",
 } as const;
 
-// 이 이메일 계정은 회원가입 절차 없이 바로 서비스를 이용할 수 있다.
+// 문의 답변·점수 배정 등 일부 권한 판단에 쓰는 운영 계정 (adminRole 기반 권한으로 전환 예정)
 export const PRIVILEGED_ADMIN_EMAIL = "teamvoid0107@gmail.com";

@@ -5,7 +5,7 @@ import { Suspense, useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 import { useGetDgCallback } from "@/entities/auth";
-import { COOKIE_KEYS, PRIVILEGED_ADMIN_EMAIL } from "@/shared/constants";
+import { COOKIE_KEYS } from "@/shared/constants";
 import { deleteCookie, setCookie } from "@/shared/utils";
 
 // 서버는 DataGSM 선생님 계정에만 ADMIN 역할을 준다. ADMIN이 아닌 계정(학생·외부 등)은 admin에 들어올 수 없다.
@@ -46,9 +46,8 @@ const CallbackContent = () => {
         }
 
         setCookie(COOKIE_KEYS.ACCESS_TOKEN, data.accessToken);
-        const skipSignup =
-          !!data.adminRole || data.email === PRIVILEGED_ADMIN_EMAIL;
-        router.replace(skipSignup ? "/" : "/signup");
+        // 모든 관리자는 DataGSM 계정으로 가입한다. 역할이 없으면 가입 절차로 보낸다.
+        router.replace(data.adminRole ? "/" : "/signup");
       } catch (err) {
         if (!isMounted) return;
 
