@@ -10,7 +10,6 @@ import {
   CAT_CHASE_TIMING,
   CAT_COLORS,
   CAT_COLOR_LABELS,
-  getCatColor,
   useFinishCatChaseRound,
   useGetCatChaseSession,
   useRecoverCatChaseSession,
@@ -227,8 +226,7 @@ function CatChasePlay({
     if (phase.name === "cats") {
       targets.forEach((p, i) =>
         map.set(p, {
-          content:
-            getCatColor(i, targets.length) === "red" ? "cat-red" : "cat-blue",
+          content: CAT_COLORS[i] === "red" ? "cat-red" : "cat-blue",
         }),
       );
     }
