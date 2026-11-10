@@ -54,22 +54,23 @@ export default function RoadMakingBoard({
   const personAt = new Map(
     people.map((p) => [cellKey(p.position.row, p.position.col), p]),
   );
-  // 울타리를 놓을 때마다 차가 화살표 방향으로 어떻게 움직이는지 바로 계산한다.
-  const simulated = vehicles.map((v) =>
-    simulateVehicle(v, personAt, fences, rows, cols),
-  );
-  // 제출 후에는 서버가 돌려준 경로를 그린다. 보드 밖으로 나간 방향만 계산 결과에서 가져온다.
-  const lines: SimulatedPath[] = results
+  // 경로는 제출 후에만 보여준다 (제출 전에 보이면 정답이 드러난다).
+  // 서버 경로에는 보드 안 칸만 있으므로, 보드 밖으로 나간 방향만 같은 규칙으로 계산해 붙인다.
+  const lines: SimulatedPath[] | null = results
     ? results.map((r) => {
         const last = r.path[r.path.length - 1];
-        const sim = simulated.find((s) => s.color === r.color);
+        const vehicle = vehicles.find((v) => v.color === r.color);
+        const sim =
+          vehicle && simulateVehicle(vehicle, personAt, fences, rows, cols);
+        const simLast = sim?.path[sim.path.length - 1];
         const sameEnd =
-          sim &&
-          sim.path[sim.path.length - 1].row === last.row &&
-          sim.path[sim.path.length - 1].col === last.col;
-        return { ...r, exit: !r.reached && sameEnd ? sim.exit : null };
+          simLast?.row === last.row && simLast?.col === last.col;
+        return {
+          ...r,
+          exit: !r.reached && sameEnd ? (sim?.exit ?? null) : null,
+        };
       })
-    : simulated;
+    : null;
 
   const gridStyle = {
     gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))`,
@@ -135,8 +136,8 @@ export default function RoadMakingBoard({
           })}
         </div>
 
-        {/* 2. 경로 선 (제출 전에는 미리보기, 제출 후에는 서버 결과) */}
-        <PathLines rows={rows} cols={cols} lines={lines} preview={!results} />
+        {/* 2. 경로 선 (제출 후 서버 결과) */}
+        {lines && <PathLines rows={rows} cols={cols} lines={lines} />}
 
         {/* 3. 차·사람·결과 배지 */}
         <div
@@ -242,12 +243,10 @@ function PathLines({
   rows,
   cols,
   lines,
-  preview,
 }: {
   rows: number;
   cols: number;
   lines: SimulatedPath[];
-  preview: boolean;
 }) {
   const offsets = overlapOffsets(lines);
   return (
@@ -303,24 +302,21 @@ function PathLines({
           tipX - edx * ARROW_LENGTH * 0.6,
           tipY - edy * ARROW_LENGTH * 0.6,
         ];
-        const opacity = preview ? 0.55 : 0.9;
-        const dashed = !preview && !line.reached;
-
         return (
           <g
-            // 경로가 바뀔 때마다 새로 그려지며 살짝 나타나게 한다.
+            // 제출 결과가 나올 때 살짝 나타나게 한다.
             key={`${line.color}-${i}-${points.join("|")}`}
             style={{ animation: "path-fade 0.3s ease-out both" }}
           >
-            <g opacity={opacity}>
+            <g opacity={0.9}>
               <polyline
                 points={linePoints.map(([x, y]) => `${x},${y}`).join(" ")}
                 fill="none"
                 stroke={solid}
-                strokeWidth={preview ? 0.1 : 0.14}
+                strokeWidth={0.14}
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                strokeDasharray={dashed ? "0.22 0.16" : undefined}
+                strokeDasharray={line.reached ? undefined : "0.22 0.16"}
               />
               {arrows.map((a, j) => (
                 <path
