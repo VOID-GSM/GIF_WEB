@@ -29,9 +29,16 @@ export function resolveLocale(
   const preferred = (acceptLanguage ?? "")
     .split(",")
     .map((part) => {
-      const [tag, q] = part.trim().split(";q=");
-      return { lang: tag.split("-")[0].toLowerCase(), q: q ? Number(q) : 1 };
+      const [tag = "", ...params] = part.split(";").map((s) => s.trim());
+      const qParam = params.find((p) => /^q\s*=/i.test(p));
+      const q = qParam ? Number(qParam.split("=")[1]) : 1;
+      return {
+        lang: tag.split("-")[0].toLowerCase(),
+        // 숫자가 아니면 1로 보고, q=0(허용 안 함)은 후보에서 뺀다.
+        q: Number.isFinite(q) ? q : 1,
+      };
     })
+    .filter(({ q }) => q > 0)
     .sort((a, b) => b.q - a.q)
     .find(({ lang }) => isLocale(lang));
 
