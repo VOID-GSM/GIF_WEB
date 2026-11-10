@@ -40,7 +40,7 @@ export default function CatChaseResult({ result }: CatChaseResultProps) {
         </h1>
         <p className="mt-1 text-[14px] text-gray-600">
           {completed
-            ? "고양이 판단을 모두 맞힌 문항만 정답으로 계산해요."
+            ? "빨간 고양이와 파란 고양이를 모두 맞힌 문항만 정답으로 계산해요."
             : "끝까지 풀지 않아 코인이 지급되지 않았어요."}
         </p>
       </div>

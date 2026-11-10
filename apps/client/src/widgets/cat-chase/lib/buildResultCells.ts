@@ -1,4 +1,4 @@
-import type { CatChaseQuestionResult } from "@/entities/cat-chase";
+import { getCatColor, type CatChaseQuestionResult } from "@/entities/cat-chase";
 
 import type { BoardCell } from "../ui/CatChaseBoard";
 
@@ -12,10 +12,12 @@ export function buildResultCells(question: CatChaseQuestionResult) {
 
   const responses = new Map(question.responses.map((r) => [r.position, r]));
 
-  question.catPositions.forEach((position) => {
+  question.catPositions.forEach((position, i) => {
     const response = responses.get(position);
+    const color = getCatColor(i);
     cells.set(position, {
-      content: "cat",
+      // 문제에서 보인 색 그대로 그린다. 색이 없는 예전 기록은 노랑.
+      content: color === "red" ? "cat-red" : color === "blue" ? "cat-blue" : "cat",
       hadMouse: response?.hadMouse ?? question.mousePositions.includes(position),
       result: response ? (response.correct ? "correct" : "wrong") : undefined,
     });
