@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { Chevron, Markdown } from "@repo/ui";
 
@@ -16,6 +17,7 @@ interface NoticeDetailViewProps {
 }
 
 export default function NoticeDetailView({ noticeId }: NoticeDetailViewProps) {
+  const t = useTranslations("notice.detail");
   const router = useRouter();
   const { data, isPending, isError } = useGetNoticeDetail(noticeId);
   const { viewer, isPending: isViewerPending } = useNoticeViewer();
@@ -36,28 +38,28 @@ export default function NoticeDetailView({ noticeId }: NoticeDetailViewProps) {
             direction="left"
             className="h-3.5 w-3.5 transition-transform group-hover:-translate-x-0.5"
           />
-          공지사항
+          {t("title")}
         </button>
 
         {isPending || isViewerPending ? (
           <p className="py-16 text-center text-[13px] font-medium text-gray-400">
-            불러오는 중
+            {t("loading")}
           </p>
         ) : isError || !data ? (
           <p className="py-16 text-center text-[13px] font-medium text-red-500">
-            공지 내용을 불러오지 못했습니다.
+            {t("loadError")}
           </p>
         ) : isBlocked ? (
           <div className="flex flex-col items-center gap-3 py-16">
             <p className="text-[13px] font-medium text-gray-400">
-              내 학년·팀이 대상이 아닌 공지입니다.
+              {t("notTarget")}
             </p>
             <button
               type="button"
               onClick={() => router.push("/notice")}
               className="cursor-pointer text-[13px] font-medium text-gray-600 underline underline-offset-2 transition-colors hover:text-gray-800"
             >
-              공지사항 목록으로
+              {t("backToList")}
             </button>
           </div>
         ) : (
