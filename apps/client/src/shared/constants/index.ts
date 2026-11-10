@@ -1,3 +1,5 @@
+import { AUTH_COOKIE_KEYS } from "@repo/lib/cookie-keys";
+
 export const OAUTH_SESSION_KEYS = {
   STATE: "oauth_state",
   CODE_VERIFIER: "oauth_code_verifier",
@@ -5,11 +7,12 @@ export const OAUTH_SESSION_KEYS = {
   PROVIDER: "oauth_provider",
 } as const;
 
+// 인증 쿠키 이름은 로그아웃 시 함께 지워지도록 @repo/lib 의 상수를 그대로 쓴다.
 export const COOKIE_KEYS = {
-  ACCESS_TOKEN: "access_token",
-  CLIENT_ROLE: "client_role",
+  ACCESS_TOKEN: AUTH_COOKIE_KEYS.ACCESS_TOKEN,
+  CLIENT_ROLE: AUTH_COOKIE_KEYS.CLIENT_ROLE,
   // 계정 유형(STUDENT / TEACHER / EXTERNAL) — proxy·레이아웃에서 기능 노출을 나누는 데 쓴다.
-  ACCOUNT_TYPE: "account_type",
+  ACCOUNT_TYPE: AUTH_COOKIE_KEYS.ACCOUNT_TYPE,
 } as const;
 
 export const SEARCH_PARAM_KEYS = {

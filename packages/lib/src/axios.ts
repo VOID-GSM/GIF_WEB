@@ -2,6 +2,7 @@ import axios from "axios";
 
 import { buildSigninPath, clearAuthCookies, getCurrentPath } from "./auth";
 import { getCookieValue } from "./cookie";
+import { AUTH_COOKIE_KEYS } from "./cookie-keys";
 import { clearPushSyncFlag } from "./push/lib";
 
 export * from "./cookie";
@@ -14,7 +15,7 @@ export const apiClient = axios.create({
 });
 
 apiClient.interceptors.request.use((config) => {
-  const token = getCookieValue("access_token"); // COOKIE_KEYS.ACCESS_TOKEN 값과 일치시킬 것
+  const token = getCookieValue(AUTH_COOKIE_KEYS.ACCESS_TOKEN);
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }

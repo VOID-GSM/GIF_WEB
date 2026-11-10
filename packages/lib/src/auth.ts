@@ -1,11 +1,8 @@
 import { removeCookieValue } from "./cookie";
+import { AUTH_COOKIE_KEYS } from "./cookie-keys";
 
-// 인증 쿠키 이름 (각 앱의 COOKIE_KEYS 값과 일치시킬 것)
-export const AUTH_COOKIE_NAMES = [
-  "access_token",
-  "client_role",
-  "account_type",
-] as const;
+// 로그아웃·세션 만료 시 지울 인증 쿠키 이름 — AUTH_COOKIE_KEYS 에서 만들어 누락을 막는다.
+export const AUTH_COOKIE_NAMES = Object.values(AUTH_COOKIE_KEYS);
 
 // 로그아웃·세션 만료 시 인증 쿠키를 한 번에 지운다.
 export const clearAuthCookies = () => {
