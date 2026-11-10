@@ -156,18 +156,16 @@ export default function RoadMakingBoard({
             </PieceCell>
           ))}
           {results?.map((result, i) => {
-            const last = result.path[result.path.length - 1];
+            // 배지는 끝 칸이 아니라 그 차 위에 붙인다.
+            // 끝 칸은 여러 차가 같이 쓰거나 화살촉이 지나가서 겹치지만, 차는 칸을 하나씩 차지한다.
+            const start = result.path[0];
             return (
               <div
                 key={`r-${result.color}-${i}`}
                 className="relative"
-                style={{ gridRow: last.row + 1, gridColumn: last.col + 1 }}
+                style={{ gridRow: start.row + 1, gridColumn: start.col + 1 }}
               >
-                {/* 같은 칸에서 끝난 차가 여럿이면 배지를 조금씩 아래로 내린다 */}
-                <span
-                  className="absolute right-0 size-[34%] animate-[badge-pop_0.25s_ease-out_0.4s_both]"
-                  style={{ top: `${i * 8}%` }}
-                >
+                <span className="absolute top-0 right-0 size-[34%] animate-[badge-pop_0.25s_ease-out_0.4s_both]">
                   <ResultBadge color={result.color} reached={result.reached} />
                 </span>
               </div>
@@ -198,14 +196,16 @@ function PieceCell({
 }
 
 // 화살촉 끝이 원점에 오도록 그린 삼각형 (오른쪽을 가리킴)
-const ARROW_LENGTH = 0.26;
-const ARROW_HEAD = `M0,0 L${-ARROW_LENGTH},-0.15 L${-ARROW_LENGTH},0.15 Z`;
+const ARROW_LENGTH = 0.24;
+const ARROW_HEAD = `M0,0 L${-ARROW_LENGTH},-0.13 L${-ARROW_LENGTH},0.13 Z`;
 // 사람 칸 중심에서 이만큼 앞에서 선을 끝낸다 (아이콘 바로 바깥)
 const END_INSET = 0.48;
 // 보드 밖으로 나간 선을 칸 중심에서 이만큼 늘린다 (보드 테두리 안쪽까지)
 const EXIT_LENGTH = 0.62;
-// 같은 구간을 지나는 선끼리 비켜 그리는 간격
-const OVERLAP_GAP = 0.12;
+// 같은 구간을 지나는 선끼리 비켜 그리는 간격 (선 굵기보다 넉넉하게)
+const OVERLAP_GAP = 0.22;
+// 비켜 그린 선들이 칸 밖으로 벗어나지 않도록 전체 폭을 제한한다
+const OVERLAP_MAX_SPREAD = 0.6;
 
 // 다른 차와 같은 구간을 지나는 선만 조금씩 비켜 그린다. 혼자 가는 선은 칸 중심을 지난다.
 function overlapOffsets(lines: SimulatedPath[]): number[] {
@@ -223,9 +223,11 @@ function overlapOffsets(lines: SimulatedPath[]): number[] {
     [...mine].some((s) => segments.some((other, j) => j !== i && other.has(s))),
   );
   const count = overlapping.filter(Boolean).length;
+  const gap =
+    count > 1 ? Math.min(OVERLAP_GAP, OVERLAP_MAX_SPREAD / (count - 1)) : 0;
   let rank = 0;
   return overlapping.map((o) =>
-    o ? (rank++ - (count - 1) / 2) * OVERLAP_GAP : 0,
+    o ? (rank++ - (count - 1) / 2) * gap : 0,
   );
 }
 
@@ -313,7 +315,7 @@ function PathLines({
                 points={linePoints.map(([x, y]) => `${x},${y}`).join(" ")}
                 fill="none"
                 stroke={solid}
-                strokeWidth={0.14}
+                strokeWidth={0.12}
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 strokeDasharray={line.reached ? undefined : "0.22 0.16"}
