@@ -2,15 +2,13 @@
 
 import { useState } from "react";
 
-import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
-import { releasePushSubscription } from "@repo/lib";
 import { Logout } from "@repo/ui";
 
 import { useGetMe } from "@/entities/auth";
 import { useUpdateClientInfo } from "@/entities/mypage";
-import { clearAuthCookies } from "@/shared/utils";
+import { useLogout } from "@/features/logout";
 
 const NAME_MAX_LENGTH = 30;
 
@@ -18,7 +16,7 @@ const NAME_MAX_LENGTH = 30;
 // 외부 사용자는 PATCH /api/users/me 에서 이름만 바꿀 수 있다 (학번·역할을 보내면 403).
 // 바꾼 이름은 다음 Google 로그인 때 덮어써지지 않는다.
 export default function ExternalProfileCard() {
-  const router = useRouter();
+  const handleLogout = useLogout();
   const { data, isLoading, isError } = useGetMe();
   const { mutate: updateMyInfo, isPending: isSaving } = useUpdateClientInfo();
 
@@ -53,13 +51,6 @@ export default function ExternalProfileCard() {
     );
   };
 
-  const handleLogout = async () => {
-    // 토큰이 있어야 서버 구독을 해제할 수 있어 쿠키보다 먼저 정리한다.
-    await releasePushSubscription();
-    clearAuthCookies();
-    router.replace("/signin");
-    router.refresh();
-  };
 
   return (
     <section className="w-full rounded-xl bg-white p-6 shadow-[0_2px_6px_rgba(0,0,0,0.15)]">

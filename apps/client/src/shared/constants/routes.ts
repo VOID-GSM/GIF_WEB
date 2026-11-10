@@ -1,9 +1,6 @@
 // 비로그인·외부 사용자가 머무는 공개 프로젝트 목록
 export const PUBLIC_HOME_PATH = "/projects";
 
-// 로그인 흐름에 쓰이는 페이지 — 로그인 후 복귀 경로로 쓰면 루프가 생긴다.
-export const AUTH_FLOW_PATHS = ["/signin", "/callback", "/signup"];
-
 // 로그인 없이 접근할 수 있는 경로 (하위 경로 포함)
 const PUBLIC_PATH_PREFIXES = ["/signin", "/callback", "/intro"];
 

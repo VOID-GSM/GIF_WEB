@@ -2,7 +2,7 @@
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { SidebarProps } from "@repo/ui";
-import { releasePushSubscription, removeCookieValue } from "@repo/lib";
+import { buildSigninPath, getCurrentPath, logout } from "@repo/lib";
 import ThemeToggle from "../../Theme/ui/ThemeToggle";
 import Logout from "../../../svg/Logout";
 import NotificationBell from "../../Notification/ui/NotificationBell";
@@ -18,11 +18,7 @@ export default function Sidebar({
   const router = useRouter();
 
   const handleLogout = async () => {
-    // 토큰이 있어야 서버 구독을 해제할 수 있어 쿠키보다 먼저 정리한다.
-    await releasePushSubscription();
-    removeCookieValue("access_token");
-    removeCookieValue("client_role");
-    removeCookieValue("account_type");
+    await logout();
     onClose();
     router.replace("/signin");
     router.refresh();
@@ -31,7 +27,7 @@ export default function Sidebar({
   // 로그인 후 지금 보던 페이지로 돌아올 수 있도록 현재 경로를 함께 넘긴다.
   const handleSignin = () => {
     onClose();
-    router.push(`/signin?redirect=${encodeURIComponent(pathname)}`);
+    router.push(buildSigninPath(getCurrentPath()));
   };
 
   // 경로가 겹치는 항목(예: /inquiry, /inquiry/admin)이 동시에 활성화되지 않도록
