@@ -1,17 +1,23 @@
 "use client";
 
+import { useEffect, useRef } from "react";
+
 import { useRouter } from "next/navigation";
 
 import { DeadlineStatusSection, FormListSection, ProjectInfo } from "@repo/ui";
 
 import { useAuthSession } from "@/entities/auth";
+import { useIncreaseProjectView } from "@/entities/engagement";
 import { getDeadlineSummary, useGetForms } from "@/entities/form";
 import { useGetMyProject, useGetPublicProject } from "@/entities/project";
 import { useRequireLogin } from "@/features/auth-guard";
+import { LikeButton } from "@/features/project-like";
+import { CommentIcon, EyeIcon } from "@/shared/ui/EngagementIcons";
 
 import AiSummarySection from "@/widgets/project-detail/ui/AiSummarySection";
 import ProjectLinkSection from "@/widgets/project-detail/ui/ProjectLinkSection";
 import ScheduleSection from "@/widgets/project-detail/ui/ScheduleSection";
+import { ProjectCommentSection } from "@/widgets/project-comment";
 
 interface ProjectDetailViewProps {
   projectId: number;
@@ -34,6 +40,17 @@ export default function ProjectDetailView({
     canManageTeam && (myProjects?.some((p) => p.id === projectId) ?? false);
 
   const { data: forms } = useGetForms(projectId, { enabled: isMine });
+
+  // 조회수 — 프로젝트가 로드되면 projectId당 한 번만 집계 (StrictMode 이중 실행 방지)
+  const { mutate: increaseView } = useIncreaseProjectView(projectId);
+  const viewedProjectId = useRef<number | null>(null);
+  const isLoaded = !!project;
+
+  useEffect(() => {
+    if (!isLoaded || viewedProjectId.current === projectId) return;
+    viewedProjectId.current = projectId;
+    increaseView();
+  }, [isLoaded, projectId, increaseView]);
 
   const goToEdit = () => {
     const editPath = `/projects/${projectId}/edit`;
@@ -91,6 +108,23 @@ export default function ProjectDetailView({
           )}
         </div>
 
+        {/* 참여 지표 — 조회수 · 좋아요 · 댓글 수 */}
+        <div className="mt-6 flex items-center gap-4 text-sm text-gray-600">
+          <span className="flex items-center gap-1.5" aria-label="조회수">
+            <EyeIcon className="h-4 w-4" />
+            {project.viewCount.toLocaleString()}
+          </span>
+          <LikeButton
+            projectId={projectId}
+            isLiked={project.isLiked}
+            likeCount={project.likeCount}
+          />
+          <span className="flex items-center gap-1.5" aria-label="댓글 수">
+            <CommentIcon className="h-4 w-4" />
+            {project.commentCount.toLocaleString()}
+          </span>
+        </div>
+
         {/* 마감현황 · 양식 목록 (좌) / 일정 캘린더 (우) — 내 팀일 때만 */}
         {/* 프로젝트 설명 ↔ 마감현황 간격 56px */}
         {isMine && (
@@ -121,6 +155,11 @@ export default function ProjectDetailView({
             </button>
           </div>
         )}
+
+        {/* 댓글 — 누구나 조회, 로그인 사용자만 작성 */}
+        <div className="mt-[60px]">
+          <ProjectCommentSection projectId={projectId} />
+        </div>
 
         {/* 비로그인 — 우리 팀 프로젝트라면 로그인 후 관리할 수 있도록 안내 */}
         {isGuest && (
