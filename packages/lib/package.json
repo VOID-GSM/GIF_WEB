@@ -5,7 +5,8 @@
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./cookie-keys": "./src/cookie-keys.ts"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.0.0",

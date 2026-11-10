@@ -22,13 +22,19 @@ const INTRO_NAV: IntroNavItem[] = [
 interface IntroHeaderProps {
   /** 로그인 페이지 경로 */
   signinHref?: string;
+  /** 공개 프로젝트 목록 경로 (client 전용) */
+  projectsHref?: string;
 }
 
 export default function IntroHeader({
   signinHref = "/signin",
+  projectsHref,
 }: IntroHeaderProps) {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
+  const navItems = projectsHref
+    ? [...INTRO_NAV, { label: "프로젝트 둘러보기", path: projectsHref }]
+    : INTRO_NAV;
 
   return (
     <>
@@ -51,7 +57,7 @@ export default function IntroHeader({
 
           {/* 데스크톱 중앙 메뉴 */}
           <nav className="pointer-events-none absolute inset-0 hidden items-center justify-center md:flex">
-            {INTRO_NAV.map(({ label, path }) => (
+            {navItems.map(({ label, path }) => (
               <Link
                 key={path}
                 href={path}
@@ -99,7 +105,7 @@ export default function IntroHeader({
           ${isOpen ? "translate-x-0 opacity-100" : "translate-x-full opacity-0"}`}
       >
         <div className="flex flex-col gap-2 py-4">
-          {INTRO_NAV.map(({ label, path }) => (
+          {navItems.map(({ label, path }) => (
             <Link
               key={path}
               href={path}

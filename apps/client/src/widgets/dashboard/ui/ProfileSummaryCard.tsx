@@ -1,12 +1,9 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { releasePushSubscription } from "@repo/lib";
 import { Logout } from "@repo/ui";
 import { useGetMyInfo } from "@/entities/mypage";
 import { useGetMyProject, useGetProject } from "@/entities/project";
-import { COOKIE_KEYS } from "@/shared/constants";
-import { deleteCookie } from "@/shared/utils";
+import { useLogout } from "@/features/logout";
 
 const CLIENT_ROLE_LABEL: Record<string, string> = {
   LEADER: "팀장",
@@ -14,7 +11,7 @@ const CLIENT_ROLE_LABEL: Record<string, string> = {
 };
 
 export default function ProfileSummaryCard() {
-  const router = useRouter();
+  const handleLogout = useLogout();
   const { data, isLoading, isError } = useGetMyInfo();
   const { data: myProjects, isLoading: isProjectsLoading } = useGetMyProject();
   const projectId = data?.projectId || myProjects?.[0]?.id;
@@ -36,13 +33,6 @@ export default function ProfileSummaryCard() {
   const loading =
     isLoading || isProjectsLoading || (hasProjectId && isProjectDetailLoading);
 
-  const handleLogout = async () => {
-    // 토큰이 있어야 서버 구독을 해제할 수 있어 쿠키보다 먼저 정리한다.
-    await releasePushSubscription();
-    deleteCookie(COOKIE_KEYS.ACCESS_TOKEN);
-    router.replace("/signin");
-    router.refresh();
-  };
 
   return (
     <section className="w-full rounded-xl bg-white p-6 shadow-[0_2px_6px_rgba(0,0,0,0.15)]">

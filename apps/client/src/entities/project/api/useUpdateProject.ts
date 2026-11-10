@@ -3,6 +3,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
+import { projectQueryKeys } from "../model/queryKeys";
 import { updateProject } from "./projectApi";
 import type { UpdateProjectRequest } from "../model/types";
 
@@ -13,11 +14,11 @@ export function useUpdateProject(projectId: number) {
     mutationFn: (data: UpdateProjectRequest) => updateProject(projectId, data),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["project", "detail", projectId],
+        queryKey: projectQueryKeys.detail(projectId),
       });
       queryClient.invalidateQueries({ queryKey: ["project", "me"] });
       // 메인 페이지 카드(학년별 목록)도 수정 내용 즉시 반영
-      queryClient.invalidateQueries({ queryKey: ["project", "filter"] });
+      queryClient.invalidateQueries({ queryKey: projectQueryKeys.filters() });
       // 멤버 추가/삭제로 소속 팀·역할이 바뀔 수 있어 마이페이지(users/me)도 갱신한다.
       queryClient.invalidateQueries({ queryKey: ["auth", "me"] });
       toast.success("프로젝트가 수정되었습니다.");

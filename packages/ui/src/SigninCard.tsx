@@ -7,6 +7,13 @@ type SigninProvider = "datagsm" | "google";
 interface SigninCardProps {
   onLogin: () => void;
   provider?: SigninProvider;
+  // 두 번째 로그인 수단 (예: client 의 외부 방문객용 Google 로그인)
+  secondary?: {
+    provider: SigninProvider;
+    onLogin: () => void;
+    // 버튼 위에 붙는 안내 문구
+    caption?: string;
+  };
 }
 
 const GoogleLogo = () => (
@@ -61,12 +68,17 @@ const PROVIDER_CONFIG: Record<
   },
 };
 
+const buttonBaseClassName =
+  "w-full md:w-[250px] h-7 rounded flex items-center justify-center gap-2.5 overflow-hidden cursor-pointer";
+
 export default function SigninCard({
   onLogin,
   provider = "datagsm",
+  secondary,
 }: SigninCardProps) {
   const { description, buttonLabel, buttonClassName, logo } =
     PROVIDER_CONFIG[provider];
+  const secondaryConfig = secondary && PROVIDER_CONFIG[secondary.provider];
 
   return (
     <div className="flex flex-col md:flex-row shadow-new rounded-[20px] overflow-hidden w-full max-w-[360px] md:max-w-none md:w-auto">
@@ -109,11 +121,28 @@ export default function SigninCard({
           <button
             type="button"
             onClick={onLogin}
-            className={`w-full md:w-[250px] h-7 rounded flex items-center justify-center gap-2.5 overflow-hidden cursor-pointer ${buttonClassName}`}
+            className={`${buttonBaseClassName} ${buttonClassName}`}
           >
             {logo}
             <span className="text-[12px] font-medium">{buttonLabel}</span>
           </button>
+          {secondary && secondaryConfig && (
+            <div className="flex flex-col gap-2 border-t border-gray-100 pt-4">
+              {secondary.caption && (
+                <p className="text-[11px] text-gray-500">{secondary.caption}</p>
+              )}
+              <button
+                type="button"
+                onClick={secondary.onLogin}
+                className={`${buttonBaseClassName} ${secondaryConfig.buttonClassName}`}
+              >
+                {secondaryConfig.logo}
+                <span className="text-[12px] font-medium">
+                  {secondaryConfig.buttonLabel}
+                </span>
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>

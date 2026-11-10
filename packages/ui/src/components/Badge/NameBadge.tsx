@@ -1,7 +1,8 @@
 import { Close } from "../..";
 
 interface NameBadgeProps {
-  id: number;
+  // 학번 — 공개 응답처럼 학번이 없으면 이름만 표시한다.
+  id?: number;
   name: string;
   isEditable: boolean;
   onRemove?: () => void;
@@ -25,7 +26,7 @@ export default function NameBadge({
       ${isEditable ? "px-4" : "px-[26.5px]"}`}
     >
       <span className="font-medium text-gray-900">
-        {id} {name}
+        {id === undefined ? name : `${id} ${name}`}
       </span>
       {isEditable && (
         <button

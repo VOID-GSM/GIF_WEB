@@ -2,6 +2,7 @@ export {
   createProject,
   getMyProject,
   getProject,
+  getPublicProject,
   getProjectSummary,
   updateProject,
   updateProjectDescription,
@@ -15,7 +16,7 @@ export {
 } from "./api/projectLinkApi";
 export { useCreateProject } from "./api/useCreateProject";
 export { useSearchUsers } from "./api/useSearchUsers";
-export { useGetProject } from "./api/useGetProject";
+export { useGetProject, useGetPublicProject } from "./api/useGetProject";
 export { useGetProjectSummary } from "./api/useGetProjectSummary";
 export { useUpdateProject } from "./api/useUpdateProject";
 export { useUpdateProjectDescription } from "./api/useUpdateProjectDescription";
@@ -28,12 +29,16 @@ export { useGetFilteredProjects } from "./hooks/useGetFilteredProjects";
 export { useStoredGrade } from "./hooks/useStoredGrade";
 export { default as ProjectCard } from "./ui/ProjectCard";
 export { GRADES } from "./model/types";
+export { projectQueryKeys } from "./model/queryKeys";
 export type {
   CreateProjectRequest,
   ProjectResponse,
   ProjectDetail,
+  ProjectDetailResponse,
+  PublicProjectDetail,
   ProjectSummaryResponse,
   ProjectMember,
+  PublicProjectMember,
   ProjectLink,
   ProjectLinkRequest,
   GetProjectLinksResponse,

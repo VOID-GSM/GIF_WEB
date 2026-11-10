@@ -6,6 +6,8 @@ interface IntroLayoutProps {
   children: ReactNode;
   /** 로그아웃 후 이동할 경로 */
   signinHref?: string;
+  /** 공개 프로젝트 목록 경로 — 전달하면 메뉴에 "프로젝트 둘러보기"가 추가된다 */
+  projectsHref?: string;
 }
 
 /**
@@ -14,10 +16,11 @@ interface IntroLayoutProps {
 export default function IntroLayout({
   children,
   signinHref = "/signin",
+  projectsHref,
 }: IntroLayoutProps) {
   return (
     <div className="min-h-screen w-full overflow-x-hidden bg-white text-gray-900">
-      <IntroHeader signinHref={signinHref} />
+      <IntroHeader signinHref={signinHref} projectsHref={projectsHref} />
       {children}
       <IntroFooter />
     </div>

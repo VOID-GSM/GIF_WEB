@@ -1,5 +1,11 @@
+import { Suspense } from "react";
+
 import SignupView from "@/views/signup/ui/SignupView";
 
 export default function SignupPage() {
-  return <SignupView />;
+  return (
+    <Suspense>
+      <SignupView />
+    </Suspense>
+  );
 }

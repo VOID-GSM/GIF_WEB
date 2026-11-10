@@ -2,22 +2,32 @@
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { SidebarProps } from "@repo/ui";
-import { releasePushSubscription, removeCookieValue } from "@repo/lib";
+import { buildSigninPath, getCurrentPath, logout } from "@repo/lib";
 import ThemeToggle from "../../Theme/ui/ThemeToggle";
 import Logout from "../../../svg/Logout";
 import NotificationBell from "../../Notification/ui/NotificationBell";
 
-export default function Sidebar({ navItems, isOpen, onClose }: SidebarProps) {
+export default function Sidebar({
+  navItems,
+  isOpen,
+  onClose,
+  isGuest = false,
+  homePath = "/",
+}: SidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
 
   const handleLogout = async () => {
-    // 토큰이 있어야 서버 구독을 해제할 수 있어 쿠키보다 먼저 정리한다.
-    await releasePushSubscription();
-    removeCookieValue("access_token");
+    await logout();
     onClose();
     router.replace("/signin");
     router.refresh();
+  };
+
+  // 로그인 후 지금 보던 페이지로 돌아올 수 있도록 현재 경로를 함께 넘긴다.
+  const handleSignin = () => {
+    onClose();
+    router.push(buildSigninPath(getCurrentPath()));
   };
 
   // 경로가 겹치는 항목(예: /inquiry, /inquiry/admin)이 동시에 활성화되지 않도록
@@ -41,7 +51,7 @@ export default function Sidebar({ navItems, isOpen, onClose }: SidebarProps) {
         <button
           className="flex items-center transition hover:opacity-80 cursor-pointer"
           onClick={() => {
-            router.push("/");
+            router.push(homePath);
             onClose();
           }}
         >
@@ -56,7 +66,9 @@ export default function Sidebar({ navItems, isOpen, onClose }: SidebarProps) {
         </button>
 
         {/* 모바일에서는 상단 헤더(Navbar)에 벨이 있으므로 사이드바에서는 숨긴다. */}
-        <NotificationBell align="left" className="hidden md:block" />
+        {!isGuest && (
+          <NotificationBell align="left" className="hidden md:block" />
+        )}
       </div>
 
       {navItems.map(({ label, path }) => {
@@ -82,6 +94,15 @@ export default function Sidebar({ navItems, isOpen, onClose }: SidebarProps) {
       })}
 
       <div className="mt-auto flex flex-col gap-2 pt-3">
+        {isGuest ? (
+          <button
+            type="button"
+            onClick={handleSignin}
+            className="flex h-[40px] w-full cursor-pointer items-center justify-center rounded-[10px] border border-yellow-600 bg-yellow-50 text-[13px] font-bold text-gray-900 outline-none transition-colors hover:bg-yellow-100 focus-visible:bg-yellow-100"
+          >
+            로그인
+          </button>
+        ) : (
         <button
           type="button"
           onClick={handleLogout}
@@ -90,6 +111,7 @@ export default function Sidebar({ navItems, isOpen, onClose }: SidebarProps) {
           <Logout className="h-[13px] w-[16px]" aria-hidden="true" />
           로그아웃
         </button>
+        )}
 
         <ThemeToggle />
       </div>

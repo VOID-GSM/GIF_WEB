@@ -3,34 +3,38 @@ import type { ReactNode } from "react";
 import NameBadge from "../../../components/Badge/NameBadge";
 import ProjectLogo from "../../../components/ProjectLogo/ProjectLogo";
 
+// 비로그인·외부 사용자용 공개 응답에는 userId·학번이 없다.
 interface ProjectInfoMember {
-  userId: number;
-  name: string;
-  studentNumber: string;
+  userId?: number;
+  name: string | null;
+  studentNumber?: string;
   role: string;
 }
 
-interface ProjectInfoProps {
+interface ProjectInfoProps<TMember extends ProjectInfoMember> {
   project: {
     name: string;
     teamName: string;
     description: string;
     logo: string;
-    members: ProjectInfoMember[];
+    members: TMember[];
   };
   // 로고 영역과 설명 사이에 들어가는 AI 요약 배너 슬롯 (없으면 설명이 로고 바로 아래)
   summary?: ReactNode;
   // 팀원 배지 클릭 핸들러 (예: admin 상세에서 MASTER 관리자가 팀장을 양도).
   // 전달되면 팀원 배지가 클릭 가능해진다.
-  onMemberClick?: (member: ProjectInfoMember) => void;
+  onMemberClick?: (member: TMember) => void;
 }
 
+const toStudentNumber = (studentNumber?: string) =>
+  studentNumber ? Number(studentNumber) : undefined;
+
 // 읽기(잠금) 모드의 프로젝트 정보 영역 — 생성 페이지와 동일한 레이아웃 (admin·client 공용)
-export default function ProjectInfo({
+export default function ProjectInfo<TMember extends ProjectInfoMember>({
   project,
   summary,
   onMemberClick,
-}: ProjectInfoProps) {
+}: ProjectInfoProps<TMember>) {
   const readonlyValue = "text-2xl text-gray-900 font-medium";
 
   // 팀장(LEADER)을 항상 팀원 목록 맨 앞에 표시 (양도 시 새 팀장이 앞으로 이동)
@@ -71,28 +75,29 @@ export default function ProjectInfo({
               <span className="text-2xl font-medium text-gray-700">팀원</span>
             </div>
             <div className="flex flex-1 flex-wrap items-center gap-2">
-              {orderedMembers.map((member) => {
+              {orderedMembers.map((member, index) => {
+                const key = member.userId ?? `${member.name}-${index}`;
                 // 팀장(LEADER)은 양도 대상이 아니므로 클릭 가능한 버튼으로 렌더링하지 않는다.
                 const isClickable = onMemberClick && member.role !== "LEADER";
                 return isClickable ? (
                   <button
-                    key={member.userId}
+                    key={key}
                     type="button"
                     onClick={() => onMemberClick(member)}
                     className="cursor-pointer"
                   >
                     <NameBadge
-                      id={Number(member.studentNumber)}
-                      name={member.name}
+                      id={toStudentNumber(member.studentNumber)}
+                      name={member.name ?? "-"}
                       isEditable={false}
                       color="gray"
                     />
                   </button>
                 ) : (
                   <NameBadge
-                    key={member.userId}
-                    id={Number(member.studentNumber)}
-                    name={member.name}
+                    key={key}
+                    id={toStudentNumber(member.studentNumber)}
+                    name={member.name ?? "-"}
                     isEditable={false}
                     color={member.role === "LEADER" ? "yellow" : "gray"}
                   />
