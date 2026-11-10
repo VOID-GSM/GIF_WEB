@@ -199,13 +199,26 @@ export default function RetrospectiveWriteView({
             />
 
             {/* 같이 보기 모드에서는 사이드 패널이 아래로 내려와 전체 폭을 쓴다 */}
-            {isSplit && <AiAssistPanel compact />}
+            {isSplit && (
+              <AiAssistPanel
+                compact
+                title={title}
+                category={category}
+                content={content}
+                onApply={setContent}
+              />
+            )}
           </div>
 
           {/* 사이드 패널 */}
           {!isSplit && (
             <div className="w-full shrink-0 lg:w-[260px]">
-              <AiAssistPanel />
+              <AiAssistPanel
+                title={title}
+                category={category}
+                content={content}
+                onApply={setContent}
+              />
             </div>
           )}
         </div>
