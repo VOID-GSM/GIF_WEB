@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import { ChangeEvent, DragEvent, useState } from "react";
 import { toast } from "sonner";
 import {
@@ -52,6 +53,7 @@ export default function FileField({
   onChange,
   onUrlChange,
 }: FileFieldProps) {
+  const t = useTranslations("form.file");
   const { mutate: deleteUpload, isPending: isDeleting } = useDeleteFormUpload();
   const { mutate: download, isPending: isDownloading } = useDownloadFile();
   const [isDragging, setIsDragging] = useState(false);
@@ -95,7 +97,7 @@ export default function FileField({
   // 파일 선택 여부·수정 상태와 무관하게 항상 노출되는 허용 형식 안내.
   const formatHint = hasExtensionLimit ? (
     <span className="mt-2 block text-[12px] text-gray-400 font-regular">
-      허용 형식: {extensions.join(", ")} (최대 10MB)
+      {t("allowedWithSize", { extensions: extensions.join(", ") })}
     </span>
   ) : null;
 
@@ -106,12 +108,12 @@ export default function FileField({
       !extensions.includes(getExtension(selected.name))
     ) {
       toast.error(
-        `허용된 파일 형식이 아닙니다. (${extensions.join(", ")} 형식만 업로드 가능)`,
+        t("invalidExtension", { extensions: extensions.join(", ") }),
       );
       return;
     }
     if (selected.size > MAX_FILE_SIZE) {
-      toast.error("파일 용량이 커서 업로드할 수 없습니다. (최대 10MB)");
+      toast.error(t("tooLarge"));
       return;
     }
     onChange(fieldId, selected);
@@ -153,7 +155,7 @@ export default function FileField({
         file?.name ??
         originalFileName ??
         uploadedFilePath?.split("/").pop() ??
-        "첨부파일";
+        t("attachment");
       const size = file?.size ?? fileSize ?? 0;
 
       // 이미지·PDF 는 내려받지 않고 바로 확인할 수 있게 미리보기로 보여준다.
@@ -176,7 +178,7 @@ export default function FileField({
                     if (!isDeleting) handleDelete();
                   }}
                   disabled={isDeleting}
-                  aria-label={`${fileName} 지우기`}
+                  aria-label={t("remove", { fileName })}
                   className="absolute top-2 right-2 flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-black/55 text-white transition-colors hover:bg-black/75 disabled:cursor-default disabled:opacity-50"
                 >
                   <Close width={11} height={11} aria-hidden="true" />
@@ -204,7 +206,7 @@ export default function FileField({
                   disabled={isDownloading}
                   className="ml-auto flex-shrink-0 cursor-pointer font-medium text-gray-700 underline underline-offset-2 transition-colors hover:text-gray-900 disabled:cursor-default disabled:opacity-60"
                 >
-                  {isDownloading ? "내려받는 중..." : "내려받기"}
+                  {isDownloading ? t("downloading") : t("download")}
                 </button>
               )}
             </div>
@@ -283,11 +285,11 @@ export default function FileField({
           <div className="flex flex-col items-center gap-3 my-[30px]">
             <Upload className="text-gray-50" />
             <span className="text-gray-50 font-regular">
-              클릭하거나 파일을 드래그하여 업로드
+              {t("dropHint")}
             </span>
             {hasExtensionLimit && (
               <span className="text-[12px] text-gray-400 font-regular">
-                허용 형식: {extensions.join(", ")}
+                {t("allowed", { extensions: extensions.join(", ") })}
               </span>
             )}
           </div>
@@ -337,7 +339,7 @@ export default function FileField({
               rel="noopener noreferrer"
               className="flex flex-shrink-0 items-center border-l border-gray-80 px-4 text-[13px] font-medium text-gray-700 transition-colors hover:bg-gray-100"
             >
-              열어보기
+              {t("open")}
             </a>
           )}
         </div>
@@ -347,9 +349,7 @@ export default function FileField({
             isInvalid ? "text-red-500" : "text-gray-400"
           }`}
         >
-          {isInvalid
-            ? "http:// 또는 https:// 로 시작하는 링크를 입력해주세요."
-            : "공유 권한을 '링크가 있는 모든 사용자'로 바꾼 뒤 붙여넣어 주세요."}
+          {isInvalid ? t("invalidUrl") : t("shareHint")}
         </span>
       </div>
     );
@@ -362,7 +362,7 @@ export default function FileField({
     return (
       <div className="flex items-center justify-center w-full border border-gray-80 rounded-[10px] py-[30px]">
         <span className="text-gray-400 text-[13px]">
-          {allowUrl ? "제출된 파일·링크 없음" : "업로드된 파일 없음"}
+          {allowUrl ? t("noFileOrLink") : t("noFile")}
         </span>
       </div>
     );
@@ -375,13 +375,13 @@ export default function FileField({
     <div className="flex flex-col gap-3">
       <div
         role="tablist"
-        aria-label="제출 방식"
+        aria-label={t("method")}
         className="inline-flex self-start rounded-[10px] bg-gray-100 p-1"
       >
         {(
           [
-            ["file", "파일 업로드"],
-            ["link", "링크 제출"],
+            ["file", "tabFile"],
+            ["link", "tabLink"],
           ] as const
         ).map(([value, label]) => (
           <button
@@ -396,7 +396,7 @@ export default function FileField({
                 : "text-gray-500 hover:text-gray-700"
             }`}
           >
-            {label}
+            {t(label)}
           </button>
         ))}
       </div>

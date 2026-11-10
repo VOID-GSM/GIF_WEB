@@ -1,4 +1,6 @@
 "use client";
+
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { EventViewModal, EventFormModal } from "@repo/ui";
 
@@ -150,6 +152,7 @@ export default function CalendarField({
   events?: CalendarEvent[];
   onChange?: (fieldId: number, events: CalendarEvent[]) => void;
 }) {
+  const t = useTranslations("form.calendar");
   const todayDate = new Date();
   const todayStr = getDateStr(
     todayDate.getFullYear(),
@@ -177,7 +180,7 @@ export default function CalendarField({
   const monthLabels = Array.from({ length: 7 }, (_, i) => {
     const d = new Date(year, month + (i - 3));
     return {
-      label: `${d.getMonth() + 1}월`,
+      label: t("month", { month: d.getMonth() + 1 }),
       year: d.getFullYear(),
       month: d.getMonth(),
     };
@@ -266,7 +269,7 @@ export default function CalendarField({
           endDate={formTarget.end}
           initialTitle={formTarget.event?.title}
           initialColor={formTarget.event?.color}
-          submitLabel={formTarget.isEditing ? "수정하기" : "추가하기"}
+          submitLabel={formTarget.isEditing ? t("edit") : t("add")}
           showCancel={formTarget.isEditing}
           onSubmit={handleFormSubmit}
           onCancel={handleFormCancel}
