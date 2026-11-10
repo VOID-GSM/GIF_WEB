@@ -52,12 +52,20 @@ const CallbackContent = () => {
       } catch (err) {
         if (!isMounted) return;
 
+        const status = (err as { response?: { status?: number } })?.response
+          ?.status;
         const axiosMessage =
           (err as { response?: { data?: { message?: string } } })?.response
             ?.data?.message;
+        // 서버가 ADMIN이 아닌 계정을 403으로 막아도 client와 같은 고정 문구를 보여준다.
+        if (status === 403) deleteCookie(COOKIE_KEYS.ACCESS_TOKEN);
         const message =
-          axiosMessage ??
-          (err instanceof Error ? err.message : "로그인 중 오류가 발생했습니다.");
+          status === 403
+            ? NOT_ADMIN_MESSAGE
+            : (axiosMessage ??
+              (err instanceof Error
+                ? err.message
+                : "로그인 중 오류가 발생했습니다."));
         setError(message);
         timeoutId = setTimeout(() => {
           if (isMounted) router.replace("/signin");
