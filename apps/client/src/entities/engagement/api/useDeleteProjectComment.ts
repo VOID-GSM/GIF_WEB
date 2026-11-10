@@ -4,6 +4,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { isAxiosError } from "axios";
 import { toast } from "sonner";
 
+import { updateProjectInLists } from "../model/cache";
 import { engagementQueryKeys } from "../model/queryKeys";
 import type { ProjectEngagementFields } from "../model/types";
 import { deleteProjectComment } from "./engagementApi";
@@ -30,9 +31,10 @@ export function useDeleteProjectComment(projectId: number) {
             ? { ...old, commentCount: Math.max(0, old.commentCount - 1) }
             : old,
       );
-      queryClient.invalidateQueries({
-        queryKey: engagementQueryKeys.projectFilter(),
-      });
+      updateProjectInLists(queryClient, projectId, (project) => ({
+        ...project,
+        commentCount: Math.max(0, project.commentCount - 1),
+      }));
       toast.success("댓글이 삭제되었습니다.");
     },
     onError: (error) => {

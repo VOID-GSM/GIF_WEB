@@ -4,6 +4,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { isAxiosError } from "axios";
 import { toast } from "sonner";
 
+import { updateProjectInLists } from "../model/cache";
 import { engagementQueryKeys } from "../model/queryKeys";
 import type {
   CreateCommentRequest,
@@ -38,9 +39,10 @@ export function useCreateProjectComment(projectId: number) {
         engagementQueryKeys.projectDetail(projectId),
         (old) => (old ? { ...old, commentCount: old.commentCount + 1 } : old),
       );
-      queryClient.invalidateQueries({
-        queryKey: engagementQueryKeys.projectFilter(),
-      });
+      updateProjectInLists(queryClient, projectId, (project) => ({
+        ...project,
+        commentCount: project.commentCount + 1,
+      }));
       toast.success("댓글이 등록되었습니다.");
     },
     onError: (error) => {
