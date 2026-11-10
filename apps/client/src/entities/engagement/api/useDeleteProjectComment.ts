@@ -24,8 +24,8 @@ export function useDeleteProjectComment(projectId: number) {
       queryClient.invalidateQueries({
         queryKey: engagementQueryKeys.comments(projectId),
       });
-      queryClient.setQueryData<ProjectEngagementFields>(
-        engagementQueryKeys.projectDetail(projectId),
+      queryClient.setQueriesData<ProjectEngagementFields>(
+        { queryKey: engagementQueryKeys.projectDetail(projectId) },
         (old) =>
           old
             ? { ...old, commentCount: Math.max(0, old.commentCount - 1) }

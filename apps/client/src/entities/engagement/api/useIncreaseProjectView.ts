@@ -13,8 +13,8 @@ export function useIncreaseProjectView(projectId: number) {
   return useMutation({
     mutationFn: () => increaseProjectView(projectId),
     onSuccess: ({ views }) => {
-      queryClient.setQueryData<ProjectEngagementFields>(
-        engagementQueryKeys.projectDetail(projectId),
+      queryClient.setQueriesData<ProjectEngagementFields>(
+        { queryKey: engagementQueryKeys.projectDetail(projectId) },
         (old) => (old ? { ...old, viewCount: views } : old),
       );
     },

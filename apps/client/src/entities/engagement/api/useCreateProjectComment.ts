@@ -35,8 +35,8 @@ export function useCreateProjectComment(projectId: number) {
       queryClient.invalidateQueries({
         queryKey: engagementQueryKeys.comments(projectId),
       });
-      queryClient.setQueryData<ProjectEngagementFields>(
-        engagementQueryKeys.projectDetail(projectId),
+      queryClient.setQueriesData<ProjectEngagementFields>(
+        { queryKey: engagementQueryKeys.projectDetail(projectId) },
         (old) => (old ? { ...old, commentCount: old.commentCount + 1 } : old),
       );
       updateProjectInLists(queryClient, projectId, (project) => ({

@@ -5,8 +5,8 @@ import { useQuery } from "@tanstack/react-query";
 import { projectQueryKeys } from "../model/queryKeys";
 import { getProject, getPublicProject } from "./projectApi";
 
-// 수정 후 무효화가 두 훅에 함께 반영되도록 같은 키를 쓴다.
-// (응답 형태는 로그인 상태로 정해지고, 로그인 상태가 바뀌면 페이지를 새로 불러온다.)
+// 응답 형태가 다른 두 훅은 키를 나눈다 (detail / publicDetail).
+// publicDetail 이 detail 의 하위 키라서 detail(id) prefix 로 무효화하면 둘 다 반영된다.
 
 // 교내 사용자 전용 화면용 상세
 export function useGetProject(projectId: number) {
@@ -20,7 +20,7 @@ export function useGetProject(projectId: number) {
 // 공개 상세 페이지용 — 비로그인·외부 사용자의 공개 응답까지 다룬다.
 export function useGetPublicProject(projectId: number) {
   return useQuery({
-    queryKey: projectQueryKeys.detail(projectId),
+    queryKey: projectQueryKeys.publicDetail(projectId),
     queryFn: () => getPublicProject(projectId),
     enabled: Number.isFinite(projectId),
   });
