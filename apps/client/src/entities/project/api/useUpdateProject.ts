@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
@@ -8,6 +9,7 @@ import { updateProject } from "./projectApi";
 import type { UpdateProjectRequest } from "../model/types";
 
 export function useUpdateProject(projectId: number) {
+  const t = useTranslations("project.toast");
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -21,10 +23,10 @@ export function useUpdateProject(projectId: number) {
       queryClient.invalidateQueries({ queryKey: projectQueryKeys.filters() });
       // 멤버 추가/삭제로 소속 팀·역할이 바뀔 수 있어 마이페이지(users/me)도 갱신한다.
       queryClient.invalidateQueries({ queryKey: ["auth", "me"] });
-      toast.success("프로젝트가 수정되었습니다.");
+      toast.success(t("updated"));
     },
     onError: () => {
-      toast.error("프로젝트 수정에 실패했습니다.");
+      toast.error(t("updateError"));
     },
   });
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
@@ -11,6 +12,7 @@ import { likeProject, unlikeProject } from "./engagementApi";
 // 현재 좋아요 상태(isLiked)에 따라 POST(좋아요) / DELETE(취소)를 보낸다.
 // detailFilter 는 교내용·공개 상세 캐시의 공통 prefix — 두 캐시를 함께 갱신·롤백한다.
 export function useToggleProjectLike(projectId: number) {
+  const t = useTranslations("like.toast");
   const queryClient = useQueryClient();
   const detailFilter = {
     queryKey: engagementQueryKeys.projectDetail(projectId),
@@ -53,7 +55,7 @@ export function useToggleProjectLike(projectId: number) {
       context?.previous.forEach(([queryKey, data]) => {
         queryClient.setQueryData(queryKey, data);
       });
-      toast.error("좋아요 처리에 실패했습니다.");
+      toast.error(t("error"));
     },
   });
 }

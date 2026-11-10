@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useRef, useState, type ChangeEvent } from "react";
 
 import {
@@ -32,6 +33,7 @@ export default function ProjectEditForm({
   project,
   onDone,
 }: ProjectEditFormProps) {
+  const t = useTranslations("project.form");
   const { data: me } = useGetMe();
   const { mutate, isPending } = useUpdateProject(project.id);
   const { mutate: updateDescription, isPending: isDescPending } =
@@ -153,8 +155,7 @@ export default function ProjectEditForm({
               className="h-[160px] w-[240px]"
             />
             <span className="text-center text-xs text-gray-400">
-              프로젝트 목록에 224 x 112px(2:1 비율)로 표시돼요. 비율이 다르면
-              잘릴 수 있어요.
+              {t("logoHint")}
             </span>
           </div>
         ) : (
@@ -175,7 +176,7 @@ export default function ProjectEditForm({
           <div className="flex flex-col gap-1">
             <label className="flex items-center gap-4">
               <span className="shrink-0 text-2xl font-medium text-gray-700">
-                프로젝트명
+                {t("name")}
               </span>
               <input
                 type="text"
@@ -201,7 +202,7 @@ export default function ProjectEditForm({
             <div className="flex items-center justify-between">
               {errors.projectName ? (
                 <span className="text-xs text-red-500">
-                  프로젝트명을 입력해주세요
+                  {t("nameRequired")}
                 </span>
               ) : (
                 <span />
@@ -217,7 +218,7 @@ export default function ProjectEditForm({
           <div className="flex flex-col gap-1">
             <label className="flex items-center gap-4">
               <span className="shrink-0 text-2xl font-medium text-gray-700">
-                팀명
+                {t("teamName")}
               </span>
               <input
                 type="text"
@@ -239,7 +240,7 @@ export default function ProjectEditForm({
             <div className="flex items-center justify-between">
               {errors.teamName ? (
                 <span className="text-xs text-red-500">
-                  팀명을 입력해주세요
+                  {t("teamNameRequired")}
                 </span>
               ) : (
                 <span />
@@ -272,7 +273,7 @@ export default function ProjectEditForm({
             // 팀원 — 팀원 목록 수정 불가, 읽기 전용으로 표시
             <div className="flex items-start gap-4">
               <div className="flex h-9 shrink-0 items-center">
-                <span className="text-2xl font-medium text-gray-700">팀원</span>
+                <span className="text-2xl font-medium text-gray-700">{t("members")}</span>
               </div>
               <div className="flex flex-1 flex-wrap items-center gap-2">
                 {project.members.map((member) => (
@@ -292,20 +293,20 @@ export default function ProjectEditForm({
 
       <section className="flex flex-col gap-3">
         <span className="text-2xl font-medium text-gray-700">
-          프로젝트 설명
+          {t("description")}
         </span>
         <Textarea
           value={description}
           onChange={handleDescriptionChange}
           rows={8}
           maxLength={MAX_DESCRIPTION_LENGTH}
-          title="500자 이내로 작성해주세요"
+          title={t("descriptionLimit")}
           className={errors.description ? "border-red-500" : ""}
         />
         <div className="flex items-center justify-between">
           {errors.description ? (
             <span className="text-xs text-red-500">
-              프로젝트 설명을 입력해주세요
+              {t("descriptionRequired")}
             </span>
           ) : (
             <span />
@@ -318,7 +319,7 @@ export default function ProjectEditForm({
 
       <div className="flex justify-center">
         <SubmitButton disabled={isPending || isDescPending}>
-          완료하기
+          {t("submit")}
         </SubmitButton>
       </div>
     </form>

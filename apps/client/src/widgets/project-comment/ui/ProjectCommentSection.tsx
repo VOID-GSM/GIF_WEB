@@ -1,5 +1,6 @@
 "use client";
 
+import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 
 import { useAuthSession } from "@/entities/auth";
@@ -19,6 +20,7 @@ interface ProjectCommentSectionProps {
 
 // 댓글 작성 폼 — 비로그인이면 입력 영역이 로그인 안내 역할을 한다.
 function CommentForm({ projectId }: ProjectCommentSectionProps) {
+  const t = useTranslations("comment");
   const { isGuest } = useAuthSession();
   const requireLogin = useRequireLogin();
   const createComment = useCreateProjectComment(projectId);
@@ -43,7 +45,7 @@ function CommentForm({ projectId }: ProjectCommentSectionProps) {
         onClick={() => requireLogin(() => {})}
         className="flex h-[96px] w-full cursor-pointer items-start rounded-[12px] border border-gray-200 bg-white px-4 py-3 text-left text-sm text-gray-400 transition-colors hover:border-yellow-600"
       >
-        로그인하고 댓글을 남겨보세요.
+        {t("loginPrompt")}
       </button>
     );
   }
@@ -58,8 +60,8 @@ function CommentForm({ projectId }: ProjectCommentSectionProps) {
         onChange={(e) => setContent(e.target.value)}
         maxLength={COMMENT_MAX_LENGTH}
         rows={3}
-        placeholder="프로젝트에 대한 의견을 남겨주세요."
-        aria-label="댓글 입력"
+        placeholder={t("placeholder")}
+        aria-label={t("inputLabel")}
         className="w-full resize-none bg-transparent text-sm text-gray-900 outline-none placeholder:text-gray-400"
       />
       <div className="flex items-center justify-end gap-3">
@@ -71,7 +73,7 @@ function CommentForm({ projectId }: ProjectCommentSectionProps) {
           disabled={!canSubmit}
           className="rounded-full bg-yellow-600 px-5 py-1.5 text-sm font-semibold text-gray-900 transition-opacity hover:opacity-90 disabled:cursor-default disabled:opacity-40"
         >
-          {createComment.isPending ? "등록 중..." : "등록"}
+          {createComment.isPending ? t("submitting") : t("submit")}
         </button>
       </div>
     </form>
@@ -85,10 +87,12 @@ interface CommentItemProps {
 
 // 댓글 한 줄 — 본인 댓글이면 2단계(삭제 → 확인/취소)로 삭제한다.
 function CommentItem({ projectId, comment }: CommentItemProps) {
+  const t = useTranslations("comment");
+  const locale = useLocale();
   const deleteComment = useDeleteProjectComment(projectId);
   const [confirming, setConfirming] = useState(false);
   const { author } = comment;
-  const authorName = author.name ?? "알 수 없음";
+  const authorName = author.name ?? t("unknown");
 
   return (
     <li className="flex gap-3 py-4">
@@ -118,14 +122,14 @@ function CommentItem({ projectId, comment }: CommentItemProps) {
             dateTime={comment.createdAt}
             className="shrink-0 text-xs text-gray-500"
           >
-            {formatRelativeTime(comment.createdAt)}
+            {formatRelativeTime(comment.createdAt, locale)}
           </time>
 
           {comment.isMine && (
             <div className="ml-auto flex shrink-0 items-center gap-2 text-xs">
               {confirming ? (
                 <>
-                  <span className="text-gray-500">삭제할까요?</span>
+                  <span className="text-gray-500">{t("deleteConfirm")}</span>
                   <button
                     type="button"
                     disabled={deleteComment.isPending}
@@ -136,7 +140,7 @@ function CommentItem({ projectId, comment }: CommentItemProps) {
                     }
                     className="cursor-pointer font-semibold text-red-600 disabled:cursor-default disabled:opacity-50"
                   >
-                    확인
+                    {t("confirm")}
                   </button>
                   <button
                     type="button"
@@ -144,7 +148,7 @@ function CommentItem({ projectId, comment }: CommentItemProps) {
                     onClick={() => setConfirming(false)}
                     className="cursor-pointer text-gray-500 hover:text-gray-700"
                   >
-                    취소
+                    {t("cancel")}
                   </button>
                 </>
               ) : (
@@ -153,7 +157,7 @@ function CommentItem({ projectId, comment }: CommentItemProps) {
                   onClick={() => setConfirming(true)}
                   className="cursor-pointer text-gray-500 hover:text-gray-700"
                 >
-                  삭제
+                  {t("delete")}
                 </button>
               )}
             </div>
@@ -171,6 +175,7 @@ function CommentItem({ projectId, comment }: CommentItemProps) {
 export default function ProjectCommentSection({
   projectId,
 }: ProjectCommentSectionProps) {
+  const t = useTranslations("comment");
   const {
     data,
     isPending,
@@ -196,21 +201,21 @@ export default function ProjectCommentSection({
     if (isPending) {
       return (
         <p className="py-8 text-center text-sm text-gray-500">
-          댓글을 불러오는 중...
+          {t("loading")}
         </p>
       );
     }
     if (isError) {
       return (
         <p className="py-8 text-center text-sm text-gray-500">
-          댓글을 불러오지 못했습니다.
+          {t("loadError")}
         </p>
       );
     }
     if (comments.length === 0) {
       return (
         <p className="py-8 text-center text-sm text-gray-500">
-          첫 댓글을 남겨보세요.
+          {t("empty")}
         </p>
       );
     }
@@ -230,7 +235,10 @@ export default function ProjectCommentSection({
   return (
     <section className="flex flex-col gap-4">
       <h2 className="text-lg font-semibold text-gray-900">
-        댓글 <span className="text-yellow-700">{total.toLocaleString()}</span>
+        {t.rich("count", {
+          count: total.toLocaleString(),
+          hl: (chunks) => <span className="text-yellow-700">{chunks}</span>,
+        })}
       </h2>
 
       <CommentForm projectId={projectId} />
@@ -244,7 +252,7 @@ export default function ProjectCommentSection({
           disabled={isFetchingNextPage}
           className="mx-auto cursor-pointer rounded-full border border-gray-200 px-6 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100 disabled:cursor-default disabled:opacity-50"
         >
-          {isFetchingNextPage ? "불러오는 중..." : "더보기"}
+          {isFetchingNextPage ? t("loadingMore") : t("more")}
         </button>
       )}
     </section>

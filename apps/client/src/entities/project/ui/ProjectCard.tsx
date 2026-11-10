@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { ProjectLogo } from "@repo/ui";
 
@@ -10,6 +11,7 @@ interface ProjectCardProps {
 }
 
 export default function ProjectCard({ project }: ProjectCardProps) {
+  const t = useTranslations("project.card");
   return (
     <Link
       href={`/projects/${project.id}`}
@@ -24,14 +26,14 @@ export default function ProjectCard({ project }: ProjectCardProps) {
         />
         {/* 좋아요 · 댓글 수 — 로고 우하단 칩 (고정 높이 레이아웃 유지) */}
         <div className="absolute bottom-2 right-2 flex items-center gap-2 rounded-full bg-black/55 px-2.5 py-1 text-[12px] font-medium text-white backdrop-blur-sm">
-          <span className="flex items-center gap-1" aria-label="좋아요 수">
+          <span className="flex items-center gap-1" aria-label={t("likes")}>
             <HeartIcon
               filled={project.isLiked}
               className={`h-3.5 w-3.5 ${project.isLiked ? "text-yellow-500" : ""}`}
             />
             {project.likeCount.toLocaleString()}
           </span>
-          <span className="flex items-center gap-1" aria-label="댓글 수">
+          <span className="flex items-center gap-1" aria-label={t("comments")}>
             <CommentIcon className="h-3.5 w-3.5" />
             {project.commentCount.toLocaleString()}
           </span>

@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useToggleProjectLike } from "@/entities/engagement";
 import { useRequireLogin } from "@/features/auth-guard";
 import { HeartIcon } from "@/shared/ui/EngagementIcons";
@@ -16,6 +17,7 @@ export default function LikeButton({
   isLiked,
   likeCount,
 }: LikeButtonProps) {
+  const t = useTranslations("project.like");
   const requireLogin = useRequireLogin();
   const toggle = useToggleProjectLike(projectId);
 
@@ -25,7 +27,7 @@ export default function LikeButton({
       onClick={() => requireLogin(() => toggle.mutate(isLiked))}
       disabled={toggle.isPending}
       aria-pressed={isLiked}
-      aria-label={isLiked ? "좋아요 취소" : "좋아요"}
+      aria-label={isLiked ? t("unlike") : t("like")}
       className={`flex cursor-pointer items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-medium transition-colors disabled:cursor-default ${
         isLiked
           ? "border-yellow-600 bg-yellow-50 text-yellow-800"
