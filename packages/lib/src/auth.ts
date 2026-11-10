@@ -40,7 +40,8 @@ export function sanitizeReturnPath(value: string | null | undefined) {
     return null;
   }
   // `//evil.com` 처럼 호스트가 바뀌는 값은 막는다.
-  if (url.origin !== URL_BASE) return null;
+  // `/..//evil.com` 처럼 정규화 결과가 `//` 로 시작하면 프로토콜 상대 URL 이 되므로 함께 막는다.
+  if (url.origin !== URL_BASE || url.pathname.startsWith("//")) return null;
   if (isAuthFlowPath(url.pathname)) return null;
 
   return `${url.pathname}${url.search}${url.hash}`;
