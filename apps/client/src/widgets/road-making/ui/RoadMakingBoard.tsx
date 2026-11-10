@@ -199,8 +199,34 @@ function PieceCell({
 // 화살촉 끝이 원점에 오도록 그린 삼각형 (오른쪽을 가리킴)
 const ARROW_LENGTH = 0.26;
 const ARROW_HEAD = `M0,0 L${-ARROW_LENGTH},-0.15 L${-ARROW_LENGTH},0.15 Z`;
-// 사람 칸 중심에서 이만큼 앞에서 선을 끝낸다 (칸 가장자리 근처)
-const END_INSET = 0.32;
+// 사람 칸 중심에서 이만큼 앞에서 선을 끝낸다 (아이콘 바로 바깥)
+const END_INSET = 0.48;
+// 보드 밖으로 나간 선을 칸 중심에서 이만큼 늘린다 (보드 테두리 안쪽까지)
+const EXIT_LENGTH = 0.62;
+// 같은 구간을 지나는 선끼리 비켜 그리는 간격
+const OVERLAP_GAP = 0.12;
+
+// 다른 차와 같은 구간을 지나는 선만 조금씩 비켜 그린다. 혼자 가는 선은 칸 중심을 지난다.
+function overlapOffsets(lines: SimulatedPath[]): number[] {
+  const segments = lines.map(
+    (line) =>
+      new Set(
+        line.path.slice(1).map((p, j) => {
+          const a = cellKey(line.path[j].row, line.path[j].col);
+          const b = cellKey(p.row, p.col);
+          return a < b ? `${a}|${b}` : `${b}|${a}`;
+        }),
+      ),
+  );
+  const overlapping = segments.map((mine, i) =>
+    [...mine].some((s) => segments.some((other, j) => j !== i && other.has(s))),
+  );
+  const count = overlapping.filter(Boolean).length;
+  let rank = 0;
+  return overlapping.map((o) =>
+    o ? (rank++ - (count - 1) / 2) * OVERLAP_GAP : 0,
+  );
+}
 
 // j번째 구간(points[j] → points[j+1])의 단위 방향
 function segmentDir(points: [number, number][], j: number): [number, number] {
@@ -223,6 +249,7 @@ function PathLines({
   lines: SimulatedPath[];
   preview: boolean;
 }) {
+  const offsets = overlapOffsets(lines);
   return (
     <svg
       viewBox={`0 0 ${cols} ${rows}`}
@@ -231,8 +258,7 @@ function PathLines({
     >
       {lines.map((line, i) => {
         const { solid } = ROAD_MAKING_COLORS[line.color];
-        // 여러 차가 같은 칸을 지나가도 선이 겹치지 않도록 조금씩 비켜 그린다.
-        const offset = (i - (lines.length - 1) / 2) * 0.1;
+        const offset = offsets[i];
         const points: [number, number][] = line.path.map((p) => [
           p.col + 0.5 + offset,
           p.row + 0.5 + offset,
@@ -240,7 +266,10 @@ function PathLines({
         if (line.exit) {
           // 보드 밖으로 나간 차는 선을 테두리 너머까지 이어 그린다.
           const [x, y] = points[points.length - 1];
-          points.push([x + line.exit[1] * 0.75, y + line.exit[0] * 0.75]);
+          points.push([
+            x + line.exit[1] * EXIT_LENGTH,
+            y + line.exit[0] * EXIT_LENGTH,
+          ]);
         } else if (points.length >= 2) {
           // 사람 칸에서 멈추면 아이콘에 화살촉이 가려지므로 칸 가장자리에서 끝낸다.
           const [dx, dy] = segmentDir(points, points.length - 2);
