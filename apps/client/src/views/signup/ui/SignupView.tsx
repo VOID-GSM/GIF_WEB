@@ -1,14 +1,21 @@
 "use client";
 
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { useGetMe } from "@/entities/auth";
 import { PositionSelect, type ClientRole } from "@/entities/signup";
+import { SEARCH_PARAM_KEYS } from "@/shared/constants";
+import { buildSignupPath, sanitizeReturnPath } from "@/shared/utils";
 
 export default function SignupView() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  // 로그인 전에 보던 페이지 — 가입을 마치면 이곳으로 돌아간다.
+  const returnTo = sanitizeReturnPath(
+    searchParams.get(SEARCH_PARAM_KEYS.REDIRECT),
+  );
   const [clientRole, setClientRole] = useState<ClientRole | null>(null);
 
   // 회원가입은 첫 로그인(역할 미설정)인 사용자에게만 노출한다.
@@ -17,16 +24,15 @@ export default function SignupView() {
   const alreadySignedUp = !!me?.clientRole;
 
   useEffect(() => {
-    if (alreadySignedUp) router.replace("/");
-  }, [alreadySignedUp, router]);
+    if (alreadySignedUp) router.replace(returnTo ?? "/");
+  }, [alreadySignedUp, returnTo, router]);
 
   const isActive = clientRole !== null;
 
   // 역할을 약관 동의 페이지로 넘긴다. 실제 가입은 약관 동의 후 완료된다.
   const handleNext = () => {
     if (!clientRole) return;
-    const params = new URLSearchParams({ role: clientRole });
-    router.push(`/signup/terms?${params.toString()}`);
+    router.push(buildSignupPath(returnTo, "/signup/terms", { role: clientRole }));
   };
 
   // 로딩 중이거나 이미 가입한 사용자는 폼을 그리지 않는다(폼 깜빡임 방지).

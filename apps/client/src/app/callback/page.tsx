@@ -12,7 +12,12 @@ import {
   OAUTH_SESSION_KEYS,
   PUBLIC_HOME_PATH,
 } from "@/shared/constants";
-import { deleteCookie, sanitizeReturnPath, setCookie } from "@/shared/utils";
+import {
+  buildSignupPath,
+  deleteCookie,
+  sanitizeReturnPath,
+  setCookie,
+} from "@/shared/utils";
 
 // 3학년은 아이디어톤 대상이 아니므로 회원가입/로그인이 차단된다.
 // 백엔드는 403 으로 응답하며, 프론트에서도 방어적으로 학번을 확인한다.
@@ -81,7 +86,12 @@ const CallbackContent = () => {
           return;
         }
 
-        router.replace(data.clientRole ? (returnTo ?? "/") : "/signup");
+        if (data.clientRole) {
+          router.replace(returnTo ?? "/");
+          return;
+        }
+        // 첫 로그인이면 회원가입을 마친 뒤 원래 페이지로 돌아오도록 경로를 넘긴다.
+        router.replace(buildSignupPath(returnTo));
       } catch (err) {
         const status = (err as { response?: { status?: number } })?.response
           ?.status;
