@@ -1,6 +1,8 @@
-// project 엔티티의 키와 같은 형태를 유지해야 캐시가 공유된다.
+import { projectQueryKeys } from "@/entities/project";
+
+// 상세·목록은 project 엔티티의 키를 그대로 써서 같은 캐시를 갱신한다.
 export const engagementQueryKeys = {
-  projectDetail: (projectId: number) => ["project", "detail", projectId] as const,
-  projectFilter: () => ["project", "filter"] as const,
+  projectDetail: projectQueryKeys.detail,
+  projectFilter: projectQueryKeys.filters,
   comments: (projectId: number) => ["project", "comments", projectId] as const,
 };
