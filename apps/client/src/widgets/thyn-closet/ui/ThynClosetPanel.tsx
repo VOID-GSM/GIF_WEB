@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useRef, useState } from "react";
 
 import {
@@ -36,6 +37,8 @@ export default function ThynClosetPanel({
   onToggleItem,
   isLoading = false,
 }: ThynClosetPanelProps) {
+  const t = useTranslations("thyn.closet");
+  const tc = useTranslations("thyn.category");
   const [activeCategory, setActiveCategory] = useState<ThynCategory>("hair");
   const sectionRefs = useRef<Partial<Record<ThynCategory, HTMLElement | null>>>({});
 
@@ -49,7 +52,7 @@ export default function ThynClosetPanel({
       {/* 카테고리 탭 */}
       <nav className="w-[120px] shrink-0 border-r border-gray-300 pt-1.5 pl-1.5">
         <ul>
-          {THYN_CATEGORIES.map(({ key, label }, index) => {
+          {THYN_CATEGORIES.map(({ key }, index) => {
             const isActive = activeCategory === key;
             return (
               <li key={key}>
@@ -65,7 +68,7 @@ export default function ThynClosetPanel({
                       : "border-l border-gray-300 bg-white"
                   }`}
                 >
-                  {label}
+                  {tc(key)}
                 </button>
               </li>
             );
@@ -75,7 +78,7 @@ export default function ThynClosetPanel({
 
       {/* 아이템 목록 */}
       <div className="flex min-w-0 flex-1 flex-col gap-6 overflow-y-auto px-7 py-[18px] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-        {THYN_CATEGORIES.map(({ key, label }) => {
+        {THYN_CATEGORIES.map(({ key }) => {
           const categoryItems = items.filter((item) => item.category === key);
           const ownedCount = categoryItems.filter(isOwned).length;
           // 상점에서는 이미 보유한 아이템을 뒤로 보낸다
@@ -93,16 +96,16 @@ export default function ThynClosetPanel({
               className="flex scroll-mt-[18px] flex-col gap-6"
             >
               <h2 className="flex gap-1 text-[13px] font-semibold leading-[1.2] tracking-[-0.3px]">
-                <span className="text-gray-700">{label}</span>
+                <span className="text-gray-700">{tc(key)}</span>
                 <span className="text-gray-500">
                   ({ownedCount}/{categoryItems.length})
                 </span>
               </h2>
 
               {isLoading ? (
-                <p className="text-[13px] text-gray-500">불러오는 중...</p>
+                <p className="text-[13px] text-gray-500">{t("loading")}</p>
               ) : categoryItems.length === 0 ? (
-                <p className="text-[13px] text-gray-500">아직 아이템이 없어요.</p>
+                <p className="text-[13px] text-gray-500">{t("empty")}</p>
               ) : (
                 <ul className={ITEM_GRID}>
                   {visibleItems.map((item) => (
