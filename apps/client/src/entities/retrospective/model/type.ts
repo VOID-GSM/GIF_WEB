@@ -62,6 +62,8 @@ export interface RetrospectiveQueryParams {
   sort?: RetrospectiveSort;
   /** true면 내가 북마크한 회고록만 조회한다 */
   bookmarkedOnly?: boolean;
+  /** true면 서버에서 내가 작성한 회고록만 조회한다 (GET /api/retrospective?mine=true) */
+  mine?: boolean;
   /** true면 내가 작성한 회고록만 조회한다 */
   mineOnly?: boolean;
 }
