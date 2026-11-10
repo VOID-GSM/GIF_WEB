@@ -8,6 +8,7 @@ export const ADMIN_NAV_ITEMS: NavItem[] = [
   { label: "점수", path: "/score" },
   { label: "통계", path: "/stats" },
   { label: "선생님 관리", path: "/teachers" },
+  { label: "댓글 관리", path: "/comments" },
   { label: "문의", path: "/inquiry" },
   { label: "문의 관리", path: "/inquiry/admin" },
 ];
