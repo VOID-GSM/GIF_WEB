@@ -48,6 +48,11 @@ const CallbackContent = () => {
 
   const [error, setError] = useState<string | null>(null);
   const hasRequested = useRef(false);
+  // t 참조가 바뀌어 effect 가 재실행되면 리다이렉트 타이머만 지워지므로 ref 로 읽는다.
+  const tRef = useRef(t);
+  useEffect(() => {
+    tRef.current = t;
+  }, [t]);
 
   useEffect(() => {
     let timeoutId: ReturnType<typeof setTimeout>;
@@ -55,6 +60,7 @@ const CallbackContent = () => {
     const handleCallback = async () => {
       if (hasRequested.current) return;
       hasRequested.current = true;
+      const t = tRef.current;
 
       const provider = consumeProvider(new URLSearchParams(searchParams));
 
@@ -124,7 +130,7 @@ const CallbackContent = () => {
     return () => {
       if (timeoutId) clearTimeout(timeoutId);
     };
-  }, [router, searchParams, getOAuthCallback, queryClient, t]);
+  }, [router, searchParams, getOAuthCallback, queryClient]);
 
   return (
     <main className="min-h-screen flex items-center justify-center bg-background">
