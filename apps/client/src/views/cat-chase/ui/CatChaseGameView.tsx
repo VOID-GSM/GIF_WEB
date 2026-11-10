@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 import type { CatChaseQuestion } from "@/entities/assessment";
 import {
@@ -32,10 +33,11 @@ type Phase =
   // 제출 응답을 못 받았고 서버에도 저장되지 않은 상태. 같은 판단을 다시 보낸다.
   | { name: "submit-error"; items: CatChaseJudgmentItem[] };
 
+// 단계별 안내 문구 키 (catChase.game.guide.*)
 const PHASE_GUIDE: Partial<Record<Phase["name"], string>> = {
-  mice: "쥐가 숨은 자리를 기억하세요",
-  blank: "쥐가 숨었어요",
-  target: "빨간 고양이가 쥐를 잡았을지 생각해보세요",
+  mice: "mice",
+  blank: "blank",
+  target: "target",
 };
 
 const parseRoundId = (raw: string | null) => {
@@ -45,6 +47,7 @@ const parseRoundId = (raw: string | null) => {
 
 export default function CatChaseGameView() {
   const roundId = parseRoundId(useSearchParams().get("roundId"));
+  const t = useTranslations("catChase.game");
 
   return (
     <PageShell>
@@ -52,7 +55,7 @@ export default function CatChaseGameView() {
         // 다시 하기로 roundId 가 바뀌면 진행 상태를 처음부터 새로 잡는다.
         <CatChaseGame key={roundId} roundId={roundId} />
       ) : (
-        <NoticeCard message="잘못된 검사 요청이에요. 역량검사에서 다시 시작해주세요." />
+        <NoticeCard message={t("invalidRequest")} />
       )}
     </PageShell>
   );
@@ -61,6 +64,7 @@ export default function CatChaseGameView() {
 function CatChaseGame({ roundId }: { roundId: number }) {
   const { data: session, isPending, isError } = useGetCatChaseSession(roundId);
   const [result, setResult] = useState<CatChaseRoundResult | null>(null);
+  const t = useTranslations("catChase.game");
 
   if (isPending) {
     return (
@@ -69,7 +73,7 @@ function CatChaseGame({ roundId }: { roundId: number }) {
   }
 
   if (isError || !session) {
-    return <NoticeCard message="검사 정보를 불러오지 못했어요." />;
+    return <NoticeCard message={t("loadError")} />;
   }
 
   const finalResult = result ?? session.result;
@@ -86,6 +90,7 @@ function CatChasePlay({
   onFinished: (result: CatChaseRoundResult) => void;
 }) {
   const { roundId, questionCount, boardSide } = session;
+  const t = useTranslations("catChase.game");
 
   // session.result 가 없으면 서버가 현재 문항을 함께 내려준다.
   const [question, setQuestion] = useState<CatChaseQuestion>(
@@ -227,13 +232,13 @@ function CatChasePlay({
   if (phase.name === "submit-error") {
     const { items } = phase;
     return (
-      <NoticeCard message="판단을 제출하지 못했어요. 네트워크를 확인하고 다시 시도해주세요.">
+      <NoticeCard message={t("submitError")}>
         <button
           type="button"
           onClick={() => void submit(items)}
           className="h-12 w-full rounded-[12px] bg-yellow-600 text-[16px] font-semibold tracking-[-0.5px] text-white transition-colors hover:bg-yellow-700"
         >
-          다시 제출하기
+          {t("resubmit")}
         </button>
       </NoticeCard>
     );
@@ -248,12 +253,16 @@ function CatChasePlay({
     <div className="flex w-full flex-col items-center gap-4 md:gap-6">
       <header className="flex w-full max-w-[960px] flex-wrap items-center justify-between gap-2">
         <p className="text-[15px] font-medium tracking-[-0.4px] text-gray-700">
-          문항{" "}
-          <span className="font-semibold text-gray-900">{question.sequence}</span>{" "}
-          / {questionCount}
+          {t.rich("progress", {
+            current: question.sequence,
+            total: questionCount,
+            b: (chunks) => (
+              <span className="font-semibold text-gray-900">{chunks}</span>
+            ),
+          })}
           {showQuestion && catCount > 1 && (
             <span className="ml-2 text-gray-500">
-              · 고양이 {questionCatIndex + 1} / {catCount}
+              · {t("catProgress", { current: questionCatIndex + 1, total: catCount })}
             </span>
           )}
         </p>
@@ -262,7 +271,7 @@ function CatChasePlay({
             aria-live="polite"
             className="text-[15px] font-medium tracking-[-0.4px] text-gray-600"
           >
-            {PHASE_GUIDE[phase.name] ?? ""}
+            {PHASE_GUIDE[phase.name] ? t(`guide.${PHASE_GUIDE[phase.name]}`) : ""}
           </p>
           <QuitControl
             isConfirming={isConfirmingQuit}
@@ -310,6 +319,7 @@ function QuitControl({
   onCancel: () => void;
   onConfirm: () => void;
 }) {
+  const t = useTranslations("catChase.game");
   if (!isConfirming) {
     return (
       <button
@@ -318,21 +328,21 @@ function QuitControl({
         disabled={disabled}
         className="text-[13px] text-gray-500 underline-offset-2 hover:text-gray-700 hover:underline disabled:opacity-50"
       >
-        그만두기
+        {t("quit")}
       </button>
     );
   }
 
   return (
     <div className="flex items-center gap-1.5 text-[13px]">
-      <span className="text-gray-600">그만두면 코인을 받을 수 없어요.</span>
+      <span className="text-gray-600">{t("quitWarning")}</span>
       <button
         type="button"
         onClick={onConfirm}
         disabled={isFinishing || disabled}
         className="font-semibold text-red-500 hover:text-red-600 disabled:opacity-50"
       >
-        {isFinishing ? "종료 중…" : "그만두기"}
+        {isFinishing ? t("finishing") : t("quit")}
       </button>
       <button
         type="button"
@@ -340,7 +350,7 @@ function QuitControl({
         disabled={isFinishing}
         className="text-gray-500 hover:text-gray-700 disabled:opacity-50"
       >
-        계속하기
+        {t("continue")}
       </button>
     </div>
   );
@@ -361,6 +371,7 @@ function NoticeCard({
   message: string;
   children?: React.ReactNode;
 }) {
+  const t = useTranslations("catChase.game");
   return (
     <section className="flex h-fit w-full max-w-[480px] flex-col items-center gap-4 rounded-[20px] border border-gray-300 bg-white p-6 text-center md:p-10">
       <p className="text-[16px] font-medium text-gray-800">{message}</p>
@@ -369,7 +380,7 @@ function NoticeCard({
         href="/assessment"
         className="text-[14px] text-gray-500 underline-offset-2 hover:underline"
       >
-        역량검사로 돌아가기
+        {t("backToAssessment")}
       </Link>
     </section>
   );
@@ -385,24 +396,20 @@ function ReadyCard({
   resumeFrom: number | null;
   onStart: () => void;
 }) {
-  const steps = [
-    "보드에 잠깐 나타나는 쥐의 위치를 기억하세요.",
-    "쥐가 숨은 뒤 고양이들이 나타나요.",
-    "빨간 고양이가 쥐를 잡았는지(O) 놓쳤는지(X) 고르고, 얼마나 확신하는지 선택하세요.",
-    "나온 고양이를 모두 맞혀야 그 문항을 맞힌 것으로 계산해요.",
-  ];
+  const t = useTranslations("catChase.game");
+  const steps = [1, 2, 3, 4].map((step) => t(`steps.${step}`));
 
   return (
     <section className="flex h-fit w-full max-w-[640px] flex-col gap-6 rounded-[20px] border border-gray-300 bg-white p-6 md:p-10">
       <div>
         <h1 className="text-[24px] font-semibold tracking-[-0.6px] text-gray-900 md:text-[28px]">
-          고양이 술래잡기
+          {t("title")}
         </h1>
         <p className="mt-1 text-[14px] text-gray-600">
-          총 {questionCount}문항 · 작업 기억
+          {t("summary", { count: questionCount })}
           {resumeFrom && (
             <span className="ml-1 font-medium text-orange-800">
-              · {resumeFrom}번 문항부터 이어서 풀어요
+              · {t("resumeFrom", { sequence: resumeFrom })}
             </span>
           )}
         </p>
@@ -424,21 +431,21 @@ function ReadyCard({
           href="/assessment"
           className="flex h-12 items-center justify-center rounded-[12px] border border-gray-300 px-5 text-[16px] font-medium text-gray-700 transition-colors hover:bg-gray-100"
         >
-          돌아가기
+          {t("back")}
         </Link>
         <button
           type="button"
           onClick={onStart}
           className="h-12 flex-1 rounded-[12px] bg-yellow-600 text-[16px] font-semibold tracking-[-0.5px] text-white transition-colors hover:bg-yellow-700"
         >
-          {resumeFrom ? "이어하기" : "시작하기"}
+          {resumeFrom ? t("resume") : t("start")}
         </button>
       </div>
       <Link
         href="/assessment/cat-chase/records"
         className="self-center text-[14px] text-gray-500 underline-offset-2 hover:underline"
       >
-        내 기록 보기
+        {t("myRecords")}
       </Link>
     </section>
   );

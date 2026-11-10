@@ -19,14 +19,10 @@ export const CAT_CHASE_TIMING = {
   target: 1500,
 } as const;
 
-export const CONFIDENCE_OPTIONS: { value: CatChaseConfidence; label: string }[] =
-  [
-    { value: "VERY_CONFIDENT", label: "매우 확신" },
-    { value: "CONFIDENT", label: "확신" },
-    { value: "SOMEWHAT_UNSURE", label: "조금 헷갈림" },
-    { value: "UNSURE", label: "모르겠음" },
-  ];
-
-export const CONFIDENCE_LABELS = Object.fromEntries(
-  CONFIDENCE_OPTIONS.map(({ value, label }) => [value, label]),
-) as Record<CatChaseConfidence, string>;
+// 확신도 라벨은 번역 리소스(catChase.confidence.<값>)에 있다.
+export const CONFIDENCE_VALUES: CatChaseConfidence[] = [
+  "VERY_CONFIDENT",
+  "CONFIDENT",
+  "SOMEWHAT_UNSURE",
+  "UNSURE",
+];
