@@ -8,6 +8,10 @@
     ".": "./src/index.ts",
     "./server": "./src/server.ts"
   },
+  "scripts": {
+    "lint": "node scripts/check-messages.mjs",
+    "check:messages": "node scripts/check-messages.mjs"
+  },
   "dependencies": {
     "next-intl": "4.4.0"
   },
