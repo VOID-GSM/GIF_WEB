@@ -47,6 +47,7 @@ export type {
   Project,
   GetMyProjectResponse,
   Grade,
+  GradeFilterValue,
   FilteredProject,
   GetFilteredProjectsResponse,
 } from "./model/types";

@@ -39,6 +39,9 @@ export type GetMyProjectResponse = Project[];
 export const GRADES = [1, 2] as const;
 export type Grade = (typeof GRADES)[number];
 
+// 학년 필터 값 — "all"(전체 보기)은 필터 전용이라 프로젝트 생성용 Grade 타입과 분리한다.
+export type GradeFilterValue = Grade | "all";
+
 export interface FilteredProject {
   id: number;
   name: string;

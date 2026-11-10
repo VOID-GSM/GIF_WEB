@@ -28,10 +28,10 @@ export default function ProjectBrowse() {
     isPending,
     isError,
   } = useGetFilteredProjects(grade ?? GRADES[0], grade !== null);
-  // 서버가 grade로 거르지 않고 전체를 반환하므로 선택 학년으로 한 번 더 거른다
+  // 서버가 grade로 거르지 않고 전체를 반환하므로 선택 학년으로 한 번 더 거른다 (전체일 때는 거르지 않는다)
   // 내가 속한 팀(프로젝트)을 맨 앞으로 정렬한다
   const visibleProjects = projects
-    ?.filter((project) => project.grade === grade)
+    ?.filter((project) => grade === "all" || project.grade === grade)
     .slice()
     .sort((a, b) => {
       const aMine = a.id === myProjectId ? 0 : 1;
@@ -41,6 +41,8 @@ export default function ProjectBrowse() {
   const myProject = visibleProjects?.find(
     (project) => project.id === myProjectId,
   );
+  const emptyMessage =
+    grade === "all" ? "프로젝트가 없습니다." : "해당 학년의 프로젝트가 없습니다.";
 
   if (grade === null) {
     return (
@@ -82,9 +84,7 @@ export default function ProjectBrowse() {
 
             {showAll &&
               (!visibleProjects || visibleProjects.length === 0 ? (
-                <p className="text-gray-600">
-                  해당 학년의 프로젝트가 없습니다.
-                </p>
+                <p className="text-gray-600">{emptyMessage}</p>
               ) : (
                 <div className="grid w-full grid-cols-[repeat(auto-fill,224px)] justify-start gap-6">
                   {visibleProjects.map((project) => (
@@ -112,7 +112,7 @@ export default function ProjectBrowse() {
           <p className="text-gray-600">프로젝트를 불러오지 못했습니다.</p>
         ) : !visibleProjects || visibleProjects.length === 0 ? (
           <p className="w-full pt-70 text-center text-gray-600">
-            해당 학년의 프로젝트가 없습니다.
+            {emptyMessage}
           </p>
         ) : (
           <div className="grid w-full max-w-[1000px] grid-cols-[repeat(auto-fill,224px)] justify-start gap-6">
