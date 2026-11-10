@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
 import { useGetFormList, formatDeadline } from "@/entities/form";
@@ -19,25 +20,32 @@ function parseDeadline(deadline: string): Date {
 
 // 마감이 지났으면 마감 표시, 1시간 이내면 분/초, 하루 이내면 시간, 그 외엔 D-day를 보여준다.
 // 마감이 지난 항목은 날짜가 바뀌면 nextForm 필터링에서 자연히 제외되므로 D+n은 표시하지 않는다.
-function getDDayLabel(deadline: string, now: number): string {
+function getDDayLabel(
+  deadline: string,
+  now: number,
+  t: ReturnType<typeof useTranslations<"dashboard.deadline">>,
+): string {
   const diffMs = parseDeadline(deadline).getTime() - now;
 
   if (diffMs <= 0) {
-    return "마감";
+    return t("closed");
   }
   if (diffMs < HOUR_MS) {
     const minutes = Math.floor(diffMs / MINUTE_MS);
     const seconds = Math.floor((diffMs % MINUTE_MS) / 1000);
-    return minutes > 0 ? `${minutes}분 ${seconds}초 남음` : `${seconds}초 남음`;
+    return minutes > 0
+      ? t("minutesLeft", { minutes, seconds })
+      : t("secondsLeft", { seconds });
   }
   if (diffMs < DAY_MS) {
     const hours = Math.ceil(diffMs / HOUR_MS);
-    return `${hours}시간 남음`;
+    return t("hoursLeft", { hours });
   }
   return `D-${Math.ceil(diffMs / DAY_MS)}`;
 }
 
 export default function DeadlineCountdownCard() {
+  const t = useTranslations("dashboard.deadline");
   const { data: myProjects, isLoading: isProjectLoading } = useGetMyProject();
   const projectId = myProjects?.[0]?.id;
   const { data: forms, isLoading: isFormsLoading } = useGetFormList(projectId);
@@ -68,22 +76,22 @@ export default function DeadlineCountdownCard() {
   return (
     <section className="w-full rounded-xl bg-yellow-100 p-6 shadow-[0_2px_6px_rgba(0,0,0,0.15)]">
       <span className="text-[13px] font-medium text-gray-500">
-        제출 마감까지
+        {t("title")}
       </span>
 
       {loading ? (
-        <p className="mt-4 text-[14px] text-gray-500">불러오는 중...</p>
+        <p className="mt-4 text-[14px] text-gray-500">{t("loading")}</p>
       ) : !nextForm ? (
         <p className="mt-4 text-[14px] text-gray-500">
-          예정된 마감 양식이 없습니다.
+          {t("empty")}
         </p>
       ) : (
         <>
           <p className="mt-2 text-[36px] font-bold tracking-[-0.5px] text-yellow-600 dark:text-yellow-400">
-            {getDDayLabel(nextForm.deadline, now)}
+            {getDDayLabel(nextForm.deadline, now, t)}
           </p>
           <p className="mt-1 text-[13px] text-gray-500">
-            {nextForm.title} · {formatDeadline(nextForm.deadline)} 마감
+            {nextForm.title} · {t("deadlineAt", { date: formatDeadline(nextForm.deadline) })}
           </p>
         </>
       )}
