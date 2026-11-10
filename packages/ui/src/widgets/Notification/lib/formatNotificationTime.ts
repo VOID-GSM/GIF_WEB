@@ -1,8 +1,4 @@
-import { INTL_LOCALES, isLocale } from "@repo/i18n";
-
-const MINUTE = 1000 * 60;
-const HOUR = MINUTE * 60;
-const DAY = HOUR * 24;
+import { INTL_LOCALES, TIME_ZONE, formatRelative, isLocale } from "@repo/i18n";
 
 // 알림 목록은 최신순이라 최근 항목일수록 상대 시간이 읽기 쉽다.
 // 일주일이 넘어가면 상대 표기가 오히려 헷갈려서 날짜로 보여준다.
@@ -17,11 +13,6 @@ const toDate = (createdAt: unknown): Date | null => {
   return new Date(createdAt);
 };
 
-const JUST_NOW: Record<string, string> = {
-  ko: "방금 전",
-  ja: "たった今",
-};
-
 export const formatNotificationTime = (
   createdAt: string,
   locale: string = "ko",
@@ -30,18 +21,13 @@ export const formatNotificationTime = (
   if (!created || Number.isNaN(created.getTime())) return "";
 
   const lang = isLocale(locale) ? locale : "ko";
-  const intlLocale = INTL_LOCALES[lang];
-  const relative = new Intl.RelativeTimeFormat(intlLocale, { numeric: "always" });
-
-  const diff = Date.now() - created.getTime();
-  if (diff < MINUTE) return JUST_NOW[lang];
-  if (diff < HOUR) return relative.format(-Math.floor(diff / MINUTE), "minute");
-  if (diff < DAY) return relative.format(-Math.floor(diff / HOUR), "hour");
-  if (diff < DAY * 7) return relative.format(-Math.floor(diff / DAY), "day");
-
-  return created.toLocaleDateString(intlLocale, {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
+  return (
+    formatRelative(created, lang) ??
+    created.toLocaleDateString(INTL_LOCALES[lang], {
+      timeZone: TIME_ZONE,
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    })
+  );
 };
