@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import Reveal from "../landing/Reveal";
 import { WINNERS, type WinnerItem } from "../landing/data";
 
@@ -52,6 +53,7 @@ function WinnerCard({
   winner: WinnerItem;
   highlight: boolean;
 }) {
+  const t = useTranslations("intro.winners");
   return (
     <div
       className={`flex h-full flex-col rounded-3xl p-8 transition ${
@@ -63,7 +65,7 @@ function WinnerCard({
       <div className="flex items-center justify-between">
         <WinnerAvatar winner={winner} highlight={highlight} />
         <span className="inline-flex items-center rounded-full border border-yellow-600 bg-white px-3 py-1 text-[12px] font-bold text-gray-900">
-          {winner.rank}
+          {t(`rank.${winner.rank}`)}
         </span>
       </div>
 
@@ -77,11 +79,9 @@ function WinnerCard({
           {winner.team}
         </p>
       )}
-      {winner.desc && (
-        <p className="mt-3 text-[14px] leading-relaxed text-gray-500">
-          {winner.desc}
-        </p>
-      )}
+      <p className="mt-3 text-[14px] leading-relaxed text-gray-500">
+        {t(`desc.${winner.descKey}`)}
+      </p>
       {winner.members.length > 0 && (
         <div className="mt-auto flex flex-wrap gap-1.5 pt-5">
           {winner.members.map((name) => (
@@ -99,6 +99,7 @@ function WinnerCard({
 }
 
 export default function WinnersView() {
+  const t = useTranslations("intro.winners");
   const [grade, setGrade] = useState<(typeof GRADES)[number]>(1);
   const winners = WINNERS.filter((winner) => winner.grade === grade);
 
@@ -106,11 +107,14 @@ export default function WinnersView() {
     <main className="mx-auto max-w-6xl px-6 pb-28 pt-32">
       <Reveal>
         <h1 className="text-[36px] font-bold leading-tight text-gray-900 sm:text-[52px]">
-          2025 <span className="rounded-md bg-yellow-200 px-2">수상작</span>{" "}
-          모음
+          {t.rich("title", {
+            hl: (chunks) => (
+              <span className="rounded-md bg-yellow-200 px-2">{chunks}</span>
+            ),
+          })}
         </h1>
         <p className="mt-4 max-w-xl text-[16px] text-gray-500">
-          지난 페스티벌을 빛낸 팀들을 소개해요. 학년을 선택해 확인해 보세요.
+          {t("subtitle")}
         </p>
       </Reveal>
 
@@ -128,7 +132,7 @@ export default function WinnersView() {
                   : "border-transparent text-gray-400 hover:text-gray-700"
               }`}
             >
-              {g}학년
+              {t("grade", { grade: g })}
             </button>
           ))}
         </div>
