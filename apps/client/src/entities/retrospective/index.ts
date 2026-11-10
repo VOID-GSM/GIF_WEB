@@ -12,12 +12,10 @@ export { useToggleBookmark } from "./hooks/useToggleBookmark";
 export { useGetAiSummary } from "./hooks/useGetAiSummary";
 
 export {
-  CATEGORY_LABELS,
   CATEGORY_ORDER,
-  CATEGORY_OPTIONS,
-  CATEGORY_FILTER_OPTIONS,
+  CATEGORY_FILTER_VALUES,
   CATEGORY_COLOR,
-  SORT_OPTIONS,
+  SORT_VALUES,
 } from "./model/constants";
 
 export type {
