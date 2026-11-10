@@ -179,7 +179,16 @@ export default function ProjectCommentSection({
     isFetchingNextPage,
   } = useGetProjectComments(projectId);
 
-  const comments = data?.pages.flatMap((page) => page.content) ?? [];
+  // 페이지 번호 기반 + 최신순이라 더보기 사이에 댓글이 추가되면 경계가 밀려
+  // 같은 댓글이 두 페이지에 올 수 있다 — id 기준으로 처음 나온 것만 남긴다.
+  const seenIds = new Set<number>();
+  const comments = (data?.pages.flatMap((page) => page.content) ?? []).filter(
+    (comment) => {
+      if (seenIds.has(comment.id)) return false;
+      seenIds.add(comment.id);
+      return true;
+    },
+  );
   const total = data?.pages[0]?.totalElements ?? 0;
 
   const renderList = () => {
