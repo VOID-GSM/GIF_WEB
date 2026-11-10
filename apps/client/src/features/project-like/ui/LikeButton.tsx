@@ -6,7 +6,8 @@ import { HeartIcon } from "@/shared/ui/EngagementIcons";
 
 interface LikeButtonProps {
   projectId: number;
-  isLiked: boolean;
+  // null: 서버가 좋아요 여부를 내려주지 않음 — 잘못된 POST/DELETE 를 막기 위해 비활성화
+  isLiked: boolean | null;
   likeCount: number;
 }
 
@@ -18,13 +19,17 @@ export default function LikeButton({
 }: LikeButtonProps) {
   const requireLogin = useRequireLogin();
   const toggle = useToggleProjectLike(projectId);
+  const isUnknown = isLiked === null;
 
   return (
     <button
       type="button"
-      onClick={() => requireLogin(() => toggle.mutate(isLiked))}
-      disabled={toggle.isPending}
-      aria-pressed={isLiked}
+      onClick={() => {
+        if (isLiked === null) return;
+        requireLogin(() => toggle.mutate(isLiked));
+      }}
+      disabled={toggle.isPending || isUnknown}
+      aria-pressed={isLiked ?? undefined}
       aria-label={isLiked ? "좋아요 취소" : "좋아요"}
       className={`flex cursor-pointer items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-medium transition-colors disabled:cursor-default ${
         isLiked
@@ -33,7 +38,7 @@ export default function LikeButton({
       }`}
     >
       <HeartIcon
-        filled={isLiked}
+        filled={isLiked === true}
         className={`h-4 w-4 ${isLiked ? "text-yellow-600" : ""}`}
       />
       <span>{likeCount.toLocaleString()}</span>

@@ -1,3 +1,5 @@
+import type { EngagementFields } from "@/entities/project";
+
 export const COMMENT_MAX_LENGTH = 500;
 export const COMMENT_PAGE_SIZE = 20;
 
@@ -37,9 +39,4 @@ export interface CreateCommentRequest {
 }
 
 // 프로젝트 상세 캐시(["project","detail",id]) 중 참여 지표 필드
-export interface ProjectEngagementFields {
-  likeCount: number;
-  isLiked: boolean;
-  viewCount: number;
-  commentCount: number;
-}
+export type ProjectEngagementFields = EngagementFields;

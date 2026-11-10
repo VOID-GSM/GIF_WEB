@@ -3,20 +3,21 @@
 import { useQuery } from "@tanstack/react-query";
 
 import { getFilteredProjects } from "../api";
+import {
+  LIST_ENGAGEMENT_KEYS,
+  withEngagementDefaults,
+} from "../model/engagement";
 import { projectQueryKeys } from "../model/queryKeys";
-import type { Grade } from "../model/types";
+import type { FilteredProject, Grade } from "../model/types";
 
 export function useGetFilteredProjects(grade: Grade, enabled = true) {
   return useQuery({
     queryKey: projectQueryKeys.filter(grade),
-    // 서버가 집계 필드를 빠뜨려도 카드·좋아요 캐시가 깨지지 않도록 기본값을 채운다.
+    // 서버가 참여 지표를 빠뜨려도 카드·좋아요 캐시가 깨지지 않도록 정규화한다.
     queryFn: async () =>
-      (await getFilteredProjects(grade)).data.map((project) => ({
-        ...project,
-        likeCount: project.likeCount ?? 0,
-        commentCount: project.commentCount ?? 0,
-        isLiked: project.isLiked ?? false,
-      })),
+      (await getFilteredProjects(grade)).data.map((project) =>
+        withEngagementDefaults<FilteredProject>(project, LIST_ENGAGEMENT_KEYS),
+      ),
     enabled,
   });
 }
