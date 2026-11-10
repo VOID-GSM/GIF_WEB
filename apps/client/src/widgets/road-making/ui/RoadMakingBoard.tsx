@@ -3,7 +3,6 @@
 import {
   ROAD_MAKING_COLORS,
   type BoardPosition,
-  type RoadMakingDirection,
   type RoadMakingPerson,
   type RoadMakingVehicle,
   type RoadMakingVehicleResult,
@@ -16,15 +15,11 @@ import {
   ResultBadge,
   VehiclePiece,
 } from "./RoadMakingPieces";
-
-export const cellKey = (row: number, col: number) => `${row}-${col}`;
-
-const DIRECTION_DELTA: Record<RoadMakingDirection, [number, number]> = {
-  UP: [-1, 0],
-  RIGHT: [0, 1],
-  DOWN: [1, 0],
-  LEFT: [0, -1],
-};
+import {
+  cellKey,
+  simulateVehicle,
+  type SimulatedPath,
+} from "../lib/simulateRoad";
 
 interface RoadMakingBoardProps {
   rows: number;
@@ -59,6 +54,23 @@ export default function RoadMakingBoard({
   const personAt = new Map(
     people.map((p) => [cellKey(p.position.row, p.position.col), p]),
   );
+  // 울타리를 놓을 때마다 차가 화살표 방향으로 어떻게 움직이는지 바로 계산한다.
+  const simulated = vehicles.map((v) =>
+    simulateVehicle(v, personAt, fences, rows, cols),
+  );
+  // 제출 후에는 서버가 돌려준 경로를 그린다. 보드 밖으로 나간 방향만 계산 결과에서 가져온다.
+  const lines: SimulatedPath[] = results
+    ? results.map((r) => {
+        const last = r.path[r.path.length - 1];
+        const sim = simulated.find((s) => s.color === r.color);
+        const sameEnd =
+          sim &&
+          sim.path[sim.path.length - 1].row === last.row &&
+          sim.path[sim.path.length - 1].col === last.col;
+        return { ...r, exit: !r.reached && sameEnd ? sim.exit : null };
+      })
+    : simulated;
+
   const gridStyle = {
     gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))`,
     gridTemplateRows: `repeat(${rows}, minmax(0, 1fr))`,
@@ -123,17 +135,8 @@ export default function RoadMakingBoard({
           })}
         </div>
 
-        {/* 2. 경로 선 */}
-        {results && (
-          <PathLines
-            rows={rows}
-            cols={cols}
-            results={results}
-            vehicles={vehicles}
-            fences={fences}
-            personAt={personAt}
-          />
-        )}
+        {/* 2. 경로 선 (제출 전에는 미리보기, 제출 후에는 서버 결과) */}
+        <PathLines rows={rows} cols={cols} lines={lines} preview={!results} />
 
         {/* 3. 차·사람·결과 배지 */}
         <div
@@ -193,53 +196,32 @@ function PieceCell({
   );
 }
 
-const CLOCKWISE: RoadMakingDirection[] = ["UP", "RIGHT", "DOWN", "LEFT"];
+// 화살촉 끝이 원점에 오도록 그린 삼각형 (오른쪽을 가리킴)
+const ARROW_LENGTH = 0.26;
+const ARROW_HEAD = `M0,0 L${-ARROW_LENGTH},-0.15 L${-ARROW_LENGTH},0.15 Z`;
+// 사람 칸 중심에서 이만큼 앞에서 선을 끝낸다 (칸 가장자리 근처)
+const END_INSET = 0.32;
 
-// 서버 경로에는 보드 안 칸만 있으므로, 마지막 칸에서 어느 쪽으로 빠져나갔는지 서버 규칙대로 다시 따져본다.
-// (진행 방향 앞이 울타리면 시계 방향으로 돌고, 보드 밖이면 그쪽으로 나간다)
-function findExitDirection(
-  result: RoadMakingVehicleResult,
-  vehicles: RoadMakingVehicle[],
-  fences: Set<string>,
-  rows: number,
-  cols: number,
-): [number, number] | null {
-  const { path } = result;
-  const last = path[path.length - 1];
-  const prev = path[path.length - 2];
-  let dir: RoadMakingDirection | undefined = prev
-    ? CLOCKWISE.find((d) => {
-        const [dr, dc] = DIRECTION_DELTA[d];
-        return last.row - prev.row === dr && last.col - prev.col === dc;
-      })
-    : vehicles.find((v) => v.color === result.color)?.direction;
-  if (!dir) return null;
-
-  for (let turn = 0; turn < 4; turn++) {
-    const [dr, dc] = DIRECTION_DELTA[dir];
-    const nr = last.row + dr;
-    const nc = last.col + dc;
-    if (nr < 0 || nr >= rows || nc < 0 || nc >= cols) return [dr, dc];
-    if (!fences.has(cellKey(nr, nc))) return null;
-    dir = CLOCKWISE[(CLOCKWISE.indexOf(dir) + 1) % 4];
-  }
-  return null;
+// j번째 구간(points[j] → points[j+1])의 단위 방향
+function segmentDir(points: [number, number][], j: number): [number, number] {
+  const [x1, y1] = points[j];
+  const [x2, y2] = points[j + 1];
+  return [Math.sign(x2 - x1), Math.sign(y2 - y1)];
 }
 
+const toDeg = (dx: number, dy: number) => (Math.atan2(dy, dx) * 180) / Math.PI;
+
+// 차의 이동 경로를 선으로 그리고, 끝과 꺾이는 곳에 진행 방향 화살표를 둔다.
 function PathLines({
   rows,
   cols,
-  results,
-  vehicles,
-  fences,
-  personAt,
+  lines,
+  preview,
 }: {
   rows: number;
   cols: number;
-  results: RoadMakingVehicleResult[];
-  vehicles: RoadMakingVehicle[];
-  fences: Set<string>;
-  personAt: Map<string, RoadMakingPerson>;
+  lines: SimulatedPath[];
+  preview: boolean;
 }) {
   return (
     <svg
@@ -247,49 +229,84 @@ function PathLines({
       className="pointer-events-none absolute inset-0 size-full overflow-visible"
       aria-hidden
     >
-      {results.map((result, i) => {
-        const { solid } = ROAD_MAKING_COLORS[result.color];
+      {lines.map((line, i) => {
+        const { solid } = ROAD_MAKING_COLORS[line.color];
         // 여러 차가 같은 칸을 지나가도 선이 겹치지 않도록 조금씩 비켜 그린다.
-        const offset = (i - (results.length - 1) / 2) * 0.1;
-        const points: [number, number][] = result.path.map((p) => [
+        const offset = (i - (lines.length - 1) / 2) * 0.1;
+        const points: [number, number][] = line.path.map((p) => [
           p.col + 0.5 + offset,
           p.row + 0.5 + offset,
         ]);
-
-        // 사람에게 닿지 못하고 보드 밖으로 나간 차는 선을 테두리 너머까지 이어 나간 것을 보여준다.
-        const last = result.path[result.path.length - 1];
-        const stoppedAtPerson = personAt.has(cellKey(last.row, last.col));
-        if (!result.reached && !stoppedAtPerson) {
-          const exit = findExitDirection(result, vehicles, fences, rows, cols);
-          if (exit) {
-            const [x, y] = points[points.length - 1];
-            points.push([x + exit[1] * 0.75, y + exit[0] * 0.75]);
-          }
+        if (line.exit) {
+          // 보드 밖으로 나간 차는 선을 테두리 너머까지 이어 그린다.
+          const [x, y] = points[points.length - 1];
+          points.push([x + line.exit[1] * 0.75, y + line.exit[0] * 0.75]);
+        } else if (points.length >= 2) {
+          // 사람 칸에서 멈추면 아이콘에 화살촉이 가려지므로 칸 가장자리에서 끝낸다.
+          const [dx, dy] = segmentDir(points, points.length - 2);
+          const [x, y] = points[points.length - 1];
+          points[points.length - 1] = [x - dx * END_INSET, y - dy * END_INSET];
         }
-
         if (points.length < 2) return null;
+
+        // 화살표는 끝 지점과, 울타리에 막혀 꺾인 직후 구간에만 둔다.
+        const lastSeg = points.length - 2;
+        const arrows: { x: number; y: number; deg: number }[] = [];
+        for (let j = 1; j < lastSeg; j++) {
+          const [dx, dy] = segmentDir(points, j);
+          const [pdx, pdy] = segmentDir(points, j - 1);
+          if (dx === pdx && dy === pdy) continue;
+          const [x1, y1] = points[j];
+          const [x2, y2] = points[j + 1];
+          arrows.push({
+            x: (x1 + x2) / 2 + dx * (ARROW_LENGTH / 2),
+            y: (y1 + y2) / 2 + dy * (ARROW_LENGTH / 2),
+            deg: toDeg(dx, dy),
+          });
+        }
+        const [edx, edy] = segmentDir(points, lastSeg);
+        const [tipX, tipY] = points[points.length - 1];
+        arrows.push({ x: tipX, y: tipY, deg: toDeg(edx, edy) });
+
+        // 둥근 선 끝이 화살촉 밖으로 삐져나오지 않도록 선을 화살촉 안쪽에서 끝낸다.
+        const linePoints = [...points];
+        linePoints[linePoints.length - 1] = [
+          tipX - edx * ARROW_LENGTH * 0.6,
+          tipY - edy * ARROW_LENGTH * 0.6,
+        ];
+        const opacity = preview ? 0.55 : 0.9;
+        const dashed = !preview && !line.reached;
+
         return (
-          <polyline
-            key={`${result.color}-${i}`}
-            points={points.map(([x, y]) => `${x},${y}`).join(" ")}
-            fill="none"
-            stroke={solid}
-            strokeWidth={0.14}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeOpacity={0.9}
-            strokeDasharray={result.reached ? undefined : "0.22 0.16"}
+          <g
+            // 경로가 바뀔 때마다 새로 그려지며 살짝 나타나게 한다.
+            key={`${line.color}-${i}-${points.join("|")}`}
+            style={{ animation: "path-fade 0.3s ease-out both" }}
           >
-            <animate
-              attributeName="stroke-opacity"
-              from="0"
-              to="0.9"
-              dur="0.5s"
-              fill="freeze"
-            />
-          </polyline>
+            <g opacity={opacity}>
+              <polyline
+                points={linePoints.map(([x, y]) => `${x},${y}`).join(" ")}
+                fill="none"
+                stroke={solid}
+                strokeWidth={preview ? 0.1 : 0.14}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeDasharray={dashed ? "0.22 0.16" : undefined}
+              />
+              {arrows.map((a, j) => (
+                <path
+                  key={j}
+                  d={ARROW_HEAD}
+                  fill={solid}
+                  strokeLinejoin="round"
+                  transform={`translate(${a.x} ${a.y}) rotate(${a.deg})`}
+                />
+              ))}
+            </g>
+          </g>
         );
       })}
+      <style>{`@keyframes path-fade{from{opacity:0}to{opacity:1}}`}</style>
     </svg>
   );
 }
