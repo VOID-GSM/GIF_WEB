@@ -1,48 +1,98 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 
 import {
+  CAT_COLOR_LABELS,
   CONFIDENCE_OPTIONS,
+  type CatChaseAnswer,
   type CatChaseConfidence,
-  type CatChaseJudgment,
+  type CatColor,
 } from "@/entities/cat-chase";
 
 const ASSET = "/assessment/cat-chase";
 
-const ANSWERS: { value: CatChaseJudgment; label: string; image: string }[] = [
+const ANSWERS: { value: CatChaseAnswer; label: string; image: string }[] = [
   { value: "FOUND", label: "잡다", image: `${ASSET}/answer-found.svg` },
   { value: "MISSED", label: "놓치다", image: `${ASSET}/answer-missed.svg` },
 ];
 
+const CAT_IMAGE: Record<CatColor, string> = {
+  red: `${ASSET}/question-cat-red.svg`,
+  blue: `${ASSET}/question-cat-blue.svg`,
+};
+
+// 남은 시간 표시를 갱신하는 간격(ms)
+const TICK_MS = 100;
+
 interface JudgmentCardProps {
-  onSubmit: (judgment: CatChaseJudgment, confidence: CatChaseConfidence) => void;
+  cat: CatColor;
+  // 응답 제한 시간(ms). 카드가 나타난 순간부터 잰다.
+  timeLimitMs: number;
+  onSubmit: (judgment: CatChaseAnswer, confidence: CatChaseConfidence) => void;
+  // 제한 시간 안에 제출하지 않으면 한 번 호출된다.
+  onTimeout: () => void;
   isLast: boolean;
   disabled?: boolean;
 }
 
 export default function JudgmentCard({
+  cat,
+  timeLimitMs,
   onSubmit,
+  onTimeout,
   isLast,
   disabled,
 }: JudgmentCardProps) {
-  const [judgment, setJudgment] = useState<CatChaseJudgment | null>(null);
+  const [judgment, setJudgment] = useState<CatChaseAnswer | null>(null);
   const [confidence, setConfidence] = useState<CatChaseConfidence | null>(
     null,
   );
+  const [remainingMs, setRemainingMs] = useState(timeLimitMs);
+  // 제출이나 시간 초과 중 먼저 일어난 쪽만 처리한다.
+  const settledRef = useRef(false);
+  const onTimeoutRef = useRef(onTimeout);
 
-  const canSubmit = !!judgment && !!confidence && !disabled;
+  useEffect(() => {
+    onTimeoutRef.current = onTimeout;
+  });
+
+  useEffect(() => {
+    const startedAt = Date.now();
+    const timer = setInterval(() => {
+      const left = Math.max(0, timeLimitMs - (Date.now() - startedAt));
+      setRemainingMs(left);
+      if (left > 0) return;
+      clearInterval(timer);
+      if (settledRef.current) return;
+      settledRef.current = true;
+      onTimeoutRef.current();
+    }, TICK_MS);
+    return () => clearInterval(timer);
+  }, [timeLimitMs]);
+
+  const isTimeUp = remainingMs <= 0;
+  const canSubmit = !!judgment && !!confidence && !disabled && !isTimeUp;
+  const catLabel = CAT_COLOR_LABELS[cat];
+
+  const handleSubmit = () => {
+    if (!judgment || !confidence || settledRef.current) return;
+    settledRef.current = true;
+    onSubmit(judgment, confidence);
+  };
 
   return (
     <section className="animate-pop-in flex w-full max-w-[800px] flex-col items-center rounded-[20px] border border-gray-300 bg-white px-5 py-[clamp(16px,3dvh,32px)] md:px-10">
-      <h2 className="text-center text-[clamp(20px,3.2dvh,34px)] font-medium leading-none tracking-[-0.03em] text-black">
-        빨간 고양이는 쥐를 잡았을까요?
+      <AnswerTimer remainingMs={remainingMs} timeLimitMs={timeLimitMs} />
+
+      <h2 className="mt-[2dvh] text-center text-[clamp(20px,3.2dvh,34px)] font-medium leading-none tracking-[-0.03em] text-black">
+        {catLabel}는 쥐를 잡았을까요?
       </h2>
 
       <Image
-        src={`${ASSET}/question-cat-red.svg`}
-        alt="빨간 고양이"
+        src={CAT_IMAGE[cat]}
+        alt={catLabel}
         width={240}
         height={240}
         className="mt-[2.5dvh] h-auto w-[clamp(88px,17dvh,200px)]"
@@ -61,8 +111,9 @@ export default function JudgmentCard({
               type="button"
               role="radio"
               aria-checked={selected}
+              disabled={isTimeUp}
               onClick={() => setJudgment(answer.value)}
-              className="group flex flex-col items-center gap-[1.5dvh]"
+              className="group flex flex-col items-center gap-[1.5dvh] disabled:cursor-not-allowed"
             >
               <Image
                 src={answer.image}
@@ -110,8 +161,9 @@ export default function JudgmentCard({
                   role="radio"
                   aria-checked={selected}
                   tabIndex={judgment ? 0 : -1}
+                  disabled={isTimeUp}
                   onClick={() => setConfidence(option.value)}
-                  className={`h-10 rounded-[10px] border text-[15px] font-medium tracking-[-0.4px] transition-colors ${
+                  className={`h-10 rounded-[10px] border text-[15px] font-medium tracking-[-0.4px] transition-colors disabled:cursor-not-allowed ${
                     selected
                       ? "border-yellow-600 bg-yellow-100 font-semibold text-gray-900"
                       : "border-gray-300 bg-white text-gray-700 hover:bg-gray-100"
@@ -127,7 +179,7 @@ export default function JudgmentCard({
             type="button"
             disabled={!canSubmit}
             tabIndex={judgment ? 0 : -1}
-            onClick={() => judgment && confidence && onSubmit(judgment, confidence)}
+            onClick={handleSubmit}
             className="mx-auto mt-[2dvh] block h-11 w-full max-w-[560px] rounded-[12px] bg-yellow-600 text-[16px] font-semibold tracking-[-0.5px] text-white transition-colors hover:bg-yellow-700 disabled:cursor-not-allowed disabled:bg-gray-300"
           >
             {isLast ? "제출하기" : "다음 고양이"}
@@ -135,5 +187,45 @@ export default function JudgmentCard({
         </div>
       </div>
     </section>
+  );
+}
+
+// 남은 시간을 막대와 초로 보여준다. 3초 이하로 남으면 빨갛게 바꿔 알린다.
+function AnswerTimer({
+  remainingMs,
+  timeLimitMs,
+}: {
+  remainingMs: number;
+  timeLimitMs: number;
+}) {
+  const seconds = Math.ceil(remainingMs / 1000);
+  const ratio = timeLimitMs > 0 ? remainingMs / timeLimitMs : 0;
+  const isUrgent = seconds <= 3;
+
+  return (
+    <div className="flex w-full max-w-[560px] items-center gap-3">
+      <div
+        role="progressbar"
+        aria-label="남은 응답 시간"
+        aria-valuemin={0}
+        aria-valuemax={Math.ceil(timeLimitMs / 1000)}
+        aria-valuenow={seconds}
+        className="h-2 flex-1 overflow-hidden rounded-full bg-gray-200"
+      >
+        <div
+          className={`h-full rounded-full transition-[width] duration-100 ease-linear ${
+            isUrgent ? "bg-red" : "bg-yellow-600"
+          }`}
+          style={{ width: `${ratio * 100}%` }}
+        />
+      </div>
+      <span
+        className={`w-10 text-right text-[15px] font-semibold tabular-nums ${
+          isUrgent ? "text-red" : "text-gray-700"
+        }`}
+      >
+        {seconds}초
+      </span>
+    </div>
   );
 }
