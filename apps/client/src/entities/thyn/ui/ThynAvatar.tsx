@@ -23,12 +23,15 @@ interface ThynAvatarProps {
   items: ThynItem[];
   /** 렌더링 너비(px). 몸 이미지(144×182) 비율 그대로 줄이거나 늘린다. */
   width?: number;
+  /** true면 머리 위 여백을 착용한 아이템 높이만큼만 둔다 (착용이 바뀌지 않는 곳에서 사용) */
+  fitHeadroom?: boolean;
   className?: string;
 }
 
 export default function ThynAvatar({
   items,
   width = THYN_STAGE.width,
+  fitHeadroom = false,
   className,
 }: ThynAvatarProps) {
   const hairKey = items.find((item) => item.category === "hair")?.itemKey ?? "none";
@@ -52,12 +55,16 @@ export default function ThynAvatar({
   });
 
   const scale = width / THYN_STAGE.width;
+  // 가장 높이 올라간 레이어만큼만 위를 비운다
+  const headroom = fitHeadroom
+    ? Math.max(0, ...layers.map(({ placement }) => -placement.top))
+    : THYN_HEADROOM;
 
   return (
     <div
       className={`relative aspect-[144/182] ${className ?? ""}`}
       // 모자·머리카락이 튀어나올 자리를 늘 같은 크기로 비워 둬서 착용에 따라 몸이 움직이지 않게 한다
-      style={{ width, marginTop: THYN_HEADROOM * scale }}
+      style={{ width, marginTop: headroom * scale }}
     >
       {/* eslint-disable-next-line @next/next/no-img-element -- 크기가 제각각인 정적 SVG 레이어 */}
       <img src="/thyn/base.svg" alt="띤" className="absolute inset-x-0 top-0 h-auto w-full" />
