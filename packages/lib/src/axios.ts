@@ -1,35 +1,10 @@
 import axios from "axios";
 
+import { buildSigninPath, clearAuthCookies, getCurrentPath } from "./auth";
+import { getCookieValue } from "./cookie";
 import { clearPushSyncFlag } from "./push/lib";
 
-export const getCookieValue = (key: string): string | null => {
-  if (typeof window === "undefined") return null;
-  const match = document.cookie.match(
-    new RegExp(`(^|;)\\s*${key}\\s*=\\s*([^;]+)`),
-  );
-  return match ? match[2] : null;
-};
-
-export const setCookieValue = (
-  key: string,
-  value: string,
-  options: { path?: string; maxAge?: number; domain?: string; sameSite?: "Lax" | "Strict" | "None" } = {},
-) => {
-  if (typeof window === "undefined") return;
-  const parts = [`${key}=${value}`];
-
-  if (options.path) parts.push(`path=${options.path}`);
-  if (options.maxAge) parts.push(`max-age=${options.maxAge}`);
-  if (options.domain) parts.push(`domain=${options.domain}`);
-  if (options.sameSite) parts.push(`SameSite=${options.sameSite}`);
-
-  document.cookie = parts.join("; ");
-};
-
-export const removeCookieValue = (key: string) => {
-  if (typeof window === "undefined") return;
-  document.cookie = `${key}=; path=/; max-age=0`;
-};
+export * from "./cookie";
 
 export const apiClient = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
@@ -52,19 +27,17 @@ const PUBLIC_PATHS = ["/signin", "/callback"];
 const redirectToSignIn = () => {
   if (typeof window === "undefined") return;
 
-  // 만료된 인증 정보 제거 (쿠키 이름은 각 앱의 COOKIE_KEYS 값과 일치시킬 것)
-  removeCookieValue("access_token");
-  removeCookieValue("client_role");
-  removeCookieValue("account_type");
+  // 만료된 인증 정보 제거
+  clearAuthCookies();
   clearPushSyncFlag();
 
-  const { pathname, search } = window.location;
-  const isPublic = PUBLIC_PATHS.some((path) => pathname.startsWith(path));
+  const isPublic = PUBLIC_PATHS.some((path) =>
+    window.location.pathname.startsWith(path),
+  );
   if (isPublic) return;
 
   // 다시 로그인하면 보던 페이지로 돌아올 수 있도록 현재 경로를 넘긴다.
-  const returnTo = encodeURIComponent(`${pathname}${search}`);
-  window.location.href = `/signin?redirect=${returnTo}`;
+  window.location.href = buildSigninPath(getCurrentPath());
 };
 
 apiClient.interceptors.response.use(
