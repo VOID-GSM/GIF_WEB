@@ -118,10 +118,7 @@ export default function Sidebar({
         )}
         {showLanguageToggle ? (
           <div className="flex items-center gap-2">
-            {/* 모바일에서는 상단 헤더(Navbar)에 언어 버튼이 있으므로 숨긴다. */}
-            <div className="hidden shrink-0 md:block">
-              <LanguageToggle className="h-[34px]" />
-            </div>
+            <LanguageToggle className="h-[34px] shrink-0" />
             <ThemeToggle />
           </div>
         ) : (
