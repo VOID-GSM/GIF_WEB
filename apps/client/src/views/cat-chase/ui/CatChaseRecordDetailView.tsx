@@ -161,6 +161,7 @@ function QuestionDetail({ question }: { question: CatChaseQuestionResult }) {
             {question.responses.map((response, i) => {
               const color = getCatColor(
                 question.catPositions.indexOf(response.position),
+                question.catPositions.length,
               );
               return (
                 <li

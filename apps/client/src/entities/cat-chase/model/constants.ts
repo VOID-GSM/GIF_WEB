@@ -29,8 +29,11 @@ export const CAT_COLOR_LABELS: Record<CatColor, string> = {
 };
 
 // catPositions 의 순서로 고양이 색을 정한다. 색이 없는 고양이(예전 기록)는 null
-export const getCatColor = (index: number): CatColor | null =>
-  CAT_COLORS[index] ?? null;
+export const getCatColor = (
+  index: number,
+  catCount: number,
+): CatColor | null =>
+  catCount === CAT_COLORS.length ? (CAT_COLORS[index] ?? null) : null;
 
 export const JUDGMENT_LABELS: Record<CatChaseJudgment, string> = {
   FOUND: "잡다 (O)",

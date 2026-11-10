@@ -14,7 +14,7 @@ export function buildResultCells(question: CatChaseQuestionResult) {
 
   question.catPositions.forEach((position, i) => {
     const response = responses.get(position);
-    const color = getCatColor(i);
+    const color = getCatColor(i, question.catPositions.length);
     cells.set(position, {
       // 문제에서 보인 색 그대로 그린다. 색이 없는 예전 기록은 노랑.
       content: color === "red" ? "cat-red" : color === "blue" ? "cat-blue" : "cat",

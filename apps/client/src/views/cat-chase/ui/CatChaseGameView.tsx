@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { isAxiosError } from "axios";
 import { useSearchParams } from "next/navigation";
 
 import type { CatChaseQuestion } from "@/entities/assessment";
@@ -39,7 +40,8 @@ type Phase =
   | { name: "question"; catIndex: number }
   | { name: "submitting" }
   // 제출 응답을 못 받았고 서버에도 저장되지 않은 상태. 같은 판단을 다시 보낸다.
-  | { name: "submit-error"; items: CatChaseJudgmentItem[] };
+  | { name: "submit-error"; items: CatChaseJudgmentItem[] }
+  | { name: "submit-rejected" };
 
 const PHASE_GUIDE: Partial<Record<Phase["name"], string>> = {
   mice: "쥐가 숨은 자리를 기억하세요",
@@ -153,7 +155,12 @@ function CatChasePlay({
           body: { judgments: items },
         }),
       );
-    } catch {
+    } catch (error) {
+      const status = isAxiosError(error) ? error.response?.status : undefined;
+      if (status !== undefined && status >= 400 && status < 500) {
+        setPhase({ name: "submit-rejected" });
+        return;
+      }
       await recover(items);
     }
   };
@@ -220,7 +227,8 @@ function CatChasePlay({
     if (phase.name === "cats") {
       targets.forEach((p, i) =>
         map.set(p, {
-          content: getCatColor(i) === "red" ? "cat-red" : "cat-blue",
+          content:
+            getCatColor(i, targets.length) === "red" ? "cat-red" : "cat-blue",
         }),
       );
     }
@@ -247,6 +255,21 @@ function CatChasePlay({
           className="h-12 w-full rounded-[12px] bg-yellow-600 text-[16px] font-semibold tracking-[-0.5px] text-white transition-colors hover:bg-yellow-700"
         >
           다시 제출하기
+        </button>
+      </NoticeCard>
+    );
+  }
+
+  if (phase.name === "submit-rejected") {
+    return (
+      <NoticeCard message="서버가 답안을 처리하지 못해 검사를 계속할 수 없습니다. 검사를 종료해 주세요.">
+        <button
+          type="button"
+          onClick={handleQuit}
+          disabled={isFinishing}
+          className="h-12 w-full rounded-[12px] bg-yellow-600 text-[16px] font-semibold tracking-[-0.5px] text-white transition-colors hover:bg-yellow-700 disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          {isFinishing ? "검사 종료 중…" : "검사 종료하기"}
         </button>
       </NoticeCard>
     );
