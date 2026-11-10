@@ -3,13 +3,14 @@ import type { EngagementFields } from "@/entities/project";
 export const COMMENT_MAX_LENGTH = 500;
 export const COMMENT_PAGE_SIZE = 20;
 
+// 서버가 필드를 빠뜨릴 수 있어 optional — 캐시에 쓸 때 이전 값으로 폴백한다.
 export interface ViewResponse {
-  views: number;
+  views?: number;
 }
 
 export interface LikeResponse {
-  liked: boolean;
-  likes: number;
+  liked?: boolean;
+  likes?: number;
 }
 
 export interface CommentAuthor {
