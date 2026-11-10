@@ -2,6 +2,7 @@
 
 import { Suspense, useEffect, useRef, useState } from "react";
 
+import { useQueryClient } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 
@@ -43,6 +44,7 @@ const setOrDeleteCookie = (name: string, value: string | null) => {
 const CallbackContent = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const queryClient = useQueryClient();
   const { mutateAsync: getOAuthCallback } = useGetOAuthCallback();
 
   const [error, setError] = useState<string | null>(null);
@@ -74,6 +76,9 @@ const CallbackContent = () => {
         // 이전 계정의 값이 남지 않도록 응답에 없으면 지운다.
         setOrDeleteCookie(COOKIE_KEYS.ACCOUNT_TYPE, data.accountType);
         setOrDeleteCookie(COOKIE_KEYS.CLIENT_ROLE, data.clientRole);
+        // QueryClient가 앱 전체에서 하나라 로그아웃 없이 계정이 바뀌어도
+        // 이전 계정의 isLiked·isMine 등이 남지 않도록 캐시를 비운다.
+        queryClient.clear();
 
         // 서버가 검증했지만 프론트에서도 내부 상대 경로만 허용한다.
         const returnTo = sanitizeReturnPath(data.returnTo);
@@ -120,7 +125,7 @@ const CallbackContent = () => {
     return () => {
       if (timeoutId) clearTimeout(timeoutId);
     };
-  }, [router, searchParams, getOAuthCallback]);
+  }, [router, searchParams, getOAuthCallback, queryClient]);
 
   return (
     <main className="min-h-screen flex items-center justify-center bg-background">
