@@ -46,5 +46,6 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|.*\\.png$).*)"],
+  // public 정적 파일(이미지·sw.js 등 확장자가 있는 경로)은 인증 검사 없이 내려준다.
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|.*\\.\\w+$).*)"],
 };
