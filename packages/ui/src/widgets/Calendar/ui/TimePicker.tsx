@@ -1,11 +1,13 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import { useTranslations } from "next-intl";
 import type { TimePickerProps } from "../model/type";
 
 const HOURS = Array.from({ length: 24 }, (_, i) => String(i).padStart(2, "0"));
 const MINUTES = Array.from({ length: 60 }, (_, i) => String(i).padStart(2, "0"));
 
 export default function TimePicker({ value, onChange }: TimePickerProps) {
+  const t = useTranslations("timePicker");
   const [isOpen, setIsOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
 
@@ -39,7 +41,7 @@ export default function TimePicker({ value, onChange }: TimePickerProps) {
         <span
           className={`whitespace-nowrap ${value ? "text-black" : "text-gray-500"}`}
         >
-          {value || "시간 선택"}
+          {value || t("placeholder")}
         </span>
       </div>
 

@@ -1,3 +1,5 @@
+import { INTL_LOCALES, isLocale } from "@repo/i18n";
+
 const MINUTE = 1000 * 60;
 const HOUR = MINUTE * 60;
 const DAY = HOUR * 24;
@@ -15,17 +17,29 @@ const toDate = (createdAt: unknown): Date | null => {
   return new Date(createdAt);
 };
 
-export const formatNotificationTime = (createdAt: string): string => {
+const JUST_NOW: Record<string, string> = {
+  ko: "방금 전",
+  ja: "たった今",
+};
+
+export const formatNotificationTime = (
+  createdAt: string,
+  locale: string = "ko",
+): string => {
   const created = toDate(createdAt);
   if (!created || Number.isNaN(created.getTime())) return "";
 
-  const diff = Date.now() - created.getTime();
-  if (diff < MINUTE) return "방금 전";
-  if (diff < HOUR) return `${Math.floor(diff / MINUTE)}분 전`;
-  if (diff < DAY) return `${Math.floor(diff / HOUR)}시간 전`;
-  if (diff < DAY * 7) return `${Math.floor(diff / DAY)}일 전`;
+  const lang = isLocale(locale) ? locale : "ko";
+  const intlLocale = INTL_LOCALES[lang];
+  const relative = new Intl.RelativeTimeFormat(intlLocale, { numeric: "always" });
 
-  return created.toLocaleDateString("ko-KR", {
+  const diff = Date.now() - created.getTime();
+  if (diff < MINUTE) return JUST_NOW[lang];
+  if (diff < HOUR) return relative.format(-Math.floor(diff / MINUTE), "minute");
+  if (diff < DAY) return relative.format(-Math.floor(diff / HOUR), "hour");
+  if (diff < DAY * 7) return relative.format(-Math.floor(diff / DAY), "day");
+
+  return created.toLocaleDateString(intlLocale, {
     year: "numeric",
     month: "long",
     day: "numeric",

@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { useTranslations } from "next-intl";
 import Close from "./svg/Close";
 import DragHandle from "./svg/DragHandle";
 import Input from "./components/Input/Input";
@@ -44,12 +45,6 @@ const TYPE_TO_STYLE: Record<string, StyleOption | null> = {
   "": null,
 };
 
-const STYLE_LABEL: Record<StyleOption, string> = {
-  file: "파일",
-  text: "줄 글 텍스트",
-  calendar: "캘린더",
-};
-
 const TITLE_MAX_LENGTH = 50;
 const DESCRIPTION_MAX_LENGTH = 200;
 
@@ -73,6 +68,7 @@ export default function FormCard({
   onDragEnd,
   isDragging = false,
 }: FormCardProps) {
+  const t = useTranslations("formCard");
   const selectedStyle =
     field.type === "" ? null : (TYPE_TO_STYLE[field.type] ?? null);
 
@@ -134,8 +130,8 @@ export default function FormCard({
         <div className="flex justify-center -mt-6 mb-1">
           <button
             type="button"
-            aria-label="항목 순서 변경"
-            title="드래그해서 순서를 바꿀 수 있습니다"
+            aria-label={t("reorder")}
+            title={t("reorderHint")}
             onMouseDown={() => setIsHandleHeld(true)}
             onMouseUp={() => setIsHandleHeld(false)}
             className="px-3 py-1 text-gray-300 transition-colors hover:text-gray-500 cursor-grab active:cursor-grabbing"
@@ -200,14 +196,14 @@ export default function FormCard({
           <StyleDropdown value={selectedStyle} onChange={handleStyleChange} />
           {selectedStyle && (
             <div className="px-4 py-[14px] border-b border-gray-200 text-gray-500">
-              <span>{STYLE_LABEL[selectedStyle]}</span>
+              <span>{t(`style.${selectedStyle}`)}</span>
             </div>
           )}
           {selectedStyle === "file" && (
             <div className="flex flex-col gap-4 pt-1">
               <div className="flex flex-col gap-2">
                 <span className="text-[13px] font-medium text-gray-500">
-                  허용 파일 형식
+                  {t("allowedExtensions")}
                 </span>
                 <div className="flex flex-wrap gap-2">
                   {ALLOWED_EXTENSION_OPTIONS.map((ext) => {
@@ -232,7 +228,7 @@ export default function FormCard({
 
               <div className="flex flex-col gap-2">
                 <span className="text-[13px] font-medium text-gray-500">
-                  제출 방식
+                  {t("submitMethod")}
                 </span>
                 <label className="flex w-fit cursor-pointer items-start gap-2">
                   <input
@@ -243,11 +239,10 @@ export default function FormCard({
                   />
                   <span className="flex flex-col">
                     <span className="text-[13px] font-medium text-gray-900">
-                      외부 링크(URL) 제출 허용
+                      {t("allowUrl")}
                     </span>
                     <span className="text-[12px] text-gray-400">
-                      캔바·미리캔버스·Google 드라이브 등 공유 링크로도 제출할 수
-                      있습니다.
+                      {t("allowUrlHint")}
                     </span>
                   </span>
                 </label>
@@ -257,19 +252,19 @@ export default function FormCard({
           <div className="flex items-center justify-between pt-2">
             <div className="flex flex-col">
               <span className="text-[13px] font-medium text-gray-500">
-                필수 항목
+                {t("required")}
               </span>
               <span className="text-[12px] text-gray-400">
                 {field.required
-                  ? "학생이 반드시 답변해야 합니다."
-                  : "학생이 비워둔 채 제출할 수 있습니다."}
+                  ? t("requiredOn")
+                  : t("requiredOff")}
               </span>
             </div>
             <button
               type="button"
               role="switch"
               aria-checked={field.required}
-              aria-label="필수 항목 여부"
+              aria-label={t("requiredToggle")}
               onClick={toggleRequired}
               className={`relative h-6 w-11 shrink-0 rounded-full transition-colors cursor-pointer ${
                 field.required ? "bg-yellow-600" : "bg-gray-200"

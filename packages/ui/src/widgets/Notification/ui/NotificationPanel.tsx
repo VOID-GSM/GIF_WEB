@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 import type { GetNotificationResponse } from "@repo/lib";
 import {
@@ -21,6 +22,7 @@ export default function NotificationPanel({
   onClose,
 }: NotificationPanelProps) {
   const router = useRouter();
+  const t = useTranslations("notification");
 
   const {
     data,
@@ -73,7 +75,7 @@ export default function NotificationPanel({
   return (
     <div
       role="dialog"
-      aria-label="알림"
+      aria-label={t("title")}
       className={`absolute top-[calc(100%+8px)] z-[110] flex max-h-[440px] w-[calc(100vw-32px)] max-w-[340px] flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-new ${
         align === "right" ? "right-0" : "left-0"
       }`}
@@ -81,9 +83,9 @@ export default function NotificationPanel({
       <div className="shrink-0 border-b border-gray-100 px-4 pt-3 pb-2">
         <div className="flex items-center justify-between">
           <h2 className="text-[15px] font-semibold text-gray-900">
-            알림
+            {t("title")}
             <span className="ml-1.5 text-[11px] font-medium text-gray-500">
-              최근 {NOTIFICATION_RETENTION_DAYS}일
+              {t("recentDays", { days: NOTIFICATION_RETENTION_DAYS })}
             </span>
           </h2>
 
@@ -93,7 +95,7 @@ export default function NotificationPanel({
             disabled={!hasUnread || isReadingAll}
             className="cursor-pointer rounded-md px-1.5 py-1 text-[12px] font-medium text-gray-700 transition-colors hover:bg-gray-100 disabled:cursor-not-allowed disabled:text-gray-400 disabled:hover:bg-transparent"
           >
-            {isReadingAll ? "처리 중..." : "모두 읽기"}
+            {isReadingAll ? t("processing") : t("readAll")}
           </button>
         </div>
 
@@ -105,7 +107,7 @@ export default function NotificationPanel({
             aria-pressed={isSubscribed}
             className="mt-2 cursor-pointer rounded-full bg-gray-100 px-3 py-1 text-[11px] font-medium text-gray-600 transition-colors hover:bg-gray-200 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {isSubscribed ? "기기 알림 끄기" : "기기 알림 받기"}
+            {isSubscribed ? t("pushOff") : t("pushOn")}
           </button>
         )}
       </div>
@@ -113,20 +115,20 @@ export default function NotificationPanel({
       <div className="min-h-0 flex-1 overflow-y-auto">
         {isLoading && (
           <p className="px-4 py-10 text-center text-[13px] text-gray-500">
-            알림을 불러오는 중이에요.
+            {t("loading")}
           </p>
         )}
 
         {/* '더 보기' 실패에도 isError 가 true 가 되므로, 전체 오류는 받은 알림이 없을 때만 보여준다. */}
         {isError && notifications.length === 0 && (
           <p className="px-4 py-10 text-center text-[13px] text-gray-500">
-            알림을 불러오지 못했어요. 잠시 후 다시 시도해주세요.
+            {t("error")}
           </p>
         )}
 
         {!isLoading && !isError && notifications.length === 0 && (
           <p className="px-4 py-10 text-center text-[13px] text-gray-500">
-            최근 {NOTIFICATION_RETENTION_DAYS}일 동안 도착한 알림이 없어요.
+            {t("empty", { days: NOTIFICATION_RETENTION_DAYS })}
           </p>
         )}
 
@@ -150,10 +152,10 @@ export default function NotificationPanel({
             className="w-full cursor-pointer border-t border-gray-100 px-4 py-3 text-[12px] font-medium text-gray-600 transition-colors hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {isFetchingNextPage
-              ? "불러오는 중..."
+              ? t("loadingMore")
               : isFetchNextPageError
-                ? "불러오지 못했어요. 다시 시도"
-                : "이전 알림 더 보기"}
+                ? t("loadMoreError")
+                : t("loadMore")}
           </button>
         )}
       </div>
@@ -163,7 +165,7 @@ export default function NotificationPanel({
         onClick={onClose}
         className="shrink-0 cursor-pointer border-t border-gray-100 px-4 py-2 text-[12px] font-medium text-gray-500 transition-colors hover:bg-gray-100 md:hidden"
       >
-        닫기
+        {t("close")}
       </button>
     </div>
   );

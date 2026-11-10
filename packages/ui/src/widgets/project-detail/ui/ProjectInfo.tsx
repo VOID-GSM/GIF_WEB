@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { useTranslations } from "next-intl";
 
 import NameBadge from "../../../components/Badge/NameBadge";
 import ProjectLogo from "../../../components/ProjectLogo/ProjectLogo";
@@ -35,6 +36,7 @@ export default function ProjectInfo<TMember extends ProjectInfoMember>({
   summary,
   onMemberClick,
 }: ProjectInfoProps<TMember>) {
+  const t = useTranslations("projectDetail");
   const readonlyValue = "text-2xl text-gray-900 font-medium";
 
   // 팀장(LEADER)을 항상 팀원 목록 맨 앞에 표시 (양도 시 새 팀장이 앞으로 이동)
@@ -58,21 +60,21 @@ export default function ProjectInfo<TMember extends ProjectInfoMember>({
         <div className="flex flex-1 flex-col gap-6">
           <div className="flex items-center gap-4">
             <span className="shrink-0 text-2xl font-medium text-gray-700">
-              프로젝트명
+              {t("projectName")}
             </span>
             <span className={readonlyValue}>{project.name}</span>
           </div>
 
           <div className="flex items-center gap-4">
             <span className="shrink-0 text-2xl font-medium text-gray-700">
-              팀명
+              {t("teamName")}
             </span>
             <span className={readonlyValue}>{project.teamName}</span>
           </div>
 
           <div className="flex items-start gap-4">
             <div className="flex h-9 shrink-0 items-center">
-              <span className="text-2xl font-medium text-gray-700">팀원</span>
+              <span className="text-2xl font-medium text-gray-700">{t("members")}</span>
             </div>
             <div className="flex flex-1 flex-wrap items-center gap-2">
               {orderedMembers.map((member, index) => {
