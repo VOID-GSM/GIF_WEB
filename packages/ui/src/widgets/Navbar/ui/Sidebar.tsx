@@ -1,11 +1,13 @@
 "use client";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { SidebarProps } from "@repo/ui";
 import { buildSigninPath, getCurrentPath, logout } from "@repo/lib";
 import ThemeToggle from "../../Theme/ui/ThemeToggle";
 import Logout from "../../../svg/Logout";
 import NotificationBell from "../../Notification/ui/NotificationBell";
+import LanguageToggle from "../../Language/ui/LanguageToggle";
 
 export default function Sidebar({
   navItems,
@@ -13,7 +15,9 @@ export default function Sidebar({
   onClose,
   isGuest = false,
   homePath = "/",
+  showLanguageToggle = false,
 }: SidebarProps) {
+  const t = useTranslations("nav");
   const pathname = usePathname();
   const router = useRouter();
 
@@ -71,7 +75,7 @@ export default function Sidebar({
         )}
       </div>
 
-      {navItems.map(({ label, path }) => {
+      {navItems.map(({ labelKey, path }) => {
         const isActive = path === activePath;
 
         return (
@@ -87,7 +91,7 @@ export default function Sidebar({
                   : "text-gray-700 hover:bg-gray-100 focus-visible:bg-gray-100 dark:focus-visible:bg-gray-800"
               }`}
             >
-              {label}
+              {t(labelKey)}
             </button>
           </div>
         );
@@ -100,7 +104,7 @@ export default function Sidebar({
             onClick={handleSignin}
             className="flex h-[40px] w-full cursor-pointer items-center justify-center rounded-[10px] border border-yellow-600 bg-yellow-50 text-[13px] font-bold text-gray-900 outline-none transition-colors hover:bg-yellow-100 focus-visible:bg-yellow-100"
           >
-            로그인
+            {t("signin")}
           </button>
         ) : (
         <button
@@ -109,11 +113,20 @@ export default function Sidebar({
           className="flex h-[40px] w-full cursor-pointer items-center justify-center gap-2 rounded-[10px] bg-gray-100 text-[13px] font-medium text-gray-600 outline-none transition-colors hover:bg-gray-200 hover:text-gray-700 focus-visible:bg-gray-200 dark:hover:bg-gray-800 dark:focus-visible:bg-gray-800 md:hidden"
         >
           <Logout className="h-[13px] w-[16px]" aria-hidden="true" />
-          로그아웃
+          {t("logout")}
         </button>
         )}
-
-        <ThemeToggle />
+        {showLanguageToggle ? (
+          <div className="flex items-center gap-2">
+            {/* 모바일에서는 상단 헤더(Navbar)에 언어 버튼이 있으므로 숨긴다. */}
+            <div className="hidden shrink-0 md:block">
+              <LanguageToggle className="h-[34px]" />
+            </div>
+            <ThemeToggle />
+          </div>
+        ) : (
+          <ThemeToggle />
+        )}
       </div>
     </nav>
   );
