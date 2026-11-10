@@ -8,8 +8,8 @@ import { useGetDgCallback } from "@/entities/auth";
 import { COOKIE_KEYS, PRIVILEGED_ADMIN_EMAIL } from "@/shared/constants";
 import { setCookie } from "@/shared/utils";
 
-// 서버는 DataGSM 선생님 계정에만 ADMIN 역할을 준다. 학생 계정은 admin에 들어올 수 없다.
-const STUDENT_BLOCKED_MESSAGE =
+// 서버는 DataGSM 선생님 계정에만 ADMIN 역할을 준다. ADMIN이 아닌 계정(학생·외부 등)은 admin에 들어올 수 없다.
+const NOT_ADMIN_MESSAGE =
   "선생님 계정만 관리자 페이지에 로그인할 수 있습니다.";
 
 const CallbackContent = () => {
@@ -39,7 +39,7 @@ const CallbackContent = () => {
         if (!isMounted) return;
 
         // 토큰을 저장하기 전에 차단해야 학생이 admin 세션을 갖지 않는다.
-        if (data.role !== "ADMIN") throw new Error(STUDENT_BLOCKED_MESSAGE);
+        if (data.role !== "ADMIN") throw new Error(NOT_ADMIN_MESSAGE);
 
         setCookie(COOKIE_KEYS.ACCESS_TOKEN, data.accessToken);
         const skipSignup =
