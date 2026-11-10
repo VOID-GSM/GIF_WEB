@@ -4,14 +4,18 @@ import { Providers } from "./providers";
 // 1. Next.js 전용 Script 컴포넌트를 가져옵니다.
 import Script from "next/script";
 import { ThemeScript } from "@repo/ui";
+import { NextIntlClientProvider } from "next-intl";
+import { getLocale } from "next-intl/server";
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const locale = await getLocale();
+
   return (
-    <html lang="ko" suppressHydrationWarning>
+    <html lang={locale} suppressHydrationWarning>
       <head>
         <ThemeScript />
         {/* 2. GTM 스크립트 추가 */}
@@ -40,7 +44,9 @@ export default function RootLayout({
           />
         </noscript>
 
-        <Providers>{children}</Providers>
+        <NextIntlClientProvider>
+          <Providers>{children}</Providers>
+        </NextIntlClientProvider>
       </body>
     </html>
   );

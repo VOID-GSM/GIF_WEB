@@ -3,16 +3,20 @@ import "./globals.css";
 import { Providers } from "./providers";
 import Script from "next/script";
 import { ThemeScript } from "@repo/ui";
+import { NextIntlClientProvider } from "next-intl";
+import { getLocale } from "next-intl/server";
 
 const GA_MEASUREMENT_ID = "G-HG4X4QW7L6";
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const locale = await getLocale();
+
   return (
-    <html lang="ko" suppressHydrationWarning>
+    <html lang={locale} suppressHydrationWarning>
       <head>
         <ThemeScript />
         {/* GA4 (gtag.js) */}
@@ -35,7 +39,9 @@ export default function RootLayout({
         />
       </head>
       <body className="overflow-x-hidden">
-        <Providers>{children}</Providers>
+        <NextIntlClientProvider>
+          <Providers>{children}</Providers>
+        </NextIntlClientProvider>
       </body>
     </html>
   );
