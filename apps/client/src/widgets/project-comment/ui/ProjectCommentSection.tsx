@@ -88,6 +88,7 @@ function CommentItem({ projectId, comment }: CommentItemProps) {
   const deleteComment = useDeleteProjectComment(projectId);
   const [confirming, setConfirming] = useState(false);
   const { author } = comment;
+  const authorName = author.name ?? "알 수 없음";
 
   return (
     <li className="flex gap-3 py-4">
@@ -96,7 +97,7 @@ function CommentItem({ projectId, comment }: CommentItemProps) {
         // eslint-disable-next-line @next/next/no-img-element
         <img
           src={author.profileImage}
-          alt={author.name}
+          alt={authorName}
           className="h-9 w-9 shrink-0 rounded-full object-cover"
         />
       ) : (
@@ -104,14 +105,14 @@ function CommentItem({ projectId, comment }: CommentItemProps) {
           aria-hidden="true"
           className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-yellow-100 text-sm font-semibold text-yellow-800"
         >
-          {author.name.charAt(0)}
+          {author.name?.charAt(0) ?? "?"}
         </div>
       )}
 
       <div className="flex min-w-0 flex-1 flex-col gap-1">
         <div className="flex items-center gap-2">
           <span className="truncate text-sm font-semibold text-gray-900">
-            {author.name}
+            {authorName}
           </span>
           <time
             dateTime={comment.createdAt}

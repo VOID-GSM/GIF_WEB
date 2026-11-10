@@ -12,7 +12,8 @@ export interface LikeResponse {
 
 export interface CommentAuthor {
   id: number;
-  name: string;
+  // 이름이 비어 있는 사용자가 있을 수 있다 (PublicProjectMember.name 과 동일).
+  name: string | null;
   profileImage: string | null;
 }
 
