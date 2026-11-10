@@ -113,9 +113,18 @@ export default function RoadMakingView({ roundId }: { roundId: string }) {
   }, [isTimeUp, result, isStaleRound]);
 
   // 이미 끝난 라운드 주소로 들어오면 그 라운드의 결과를 보여준다.
-  const shownResult =
+  const rawResult =
     result ??
     (error instanceof RoadMakingRoundEndedError ? error.result : null);
+  // 서버 결과에 questionCount 가 빠져 올 때가 있어("7 / undefined"),
+  // 이번 라운드의 문항 수로, 그것도 없으면 답한 문항 수로 채운다.
+  const shownResult = rawResult && {
+    ...rawResult,
+    questionCount:
+      rawResult.questionCount ||
+      round?.questionCount ||
+      rawResult.solvedCount + rawResult.wrongCount,
+  };
 
   if (shownResult) {
     return (
@@ -128,9 +137,12 @@ export default function RoadMakingView({ roundId }: { roundId: string }) {
               restart(
                 {
                   type: "road-making",
-                  // 문항 수 도입 전 라운드는 0 이라 기본값으로 다시 시작한다.
+                  // 문항 수를 모르면(도입 전 라운드는 0, 응답에 빠진 경우 등) 기본값으로 다시 시작한다.
+                  // 답한 문항 수로 채운 표시용 값은 고를 수 없는 문항 수일 수 있어 쓰지 않는다.
                   questionCount:
-                    shownResult.questionCount || DEFAULT_QUESTION_COUNT,
+                    rawResult?.questionCount ||
+                    round?.questionCount ||
+                    DEFAULT_QUESTION_COUNT,
                 },
                 {
                   onSuccess: ({ roundId: next }) =>
