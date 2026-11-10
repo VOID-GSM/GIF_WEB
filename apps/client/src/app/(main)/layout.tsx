@@ -5,7 +5,6 @@ import { Navbar, CLIENT_NAV_ITEMS, type NavItem } from "@repo/ui";
 import { AuthSessionProvider, isAccountType } from "@/entities/auth";
 import { COOKIE_KEYS, PUBLIC_HOME_PATH } from "@/shared/constants";
 
-import { Providers } from "../providers";
 // 1. Next.js전용 Script 컴포넌트를 import 합니다.
 import Script from "next/script";
 
@@ -26,9 +25,9 @@ export default async function MainLayout({
   const accountType = isAccountType(rawAccountType) ? rawAccountType : null;
   const isPublicOnly = !isLoggedIn || accountType === "EXTERNAL";
 
+  // QueryClient·Toaster 등 Providers는 루트 레이아웃에서 한 번만 렌더링한다.
   return (
-    <Providers>
-      <AuthSessionProvider isLoggedIn={isLoggedIn} accountType={accountType}>
+    <AuthSessionProvider isLoggedIn={isLoggedIn} accountType={accountType}>
       {/* 2. Google Tag Manager 스크립트 추가 */}
       <Script
         id="gtm-script"
@@ -60,7 +59,6 @@ export default async function MainLayout({
         homePath={isPublicOnly ? PUBLIC_HOME_PATH : "/"}
       />
       <main className="md:pl-[220px]">{children}</main>
-      </AuthSessionProvider>
-    </Providers>
+    </AuthSessionProvider>
   );
 }

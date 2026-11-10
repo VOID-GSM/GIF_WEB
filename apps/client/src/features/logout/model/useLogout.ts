@@ -14,6 +14,7 @@ export function useLogout() {
 
   return useCallback(async () => {
     await logout();
+    // QueryClient가 앱 전체에서 하나(루트 Providers)라 페이지를 옮겨도 캐시가 유지된다.
     // 이전 사용자의 isLiked·isMine 등이 다음 사용자 화면에 남지 않도록 캐시를 비운다.
     queryClient.clear();
     router.replace("/signin");
