@@ -15,7 +15,7 @@ export const setCookieValue = (
   const parts = [`${key}=${value}`];
 
   if (options.path) parts.push(`path=${options.path}`);
-  if (options.maxAge) parts.push(`max-age=${options.maxAge}`);
+  if (options.maxAge !== undefined) parts.push(`max-age=${options.maxAge}`);
   if (options.domain) parts.push(`domain=${options.domain}`);
   if (options.sameSite) parts.push(`SameSite=${options.sameSite}`);
 
