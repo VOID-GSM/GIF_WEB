@@ -30,8 +30,8 @@ export function resolveColor(color: string): string {
 }
 
 /**
- * 캘린더 전용 색상. 디자인 토큰(CSS 변수)을 우선 쓰고, 아직 토큰이 없으면 fallback hex를 쓴다.
- * globals.css의 theme에 아래 변수를 추가하면 이 파일은 수정 없이 토큰 값을 따라간다.
+ * 캘린더 전용 색상. 토큰은 packages/ui/src/tokens.css에 정의되어 있고,
+ * 토큰이 로드되지 않는 환경을 위해 같은 값의 fallback hex를 함께 둔다.
  */
 const CAL = {
   highlightBg: "bg-[color:var(--color-calendar-highlight,#FFF2C2)]",
