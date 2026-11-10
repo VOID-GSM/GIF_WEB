@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -16,6 +17,7 @@ import { COOKIE_KEYS, SEARCH_PARAM_KEYS } from "@/shared/constants";
 import { buildSignupPath, sanitizeReturnPath, setCookie } from "@/shared/utils";
 
 export default function TermsView() {
+  const t = useTranslations("auth.signup");
   const router = useRouter();
   const searchParams = useSearchParams();
   const { mutate, isPending } = usePostClientInfo();
@@ -48,7 +50,7 @@ export default function TermsView() {
           setCookie(COOKIE_KEYS.CLIENT_ROLE, clientRole);
           router.replace(returnTo ?? "/");
         },
-        onError: () => toast.error("회원가입에 실패했습니다. 다시 시도해주세요."),
+        onError: () => toast.error(t("error")),
       },
     );
   };
@@ -82,7 +84,7 @@ export default function TermsView() {
                 : "bg-gray-400 cursor-not-allowed"
             }`}
           >
-            완료
+            {t("complete")}
           </button>
         </div>
       </div>
