@@ -4,8 +4,11 @@ import { useState } from "react";
 import Link from "next/link";
 
 import {
+  CAT_COLOR_LABELS,
   CONFIDENCE_LABELS,
   DEFAULT_CAT_CHASE_BOARD_SIDE,
+  JUDGMENT_LABELS,
+  getCatColor,
   useGetCatChaseRound,
   type CatChaseQuestionResult,
 } from "@/entities/cat-chase";
@@ -13,8 +16,6 @@ import { formatTimestamp } from "@/entities/form";
 import { CatChaseBoard, buildResultCells } from "@/widgets/cat-chase";
 
 import { ResultBadge, RoundStatusBadge } from "./CatChaseResult";
-
-const JUDGMENT_LABELS = { FOUND: "잡다 (O)", MISSED: "놓치다 (X)" } as const;
 
 interface CatChaseRecordDetailViewProps {
   roundId: number;
@@ -27,7 +28,9 @@ export default function CatChaseRecordDetailView({
   initialSequence,
 }: CatChaseRecordDetailViewProps) {
   const { data, isPending, isError } = useGetCatChaseRound(roundId);
-  const [selectedSequence, setSelectedSequence] = useState(initialSequence ?? 1);
+  const [selectedSequence, setSelectedSequence] = useState(
+    initialSequence ?? 1,
+  );
 
   const questions = data?.questions ?? [];
   const selected =
@@ -155,23 +158,31 @@ function QuestionDetail({ question }: { question: CatChaseQuestionResult }) {
           </p>
         ) : (
           <ol className="mt-3 flex flex-col gap-2">
-            {question.responses.map((response, i) => (
-              <li
-                key={response.position}
-                className="flex items-center justify-between gap-2 rounded-[12px] border border-gray-200 px-3 py-2.5"
-              >
-                <div className="flex flex-col">
-                  <span className="text-[14px] font-medium text-gray-800">
-                    {i + 1}번 고양이 · {JUDGMENT_LABELS[response.judgment]}
-                  </span>
-                  <span className="text-[12px] text-gray-500">
-                    {CONFIDENCE_LABELS[response.confidence]} · 실제{" "}
-                    {response.hadMouse ? "쥐 있음" : "쥐 없음"}
-                  </span>
-                </div>
-                <ResultBadge correct={response.correct} />
-              </li>
-            ))}
+            {question.responses.map((response, i) => {
+              const color = getCatColor(
+                question.catPositions.indexOf(response.position),
+                question.catPositions.length,
+              );
+              return (
+                <li
+                  key={response.position}
+                  className="flex items-center justify-between gap-2 rounded-[12px] border border-gray-200 px-3 py-2.5"
+                >
+                  <div className="flex flex-col">
+                    <span className="text-[14px] font-medium text-gray-800">
+                      {color ? CAT_COLOR_LABELS[color] : `${i + 1}번 고양이`} ·{" "}
+                      {JUDGMENT_LABELS[response.judgment]}
+                    </span>
+                    <span className="text-[12px] text-gray-500">
+                      {response.confidence &&
+                        `${CONFIDENCE_LABELS[response.confidence]} · `}
+                      실제 {response.hadMouse ? "쥐 있음" : "쥐 없음"}
+                    </span>
+                  </div>
+                  <ResultBadge correct={response.correct} />
+                </li>
+              );
+            })}
           </ol>
         )}
       </section>
