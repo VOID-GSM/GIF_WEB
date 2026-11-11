@@ -64,8 +64,6 @@ export interface RetrospectiveQueryParams {
   bookmarkedOnly?: boolean;
   /** true면 서버에서 내가 작성한 회고록만 조회한다 (GET /api/retrospective?mine=true) */
   mine?: boolean;
-  /** true면 내가 작성한 회고록만 조회한다 */
-  mineOnly?: boolean;
 }
 
 /** POST·PATCH /api/retrospective — 회고록 작성·수정 */
