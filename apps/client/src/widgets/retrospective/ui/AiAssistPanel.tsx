@@ -102,6 +102,8 @@ export default function AiAssistPanel({
   const trimmedContent = content.trim();
 
   const requestAssist = (action: RetrospectiveAiAction) => {
+    // 버튼이 비활성화되기 전 연속 클릭으로 요청이 두 번 나가지 않게 막는다
+    if (isPending) return;
     if (content.length > 5000) {
       toast.error("본문은 5,000자 이하로 입력해 주세요.");
       return;
