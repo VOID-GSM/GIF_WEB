@@ -2,24 +2,31 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { isAxiosError } from "axios";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 
 import type { CatChaseQuestion } from "@/entities/assessment";
 import {
   CAT_CHASE_TIMING,
+  CAT_COLORS,
   useFinishCatChaseRound,
   useGetCatChaseSession,
   useRecoverCatChaseSession,
   useSubmitCatChaseJudgments,
+  type CatChaseAnswer,
   type CatChaseConfidence,
-  type CatChaseJudgment,
   type CatChaseJudgmentItem,
   type CatChaseRoundResult,
   type CatChaseSession,
   type SubmitCatChaseJudgmentsResponse,
 } from "@/entities/cat-chase";
-import { CatChaseBoard, JudgmentCard, type BoardCell } from "@/widgets/cat-chase";
+import {
+  CatChaseBoard,
+  JudgmentCard,
+  toCatCellContent,
+  type BoardCell,
+} from "@/widgets/cat-chase";
 
 import CatChaseResult from "./CatChaseResult";
 
@@ -27,17 +34,20 @@ type Phase =
   | { name: "ready" }
   | { name: "mice" }
   | { name: "blank" }
-  | { name: "target"; catIndex: number }
+  // 빨간 고양이와 파란 고양이가 함께 나타난다.
+  | { name: "cats" }
+  // 빨간 고양이(0) → 파란 고양이(1) 순서로 하나씩 묻는다.
   | { name: "question"; catIndex: number }
   | { name: "submitting" }
   // 제출 응답을 못 받았고 서버에도 저장되지 않은 상태. 같은 판단을 다시 보낸다.
-  | { name: "submit-error"; items: CatChaseJudgmentItem[] };
+  | { name: "submit-error"; items: CatChaseJudgmentItem[] }
+  | { name: "submit-rejected" };
 
 // 단계별 안내 문구 키 (catChase.game.guide.*)
 const PHASE_GUIDE: Partial<Record<Phase["name"], string>> = {
   mice: "mice",
   blank: "blank",
-  target: "target",
+  cats: "cats",
 };
 
 const parseRoundId = (raw: string | null) => {
@@ -91,6 +101,7 @@ function CatChasePlay({
 }) {
   const { roundId, questionCount, boardSide } = session;
   const t = useTranslations("catChase.game");
+  const tColor = useTranslations("catChase.catColor");
 
   // session.result 가 없으면 서버가 현재 문항을 함께 내려준다.
   const [question, setQuestion] = useState<CatChaseQuestion>(
@@ -105,8 +116,12 @@ function CatChasePlay({
   const { mutate: finishRound, isPending: isFinishing } =
     useFinishCatChaseRound();
 
-  // 문항에 나온 고양이를 서버가 준 순서대로 모두 판단한다.
-  const targets = question.catPositions;
+  // 서버가 준 순서대로 빨간 고양이, 파란 고양이를 판단한다.
+  // 서버가 고양이를 2마리만 내려주는 GIF_SERVER#240 반영 후에만 동작한다 (3마리 이상이면 제출이 400으로 거절된다).
+  const targets = useMemo(
+    () => question.catPositions.slice(0, CAT_COLORS.length),
+    [question],
+  );
 
   const moveTo = (next: CatChaseQuestion) => {
     setQuestion(next);
@@ -127,7 +142,10 @@ function CatChasePlay({
     try {
       const latest = await recoverSession(roundId);
       if (latest.result) return onFinished(latest.result);
-      if (latest.question && latest.question.questionId !== question.questionId) {
+      if (
+        latest.question &&
+        latest.question.questionId !== question.questionId
+      ) {
         return moveTo(latest.question);
       }
     } catch {
@@ -146,35 +164,46 @@ function CatChasePlay({
           body: { judgments: items },
         }),
       );
-    } catch {
+    } catch (error) {
+      const status = isAxiosError(error) ? error.response?.status : undefined;
+      if (status !== undefined && status >= 400 && status < 500) {
+        setPhase({ name: "submit-rejected" });
+        return;
+      }
       await recover(items);
     }
   };
 
-  const handleJudge = (
-    judgment: CatChaseJudgment,
-    confidence: CatChaseConfidence,
-  ) => {
+  const recordJudgment = (item: Omit<CatChaseJudgmentItem, "position">) => {
     if (phase.name !== "question") return;
     const items = [
       ...judgments,
-      { position: targets[phase.catIndex], judgment, confidence },
+      { position: targets[phase.catIndex], ...item },
     ];
     setJudgments(items);
 
     const nextIndex = phase.catIndex + 1;
     if (nextIndex < targets.length) {
-      setPhase({ name: "target", catIndex: nextIndex });
+      setPhase({ name: "question", catIndex: nextIndex });
       return;
     }
     void submit(items);
   };
 
+  const handleJudge = (
+    judgment: CatChaseAnswer,
+    confidence: CatChaseConfidence,
+  ) => recordJudgment({ judgment, confidence });
+
+  // 제한 시간 안에 답하지 않으면 오답(TIMEOUT)으로 기록하고 다음 질문으로 넘어간다.
+  const handleTimeout = () =>
+    recordJudgment({ judgment: "TIMEOUT", confidence: null });
+
   const handleQuit = () => {
     finishRound(roundId, { onSuccess: onFinished });
   };
 
-  // 쥐 → 빈 보드 → 고양이(판단할 고양이는 빨강, 판단을 마친 고양이는 파랑) 순서로 자동 진행한다.
+  // 쥐 → 빈 보드 → 빨강·파랑 고양이 순서로 자동 진행한다.
   useEffect(() => {
     if (phase.name === "mice") {
       const timer = setTimeout(
@@ -185,17 +214,15 @@ function CatChasePlay({
     }
     if (phase.name === "blank") {
       const timer = setTimeout(
-        () => setPhase({ name: "target", catIndex: 0 }),
+        () => setPhase({ name: "cats" }),
         CAT_CHASE_TIMING.blank,
       );
       return () => clearTimeout(timer);
     }
-    if (phase.name === "target") {
-      const { catIndex } = phase;
-      // 고양이가 처음 나타날 때는 위치를 볼 시간을 조금 더 준다.
+    if (phase.name === "cats") {
       const timer = setTimeout(
-        () => setPhase({ name: "question", catIndex }),
-        catIndex === 0 ? CAT_CHASE_TIMING.cats : CAT_CHASE_TIMING.target,
+        () => setPhase({ name: "question", catIndex: 0 }),
+        CAT_CHASE_TIMING.cats,
       );
       return () => clearTimeout(timer);
     }
@@ -206,18 +233,13 @@ function CatChasePlay({
     if (phase.name === "mice") {
       question.mousePositions.forEach((p) => map.set(p, { content: "mouse" }));
     }
-    if (phase.name === "target") {
-      const targetIndex = phase.catIndex;
-      // 판단할 고양이는 빨강, 이미 판단한 고양이는 파랑, 아직 차례가 아닌 고양이는 노랑
-      question.catPositions.forEach((p, i) => {
-        map.set(p, {
-          content:
-            i === targetIndex ? "cat-red" : i < targetIndex ? "cat-blue" : "cat",
-        });
-      });
+    if (phase.name === "cats") {
+      targets.forEach((p, i) =>
+        map.set(p, { content: toCatCellContent(CAT_COLORS[i]) }),
+      );
     }
     return map;
-  }, [phase, question]);
+  }, [phase, question, targets]);
 
   if (phase.name === "ready") {
     return (
@@ -244,6 +266,21 @@ function CatChasePlay({
     );
   }
 
+  if (phase.name === "submit-rejected") {
+    return (
+      <NoticeCard message={t("submitRejected")}>
+        <button
+          type="button"
+          onClick={handleQuit}
+          disabled={isFinishing}
+          className="h-12 w-full rounded-[12px] bg-yellow-600 text-[16px] font-semibold tracking-[-0.5px] text-white transition-colors hover:bg-yellow-700 disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          {isFinishing ? t("finishingRound") : t("finishRound")}
+        </button>
+      </NoticeCard>
+    );
+  }
+
   const catCount = targets.length;
   const showQuestion = phase.name === "question" || phase.name === "submitting";
   const questionCatIndex =
@@ -262,7 +299,12 @@ function CatChasePlay({
           })}
           {showQuestion && catCount > 1 && (
             <span className="ml-2 text-gray-500">
-              · {t("catProgress", { current: questionCatIndex + 1, total: catCount })}
+              ·{" "}
+              {t("catProgress", {
+                cat: tColor(CAT_COLORS[questionCatIndex]),
+                current: questionCatIndex + 1,
+                total: catCount,
+              })}
             </span>
           )}
         </p>
@@ -286,17 +328,21 @@ function CatChasePlay({
 
       {showQuestion ? (
         <JudgmentCard
+          // 고양이마다 선택과 제한 시간을 새로 시작한다.
           key={`${question.questionId}-${questionCatIndex}`}
+          cat={CAT_COLORS[questionCatIndex]}
+          timeLimitMs={CAT_CHASE_TIMING.answer}
           isLast={questionCatIndex + 1 >= catCount}
           disabled={phase.name === "submitting"}
           onSubmit={handleJudge}
+          onTimeout={handleTimeout}
         />
       ) : (
         <CatChaseBoard
           gridSize={boardSide}
           cells={cells}
           fitViewport
-          key={phase.name === "target" ? `target-${phase.catIndex}` : phase.name}
+          key={phase.name}
         />
       )}
     </div>
@@ -397,7 +443,9 @@ function ReadyCard({
   onStart: () => void;
 }) {
   const t = useTranslations("catChase.game");
-  const steps = [1, 2, 3, 4].map((step) => t(`steps.${step}`));
+  const steps = [1, 2, 3, 4, 5].map((step) =>
+    t(`steps.${step}`, { seconds: CAT_CHASE_TIMING.answer / 1000 }),
+  );
 
   return (
     <section className="flex h-fit w-full max-w-[640px] flex-col gap-6 rounded-[20px] border border-gray-300 bg-white p-6 md:p-10">

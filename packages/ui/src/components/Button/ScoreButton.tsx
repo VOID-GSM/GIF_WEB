@@ -1,5 +1,5 @@
 interface ScoreButtonProps {
-  score: 40 | 32 | 24 | 25 | 20 | 15 | 10;
+  score: number;
   variant: "active" | "inactive";
   onClick: () => void;
 }

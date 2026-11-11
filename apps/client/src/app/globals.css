@@ -142,6 +142,20 @@ body {
   animation: pop-in 250ms ease-out both;
 }
 
+/* 응답 제한 시간 막대. 길이(animation-duration)는 사용하는 곳에서 정한다. */
+@keyframes timer-shrink {
+  from {
+    width: 100%;
+  }
+  to {
+    width: 0%;
+  }
+}
+
+.animate-timer-shrink {
+  animation: timer-shrink linear forwards;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animate-pop-in {
     animation: none;

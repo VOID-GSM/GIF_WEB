@@ -6,6 +6,7 @@ import Link from "next/link";
 
 import {
   DEFAULT_CAT_CHASE_BOARD_SIDE,
+  getCatColor,
   useGetCatChaseRound,
   type CatChaseQuestionResult,
 } from "@/entities/cat-chase";
@@ -26,7 +27,9 @@ export default function CatChaseRecordDetailView({
 }: CatChaseRecordDetailViewProps) {
   const t = useTranslations("catChase.record");
   const { data, isPending, isError } = useGetCatChaseRound(roundId);
-  const [selectedSequence, setSelectedSequence] = useState(initialSequence ?? 1);
+  const [selectedSequence, setSelectedSequence] = useState(
+    initialSequence ?? 1,
+  );
 
   const questions = data?.questions ?? [];
   const selected =
@@ -135,6 +138,7 @@ function QuestionTab({
 function QuestionDetail({ question }: { question: CatChaseQuestionResult }) {
   const t = useTranslations("catChase.record");
   const tc = useTranslations("catChase.confidence");
+  const tColor = useTranslations("catChase.catColor");
   return (
     <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_300px]">
       <section className="flex flex-col items-center gap-4 rounded-[20px] bg-white p-5 shadow md:p-7">
@@ -160,23 +164,34 @@ function QuestionDetail({ question }: { question: CatChaseQuestionResult }) {
           </p>
         ) : (
           <ol className="mt-3 flex flex-col gap-2">
-            {question.responses.map((response, i) => (
-              <li
-                key={response.position}
-                className="flex items-center justify-between gap-2 rounded-[12px] border border-gray-200 px-3 py-2.5"
-              >
-                <div className="flex flex-col">
-                  <span className="text-[14px] font-medium text-gray-800">
-                    {t("catJudgment", { index: i + 1 })} · {t(`judgment.${response.judgment}`)}
-                  </span>
-                  <span className="text-[12px] text-gray-500">
-                    {tc(response.confidence)} ·{" "}
-                    {response.hadMouse ? t("actualMouse") : t("actualNoMouse")}
-                  </span>
-                </div>
-                <ResultBadge correct={response.correct} />
-              </li>
-            ))}
+            {question.responses.map((response, i) => {
+              const color = getCatColor(
+                question.catPositions.indexOf(response.position),
+                question.catPositions.length,
+              );
+              return (
+                <li
+                  key={response.position}
+                  className="flex items-center justify-between gap-2 rounded-[12px] border border-gray-200 px-3 py-2.5"
+                >
+                  <div className="flex flex-col">
+                    <span className="text-[14px] font-medium text-gray-800">
+                      {color
+                        ? tColor(color)
+                        : t("catJudgment", { index: i + 1 })}{" "}
+                      ·{" "}
+                      {t(`judgment.${response.judgment}`)}
+                    </span>
+                    <span className="text-[12px] text-gray-500">
+                      {response.confidence &&
+                        `${tc(response.confidence)} · `}
+                      {response.hadMouse ? t("actualMouse") : t("actualNoMouse")}
+                    </span>
+                  </div>
+                  <ResultBadge correct={response.correct} />
+                </li>
+              );
+            })}
           </ol>
         )}
       </section>

@@ -28,7 +28,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
         <div className="absolute bottom-2 right-2 flex items-center gap-2 rounded-full bg-black/55 px-2.5 py-1 text-[12px] font-medium text-white backdrop-blur-sm">
           <span className="flex items-center gap-1" aria-label={t("likes")}>
             <HeartIcon
-              filled={project.isLiked}
+              filled={project.isLiked === true}
               className={`h-3.5 w-3.5 ${project.isLiked ? "text-yellow-500" : ""}`}
             />
             {project.likeCount.toLocaleString()}

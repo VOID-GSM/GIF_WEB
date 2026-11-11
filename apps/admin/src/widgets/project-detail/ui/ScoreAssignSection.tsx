@@ -22,23 +22,34 @@ export default function ScoreAssignSection({
   if (!myInfo?.adminRole || myInfo.email === PRIVILEGED_ADMIN_EMAIL) return null;
 
   const areas = getAllowedAreas(myInfo.adminRole, myInfo.gradeHead);
-  if (areas.length === 0) return null;
 
   // 채점 영역이 2개일 때는 두 버튼을 가로로 나란히 배치한다.
   const isRow = areas.length === 2;
 
   return (
-    <div className={`mt-[30px] flex gap-3 ${isRow ? "flex-row" : "flex-col"}`}>
-      {areas.map((area) => (
-        <button
-          key={area}
-          type="button"
-          onClick={() => router.push(`/score/${area}?projectId=${projectId}`)}
-          className={`${isRow ? "flex-1" : "w-full"} rounded-[10px] bg-yellow-600 py-3 text-center text-sm font-semibold text-gray-900 transition-opacity hover:opacity-90 cursor-pointer`}
-        >
-          {AREA_LABELS[area]} 점수 부여하기
-        </button>
-      ))}
+    <div className="mt-[30px] flex flex-col gap-3">
+      {areas.length > 0 && (
+        <div className={`flex gap-3 ${isRow ? "flex-row" : "flex-col"}`}>
+          {areas.map((area) => (
+            <button
+              key={area}
+              type="button"
+              onClick={() => router.push(`/score/${area}?projectId=${projectId}`)}
+              className={`${isRow ? "flex-1" : "w-full"} rounded-[10px] bg-yellow-600 py-3 text-center text-sm font-semibold text-gray-900 transition-opacity hover:opacity-90 cursor-pointer`}
+            >
+              {AREA_LABELS[area]} 점수 부여하기
+            </button>
+          ))}
+        </div>
+      )}
+      {/* 항목 기반 채점은 역할과 관계없이 선생님 전체가 할 수 있다. */}
+      <button
+        type="button"
+        onClick={() => router.push(`/score/items?projectId=${projectId}`)}
+        className="w-full rounded-[10px] border border-yellow-600 bg-yellow-50 py-3 text-center text-sm font-semibold text-yellow-700 transition-colors hover:bg-yellow-100 cursor-pointer dark:text-yellow-300"
+      >
+        항목별 점수 부여하기
+      </button>
     </div>
   );
 }

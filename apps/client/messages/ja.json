@@ -94,26 +94,27 @@
         "FOUND": "捕まえた",
         "MISSED": "逃した"
       },
-      "question": "赤いネコはネズミを捕まえたでしょうか？",
-      "redCat": "赤いネコ",
+      "question": "{cat}はネズミを捕まえたでしょうか？",
       "judgment": "判断",
       "confidenceQuestion": "どのくらい自信がありますか？",
       "confidence": "確信度",
       "submit": "提出する",
-      "nextCat": "次のネコ"
+      "nextCat": "次のネコ",
+      "timeLeft": "残りの回答時間",
+      "seconds": "{seconds}秒"
     },
     "game": {
       "guide": {
         "mice": "ネズミが隠れた場所を覚えてください",
         "blank": "ネズミが隠れました",
-        "target": "赤いネコがネズミを捕まえたか考えてみましょう"
+        "cats": "赤いネコと青いネコの位置を覚えてください"
       },
       "invalidRequest": "無効な検査リクエストです。能力検査からやり直してください。",
       "loadError": "検査情報を読み込めませんでした。",
       "submitError": "判断を提出できませんでした。ネットワークを確認してもう一度お試しください。",
       "resubmit": "再提出する",
       "progress": "問題 <b>{current}</b> / {total}",
-      "catProgress": "ネコ {current} / {total}",
+      "catProgress": "{cat}（{current}/{total}）",
       "quit": "やめる",
       "quitWarning": "やめるとコインはもらえません。",
       "finishing": "終了中…",
@@ -121,9 +122,10 @@
       "backToAssessment": "能力検査に戻る",
       "steps": {
         "1": "ボードに一瞬現れるネズミの位置を覚えてください。",
-        "2": "ネズミが隠れた後、ネコたちが現れます。",
-        "3": "赤いネコがネズミを捕まえたか（O）逃したか（X）を選び、どのくらい自信があるかを選択してください。",
-        "4": "出てきたネコをすべて正解すると、その問題を正解として計算します。"
+        "2": "ネズミが隠れた後、赤いネコと青いネコが現れます。",
+        "3": "赤いネコ、青いネコの順に、ネズミを捕まえたか（O）逃したか（X）を選び、どのくらい自信があるかを選択してください。",
+        "4": "ネコごとに{seconds}秒以内に答えてください。時間を過ぎると不正解になります。",
+        "5": "2匹のネコをどちらも正解すると、その問題を正解として計算します。"
       },
       "title": "ネコの鬼ごっこ",
       "summary": "全{count}問 · ワーキングメモリ",
@@ -131,12 +133,16 @@
       "back": "戻る",
       "resume": "続きから",
       "start": "はじめる",
-      "myRecords": "自分の記録を見る"
+      "myRecords": "自分の記録を見る",
+      "submitRejected": "サーバーが回答を処理できなかったため、検査を続けられません。検査を終了してください。",
+      "finishingRound": "検査を終了中…",
+      "finishRound": "検査を終了する"
     },
     "record": {
       "judgment": {
         "FOUND": "捕まえた (O)",
-        "MISSED": "逃した (X)"
+        "MISSED": "逃した (X)",
+        "TIMEOUT": "時間切れ"
       },
       "backToList": "← 記録一覧",
       "loadError": "記録を読み込めませんでした。",
@@ -164,7 +170,7 @@
     "result": {
       "completedTitle": "検査が終わりました！",
       "stoppedTitle": "検査を中断しました",
-      "completedDesc": "ネコの判断をすべて正解した問題のみ正解として計算します。",
+      "completedDesc": "赤いネコと青いネコをどちらも正解した問題のみ正解として計算します。",
       "stoppedDesc": "最後まで解かなかったため、コインは支給されませんでした。",
       "correctCount": "正解数",
       "earnedCoin": "獲得コイン",
@@ -181,6 +187,10 @@
       "inProgress": "進行中",
       "done": "完了",
       "stopped": "中断"
+    },
+    "catColor": {
+      "red": "赤いネコ",
+      "blue": "青いネコ"
     }
   },
   "comment": {
@@ -665,7 +675,27 @@
     "calendar": {
       "month": "{month}月",
       "edit": "編集する",
-      "add": "追加する"
+      "add": "追加する",
+      "rangeStart": "開始",
+      "rangeEnd": "終了",
+      "date": "{month}月{day}日",
+      "cancelSelect": "選択を取り消す",
+      "prevMonth": "前の月",
+      "nextMonth": "次の月",
+      "guide": {
+        "1": {
+          "title": "開始日を選択",
+          "message": "予定の開始日を選択してください。"
+        },
+        "2": {
+          "title": "終了日を選択",
+          "message": "開始日が選択されました。次に終了日を選択してください。"
+        },
+        "3": {
+          "title": "選択完了",
+          "message": "期間が選択されました。"
+        }
+      }
     },
     "field": {
       "noAnswer": "回答なし",

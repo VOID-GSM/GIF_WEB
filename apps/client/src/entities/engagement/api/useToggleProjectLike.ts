@@ -40,15 +40,25 @@ export function useToggleProjectLike(projectId: number) {
 
       return { previous };
     },
-    onSuccess: ({ liked, likes }) => {
+    // 응답 필드가 빠지면 undefined 를 캐시에 쓰지 않도록 이전 값으로 폴백한다.
+    // 상세 캐시의 이전 값은 onMutate 에서 낙관적으로 바꾼 값이다.
+    onSuccess: ({ liked, likes }, isLiked) => {
       queryClient.setQueriesData<ProjectEngagementFields>(
         detailFilter,
-        (old) => (old ? { ...old, isLiked: liked, likeCount: likes } : old),
+        (old) =>
+          old
+            ? {
+                ...old,
+                isLiked: liked ?? old.isLiked,
+                likeCount: likes ?? old.likeCount,
+              }
+            : old,
       );
       updateProjectInLists(queryClient, projectId, (project) => ({
         ...project,
-        isLiked: liked,
-        likeCount: likes,
+        isLiked: liked ?? !isLiked,
+        likeCount:
+          likes ?? Math.max(0, project.likeCount + (isLiked ? -1 : 1)),
       }));
     },
     onError: (_error, _variables, context) => {

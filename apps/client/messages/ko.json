@@ -94,26 +94,27 @@
         "FOUND": "잡다",
         "MISSED": "놓치다"
       },
-      "question": "빨간 고양이는 쥐를 잡았을까요?",
-      "redCat": "빨간 고양이",
+      "question": "{cat}는 쥐를 잡았을까요?",
       "judgment": "판단",
       "confidenceQuestion": "얼마나 확신하나요?",
       "confidence": "확신도",
       "submit": "제출하기",
-      "nextCat": "다음 고양이"
+      "nextCat": "다음 고양이",
+      "timeLeft": "남은 응답 시간",
+      "seconds": "{seconds}초"
     },
     "game": {
       "guide": {
         "mice": "쥐가 숨은 자리를 기억하세요",
         "blank": "쥐가 숨었어요",
-        "target": "빨간 고양이가 쥐를 잡았을지 생각해보세요"
+        "cats": "빨간 고양이와 파란 고양이의 위치를 기억하세요"
       },
       "invalidRequest": "잘못된 검사 요청이에요. 역량검사에서 다시 시작해주세요.",
       "loadError": "검사 정보를 불러오지 못했어요.",
       "submitError": "판단을 제출하지 못했어요. 네트워크를 확인하고 다시 시도해주세요.",
       "resubmit": "다시 제출하기",
       "progress": "문항 <b>{current}</b> / {total}",
-      "catProgress": "고양이 {current} / {total}",
+      "catProgress": "{cat} ({current}/{total})",
       "quit": "그만두기",
       "quitWarning": "그만두면 코인을 받을 수 없어요.",
       "finishing": "종료 중…",
@@ -121,9 +122,10 @@
       "backToAssessment": "역량검사로 돌아가기",
       "steps": {
         "1": "보드에 잠깐 나타나는 쥐의 위치를 기억하세요.",
-        "2": "쥐가 숨은 뒤 고양이들이 나타나요.",
-        "3": "빨간 고양이가 쥐를 잡았는지(O) 놓쳤는지(X) 고르고, 얼마나 확신하는지 선택하세요.",
-        "4": "나온 고양이를 모두 맞혀야 그 문항을 맞힌 것으로 계산해요."
+        "2": "쥐가 숨은 뒤 빨간 고양이와 파란 고양이가 나타나요.",
+        "3": "빨간 고양이, 파란 고양이 순서로 쥐를 잡았는지(O) 놓쳤는지(X) 고르고, 얼마나 확신하는지 선택하세요.",
+        "4": "고양이마다 {seconds}초 안에 답해야 해요. 시간이 지나면 오답으로 처리돼요.",
+        "5": "두 고양이를 모두 맞혀야 그 문항을 맞힌 것으로 계산해요."
       },
       "title": "고양이 술래잡기",
       "summary": "총 {count}문항 · 작업 기억",
@@ -131,12 +133,16 @@
       "back": "돌아가기",
       "resume": "이어하기",
       "start": "시작하기",
-      "myRecords": "내 기록 보기"
+      "myRecords": "내 기록 보기",
+      "submitRejected": "서버가 답안을 처리하지 못해 검사를 계속할 수 없습니다. 검사를 종료해 주세요.",
+      "finishingRound": "검사 종료 중…",
+      "finishRound": "검사 종료하기"
     },
     "record": {
       "judgment": {
         "FOUND": "잡다 (O)",
-        "MISSED": "놓치다 (X)"
+        "MISSED": "놓치다 (X)",
+        "TIMEOUT": "시간 초과"
       },
       "backToList": "← 기록 목록",
       "loadError": "기록을 불러오지 못했어요.",
@@ -164,7 +170,7 @@
     "result": {
       "completedTitle": "검사를 마쳤어요!",
       "stoppedTitle": "검사를 중단했어요",
-      "completedDesc": "고양이 판단을 모두 맞힌 문항만 정답으로 계산해요.",
+      "completedDesc": "빨간 고양이와 파란 고양이를 모두 맞힌 문항만 정답으로 계산해요.",
       "stoppedDesc": "끝까지 풀지 않아 코인이 지급되지 않았어요.",
       "correctCount": "맞힌 문항",
       "earnedCoin": "받은 코인",
@@ -181,6 +187,10 @@
       "inProgress": "진행 중",
       "done": "완료",
       "stopped": "중단"
+    },
+    "catColor": {
+      "red": "빨간 고양이",
+      "blue": "파란 고양이"
     }
   },
   "comment": {
@@ -665,7 +675,27 @@
     "calendar": {
       "month": "{month}월",
       "edit": "수정하기",
-      "add": "추가하기"
+      "add": "추가하기",
+      "rangeStart": "시작",
+      "rangeEnd": "종료",
+      "date": "{month}월 {day}일",
+      "cancelSelect": "선택 취소",
+      "prevMonth": "이전 달",
+      "nextMonth": "다음 달",
+      "guide": {
+        "1": {
+          "title": "시작일 선택",
+          "message": "일정의 시작일을 선택해 주세요."
+        },
+        "2": {
+          "title": "종료일 선택",
+          "message": "시작일이 선택되었어요. 이제 종료일을 선택해 주세요."
+        },
+        "3": {
+          "title": "선택 완료",
+          "message": "기간이 선택되었어요."
+        }
+      }
     },
     "field": {
       "noAnswer": "답변 없음",
