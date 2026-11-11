@@ -13,7 +13,7 @@ export const ASSESSMENTS: AssessmentMeta[] = [
     type: "road-making",
     image: "/assessment/road-making.png",
     tone: "orange",
-    playable: false,
+    playable: true,
   },
 ];
 
