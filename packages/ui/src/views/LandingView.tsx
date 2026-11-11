@@ -2,8 +2,13 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import Reveal from "../landing/Reveal";
 import { FEATURES, STEPS } from "../landing/data";
+
+const highlight = (chunks: React.ReactNode) => (
+  <span className="rounded-md bg-yellow-200 px-2">{chunks}</span>
+);
 
 interface LandingViewProps {
   /** 로그인 페이지 경로 (기본 /signin) */
@@ -13,6 +18,7 @@ interface LandingViewProps {
 export default function LandingView({
   signinHref = "/signin",
 }: LandingViewProps) {
+  const t = useTranslations("intro.landing");
   return (
     <>
       {/* ===== Hero ===== */}
@@ -43,16 +49,16 @@ export default function LandingView({
         />
 
         <p className="mt-8 max-w-xl text-[18px] font-semibold text-white sm:text-[22px]">
-          아이디어가 현실이 되는 곳,
-          <br className="hidden sm:block" /> 광주소프트웨어마이스터고 아이디어
-          페스티벌
+          {t.rich("hero", {
+            br: () => <br className="hidden sm:block" />,
+          })}
         </p>
 
         <Link
           href={signinHref}
           className="mt-9 inline-block rounded-full bg-yellow-600 px-8 py-3 text-[16px] font-bold text-gray-900 shadow-new transition hover:bg-yellow-500 active:scale-[0.98]"
         >
-          시작하기 →
+          {t("start")}
         </Link>
 
         {/* 스크롤 인디케이터 — 마우스 휠 안에서 점이 아래로 내려가며 스크롤을 유도 */}
@@ -82,24 +88,22 @@ export default function LandingView({
         <div className="mx-auto max-w-6xl px-6">
           <Reveal>
             <h2 className="text-[32px] font-bold leading-tight text-gray-900 sm:text-[44px]">
-              <span className="rounded-md bg-yellow-200 px-2">GIF</span>가
-              도와드려요
+              {t.rich("featuresTitle", { hl: highlight })}
             </h2>
             <p className="mt-4 max-w-xl text-[16px] text-gray-500">
-              팀 구성부터 자료 제출, 평가, 점수 집계까지 — 페스티벌 운영에 필요한
-              모든 기능을 하나의 플랫폼에 담았어요.
+              {t("featuresDesc")}
             </p>
           </Reveal>
           <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {FEATURES.map((f, i) => (
-              <Reveal key={f.title} delay={(i % 3) * 100}>
+              <Reveal key={f.key} delay={(i % 3) * 100}>
                 <div className="group h-full rounded-3xl border border-yellow-100 bg-white p-7 shadow-sm transition hover:-translate-y-1 hover:border-yellow-300 hover:shadow-new">
                   <span className="block h-1.5 w-10 rounded-full bg-yellow-400" />
                   <h3 className="mt-5 text-[19px] font-bold text-gray-900">
-                    {f.title}
+                    {t(`features.${f.key}.title`)}
                   </h3>
                   <p className="mt-2 text-[14px] leading-relaxed text-gray-500">
-                    {f.desc}
+                    {t(`features.${f.key}.desc`)}
                   </p>
                 </div>
               </Reveal>
@@ -113,11 +117,10 @@ export default function LandingView({
         <div className="mx-auto max-w-6xl px-6">
           <Reveal>
             <h2 className="text-[32px] font-bold leading-tight text-gray-900 sm:text-[44px]">
-              이렇게 <span className="rounded-md bg-yellow-200 px-2">참여</span>
-              해요
+              {t.rich("stepsTitle", { hl: highlight })}
             </h2>
             <p className="mt-4 max-w-xl text-[16px] text-gray-500">
-              팀 구성부터 발표·심사까지, 페스티벌은 이렇게 진행돼요.
+              {t("stepsDesc")}
             </p>
           </Reveal>
           <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
@@ -128,10 +131,10 @@ export default function LandingView({
                     {s.step}
                   </div>
                   <h3 className="mt-5 text-[18px] font-bold text-gray-900">
-                    {s.title}
+                    {t(`steps.${s.key}.title`)}
                   </h3>
                   <p className="mt-2 text-[14px] leading-relaxed text-gray-500">
-                    {s.desc}
+                    {t(`steps.${s.key}.desc`)}
                   </p>
                 </div>
               </Reveal>
@@ -144,16 +147,16 @@ export default function LandingView({
       <section className="bg-yellow-100 py-32 text-center">
         <Reveal>
           <h2 className="px-6 text-[34px] font-extrabold text-gray-900 sm:text-[48px]">
-            지금, 당신의 아이디어를 시작하세요
+            {t("ctaTitle")}
           </h2>
           <p className="mt-4 text-[16px] font-medium text-gray-600">
-            GIF와 함께라면 준비부터 수상까지 한 걸음이에요.
+            {t("ctaDesc")}
           </p>
           <Link
             href={signinHref}
             className="mt-10 inline-block rounded-full border border-yellow-600 bg-white px-10 py-4 text-[16px] font-bold text-gray-900 shadow-sm transition hover:bg-yellow-50 active:scale-[0.98]"
           >
-            시작하기 →
+            {t("start")}
           </Link>
         </Reveal>
       </section>

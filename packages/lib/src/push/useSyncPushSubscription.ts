@@ -13,8 +13,10 @@ import { subscribeOnDevice } from "./subscribeOnDevice";
 
 // 이미 알림을 허용한 기기는 서버 구독 정보가 유실됐을 수 있어 탭마다 한 번 다시 등록한다.
 // 알림 패널을 열지 않아도 푸시를 받아야 하므로 레이아웃(Navbar)에서 한 번만 호출한다.
-export function useSyncPushSubscription() {
+// 비로그인 상태에서는 등록할 사용자가 없으므로 enabled=false 로 건너뛴다.
+export function useSyncPushSubscription({ enabled = true }: { enabled?: boolean } = {}) {
   useEffect(() => {
+    if (!enabled) return;
     if (!isPushSupported() || Notification.permission !== "granted") return;
     if (sessionStorage.getItem(PUSH_SYNC_FLAG_KEY)) return;
 
@@ -34,5 +36,5 @@ export function useSyncPushSubscription() {
     };
 
     syncSubscription();
-  }, []);
+  }, [enabled]);
 }

@@ -1,8 +1,10 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import { useTranslations } from "next-intl";
 import type { DatePickerProps } from "../model/type";
 
 export default function DatePicker({ value, onChange, displayValue }: DatePickerProps) {
+  const t = useTranslations("datePicker");
   const today = new Date();
   const [isOpen, setIsOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
@@ -51,7 +53,7 @@ export default function DatePicker({ value, onChange, displayValue }: DatePicker
     today.getMonth() === month &&
     today.getDate() === day;
 
-  const DAYS = ["일", "월", "화", "수", "목", "금", "토"];
+  const DAYS = t("weekdays").split(",");
 
   return (
     <div className="relative w-full" ref={rootRef}>
@@ -60,7 +62,7 @@ export default function DatePicker({ value, onChange, displayValue }: DatePicker
         onClick={() => setIsOpen((prev) => !prev)}
       >
         <span className={value ? "text-black" : "text-gray-500"}>
-          {(displayValue ?? value) || "날짜를 선택하세요"}
+          {(displayValue ?? value) || t("placeholder")}
         </span>
       </div>
 
@@ -77,7 +79,7 @@ export default function DatePicker({ value, onChange, displayValue }: DatePicker
               ‹
             </button>
             <span className="text-[15px] font-medium dark:text-white">
-              {year}년 {month + 1}월
+              {t("yearMonth", { year, month: month + 1 })}
             </span>
             <button
               type="button"

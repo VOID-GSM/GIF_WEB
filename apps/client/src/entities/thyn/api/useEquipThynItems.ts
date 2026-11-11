@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { isAxiosError } from "axios";
 import { toast } from "sonner";
@@ -8,12 +9,13 @@ import { buyItem, equipItems } from "./thynApi";
 import { THYN_ITEMS_QUERY_KEY } from "./useGetThynItems";
 import type { ThynItem } from "../model/type";
 
-const getErrorMessage = (error: unknown) =>
+const getErrorMessage = (error: unknown, fallback: string) =>
   (isAxiosError<{ message?: string }>(error) && error.response?.data?.message) ||
-  "저장에 실패했습니다.";
+  fallback;
 
 /** 착용 상태를 저장한다 */
 export function useEquipThynItems() {
+  const t = useTranslations("thyn.toast");
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -26,11 +28,11 @@ export function useEquipThynItems() {
     },
     onSuccess: (items) => {
       queryClient.setQueryData(THYN_ITEMS_QUERY_KEY, items);
-      toast.success("띤의 모습을 저장했어요.");
+      toast.success(t("saved"));
     },
     onError: (error) => {
       queryClient.invalidateQueries({ queryKey: THYN_ITEMS_QUERY_KEY });
-      toast.error(getErrorMessage(error));
+      toast.error(getErrorMessage(error, t("saveError")));
     },
   });
 }

@@ -1,9 +1,9 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useEffect } from "react";
 
 import {
-  CATEGORY_LABELS,
   useDeleteDraftRetrospective,
   useGetDraftRetrospectives,
   type DetailRetrospectiveResponse,
@@ -21,7 +21,9 @@ export default function DraftListModal({
   onSelect,
   onDeleted,
 }: DraftListModalProps) {
+  const t = useTranslations("retrospective.draft");
   const { data: drafts, isLoading, isError } = useGetDraftRetrospectives();
+  const tc = useTranslations("retrospective.category");
   const { mutate: deleteDraft } = useDeleteDraftRetrospective();
 
   // Escape로 닫을 수 있게 한다
@@ -58,29 +60,29 @@ export default function DraftListModal({
             id="draft-modal-title"
             className="text-[16px] font-semibold text-gray-900"
           >
-            임시 저장 목록
+            {t("title")}
           </h2>
           <button
             type="button"
             onClick={onClose}
-            aria-label="임시 저장 목록 닫기"
+            aria-label={t("closeLabel")}
             className="cursor-pointer rounded-[8px] px-2 py-1 text-[13px] text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-600"
           >
-            닫기
+            {t("close")}
           </button>
         </div>
 
         {isLoading ? (
           <p className="py-12 text-center text-[13px] font-medium text-gray-400">
-            불러오는 중...
+            {t("loading")}
           </p>
         ) : isError ? (
           <p className="py-12 text-center text-[13px] font-medium text-red-500">
-            임시 저장 목록을 불러오지 못했습니다.
+            {t("error")}
           </p>
         ) : drafts.length === 0 ? (
           <p className="py-12 text-center text-[13px] font-medium text-gray-400">
-            임시 저장된 글이 없습니다.
+            {t("empty")}
           </p>
         ) : (
           <ul className="mt-4 flex flex-col gap-2">
@@ -95,20 +97,20 @@ export default function DraftListModal({
                   className="min-w-0 flex-1 cursor-pointer text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-600"
                 >
                   <span className="block truncate text-[13px] font-medium text-gray-800">
-                    {draft.title || "제목 없음"}
+                    {draft.title || t("untitled")}
                   </span>
                   <span className="mt-0.5 block text-[12px] text-gray-400">
-                    {CATEGORY_LABELS[draft.category]} ·{" "}
+                    {tc(draft.category)} ·{" "}
                     {draft.createdAt.slice(0, 10)}
                   </span>
                 </button>
                 <button
                   type="button"
                   onClick={() => handleDelete(draft.id)}
-                  aria-label={`${draft.title || "제목 없음"} 삭제`}
+                  aria-label={t("deleteLabel", { title: draft.title || t("untitled") })}
                   className="shrink-0 cursor-pointer rounded-[8px] px-2 py-1 text-[12px] font-medium text-gray-400 transition-colors hover:bg-red-50 hover:text-red-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-600"
                 >
-                  삭제
+                  {t("delete")}
                 </button>
               </li>
             ))}

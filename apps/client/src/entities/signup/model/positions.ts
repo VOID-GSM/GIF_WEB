@@ -1,6 +1,7 @@
 export const POSITIONS = [
-  { label: "팀장", value: "LEADER" },
-  { label: "팀원", value: "MEMBER" },
+  // 라벨은 번역 리소스(auth.position.<value>)에 있다.
+  { value: "LEADER" },
+  { value: "MEMBER" },
 ] as const;
 
 export type ClientRole = (typeof POSITIONS)[number]["value"];

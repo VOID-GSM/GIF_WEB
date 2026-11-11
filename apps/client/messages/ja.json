@@ -1,0 +1,825 @@
+{
+  "assessment": {
+    "toast": {
+      "startError": "検査を開始できませんでした。しばらくしてからもう一度お試しください。"
+    },
+    "types": {
+      "cat-chase": {
+        "title": "ネコの鬼ごっこ",
+        "ability": "ワーキングメモリ",
+        "description": "ネズミが隠れた場所を覚えて見つけ出します"
+      },
+      "road-making": {
+        "title": "道づくり",
+        "ability": "空間認知",
+        "description": "柵を立てて車を目的地まで導きます"
+      }
+    },
+    "ranking": {
+      "rankLabel": "{rank}位",
+      "me": "自分",
+      "grade": "{grade}年生",
+      "title": "GSMランキング",
+      "description": "{count}問の記録のうち、正解した問題数で順位を決めます。",
+      "rank": "順位",
+      "name": "名前",
+      "correct": "正解数",
+      "coin": "コイン",
+      "error": "ランキングを読み込めませんでした。",
+      "emptyTitle": "まだ記録がありません",
+      "emptyDesc": "最初のランカーになりましょう！"
+    },
+    "coin": {
+      "balance": "保有コイン",
+      "balanceError": "コイン残高を読み込めませんでした"
+    },
+    "github": {
+      "notConfigured": "GitHub連携の設定がまだ準備できていません。",
+      "title": "コミットでコインをもらう",
+      "description": "GitHubのコミットが増えるほどコインが貯まります。",
+      "perCommit": "コミット1件につき+{coin}コイン",
+      "error": "連携情報を読み込めませんでした。",
+      "retry": "再試行",
+      "confirmDisconnect": "本当に解除しますか？",
+      "disconnecting": "解除中…",
+      "disconnect": "解除",
+      "cancel": "キャンセル",
+      "unlink": "連携解除",
+      "syncing": "同期中…",
+      "sync": "コミットを同期",
+      "connect": "GitHubと連携する"
+    },
+    "setup": {
+      "questionCount": "問題数",
+      "countOption": "{count}問",
+      "title": "能力検査",
+      "description": "短いゲームを通して、ワーキングメモリや空間認知などの問題解決能力を確認する検査です。",
+      "selectType": "検査タイプを選択",
+      "baseReward": "1問以上正解で基本{coin}コイン",
+      "perCorrect": "正解するたびに+{coin}コイン",
+      "maxReward": "最大{coin}コイン",
+      "selectTypeFirst": "検査タイプを選択してください",
+      "comingSoon": "まもなく公開予定です",
+      "preparing": "検査を準備中…",
+      "start": "はじめる"
+    },
+    "githubCallback": {
+      "pending": "GitHubと連携中",
+      "wait": "少々お待ちください。",
+      "cancelled": "GitHub連携をキャンセルしました。",
+      "failed": "GitHub連携に失敗しました。",
+      "invalid": "無効な連携リクエストです。",
+      "back": "能力検査に戻る"
+    }
+  },
+  "catChase": {
+    "toast": {
+      "finishError": "検査を終了できませんでした。もう一度お試しください。"
+    },
+    "confidence": {
+      "VERY_CONFIDENT": "とても自信がある",
+      "CONFIDENT": "自信がある",
+      "SOMEWHAT_UNSURE": "少し迷う",
+      "UNSURE": "わからない"
+    },
+    "board": {
+      "mouse": "ネズミ",
+      "cat": "ネコ",
+      "mouseCell": "ネズミがいたマス",
+      "correct": "正解",
+      "wrong": "不正解"
+    },
+    "judgment": {
+      "answer": {
+        "FOUND": "捕まえた",
+        "MISSED": "逃した"
+      },
+      "question": "{cat}はネズミを捕まえたでしょうか？",
+      "judgment": "判断",
+      "confidenceQuestion": "どのくらい自信がありますか？",
+      "confidence": "確信度",
+      "submit": "提出する",
+      "nextCat": "次のネコ",
+      "timeLeft": "残りの回答時間",
+      "seconds": "{seconds}秒"
+    },
+    "game": {
+      "guide": {
+        "mice": "ネズミが隠れた場所を覚えてください",
+        "blank": "ネズミが隠れました",
+        "cats": "赤いネコと青いネコの位置を覚えてください"
+      },
+      "invalidRequest": "無効な検査リクエストです。能力検査からやり直してください。",
+      "loadError": "検査情報を読み込めませんでした。",
+      "submitError": "判断を提出できませんでした。ネットワークを確認してもう一度お試しください。",
+      "resubmit": "再提出する",
+      "progress": "問題 <b>{current}</b> / {total}",
+      "catProgress": "{cat}（{current}/{total}）",
+      "quit": "やめる",
+      "quitWarning": "やめるとコインはもらえません。",
+      "finishing": "終了中…",
+      "continue": "続ける",
+      "backToAssessment": "能力検査に戻る",
+      "steps": {
+        "1": "ボードに一瞬現れるネズミの位置を覚えてください。",
+        "2": "ネズミが隠れた後、赤いネコと青いネコが現れます。",
+        "3": "赤いネコ、青いネコの順に、ネズミを捕まえたか（O）逃したか（X）を選び、どのくらい自信があるかを選択してください。",
+        "4": "ネコごとに{seconds}秒以内に答えてください。時間を過ぎると不正解になります。",
+        "5": "2匹のネコをどちらも正解すると、その問題を正解として計算します。"
+      },
+      "title": "ネコの鬼ごっこ",
+      "summary": "全{count}問 · ワーキングメモリ",
+      "resumeFrom": "{sequence}問目から続けて解きます",
+      "back": "戻る",
+      "resume": "続きから",
+      "start": "はじめる",
+      "myRecords": "自分の記録を見る",
+      "submitRejected": "サーバーが回答を処理できなかったため、検査を続けられません。検査を終了してください。",
+      "finishingRound": "検査を終了中…",
+      "finishRound": "検査を終了する"
+    },
+    "record": {
+      "judgment": {
+        "FOUND": "捕まえた (O)",
+        "MISSED": "逃した (X)",
+        "TIMEOUT": "時間切れ"
+      },
+      "backToList": "← 記録一覧",
+      "loadError": "記録を読み込めませんでした。",
+      "detailTitle": "{date} の記録",
+      "detailSummary": "{correct} / {total}問正解 · {coin}コイン",
+      "noQuestions": "解いた問題はありません。",
+      "selectQuestion": "問題を選択",
+      "questionTab": "{sequence}問目",
+      "boardHint": "ネコのマスにある小さなネズミは、実際にネズミがいた場所です。",
+      "myJudgment": "自分の判断",
+      "notSubmitted": "提出していない問題です。",
+      "catJudgment": "{index}匹目のネコ",
+      "actualMouse": "実際：ネズミあり",
+      "actualNoMouse": "実際：ネズミなし",
+      "listTitle": "ネコの鬼ごっこの記録",
+      "listDesc": "記録を押すと、問題ごとの正解と自分の判断を確認できます。",
+      "goToAssessment": "検査を受ける",
+      "date": "実施日時",
+      "correctCount": "正解数",
+      "earnedCoin": "獲得コイン",
+      "status": "状態",
+      "empty": "まだ記録がありません。",
+      "coin": "{coin}コイン"
+    },
+    "result": {
+      "completedTitle": "検査が終わりました！",
+      "stoppedTitle": "検査を中断しました",
+      "completedDesc": "赤いネコと青いネコをどちらも正解した問題のみ正解として計算します。",
+      "stoppedDesc": "最後まで解かなかったため、コインは支給されませんでした。",
+      "correctCount": "正解数",
+      "earnedCoin": "獲得コイン",
+      "coinUnit": "コイン",
+      "loadError": "問題ごとの結果を読み込めませんでした。自分の記録で確認してください。",
+      "questionLabel": "{sequence}問目",
+      "catsCorrect": "ネコ {correct} / {total} 正解",
+      "toAssessment": "能力検査へ",
+      "myRecords": "自分の記録を見る",
+      "preparing": "準備中…",
+      "retry": "もう一度",
+      "correct": "正解",
+      "wrong": "不正解",
+      "inProgress": "進行中",
+      "done": "完了",
+      "stopped": "中断"
+    },
+    "catColor": {
+      "red": "赤いネコ",
+      "blue": "青いネコ"
+    }
+  },
+  "comment": {
+    "toast": {
+      "rateLimit": "コメントの投稿が多すぎます。しばらくしてからもう一度お試しください。",
+      "createError": "コメントの投稿に失敗しました。",
+      "created": "コメントを投稿しました。",
+      "deleteForbidden": "自分のコメントのみ削除できます。",
+      "deleteError": "コメントの削除に失敗しました。",
+      "deleted": "コメントを削除しました。"
+    },
+    "loginPrompt": "ログインしてコメントを残しましょう。",
+    "placeholder": "プロジェクトへの意見を残してください。",
+    "inputLabel": "コメント入力",
+    "submitting": "投稿中...",
+    "submit": "投稿",
+    "unknown": "不明",
+    "deleteConfirm": "削除しますか？",
+    "confirm": "確認",
+    "cancel": "キャンセル",
+    "delete": "削除",
+    "loading": "コメントを読み込み中...",
+    "loadError": "コメントを読み込めませんでした。",
+    "empty": "最初のコメントを残しましょう。",
+    "count": "コメント <hl>{count}</hl>",
+    "loadingMore": "読み込み中...",
+    "more": "もっと見る"
+  },
+  "like": {
+    "toast": {
+      "error": "いいねの処理に失敗しました。"
+    }
+  },
+  "formSubmission": {
+    "toast": {
+      "deleteFileError": "ファイルの削除に失敗しました。",
+      "downloadError": "ファイルのダウンロードに失敗しました。"
+    }
+  },
+  "inquiry": {
+    "toast": {
+      "created": "お問い合わせを受け付けました。",
+      "createError": "お問い合わせの送信に失敗しました。もう一度お試しください。",
+      "updated": "お問い合わせを更新しました。",
+      "updateError": "お問い合わせの更新に失敗しました。もう一度お試しください。"
+    },
+    "tabs": {
+      "create": "お問い合わせ",
+      "my": "お問い合わせ履歴"
+    },
+    "form": {
+      "tooLarge": "ファイルサイズが大きすぎてアップロードできません。（最大10MB）",
+      "titleContentRequired": "タイトルと内容を入力してください。",
+      "title": "タイトル",
+      "titlePlaceholder": "タイトルを入力してください",
+      "write": "作成",
+      "preview": "プレビュー",
+      "emptyPreview": "プレビューする内容がありません。",
+      "contentPlaceholder": "お問い合わせ内容を詳しく入力してください（Markdown対応）",
+      "attachment": "添付ファイル",
+      "optional": "（任意）",
+      "removeAttachment": "添付ファイルを削除",
+      "cancel": "キャンセル",
+      "pageTitle": "お問い合わせ",
+      "pageDesc": "サービス利用中の不便な点や気になる点をお寄せください。",
+      "attachHint": "クリックしてファイルを添付（最大10MB）",
+      "submitting": "送信中...",
+      "submit": "お問い合わせを送信",
+      "detail": "お問い合わせ詳細",
+      "loading": "読み込み中",
+      "loadError": "お問い合わせ内容を読み込めませんでした。",
+      "answeredLocked": "回答済みのお問い合わせは編集できません。",
+      "backToDetail": "詳細に戻る",
+      "editTitle": "お問い合わせを編集",
+      "editDesc": "登録したお問い合わせ内容を編集できます。",
+      "existingAttachment": "既存の添付ファイル:",
+      "replaceHint": "クリックして新しいファイルに差し替え（最大10MB）",
+      "updating": "更新中...",
+      "update": "編集完了"
+    },
+    "my": {
+      "status": {
+        "pending": "回答待ち",
+        "answered": "回答済み"
+      },
+      "title": "お問い合わせ履歴",
+      "loading": "読み込み中",
+      "detailLoadError": "お問い合わせ内容を読み込めませんでした。",
+      "edit": "編集",
+      "content": "お問い合わせ内容",
+      "attachment": "添付ファイル",
+      "answer": "回答",
+      "description": "これまでのお問い合わせと回答状況を確認できます。",
+      "listLoadError": "お問い合わせ履歴を読み込めませんでした。",
+      "empty": "お問い合わせ履歴はありません。"
+    }
+  },
+  "project": {
+    "toast": {
+      "created": "プロジェクトを作成しました。",
+      "createError": "プロジェクトの作成に失敗しました。",
+      "linkCreated": "リンクを追加しました。",
+      "linkCreateError": "リンクの追加に失敗しました。",
+      "linkDeleted": "リンクを削除しました。",
+      "linkDeleteError": "リンクの削除に失敗しました。",
+      "updated": "プロジェクトを更新しました。",
+      "updateError": "プロジェクトの更新に失敗しました。",
+      "descriptionUpdated": "プロジェクトの説明を更新しました。",
+      "descriptionUpdateError": "プロジェクトの説明の更新に失敗しました。",
+      "linkUpdated": "リンクを更新しました。",
+      "linkUpdateError": "リンクの更新に失敗しました。"
+    },
+    "card": {
+      "likes": "いいね数",
+      "comments": "コメント数"
+    },
+    "like": {
+      "unlike": "いいねを取り消す",
+      "like": "いいね"
+    },
+    "externalProfile": {
+      "nameRequired": "名前を入力してください。",
+      "nameChanged": "名前を変更しました。",
+      "nameChangeError": "名前を変更できませんでした。",
+      "myProfile": "マイプロフィール",
+      "visitor": "外部の来訪者",
+      "loading": "読み込み中...",
+      "loadError": "プロフィール情報を読み込めませんでした。",
+      "name": "名前",
+      "save": "保存",
+      "cancel": "キャンセル",
+      "edit": "編集",
+      "hint": "外部来訪者アカウントでは、プロジェクトの閲覧といいね・コメントへの参加ができます。",
+      "logout": "ログアウト"
+    },
+    "list": {
+      "loading": "読み込み中...",
+      "loadError": "プロジェクトを読み込めませんでした。",
+      "myProjects": "マイプロジェクト",
+      "collapse": "閉じる",
+      "showAll": "すべて見る ›",
+      "emptyGrade": "この学年のプロジェクトはありません。",
+      "emptyAll": "プロジェクトはありません。",
+      "emptyLeader": "まだ作成したプロジェクトはありません。",
+      "create": "プロジェクトを作成する",
+      "emptyMember": "まだ参加しているプロジェクトはありません。<br></br>リーダーがプロジェクトを作成すると自動的に参加します。",
+      "infoLoadError": "プロジェクト情報を読み込めませんでした。",
+      "browseTitle": "プロジェクトを見る",
+      "browseDesc": "アイデアフェスティバルに参加したチームのプロジェクトをご覧ください。"
+    },
+    "signinPrompt": {
+      "label": "ログイン",
+      "title": "GIFに参加してみましょう",
+      "description": "在校生はDataGSMでログインしてチームプロジェクトを管理でき、外部の来訪者はGoogleアカウントでいいね・コメントに参加できます。",
+      "signin": "ログインする"
+    },
+    "form": {
+      "logoHint": "プロジェクト一覧に224 x 112px（2:1の比率）で表示されます。比率が異なると切れる場合があります。",
+      "name": "プロジェクト名",
+      "nameRequired": "プロジェクト名を入力してください",
+      "teamName": "チーム名",
+      "teamNameRequired": "チーム名を入力してください",
+      "description": "プロジェクトの説明",
+      "descriptionLimit": "500文字以内で入力してください",
+      "descriptionRequired": "プロジェクトの説明を入力してください",
+      "submit": "完了する",
+      "members": "メンバー",
+      "membersRequired": "メンバーを1人以上追加してください"
+    },
+    "memberSearch": {
+      "members": "メンバー",
+      "add": "メンバーを追加",
+      "placeholder": "メンバーを検索してください",
+      "noResults": "検索結果がありません",
+      "typeName": "名前を入力してください"
+    },
+    "link": {
+      "nameRequired": "名前を入力してください。",
+      "invalidUrl": "正しいアドレスを入力してください。（例：github.com/void-gsm）",
+      "name": "名前",
+      "save": "保存",
+      "cancelInput": "入力をキャンセル",
+      "deleteConfirm": "削除しますか？",
+      "yes": "はい",
+      "no": "いいえ",
+      "edit": "編集",
+      "deleteLabel": "{title} のリンクを削除",
+      "add": "リンクを追加"
+    },
+    "schedule": {
+      "title": "スケジュール",
+      "infoLabel": "スケジュールの案内",
+      "info": "カレンダーを含むフォームを提出すると、入力した予定がここに反映されます。",
+      "yearMonth": "{year}年{month}月"
+    },
+    "detail": {
+      "loadError": "プロジェクトを読み込めませんでした。",
+      "loading": "読み込み中...",
+      "back": "← 戻る",
+      "views": "閲覧数",
+      "comments": "コメント数",
+      "edit": "編集する",
+      "signinHint": "自分のチームのプロジェクトなら、ログインして編集やフォーム提出を続けられます。",
+      "signin": "ログインする"
+    }
+  },
+  "retrospective": {
+    "toast": {
+      "draftDeleted": "下書きを削除しました。",
+      "draftDeleteError": "下書きの削除に失敗しました。",
+      "deleted": "振り返りを削除しました。",
+      "deleteError": "振り返りの削除に失敗しました。",
+      "draftSaved": "下書き保存しました。",
+      "draftSaveError": "下書き保存に失敗しました。",
+      "bookmarkError": "ブックマークの変更に失敗しました。",
+      "created": "振り返りを作成しました。",
+      "updated": "振り返りを更新しました。",
+      "saveError": "振り返りの保存に失敗しました。"
+    },
+    "category": {
+      "FEATURE": "機能開発",
+      "IMPROVEMENT": "機能改善",
+      "REFACTORING": "リファクタリング",
+      "TROUBLESHOOTING": "トラブルシューティング",
+      "RETROSPECT": "振り返り",
+      "PORTFOLIO": "ポートフォリオ",
+      "ALL": "すべて"
+    },
+    "sort": {
+      "LATEST": "新しい順",
+      "OLDEST": "古い順",
+      "BOOKMARK": "人気順"
+    },
+    "ai": {
+      "title": "AIアシスト",
+      "description": "AIが作成した下書きを確認し、<br></br>必要に応じて本文に適用できます。",
+      "actions": {
+        "polish": "内容を整える",
+        "structure": "構成のおすすめ",
+        "portfolio": "ポートフォリオに変換"
+      },
+      "summary": "AI要約",
+      "summarizing": "内容を要約しています...",
+      "generating": "生成中…",
+      "pending": "AIが結果を作成しています…",
+      "minContentHint": "本文を{min}文字以上書くと、整える機能とポートフォリオ変換が使えます。",
+      "tooLong": "本文が{max, number}文字を超えています。分量を減らしてください。",
+      "result": {
+        "title": "{action}の結果プレビュー",
+        "sections": "おすすめの目次",
+        "contentChanged": "リクエスト後に本文が変更されました。適用すると、その後に書いた内容がこの結果に置き換わります。",
+        "cancel": "キャンセル",
+        "apply": "本文に適用",
+        "applyAnyway": "それでも適用"
+      }
+    },
+    "draft": {
+      "title": "下書き一覧",
+      "closeLabel": "下書き一覧を閉じる",
+      "close": "閉じる",
+      "loading": "読み込み中...",
+      "error": "下書き一覧を読み込めませんでした。",
+      "empty": "下書きはありません。",
+      "delete": "削除",
+      "untitled": "無題",
+      "deleteLabel": "{title} を削除"
+    },
+    "editor": {
+      "tabsLabel": "編集・プレビュー",
+      "mode": {
+        "write": "作成",
+        "preview": "プレビュー",
+        "split": "並べて表示"
+      },
+      "charCount": "{count}文字",
+      "imageComingSoon": "画像追加機能はまだ準備中です。",
+      "contentLabel": "振り返りの内容",
+      "contentPlaceholder": "Markdownで自由に記録してみましょう。",
+      "emptyPreview": "プレビューする内容がありません。"
+    },
+    "toolbar": {
+      "label": "Markdown書式",
+      "bold": "太字",
+      "italic": "斜体",
+      "underline": "下線",
+      "h1": "見出し1",
+      "h2": "見出し2",
+      "list": "リスト",
+      "quote": "引用",
+      "code": "コードブロック",
+      "link": "リンク",
+      "image": "画像を追加（準備中）"
+    },
+    "filter": {
+      "categoryLabel": "カテゴリフィルター",
+      "searchLabel": "振り返りを検索",
+      "searchPlaceholder": "タイトルや内容で検索",
+      "sortLabel": "並び替え",
+      "bookmarkedOnly": "ブックマークのみ",
+      "mineOnly": "自分の振り返り"
+    },
+    "meta": {
+      "category": "記録タイプ",
+      "visibility": "公開範囲",
+      "visibilityToggle": "公開するかどうか",
+      "public": "公開",
+      "private": "非公開",
+      "title": "タイトル",
+      "titlePlaceholder": "タイトルを入力してください",
+      "tags": "タグ",
+      "removeTag": "{tag} タグを削除",
+      "addTag": "タグを追加",
+      "tagPlaceholder": "タグを入力してEnter",
+      "tagLimit": "最大5個まで追加できます。"
+    },
+    "relatedWork": {
+      "invalidNumber": "番号は1以上の数字で入力してください。",
+      "titleRequired": "タイトルを入力してください。",
+      "linkLabel": "GitHub Issue・PRリンク",
+      "linkPlaceholder": "GitHub Issue・PRのリンクを貼り付けると自動入力されます（任意）",
+      "hint": "公開リポジトリのIssue・PRのみタイトルを自動取得できます。非公開リポジトリはタイトルを直接入力してください。",
+      "fetching": "タイトルを取得しています...",
+      "rateLimit": "リクエストが多いためタイトルを取得できませんでした。しばらくしてから再試行するか、タイトルを直接入力してください。",
+      "notFound": "非公開リポジトリか見つからないため、タイトルを自動取得できませんでした。タイトルを直接入力してください。",
+      "type": "作業タイプ",
+      "number": "番号",
+      "workTitle": "作業タイトル",
+      "titlePlaceholder": "タイトルを直接入力してもかまいません",
+      "add": "追加",
+      "cancel": "キャンセル",
+      "openGithub": "GitHubで開く",
+      "remove": "#{number} {title} を削除",
+      "title": "関連作業",
+      "addButton": "+ 追加"
+    },
+    "card": {
+      "private": "非公開",
+      "untitled": "無題",
+      "noContent": "まだ内容がありません。",
+      "grade": "{grade}年生"
+    },
+    "form": {
+      "saveDraft": "下書き保存",
+      "update": "編集完了",
+      "create": "作成完了"
+    },
+    "detail": {
+      "deleteConfirm": "この振り返りを削除しますか？削除後は元に戻せません。",
+      "breadcrumb": "振り返り",
+      "loading": "読み込み中",
+      "notFound": "存在しないか、削除された振り返りです。",
+      "backToList": "一覧に戻る",
+      "private": "非公開",
+      "edit": "編集",
+      "unbookmark": "ブックマーク解除",
+      "bookmark": "ブックマークに追加",
+      "relatedWork": "関連作業",
+      "untitled": "無題",
+      "grade": "{grade}年生",
+      "deleting": "削除中",
+      "delete": "削除"
+    },
+    "list": {
+      "title": "振り返り",
+      "description": "プロジェクトや開発の経験を記録してみましょう。",
+      "create": "新しい振り返りを作成",
+      "loading": "読み込み中",
+      "emptyMine": "自分が作成した振り返りはありません",
+      "emptyBookmarked": "ブックマークした振り返りはありません",
+      "emptySearch": "検索結果がありません"
+    },
+    "write": {
+      "notOwner": "自分が作成した振り返りのみ編集できます。",
+      "draftLoaded": "下書きを読み込みました。",
+      "titleOrContentRequired": "タイトルか内容を入力してください。",
+      "titleRequired": "タイトルを入力してください。",
+      "contentRequired": "内容を入力してください。",
+      "breadcrumb": "振り返り",
+      "editTitle": "振り返りを編集",
+      "createTitle": "新しい振り返りを作成",
+      "drafts": "下書き一覧"
+    }
+  },
+  "thyn": {
+    "toast": {
+      "buyError": "アイテムの購入に失敗しました。",
+      "bought": "アイテムを購入しました。保存すると着用されます。",
+      "saveError": "保存に失敗しました。",
+      "saved": "ティンの姿を保存しました。"
+    },
+    "category": {
+      "hair": "髪",
+      "clothes": "服",
+      "face": "表情",
+      "headwear": "髪飾り",
+      "glasses": "メガネ",
+      "prop": "小物"
+    },
+    "avatar": {
+      "defaultFace": "基本の表情",
+      "thyn": "ティン"
+    },
+    "item": {
+      "owned": "所持中",
+      "notOwned": "未所持",
+      "price": "{price}コイン"
+    },
+    "closet": {
+      "loading": "読み込み中...",
+      "empty": "まだアイテムがありません。"
+    },
+    "preview": {
+      "title": "プレビュー",
+      "triedItems": "試着中のアイテム",
+      "total": "合計",
+      "coin": "{coin}コイン",
+      "shortage": "コインが{count}枚足りません。",
+      "buying": "購入中...",
+      "buy": "購入する",
+      "saving": "保存中...",
+      "save": "保存する",
+      "reset": "元に戻す"
+    },
+    "view": {
+      "tab": {
+        "closet": "クローゼット",
+        "shop": "ショップ"
+      },
+      "title": "Thynカスタマイズ",
+      "description": "コミット1回につき10コインもらえます！",
+      "loadError": "アイテムを読み込めませんでした。",
+      "coin": "コイン"
+    }
+  },
+  "github": {
+    "toast": {
+      "connectedAs": "@{username} のアカウントを連携しました。",
+      "connected": "GitHubアカウントを連携しました。",
+      "disconnected": "GitHub連携を解除しました。",
+      "disconnectError": "連携の解除に失敗しました。もう一度お試しください。",
+      "synced": "コミット報酬として{earned}コインを獲得しました！",
+      "noNewCommits": "新しく反映されたコミットはありません。",
+      "syncError": "コミットの同期に失敗しました。しばらくしてからもう一度お試しください。"
+    }
+  },
+  "auth": {
+    "loginRequired": "ログインが必要な機能です。",
+    "studentOnly": "在校生のみ利用できる機能です。",
+    "callback": {
+      "grade3Blocked": "3年生は会員登録できません。",
+      "googleBlocked": "校内アカウントはGoogleログインを使用できません。DataGSMでログインしてください。",
+      "missingCode": "認可コードがありません。",
+      "error": "ログイン中にエラーが発生しました。",
+      "failed": "ログイン失敗",
+      "redirecting": "まもなくログインページに移動します。",
+      "processing": "ログイン処理中",
+      "wait": "少々お待ちください。"
+    },
+    "signin": {
+      "visitorCaption": "外部の来訪者の方ですか？いいね・コメントで参加してみましょう。"
+    },
+    "signup": {
+      "loading": "読み込み中...",
+      "next": "次へ",
+      "error": "会員登録に失敗しました。もう一度お試しください。",
+      "complete": "完了"
+    },
+    "terms": {
+      "service": {
+        "title": "サービス利用規約",
+        "content": "第1条（目的）本規約は、GIF（Gsm Idea Festival）サービスが提供するアイデアフェスティバルのチームプロジェクト管理および資料提出機能の利用に関して、サービスと学生間の権利・義務および責任事項を定めることを目的とします。\n\n第2条（会員登録および認証）利用者は学校が発行したアカウントを通じて会員登録を申請するものとし、他人の情報を盗用したり虚偽の情報を記載した場合は、利用が制限されることがあります。\n\n第3条（利用者の義務）利用者はアカウント情報を他人に譲渡・貸与することはできず、他人の著作物を無断で使用して提出物を作成したり、サービスの運営を妨害したりしてはなりません。\n\n第4条（提出物の管理）利用者が提出した資料および成果物の著作権は該当チームに帰属し、サービスはイベント運営・審査・結果発表および校内記録の目的の範囲内で提出物を利用することができます。\n\n第5条（責任の制限）サービスは、天災地変、利用者の責に帰すべき事由など、管理の範囲を超える事由により生じた損害について責任を負いません。"
+      },
+      "privacy": {
+        "title": "個人情報の収集・利用への同意",
+        "content": "【収集項目】氏名、学籍番号、学年・クラス、学校メールアドレス、所属チームおよびプロジェクト情報、サービス利用記録\n\n【収集目的】会員の識別および認証、チームプロジェクト管理、資料提出、審査・評価対象の管理、イベント運営に関するご案内\n\n【保有および利用期間】会員退会時に遅滞なく破棄します。ただし、イベント運営・結果保存のためイベント終了後一定期間保管する場合があり、関係法令に保存義務がある場合はその期間に従います。\n\nあなたには同意を拒否する権利がありますが、必須項目に同意しない場合、会員登録およびサービスの利用が制限されます。"
+      },
+      "agreeAll": "すべてに同意",
+      "required": "必須",
+      "optional": "任意"
+    },
+    "position": {
+      "LEADER": "リーダー",
+      "MEMBER": "メンバー"
+    }
+  },
+  "form": {
+    "card": {
+      "submitted": "提出済み",
+      "notSubmitted": "未提出",
+      "view": "見る",
+      "edit": "編集",
+      "write": "作成"
+    },
+    "calendar": {
+      "month": "{month}月",
+      "edit": "編集する",
+      "add": "追加する",
+      "rangeStart": "開始",
+      "rangeEnd": "終了",
+      "date": "{month}月{day}日",
+      "cancelSelect": "選択を取り消す",
+      "prevMonth": "前の月",
+      "nextMonth": "次の月",
+      "guide": {
+        "1": {
+          "title": "開始日を選択",
+          "message": "予定の開始日を選択してください。"
+        },
+        "2": {
+          "title": "終了日を選択",
+          "message": "開始日が選択されました。次に終了日を選択してください。"
+        },
+        "3": {
+          "title": "選択完了",
+          "message": "期間が選択されました。"
+        }
+      }
+    },
+    "field": {
+      "noAnswer": "回答なし",
+      "answerPlaceholder": "回答を入力してください"
+    },
+    "list": {
+      "loading": "読み込み中...",
+      "loadError": "フォームを読み込めませんでした。しばらくしてからもう一度お試しください。",
+      "noProject": "所属しているプロジェクトがありません。",
+      "empty": "登録されたフォームはありません。",
+      "title": "タイトル",
+      "deadlineDate": "締切日",
+      "deadlineTime": "締切時間",
+      "submitted": "提出状況",
+      "submitter": "提出者",
+      "action": "操作"
+    },
+    "submission": {
+      "required": "必須項目です。",
+      "invalidUrl": "http:// または https:// で始まるリンクを入力してください。",
+      "fileOrLinkRequired": "ファイルを添付するか外部リンクを入力してください。",
+      "fileRequired": "ファイルを添付してください。",
+      "fillRequired": "必須項目をすべて入力してください。",
+      "loading": "読み込み中...",
+      "formLoadError": "フォーム情報を読み込めません。",
+      "optional": "（任意）",
+      "deadlineDate": "締切日: {date}",
+      "deadlineTime": "締切時間: {time}",
+      "updateError": "更新に失敗しました。もう一度お試しください。",
+      "uploadErrorEdit": "ファイルのアップロードに失敗しました。許可されたファイル形式（最大10MB）か確認してからもう一度お試しください。",
+      "updated": "回答を更新しました。",
+      "submissionLoadError": "提出情報を読み込めません。",
+      "cancel": "キャンセル",
+      "saving": "保存中...",
+      "complete": "完了する",
+      "closed": "締め切られたフォームです。閲覧のみ可能です。",
+      "edit": "編集する",
+      "uploadErrorSubmit": "ファイルのアップロードに失敗しました。編集ページでファイルを再アップロードしてください。",
+      "submittedToast": "回答を提出しました。",
+      "submitError": "提出に失敗しました。もう一度お試しください。",
+      "back": "← 戻る",
+      "projectLoadError": "プロジェクト情報を読み込めません。",
+      "submitting": "提出中...",
+      "submit": "提出する"
+    },
+    "file": {
+      "allowedWithSize": "許可形式: {extensions}（最大10MB）",
+      "invalidExtension": "許可されていないファイル形式です。（{extensions} 形式のみアップロード可能）",
+      "tooLarge": "ファイルサイズが大きすぎてアップロードできません。（最大10MB）",
+      "attachment": "添付ファイル",
+      "remove": "{fileName} を削除",
+      "downloading": "ダウンロード中...",
+      "download": "ダウンロード",
+      "dropHint": "クリックまたはファイルをドラッグしてアップロード",
+      "allowed": "許可形式: {extensions}",
+      "open": "開く",
+      "invalidUrl": "http:// または https:// で始まるリンクを入力してください。",
+      "shareHint": "共有設定を「リンクを知っている全員」に変更してから貼り付けてください。",
+      "noFileOrLink": "提出されたファイル・リンクなし",
+      "noFile": "アップロードされたファイルなし",
+      "method": "提出方法",
+      "tabFile": "ファイルアップロード",
+      "tabLink": "リンク提出"
+    }
+  },
+  "notice": {
+    "detail": {
+      "title": "お知らせ",
+      "loading": "読み込み中",
+      "loadError": "お知らせの内容を読み込めませんでした。",
+      "notTarget": "自分の学年・チームが対象ではないお知らせです。",
+      "backToList": "お知らせ一覧へ"
+    },
+    "list": {
+      "title": "お知らせ",
+      "description": "アイデアフェスティバルの進行に関するお知らせを確認できます。",
+      "loading": "読み込み中",
+      "loadError": "お知らせを読み込めませんでした。",
+      "empty": "登録されたお知らせはありません。"
+    },
+    "target": {
+      "grade": "{grade}年生",
+      "all": "全体"
+    }
+  },
+  "dashboard": {
+    "deadline": {
+      "closed": "締切",
+      "minutesLeft": "残り{minutes}分{seconds}秒",
+      "secondsLeft": "残り{seconds}秒",
+      "hoursLeft": "残り{hours}時間",
+      "deadlineAt": "{date} 締切",
+      "title": "提出締切まで",
+      "loading": "読み込み中...",
+      "empty": "予定されている締切フォームはありません。"
+    },
+    "notice": {
+      "label": "お知らせ · {date}",
+      "showAll": "すべて見る ›"
+    },
+    "profile": {
+      "role": {
+        "LEADER": "リーダー",
+        "MEMBER": "メンバー",
+        "label": "役割"
+      },
+      "myProfile": "マイプロフィール",
+      "mypage": "マイページ",
+      "loading": "読み込み中...",
+      "loadError": "プロフィール情報を読み込めませんでした。",
+      "team": "所属チーム",
+      "logout": "ログアウト"
+    }
+  }
+}

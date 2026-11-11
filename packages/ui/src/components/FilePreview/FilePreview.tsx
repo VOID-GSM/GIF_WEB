@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 import {
   canAttemptPreview,
   getPreviewKind,
@@ -21,6 +23,7 @@ export default function FilePreview({
   filePath,
   fileName,
 }: FilePreviewProps) {
+  const t = useTranslations("filePreview");
   const source = file ?? filePath;
   const { objectUrl, mimeType, status } = useFileObjectUrl(
     source ?? undefined,
@@ -37,7 +40,7 @@ export default function FilePreview({
   if (status === "error") {
     return (
       <div className="flex h-[120px] items-center justify-center bg-gray-100 px-4 text-center text-[12px] text-gray-500">
-        미리보기를 불러오지 못했어요. 내려받아서 확인해주세요.
+        {t("error")}
       </div>
     );
   }
@@ -45,7 +48,7 @@ export default function FilePreview({
   if (status !== "ready" || !objectUrl) {
     return (
       <div className="flex h-[120px] items-center justify-center bg-gray-100 text-[12px] text-gray-500">
-        미리보기 불러오는 중
+        {t("loading")}
       </div>
     );
   }
@@ -57,7 +60,7 @@ export default function FilePreview({
         target="_blank"
         rel="noopener noreferrer"
         className="block bg-gray-100"
-        aria-label={`${fileName} 원본 크기로 보기`}
+        aria-label={t("openOriginal", { fileName })}
       >
         {/* blob object URL 이라 next/image 최적화 대상이 아니다. */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -73,7 +76,7 @@ export default function FilePreview({
   return (
     <iframe
       src={objectUrl}
-      title={`${fileName} 미리보기`}
+      title={t("title", { fileName })}
       className="h-[280px] w-full bg-gray-100 sm:h-[420px]"
     />
   );

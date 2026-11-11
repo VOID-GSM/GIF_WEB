@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useState, useRef, useEffect } from "react";
 
 import { NameBadge, Plus } from "@repo/ui";
@@ -21,6 +22,7 @@ const gradeOf = (studentNumber: string | undefined | null) => {
 };
 
 export function MemberSearchInput({ grade, owner, value, onChange }: MemberSearchInputProps) {
+  const t = useTranslations("project.memberSearch");
   const [isOpen, setIsOpen] = useState(false);
   const [keyword, setKeyword] = useState("");
   const [debouncedKeyword, setDebouncedKeyword] = useState("");
@@ -71,7 +73,7 @@ export function MemberSearchInput({ grade, owner, value, onChange }: MemberSearc
   return (
     <div className="flex items-start gap-4">
       <div className="flex h-9 shrink-0 items-center">
-        <span className="text-2xl font-medium text-gray-700">팀원</span>
+        <span className="text-2xl font-medium text-gray-700">{t("members")}</span>
       </div>
 
       <div className="relative flex flex-1 flex-wrap items-center gap-2 min-h-9" ref={containerRef}>
@@ -94,7 +96,7 @@ export function MemberSearchInput({ grade, owner, value, onChange }: MemberSearc
         <button
           type="button"
           onClick={() => setIsOpen((prev) => !prev)}
-          aria-label="팀원 추가"
+          aria-label={t("add")}
           className="flex size-5 items-center justify-center text-gray-500 transition-colors hover:text-gray-700 cursor-pointer"
         >
           <Plus width={34} height={34} />
@@ -108,7 +110,7 @@ export function MemberSearchInput({ grade, owner, value, onChange }: MemberSearc
                 type="text"
                 value={keyword}
                 onChange={(e) => setKeyword(e.target.value)}
-                placeholder="팀원을 검색하세요"
+                placeholder={t("placeholder")}
                 className="w-full bg-transparent text-xs text-gray-900 outline-none placeholder:text-gray-400"
               />
             </div>
@@ -116,7 +118,7 @@ export function MemberSearchInput({ grade, owner, value, onChange }: MemberSearc
             <ul className="max-h-40 overflow-y-auto">
               {results.length === 0 ? (
                 <li className="px-3.5 py-2 text-xs text-gray-400">
-                  {keyword ? "검색 결과가 없습니다" : "이름을 입력하세요"}
+                  {keyword ? t("noResults") : t("typeName")}
                 </li>
               ) : (
                 results.map((user) => (

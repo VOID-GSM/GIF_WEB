@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useRef, useState, type ChangeEvent } from "react";
 
@@ -22,6 +23,7 @@ const MAX_NAME_LENGTH = 20;
 const MAX_DESCRIPTION_LENGTH = 500;
 
 export function CreateProjectView() {
+  const t = useTranslations("project.form");
   const router = useRouter();
   const { mutate, isPending } = useCreateProject();
   const { data: me } = useGetMe();
@@ -117,8 +119,7 @@ export function CreateProjectView() {
               className="h-[160px] w-[240px]"
             />
             <span className="text-center text-xs text-gray-400">
-              프로젝트 목록에 224 x 112px(2:1 비율)로 표시돼요. 비율이 다르면
-              잘릴 수 있어요.
+              {t("logoHint")}
             </span>
           </div>
 
@@ -126,7 +127,7 @@ export function CreateProjectView() {
             <div className="flex flex-col gap-1">
               <label className="flex items-center gap-4">
                 <span className="shrink-0 text-2xl font-medium text-gray-700">
-                  프로젝트명
+                  {t("name")}
                 </span>
                 <input
                   type="text"
@@ -151,7 +152,7 @@ export function CreateProjectView() {
               <div className="flex items-center justify-between">
                 {errors.projectName ? (
                   <span className="text-xs text-red-500">
-                    프로젝트명을 입력해주세요
+                    {t("nameRequired")}
                   </span>
                 ) : (
                   <span />
@@ -167,7 +168,7 @@ export function CreateProjectView() {
             <div className="flex flex-col gap-1">
               <label className="flex items-center gap-4">
                 <span className="shrink-0 text-2xl font-medium text-gray-700">
-                  팀명
+                  {t("teamName")}
                 </span>
                 <input
                   type="text"
@@ -188,7 +189,7 @@ export function CreateProjectView() {
               <div className="flex items-center justify-between">
                 {errors.teamName ? (
                   <span className="text-xs text-red-500">
-                    팀명을 입력해주세요
+                    {t("teamNameRequired")}
                   </span>
                 ) : (
                   <span />
@@ -223,7 +224,7 @@ export function CreateProjectView() {
               />
               {errors.members && (
                 <span className="text-right text-xs text-red-500">
-                  팀원을 한 명 이상 추가해주세요
+                  {t("membersRequired")}
                 </span>
               )}
             </div>
@@ -232,20 +233,20 @@ export function CreateProjectView() {
 
         <section className="flex flex-col gap-3">
           <span className="text-2xl font-medium text-gray-700">
-            프로젝트 설명
+            {t("description")}
           </span>
           <Textarea
             value={description}
             onChange={handleDescriptionChange}
             rows={8}
             maxLength={MAX_DESCRIPTION_LENGTH}
-            title="500자 이내로 작성해주세요"
+            title={t("descriptionLimit")}
             className={errors.description ? "border-red-500" : ""}
           />
           <div className="flex items-center justify-between">
             {errors.description ? (
               <span className="text-xs text-red-500">
-                프로젝트 설명을 입력해주세요
+                {t("descriptionRequired")}
               </span>
             ) : (
               <span />
@@ -257,7 +258,7 @@ export function CreateProjectView() {
         </section>
 
         <div className="flex justify-center">
-          <SubmitButton disabled={isPending || !me}>완료하기</SubmitButton>
+          <SubmitButton disabled={isPending || !me}>{t("submit")}</SubmitButton>
         </div>
       </form>
     </div>

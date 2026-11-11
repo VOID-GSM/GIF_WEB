@@ -1,21 +1,17 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { releasePushSubscription } from "@repo/lib";
+import { useTranslations } from "next-intl";
 import { Logout } from "@repo/ui";
 import { useGetMyInfo } from "@/entities/mypage";
 import { useGetMyProject, useGetProject } from "@/entities/project";
-import { COOKIE_KEYS } from "@/shared/constants";
-import { deleteCookie } from "@/shared/utils";
+import { useLogout } from "@/features/logout";
 
-const CLIENT_ROLE_LABEL: Record<string, string> = {
-  LEADER: "팀장",
-  MEMBER: "팀원",
-};
+const CLIENT_ROLES = ["LEADER", "MEMBER"];
 
 export default function ProfileSummaryCard() {
-  const router = useRouter();
+  const t = useTranslations("dashboard.profile");
+  const handleLogout = useLogout();
   const { data, isLoading, isError } = useGetMyInfo();
   const { data: myProjects, isLoading: isProjectsLoading } = useGetMyProject();
   const projectId = data?.projectId || myProjects?.[0]?.id;
@@ -31,37 +27,32 @@ export default function ProfileSummaryCard() {
   )?.role;
   const displayRole = currentProjectRole ?? data?.clientRole;
   const role = displayRole
-    ? (CLIENT_ROLE_LABEL[displayRole] ?? displayRole)
+    ? CLIENT_ROLES.includes(displayRole)
+      ? t(`role.${displayRole}`)
+      : displayRole
     : "-";
 
   const loading =
     isLoading || isProjectsLoading || (hasProjectId && isProjectDetailLoading);
 
-  const handleLogout = async () => {
-    // 토큰이 있어야 서버 구독을 해제할 수 있어 쿠키보다 먼저 정리한다.
-    await releasePushSubscription();
-    deleteCookie(COOKIE_KEYS.ACCESS_TOKEN);
-    router.replace("/signin");
-    router.refresh();
-  };
 
   return (
     <section className="w-full rounded-xl bg-white p-6 shadow-[0_2px_6px_rgba(0,0,0,0.15)]">
       <div className="flex items-center justify-between">
-        <span className="text-[13px] font-medium text-gray-400">내 프로필</span>
+        <span className="text-[13px] font-medium text-gray-400">{t("myProfile")}</span>
         <Link
           href="/mypage"
           className="text-[13px] font-medium text-gray-400 transition-colors hover:text-gray-700"
         >
-          마이페이지
+          {t("mypage")}
         </Link>
       </div>
 
       {loading ? (
-        <p className="mt-4 text-[14px] text-gray-500">불러오는 중...</p>
+        <p className="mt-4 text-[14px] text-gray-500">{t("loading")}</p>
       ) : isError ? (
         <p className="mt-4 text-[14px] text-red-500">
-          프로필 정보를 불러오지 못했습니다.
+          {t("loadError")}
         </p>
       ) : (
         <>
@@ -71,13 +62,13 @@ export default function ProfileSummaryCard() {
 
           <dl className="mt-5 flex flex-col gap-3">
             <div className="flex items-center justify-between">
-              <dt className="text-[14px] text-gray-400">역할</dt>
+              <dt className="text-[14px] text-gray-400">{t("role.label")}</dt>
               <dd className="text-[14px] font-medium text-gray-700">
                 {role}
               </dd>
             </div>
             <div className="flex items-center justify-between">
-              <dt className="text-[14px] text-gray-400">소속 팀</dt>
+              <dt className="text-[14px] text-gray-400">{t("team")}</dt>
               <dd className="text-[14px] font-medium text-gray-700">
                 {teamName || "-"}
               </dd>
@@ -92,7 +83,7 @@ export default function ProfileSummaryCard() {
         className="mt-5 flex h-[40px] w-full cursor-pointer items-center justify-center gap-2 rounded-[10px] bg-gray-100 text-[13px] font-medium text-gray-600 transition-colors hover:bg-gray-200 hover:text-gray-700"
       >
         <Logout className="h-[13px] w-[16px]" aria-hidden="true" />
-        로그아웃
+        {t("logout")}
       </button>
     </section>
   );

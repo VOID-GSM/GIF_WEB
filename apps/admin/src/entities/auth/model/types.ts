@@ -11,7 +11,7 @@ export interface SignInResponse {
   clientRole: string | null;
 }
 
-export interface GetGoogleCallbackParams {
+export interface GetDgCallbackParams {
   code: string;
   state: string;
 }
@@ -29,4 +29,4 @@ export interface GetMyInfoResponse {
   clientTeam: string | null;
 }
 
-export type GetGoogleCallbackResponse = SignInResponse;
+export type GetDgCallbackResponse = SignInResponse;

@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 
 import { useGetCatChaseRounds } from "@/entities/cat-chase";
@@ -8,6 +9,7 @@ import { formatTimestamp } from "@/entities/form";
 import { RoundStatusBadge } from "./CatChaseResult";
 
 export default function CatChaseRecordListView() {
+  const t = useTranslations("catChase.record");
   // 서버가 최신순으로 내려준다.
   const { data: rounds = [], isPending, isError } = useGetCatChaseRounds();
 
@@ -17,26 +19,26 @@ export default function CatChaseRecordListView() {
         <header className="mb-6 flex flex-wrap items-end justify-between gap-4">
           <div>
             <h1 className="text-[24px] font-semibold tracking-[-0.6px] text-gray-900 md:text-[26px]">
-              고양이 술래잡기 기록
+              {t("listTitle")}
             </h1>
             <p className="mt-1 text-[14px] text-gray-600">
-              기록을 눌러 문항별 정답과 내 판단을 확인해보세요.
+              {t("listDesc")}
             </p>
           </div>
           <Link
             href="/assessment"
             className="flex h-10 items-center rounded-[10px] bg-yellow-600 px-4 text-[15px] font-semibold text-white transition-colors hover:bg-yellow-700"
           >
-            검사 하러 가기
+            {t("goToAssessment")}
           </Link>
         </header>
 
         <section className="overflow-hidden rounded-[20px] bg-white shadow">
           <div className="hidden grid-cols-[1fr_100px_100px_100px] gap-4 border-b border-gray-200 px-6 py-3 text-[13px] font-medium text-gray-500 sm:grid">
-            <span>진행 일시</span>
-            <span className="text-center">맞힌 문항</span>
-            <span className="text-center">받은 코인</span>
-            <span className="text-center">상태</span>
+            <span>{t("date")}</span>
+            <span className="text-center">{t("correctCount")}</span>
+            <span className="text-center">{t("earnedCoin")}</span>
+            <span className="text-center">{t("status")}</span>
           </div>
 
           {isPending ? (
@@ -47,11 +49,11 @@ export default function CatChaseRecordListView() {
             </ul>
           ) : isError ? (
             <p className="py-16 text-center text-[15px] text-gray-600">
-              기록을 불러오지 못했어요.
+              {t("loadError")}
             </p>
           ) : rounds.length === 0 ? (
             <p className="py-16 text-center text-[15px] text-gray-600">
-              아직 진행한 기록이 없어요.
+              {t("empty")}
             </p>
           ) : (
             <ul className="divide-y divide-gray-200">
@@ -73,7 +75,7 @@ export default function CatChaseRecordListView() {
                       {round.correctCount} / {round.questionCount}
                     </span>
                     <span className="hidden text-center text-[15px] text-gray-700 tabular-nums sm:block">
-                      {round.earnedCoin}코인
+                      {t("coin", { coin: round.earnedCoin })}
                     </span>
                     <span className="flex justify-center">
                       <RoundStatusBadge

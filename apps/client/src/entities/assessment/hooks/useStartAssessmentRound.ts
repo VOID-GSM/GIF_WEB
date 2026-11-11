@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
@@ -19,6 +20,7 @@ interface StartRoundVariables {
 }
 
 export function useStartAssessmentRound() {
+  const t = useTranslations("assessment.toast");
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ type, questionCount }: StartRoundVariables) =>
@@ -28,7 +30,7 @@ export function useStartAssessmentRound() {
       queryClient.setQueryData(assessmentRoundQueryKey(type, round.roundId), round);
     },
     onError: () => {
-      toast.error("검사를 시작하지 못했어요. 잠시 후 다시 시도해주세요.");
+      toast.error(t("startError"));
     },
   });
 }

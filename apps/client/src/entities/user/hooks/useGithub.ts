@@ -1,6 +1,7 @@
 "use client";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 
 import {
@@ -13,14 +14,15 @@ import { CURRENT_USER_QUERY_KEY } from "./useCurrentUser";
 
 export function useConnectGithub() {
   const queryClient = useQueryClient();
+  const t = useTranslations("github.toast");
   return useMutation({
     mutationFn: connectGithub,
     onSuccess: (user) => {
       queryClient.setQueryData(CURRENT_USER_QUERY_KEY, user);
       toast.success(
         user.githubUsername
-          ? `@${user.githubUsername} 계정이 연동되었어요.`
-          : "GitHub 계정이 연동되었어요.",
+          ? t("connectedAs", { username: user.githubUsername })
+          : t("connected"),
       );
     },
     // 실패 안내는 콜백 화면의 인라인 에러 카드가 맡는다 (토스트와 중복 표시 방지).
@@ -29,20 +31,22 @@ export function useConnectGithub() {
 
 export function useDisconnectGithub() {
   const queryClient = useQueryClient();
+  const t = useTranslations("github.toast");
   return useMutation({
     mutationFn: disconnectGithub,
     onSuccess: (user) => {
       queryClient.setQueryData(CURRENT_USER_QUERY_KEY, user);
-      toast.success("GitHub 연동이 해제되었어요.");
+      toast.success(t("disconnected"));
     },
     onError: () => {
-      toast.error("연동 해제에 실패했습니다. 다시 시도해주세요.");
+      toast.error(t("disconnectError"));
     },
   });
 }
 
 export function useSyncGithub() {
   const queryClient = useQueryClient();
+  const t = useTranslations("github.toast");
   return useMutation({
     // sync 응답에는 이번 획득량이 없어(서버가 사용자 정보만 반환) 잔액 차이로 계산한다.
     // 오래된 캐시 대신 sync 직전 잔액을 서버에서 받아 비교해야 다른 경로로 얻은 코인이 섞이지 않는다.
@@ -56,12 +60,12 @@ export function useSyncGithub() {
       queryClient.setQueryData(CURRENT_USER_QUERY_KEY, user);
       toast.success(
         earned > 0
-          ? `커밋 보상으로 ${earned}코인을 받았어요!`
-          : "새로 반영된 커밋이 없어요.",
+          ? t("synced", { earned })
+          : t("noNewCommits"),
       );
     },
     onError: () => {
-      toast.error("커밋 동기화에 실패했습니다. 잠시 후 다시 시도해주세요.");
+      toast.error(t("syncError"));
     },
   });
 }

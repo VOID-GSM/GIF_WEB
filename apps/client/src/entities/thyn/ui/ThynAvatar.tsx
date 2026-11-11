@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import {
   THYN_ASSETS,
   THYN_DEFAULT_FACE_SRC,
@@ -34,13 +35,14 @@ export default function ThynAvatar({
   fitHeadroom = false,
   className,
 }: ThynAvatarProps) {
+  const t = useTranslations("thyn.avatar");
   const hairKey = items.find((item) => item.category === "hair")?.itemKey ?? "none";
   const hasFace = items.some((item) => item.category === "face");
 
   const layers: Layer[] = THYN_LAYER_ORDER.flatMap((category) => {
     // 얼굴은 항상 있어야 하므로 고른 표정이 없으면 기본 표정을 그린다
     if (category === "face" && !hasFace) {
-      return [{ key: "default-face", name: "기본 표정", src: THYN_DEFAULT_FACE_SRC, placement: THYN_ASSETS.smile.placement! }];
+      return [{ key: "default-face", name: t("defaultFace"), src: THYN_DEFAULT_FACE_SRC, placement: THYN_ASSETS.smile.placement! }];
     }
     return items
       .filter((item) => item.category === category && item.placement)
@@ -67,7 +69,7 @@ export default function ThynAvatar({
       style={{ width, marginTop: headroom * scale }}
     >
       {/* eslint-disable-next-line @next/next/no-img-element -- 크기가 제각각인 정적 SVG 레이어 */}
-      <img src="/thyn/base.svg" alt="띤" className="absolute inset-x-0 top-0 h-auto w-full" />
+      <img src="/thyn/base.svg" alt={t("thyn")} className="absolute inset-x-0 top-0 h-auto w-full" />
       {layers.map(({ key, name, src, placement }) => (
         // eslint-disable-next-line @next/next/no-img-element
         <img

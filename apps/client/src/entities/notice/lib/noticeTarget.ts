@@ -5,11 +5,12 @@
 export function getNoticeTargetLabels(
   targetGrades: number[] = [],
   targetTeamNames: string[] = [],
+  labels: { grade: (grade: number) => string; all: string },
 ): string[] {
   const gradeLabels = [...targetGrades]
     .sort((a, b) => a - b)
-    .map((grade) => `${grade}학년`);
-  const labels = [...gradeLabels, ...targetTeamNames];
+    .map(labels.grade);
+  const result = [...gradeLabels, ...targetTeamNames];
 
-  return labels.length > 0 ? labels : ["전체"];
+  return result.length > 0 ? result : [labels.all];
 }

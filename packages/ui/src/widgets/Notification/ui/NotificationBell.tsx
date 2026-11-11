@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useTranslations } from "next-intl";
 
 import { useGetNotificationUnreadCount } from "@repo/lib";
 
@@ -14,6 +15,7 @@ export default function NotificationBell({
   align = "left",
   className = "",
 }: NotificationBellProps) {
+  const t = useTranslations("notification");
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -46,7 +48,7 @@ export default function NotificationBell({
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
         aria-label={
-          unreadCount > 0 ? `알림 ${unreadCount}건 읽지 않음` : "알림"
+          unreadCount > 0 ? t("unreadLabel", { count: unreadCount }) : t("title")
         }
         aria-expanded={isOpen}
         className={`relative flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg outline-none transition-colors hover:bg-gray-100 focus-visible:bg-gray-100 ${

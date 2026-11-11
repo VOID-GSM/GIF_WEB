@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import { QUESTION_COUNTS } from "@/entities/assessment";
 
 interface QuestionCountSelectorProps {
@@ -9,10 +10,11 @@ export default function QuestionCountSelector({
   value,
   onChange,
 }: QuestionCountSelectorProps) {
+  const t = useTranslations("assessment.setup");
   return (
     <div
       role="radiogroup"
-      aria-label="문항 수"
+      aria-label={t("questionCount")}
       className="grid grid-cols-4 gap-1.5 sm:grid-cols-8"
     >
       {QUESTION_COUNTS.map((count) => {
@@ -30,7 +32,7 @@ export default function QuestionCountSelector({
                 : "border-gray-300 bg-white text-gray-700 hover:bg-gray-100"
             }`}
           >
-            {count}개
+            {t("countOption", { count })}
           </button>
         );
       })}

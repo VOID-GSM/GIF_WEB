@@ -13,6 +13,10 @@
     },
     "lint": {
       "dependsOn": ["^lint"]
+    },
+    "@repo/i18n#lint": {
+      "dependsOn": ["^lint"],
+      "cache": false
     }
   }
 }

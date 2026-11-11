@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { formatTimestamp } from "@/entities/form/lib/formatDeadline";
 import { useGetMyInquiries } from "@/entities/inquiry";
@@ -8,32 +9,34 @@ import InquiryTabs from "./InquiryTabs";
 
 const STATUS_META: Record<
   InquiryStatus,
-  { label: string; className: string }
+  { labelKey: "pending" | "answered"; className: string }
 > = {
   PENDING: {
-    label: "답변 대기",
+    labelKey: "pending",
     className:
       "bg-gray-100 text-gray-500 border-gray-200",
   },
   ANSWERED: {
-    label: "답변 완료",
+    labelKey: "answered",
     className:
       "bg-yellow-50 text-yellow-700 border-yellow-600",
   },
 };
 
 function StatusPill({ status }: { status: InquiryStatus }) {
+  const t = useTranslations("inquiry.my");
   const meta = STATUS_META[status];
   return (
     <span
       className={`shrink-0 rounded-full border px-2.5 py-0.5 text-[11px] font-medium ${meta.className}`}
     >
-      {meta.label}
+      {t(`status.${meta.labelKey}`)}
     </span>
   );
 }
 
 export default function MyInquiryListView() {
+  const t = useTranslations("inquiry.my");
   const { data, isPending, isError } = useGetMyInquiries();
 
   return (
@@ -44,10 +47,10 @@ export default function MyInquiryListView() {
         {/* 헤더 */}
         <div className="mt-2.5 border-b border-gray-200 pb-4">
           <h1 className="text-[19px] font-semibold tracking-[-0.3px] text-gray-900">
-            내 문의 내역
+            {t("title")}
           </h1>
           <p className="mt-1 text-[13px] leading-relaxed text-gray-500">
-            지금까지 남긴 문의와 답변 상태를 확인할 수 있습니다.
+            {t("description")}
           </p>
         </div>
 
@@ -55,15 +58,15 @@ export default function MyInquiryListView() {
         <div className="mt-5">
           {isPending ? (
             <p className="py-16 text-center text-[13px] font-medium text-gray-400">
-              불러오는 중
+              {t("loading")}
             </p>
           ) : isError ? (
             <p className="py-16 text-center text-[13px] font-medium text-red-500">
-              문의 내역을 불러오지 못했습니다.
+              {t("listLoadError")}
             </p>
           ) : !data || data.length === 0 ? (
             <p className="py-16 text-center text-[13px] font-medium text-gray-400">
-              문의 내역이 없습니다.
+              {t("empty")}
             </p>
           ) : (
             <ul className="flex flex-col gap-2.5">
