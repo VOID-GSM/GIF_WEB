@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 
 import { useGetCatChaseRounds } from "@/entities/cat-chase";
@@ -17,22 +18,23 @@ type ActivityTab =
   | "comment"
   | "like";
 
-const TABS: { key: ActivityTab; label: string }[] = [
-  { key: "retrospective", label: "내 회고록" },
-  { key: "bookmark", label: "북마크" },
-  { key: "assessment", label: "역량검사" },
-  { key: "thyn", label: "Thyn 꾸미기" },
-  { key: "comment", label: "작성한 댓글" },
-  { key: "like", label: "좋아요" },
+const TABS: ActivityTab[] = [
+  "retrospective",
+  "bookmark",
+  "assessment",
+  "thyn",
+  "comment",
+  "like",
 ];
 
 export default function ActivityTabs() {
+  const t = useTranslations("mypage.activity");
   const [tab, setTab] = useState<ActivityTab>("retrospective");
 
   return (
     <section className="flex flex-col gap-5 rounded-xl bg-white p-6 shadow-[0_2px_6px_rgba(0,0,0,0.15)]">
       <div className="flex gap-1 overflow-x-auto border-b border-gray-100" role="tablist">
-        {TABS.map(({ key, label }) => (
+        {TABS.map((key) => (
           <button
             key={key}
             type="button"
@@ -45,7 +47,7 @@ export default function ActivityTabs() {
                 : "border-transparent text-gray-400 hover:text-gray-700"
             }`}
           >
-            {label}
+            {t(`tabs.${key}`)}
           </button>
         ))}
       </div>
@@ -55,8 +57,8 @@ export default function ActivityTabs() {
       {tab === "assessment" && <AssessmentHistory />}
       {tab === "thyn" && <ThynHistory />}
       {/* 서버 API 준비 중: GIF_SERVER #248(댓글·좋아요) */}
-      {tab === "comment" && <Message text="작성한 댓글 목록은 준비 중이에요." />}
-      {tab === "like" && <Message text="좋아요한 프로젝트 목록은 준비 중이에요." />}
+      {tab === "comment" && <Message text={t("commentComingSoon")} />}
+      {tab === "like" && <Message text={t("likeComingSoon")} />}
     </section>
   );
 }
@@ -80,14 +82,15 @@ function RetrospectiveList({
   mine?: boolean;
   bookmarkedOnly?: boolean;
 }) {
+  const t = useTranslations("mypage.activity");
   const { data, isLoading, isError } = useGetRetrospectives({ mine, bookmarkedOnly });
 
-  if (isLoading) return <Message text="불러오는 중..." />;
-  if (isError) return <Message text="회고록을 불러오지 못했어요." tone="error" />;
+  if (isLoading) return <Message text={t("loading")} />;
+  if (isError) return <Message text={t("retrospectiveError")} tone="error" />;
   if (data.length === 0)
     return (
       <Message
-        text={mine ? "아직 작성한 회고록이 없어요." : "북마크한 회고록이 없어요."}
+        text={mine ? t("noMine") : t("noBookmark")}
       />
     );
 
@@ -105,30 +108,31 @@ function RetrospectiveList({
 }
 
 function AssessmentHistory() {
+  const t = useTranslations("mypage.activity");
   const { data: rounds = [], isLoading, isError } = useGetCatChaseRounds();
 
-  if (isLoading) return <Message text="불러오는 중..." />;
-  if (isError) return <Message text="역량검사 기록을 불러오지 못했어요." tone="error" />;
-  if (rounds.length === 0) return <Message text="아직 응시한 역량검사가 없어요." />;
+  if (isLoading) return <Message text={t("loading")} />;
+  if (isError) return <Message text={t("assessmentError")} tone="error" />;
+  if (rounds.length === 0) return <Message text={t("noAssessment")} />;
 
   return (
     <div className="flex flex-col gap-3">
       <div className="flex items-center justify-between">
-        <span className="text-[13px] font-medium text-gray-400">고양이 술래잡기</span>
+        <span className="text-[13px] font-medium text-gray-400">{t("catChase")}</span>
         <Link
           href="/assessment/cat-chase/records"
           className="text-[13px] font-medium text-gray-500 hover:text-gray-800"
         >
-          전체 기록 보기
+          {t("viewAllRecords")}
         </Link>
       </div>
       <ul className="flex flex-col gap-2">
         {rounds.map((round) => {
           const status = !round.finished
-            ? "진행 중"
+            ? t("inProgress")
             : round.completed
-              ? `+${round.earnedCoin}코인`
-              : "중단";
+              ? t("earnedCoin", { coin: round.earnedCoin })
+              : t("stopped");
           return (
             <li key={round.roundId}>
               <Link
@@ -137,7 +141,10 @@ function AssessmentHistory() {
               >
                 <div className="flex flex-col">
                   <span className="text-[14px] font-medium text-gray-800">
-                    {round.correctCount} / {round.questionCount} 정답
+                    {t("correctCount", {
+                      correct: round.correctCount,
+                      total: round.questionCount,
+                    })}
                   </span>
                   <span className="text-[12px] text-gray-400">
                     {formatTimestamp(round.createdAt)}
@@ -156,10 +163,11 @@ function AssessmentHistory() {
 }
 
 function ThynHistory() {
+  const t = useTranslations("mypage.activity");
   const { data: items = [], isLoading, isError } = useGetThynItems();
 
-  if (isLoading) return <Message text="불러오는 중..." />;
-  if (isError) return <Message text="Thyn 아이템을 불러오지 못했어요." tone="error" />;
+  if (isLoading) return <Message text={t("loading")} />;
+  if (isError) return <Message text={t("thynError")} tone="error" />;
 
   const equippedItems = items.filter((item) => item.equipped);
   // 기본 아이템은 누구나 가지고 있어 구매 내역에서 뺀다
@@ -167,7 +175,7 @@ function ThynHistory() {
 
   return (
     <div className="flex flex-col gap-6 md:flex-row">
-      <div className="flex shrink-0 flex-col items-center gap-4 rounded-2xl bg-gradient-to-b from-yellow-50 to-yellow-100 px-8 pt-6 pb-5 md:w-[220px]">
+      <div className="flex shrink-0 flex-col items-center gap-4 rounded-2xl bg-gradient-to-b from-yellow-50 to-yellow-100 px-8 dark:from-yellow-950/40 dark:to-yellow-900/30 pt-6 pb-5 md:w-[220px]">
         <div className="relative flex flex-col items-center">
           <ThynAvatar items={equippedItems} width={128} fitHeadroom className="z-10" />
           {/* 바닥 그림자 */}
@@ -177,16 +185,16 @@ function ThynHistory() {
           href="/thyn"
           className="rounded-full bg-white px-4 py-1.5 text-[13px] font-medium text-gray-700 shadow-[0_1px_3px_rgba(0,0,0,0.1)] transition-colors hover:bg-yellow-50"
         >
-          꾸미러 가기
+          {t("goDecorate")}
         </Link>
       </div>
 
       <div className="flex min-w-0 flex-1 flex-col gap-3">
         <span className="text-[13px] font-medium text-gray-400">
-          구매한 아이템 {ownedItems.length}개
+          {t("ownedCount", { count: ownedItems.length })}
         </span>
         {ownedItems.length === 0 ? (
-          <Message text="아직 구매한 아이템이 없어요." />
+          <Message text={t("noOwned")} />
         ) : (
           <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 lg:grid-cols-5">
             {ownedItems.map((item) => (

@@ -821,5 +821,98 @@
       "team": "所属チーム",
       "logout": "ログアウト"
     }
+  },
+  "mypage": {
+    "title": "マイページ",
+    "loading": "読み込み中...",
+    "loadError": "マイページ情報を読み込めませんでした。",
+    "toast": {
+      "profileSaved": "プロフィールを保存しました。",
+      "profileSaveError": "プロフィールを保存できませんでした。",
+      "imageChanged": "プロフィール画像を変更しました。",
+      "imageUploadError": "プロフィール画像をアップロードできませんでした。",
+      "imageDeleted": "プロフィール画像を削除しました。",
+      "imageDeleteError": "プロフィール画像を削除できませんでした。",
+      "linkAdded": "リンクを追加しました。",
+      "linkAddError": "リンクを追加できませんでした。",
+      "linkUpdated": "リンクを編集しました。",
+      "linkUpdateError": "リンクを編集できませんでした。",
+      "linkDeleted": "リンクを削除しました。",
+      "linkDeleteError": "リンクを削除できませんでした。"
+    },
+    "profile": {
+      "imageAlt": "{name}のプロフィール画像",
+      "changeImage": "画像を変更",
+      "uploading": "アップロード中...",
+      "deleteImage": "削除",
+      "invalidImageType": "png、jpg、webp画像のみアップロードできます。",
+      "imageTooLarge": "{size}MB以下の画像のみアップロードできます。",
+      "gradeClass": "{grade}年{classNo}組",
+      "teams": "所属チーム",
+      "noTeams": "所属しているチームがありません。",
+      "role": {
+        "LEADER": "リーダー",
+        "MEMBER": "メンバー"
+      }
+    },
+    "detail": {
+      "title": "専攻 · 技術スタック",
+      "edit": "編集",
+      "major": "専攻",
+      "majorPlaceholder": "例: バックエンド",
+      "techStacks": "技術スタック",
+      "techStackCount": "技術スタック ({count}/{max})",
+      "stackPlaceholder": "例: Spring, React",
+      "add": "追加",
+      "cancel": "キャンセル",
+      "save": "保存",
+      "saving": "保存中...",
+      "stackTooLong": "技術スタックは{max}文字以下で入力してください。",
+      "stackLimit": "技術スタックは最大{max}個まで登録できます。",
+      "removeStack": "{stack}を削除"
+    },
+    "links": {
+      "title": "個人リンク",
+      "add": "+ 追加",
+      "empty": "ポートフォリオやブログなどの個人サイトを追加してみましょう。",
+      "name": "名前",
+      "optional": "(任意)",
+      "namePlaceholder": "例: ブログ、ポートフォリオ",
+      "url": "URL",
+      "invalidUrl": "http:// または https:// で始まるURLを入力してください。",
+      "cancel": "キャンセル",
+      "save": "保存",
+      "edit": "編集",
+      "delete": "削除",
+      "deleteConfirm": "このリンクを削除しますか？"
+    },
+    "activity": {
+      "tabs": {
+        "retrospective": "自分の振り返り",
+        "bookmark": "ブックマーク",
+        "assessment": "能力検査",
+        "thyn": "Thynカスタマイズ",
+        "comment": "書いたコメント",
+        "like": "いいね"
+      },
+      "loading": "読み込み中...",
+      "retrospectiveError": "振り返りを読み込めませんでした。",
+      "noMine": "まだ書いた振り返りがありません。",
+      "noBookmark": "ブックマークした振り返りがありません。",
+      "assessmentError": "能力検査の記録を読み込めませんでした。",
+      "noAssessment": "まだ受けた能力検査がありません。",
+      "catChase": "ネコの鬼ごっこ",
+      "viewAllRecords": "すべての記録を見る",
+      "correctCount": "{correct} / {total} 正解",
+      "inProgress": "進行中",
+      "earnedCoin": "+{coin}コイン",
+      "stopped": "中断",
+      "thynError": "Thynアイテムを読み込めませんでした。",
+      "goDecorate": "カスタマイズする",
+      "ownedCount": "購入したアイテム {count}個",
+      "noOwned": "まだ購入したアイテムがありません。",
+      "commentComingSoon": "書いたコメント一覧は準備中です。",
+      "likeComingSoon": "いいねしたプロジェクト一覧は準備中です。"
+    }
   }
 }

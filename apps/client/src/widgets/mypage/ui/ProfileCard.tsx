@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { useRef } from "react";
 import { toast } from "sonner";
 
@@ -11,18 +12,16 @@ import {
 } from "@/entities/mypage";
 
 const ALLOWED_IMAGE_TYPES = ["image/png", "image/jpeg", "image/webp"];
-const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
-
-const TEAM_ROLE_LABEL: Record<string, string> = {
-  LEADER: "팀장",
-  MEMBER: "팀원",
-};
+const MAX_IMAGE_SIZE_MB = 5;
+const MAX_IMAGE_SIZE = MAX_IMAGE_SIZE_MB * 1024 * 1024;
+const TEAM_ROLES = ["LEADER", "MEMBER"];
 
 interface ProfileCardProps {
   profile: MypageResponse;
 }
 
 export default function ProfileCard({ profile }: ProfileCardProps) {
+  const t = useTranslations("mypage.profile");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { mutate: uploadImage, isPending: isUploading } =
     useUpdateProfileImage();
@@ -36,11 +35,11 @@ export default function ProfileCard({ profile }: ProfileCardProps) {
     if (!file) return;
 
     if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
-      toast.error("png, jpg, webp 이미지만 올릴 수 있어요.");
+      toast.error(t("invalidImageType"));
       return;
     }
     if (file.size > MAX_IMAGE_SIZE) {
-      toast.error("5MB 이하 이미지만 올릴 수 있어요.");
+      toast.error(t("imageTooLarge", { size: MAX_IMAGE_SIZE_MB }));
       return;
     }
     uploadImage(file);
@@ -48,8 +47,11 @@ export default function ProfileCard({ profile }: ProfileCardProps) {
 
   const gradeClass =
     profile.grade && profile.classNo
-      ? `${profile.grade}학년 ${profile.classNo}반`
+      ? t("gradeClass", { grade: profile.grade, classNo: profile.classNo })
       : null;
+
+  const roleLabel = (role: string) =>
+    TEAM_ROLES.includes(role) ? t(`role.${role}`) : role;
 
   return (
     <section className="flex flex-col gap-5 rounded-xl bg-white p-6 shadow-[0_2px_6px_rgba(0,0,0,0.15)]">
@@ -60,7 +62,7 @@ export default function ProfileCard({ profile }: ProfileCardProps) {
             // eslint-disable-next-line @next/next/no-img-element
             <img
               src={profile.profileImageUrl}
-              alt={`${profile.name} 프로필 이미지`}
+              alt={t("imageAlt", { name: profile.name })}
               className="h-full w-full object-cover"
             />
           ) : (
@@ -85,7 +87,7 @@ export default function ProfileCard({ profile }: ProfileCardProps) {
               disabled={isUploading}
               className="cursor-pointer rounded-md bg-gray-100 px-3 py-1.5 text-[12px] font-medium text-gray-700 transition-colors hover:bg-gray-200 disabled:cursor-not-allowed disabled:opacity-50"
             >
-              {isUploading ? "올리는 중..." : "이미지 변경"}
+              {isUploading ? t("uploading") : t("changeImage")}
             </button>
             {profile.customProfileImage && (
               <button
@@ -94,7 +96,7 @@ export default function ProfileCard({ profile }: ProfileCardProps) {
                 disabled={isDeleting}
                 className="cursor-pointer rounded-md px-3 py-1.5 text-[12px] font-medium text-red-500 transition-colors hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50"
               >
-                삭제
+                {t("deleteImage")}
               </button>
             )}
           </div>
@@ -109,9 +111,9 @@ export default function ProfileCard({ profile }: ProfileCardProps) {
       </div>
 
       <div className="flex flex-col gap-2">
-        <span className="text-[13px] font-medium text-gray-400">소속 팀</span>
+        <span className="text-[13px] font-medium text-gray-400">{t("teams")}</span>
         {profile.teams.length === 0 ? (
-          <p className="text-[14px] text-gray-500">소속된 팀이 없어요.</p>
+          <p className="text-[14px] text-gray-500">{t("noTeams")}</p>
         ) : (
           <ul className="flex flex-col gap-2">
             {profile.teams.map((team) => (
@@ -129,7 +131,7 @@ export default function ProfileCard({ profile }: ProfileCardProps) {
                     </span>
                   </div>
                   <span className="shrink-0 text-[12px] font-medium text-gray-600">
-                    {[TEAM_ROLE_LABEL[team.role] ?? team.role, team.part]
+                    {[roleLabel(team.role), team.part]
                       .filter(Boolean)
                       .join(" · ")}
                   </span>
