@@ -35,19 +35,20 @@ function getErrorMessage(error: unknown) {
     return "AI 응답이 너무 오래 걸려 요청을 중단했습니다. 잠시 후 다시 시도해 주세요.";
   }
 
+  const serverMessage = (error.response?.data as { message?: unknown } | undefined)?.message;
+  const message = typeof serverMessage === "string" && serverMessage.trim() ? serverMessage : null;
+
   switch (error.response?.status) {
-    case 400: {
-      const message = (error.response.data as { message?: unknown } | undefined)?.message;
-      return typeof message === "string" && message.trim()
-        ? message
-        : `본문은 ${AI_ASSIST_MAX_CONTENT_LENGTH.toLocaleString()}자 이하여야 하며, 다듬기와 포트폴리오 변환은 ${AI_ASSIST_MIN_CONTENT_LENGTH}자 이상 입력해 주세요.`;
-    }
+    case 400:
+      return message ??
+        `본문은 ${AI_ASSIST_MAX_CONTENT_LENGTH.toLocaleString()}자 이하여야 하며, 다듬기와 포트폴리오 변환은 ${AI_ASSIST_MIN_CONTENT_LENGTH}자 이상 입력해 주세요.`;
     case 429:
-      return "오늘 사용할 수 있는 AI 도움 횟수(20회)를 모두 사용했습니다.";
+      // 하루 사용 횟수는 서버 정책이라, 서버 안내 문구를 우선한다
+      return message ?? "오늘 사용할 수 있는 AI 도움 횟수를 모두 사용했습니다. 내일 다시 시도해 주세요.";
     case 502:
       return "AI 응답에 실패했습니다. 잠시 후 다시 시도해 주세요.";
     case 503:
-      return "AI 기능이 현재 설정되어 있지 않습니다.";
+      return "지금은 AI 기능을 사용할 수 없어요. 잠시 후 다시 시도해 주세요.";
     default:
       return "AI 도움 요청에 실패했습니다. 잠시 후 다시 시도해 주세요.";
   }
