@@ -20,6 +20,14 @@ const dateFormatter = new Intl.DateTimeFormat("ko-KR", {
   timeZone: "Asia/Seoul",
 });
 
+// 서버는 UTC 시각을 준다. 시간대 표시(Z, ±HH:mm)가 빠져 있어도
+// 브라우저 시간대가 아니라 UTC로 읽어야 KST 변환이 어긋나지 않는다.
+function formatCreatedAt(createdAt: string) {
+  const hasTimezone = /(Z|[+-]\d{2}:?\d{2})$/.test(createdAt);
+  const date = new Date(hasTimezone ? createdAt : `${createdAt}Z`);
+  return Number.isNaN(date.getTime()) ? "" : dateFormatter.format(date);
+}
+
 const ACTION_BUTTON_CLASS =
   "h-8 cursor-pointer rounded-[8px] border px-3 text-[12px] font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50";
 
@@ -59,7 +67,7 @@ export default function CommentRow({
           {comment.authorName}
         </button>
         <span className="text-gray-400">
-          {dateFormatter.format(new Date(comment.createdAt))}
+          {formatCreatedAt(comment.createdAt)}
         </span>
         {comment.hidden && (
           <span className="rounded-full border border-gray-300 bg-gray-100 px-2 py-0.5 text-[11px] font-medium text-gray-600">
