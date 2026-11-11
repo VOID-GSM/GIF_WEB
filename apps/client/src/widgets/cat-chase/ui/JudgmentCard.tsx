@@ -1,11 +1,11 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 
 import {
-  CAT_COLOR_LABELS,
-  CONFIDENCE_OPTIONS,
+  CONFIDENCE_VALUES,
   type CatChaseAnswer,
   type CatChaseConfidence,
   type CatColor,
@@ -13,9 +13,9 @@ import {
 
 const ASSET = "/assessment/cat-chase";
 
-const ANSWERS: { value: CatChaseAnswer; label: string; image: string }[] = [
-  { value: "FOUND", label: "잡다", image: `${ASSET}/answer-found.svg` },
-  { value: "MISSED", label: "놓치다", image: `${ASSET}/answer-missed.svg` },
+const ANSWERS: { value: CatChaseAnswer; image: string }[] = [
+  { value: "FOUND", image: `${ASSET}/answer-found.svg` },
+  { value: "MISSED", image: `${ASSET}/answer-missed.svg` },
 ];
 
 const CAT_IMAGE: Record<CatColor, string> = {
@@ -45,6 +45,9 @@ export default function JudgmentCard({
   isLast,
   disabled,
 }: JudgmentCardProps) {
+  const t = useTranslations("catChase.judgment");
+  const tc = useTranslations("catChase.confidence");
+  const tColor = useTranslations("catChase.catColor");
   const [judgment, setJudgment] = useState<CatChaseAnswer | null>(null);
   const [confidence, setConfidence] = useState<CatChaseConfidence | null>(
     null,
@@ -73,7 +76,7 @@ export default function JudgmentCard({
   }, [timeLimitMs]);
 
   const canSubmit = !!judgment && !!confidence && !disabled && !isTimeUp;
-  const catLabel = CAT_COLOR_LABELS[cat];
+  const catLabel = tColor(cat);
 
   const handleSubmit = () => {
     if (!judgment || !confidence || settledRef.current) return;
@@ -88,7 +91,7 @@ export default function JudgmentCard({
       <AnswerTimer timeLimitMs={timeLimitMs} paused={!!disabled} />
 
       <h2 className="mt-[2dvh] text-center text-[clamp(20px,3.2dvh,34px)] font-medium leading-none tracking-[-0.03em] text-black">
-        {catLabel}는 쥐를 잡았을까요?
+        {t("question", { cat: catLabel })}
       </h2>
 
       <Image
@@ -101,7 +104,7 @@ export default function JudgmentCard({
 
       <div
         role="radiogroup"
-        aria-label="판단"
+        aria-label={t("judgment")}
         className="mt-[3dvh] flex gap-[clamp(24px,5vw,64px)]"
       >
         {ANSWERS.map((answer) => {
@@ -130,7 +133,7 @@ export default function JudgmentCard({
                 }`}
               />
               <span className="text-[clamp(18px,2.8dvh,30px)] font-medium leading-none tracking-[-0.03em] text-black">
-                {answer.label}
+                {t(`answer.${answer.value}`)}
               </span>
             </button>
           );
@@ -146,31 +149,31 @@ export default function JudgmentCard({
       >
         <div className="overflow-hidden">
           <p className="text-center text-[15px] font-medium tracking-[-0.4px] text-gray-800 md:text-[16px]">
-            얼마나 확신하나요?
+            {t("confidenceQuestion")}
           </p>
           <div
             role="radiogroup"
-            aria-label="확신도"
+            aria-label={t("confidence")}
             className="mx-auto mt-3 grid max-w-[560px] grid-cols-2 gap-2 sm:grid-cols-4"
           >
-            {CONFIDENCE_OPTIONS.map((option) => {
-              const selected = confidence === option.value;
+            {CONFIDENCE_VALUES.map((value) => {
+              const selected = confidence === value;
               return (
                 <button
-                  key={option.value}
+                  key={value}
                   type="button"
                   role="radio"
                   aria-checked={selected}
                   tabIndex={judgment ? 0 : -1}
                   disabled={isTimeUp}
-                  onClick={() => setConfidence(option.value)}
+                  onClick={() => setConfidence(value)}
                   className={`h-10 rounded-[10px] border text-[15px] font-medium tracking-[-0.4px] transition-colors disabled:cursor-not-allowed ${
                     selected
                       ? "border-yellow-600 bg-yellow-100 font-semibold text-gray-900"
                       : "border-gray-300 bg-white text-gray-700 hover:bg-gray-100"
                   }`}
                 >
-                  {option.label}
+                  {tc(value)}
                 </button>
               );
             })}
@@ -183,7 +186,7 @@ export default function JudgmentCard({
             onClick={handleSubmit}
             className="mx-auto mt-[2dvh] block h-11 w-full max-w-[560px] rounded-[12px] bg-yellow-600 text-[16px] font-semibold tracking-[-0.5px] text-white transition-colors hover:bg-yellow-700 disabled:cursor-not-allowed disabled:bg-gray-300"
           >
-            {isLast ? "제출하기" : "다음 고양이"}
+            {isLast ? t("submit") : t("nextCat")}
           </button>
         </div>
       </div>
@@ -200,6 +203,7 @@ function AnswerTimer({
   timeLimitMs: number;
   paused: boolean;
 }) {
+  const t = useTranslations("catChase.judgment");
   const [seconds, setSeconds] = useState(Math.ceil(timeLimitMs / 1000));
   const startedAtRef = useRef<number | null>(null);
 
@@ -221,7 +225,7 @@ function AnswerTimer({
     <div className="flex w-full max-w-[560px] items-center gap-3">
       <div
         role="progressbar"
-        aria-label="남은 응답 시간"
+        aria-label={t("timeLeft")}
         aria-valuemin={0}
         aria-valuemax={Math.ceil(timeLimitMs / 1000)}
         aria-valuenow={seconds}
@@ -242,7 +246,7 @@ function AnswerTimer({
           isUrgent ? "text-red" : "text-gray-700"
         }`}
       >
-        {seconds}초
+        {t("seconds", { seconds })}
       </span>
     </div>
   );

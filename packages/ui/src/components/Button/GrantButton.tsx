@@ -1,3 +1,5 @@
+import { useTranslations } from "next-intl";
+
 export type GrantStatus = "granted" | "ungranted";
 
 interface GrantButtonProps {
@@ -11,6 +13,7 @@ export default function GrantButton({
   isActive,
   onClick,
 }: GrantButtonProps) {
+  const t = useTranslations("button");
   return (
     <button
       className={`flex items-center w-fit py-[6.5px] px-[10px] rounded-[8px] text-[12px] border cursor-pointer
@@ -21,7 +24,7 @@ export default function GrantButton({
         }`}
       onClick={onClick}
     >
-      {status === "granted" ? "점수 부여 완료" : "점수 미부여"}
+      {status === "granted" ? t("granted") : t("ungranted")}
     </button>
   );
 }

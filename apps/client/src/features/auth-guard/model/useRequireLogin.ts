@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useCallback } from "react";
 
 import { useRouter } from "next/navigation";
@@ -14,6 +15,7 @@ import { buildSigninPath } from "@/shared/utils";
 // 비로그인 상태면 로그인 페이지로 보내고, 로그인 후 returnTo(기본: 현재 페이지)로 돌아온다.
 // 기본값은 클릭 시점의 경로 + 쿼리스트링이라 필터·정렬 상태도 함께 복귀한다.
 export function useRequireLogin() {
+  const t = useTranslations("auth");
   const { isGuest } = useAuthSession();
   const router = useRouter();
 
@@ -23,9 +25,9 @@ export function useRequireLogin() {
         action();
         return;
       }
-      toast.info("로그인이 필요한 기능입니다.");
+      toast.info(t("loginRequired"));
       router.push(buildSigninPath(returnTo ?? getCurrentPath()));
     },
-    [isGuest, router],
+    [isGuest, router, t],
   );
 }

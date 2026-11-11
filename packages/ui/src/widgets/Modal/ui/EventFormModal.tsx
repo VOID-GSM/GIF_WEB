@@ -1,6 +1,7 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
 import { HexColorPicker } from "react-colorful";
+import { useTranslations } from "next-intl";
 import { Close, Color } from "@repo/ui";
 import {
   PRESET_COLOR_MAP,
@@ -38,6 +39,7 @@ export default function EventFormModal({
   onCancel,
   onClose,
 }: EventFormModalProps) {
+  const t = useTranslations("calendarEvent");
   const [title, setTitle] = useState(initialTitle ?? "");
   // 새 일정 추가 시에는 아무 색상도 선택되지 않은 상태로 시작한다.
   const [color, setColor] = useState<string>(initialColor ?? "");
@@ -133,7 +135,7 @@ export default function EventFormModal({
 
             <input
               type="text"
-              placeholder="일정을 입력해 주세요"
+              placeholder={t("titlePlaceholder")}
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               className="w-full border border-gray-500 rounded-[4px] px-3 py-2 mb-1 text-[12px] font-regular text-black outline-none placeholder:text-gray-500"
@@ -141,8 +143,11 @@ export default function EventFormModal({
 
             <div className="text-[10px] text-gray-500 font-regular text-right">
               {isSameDay
-                ? `날짜: ${formatMonthDay(startDate)}`
-                : `기간: ${formatMonthDay(startDate)} ~ ${formatMonthDay(endDate)}`}
+                ? t("date", { date: formatMonthDay(startDate) })
+                : t("period", {
+                    start: formatMonthDay(startDate),
+                    end: formatMonthDay(endDate),
+                  })}
             </div>
           </div>
 
@@ -153,7 +158,7 @@ export default function EventFormModal({
                 onClick={onCancel}
                 className="flex-1 items-center py-[7px] rounded-[4px] text-[12px] font-semibold border border-yellow-600 text-black cursor-pointer"
               >
-                취소
+                {t("cancel")}
               </button>
             )}
             <button
@@ -164,7 +169,7 @@ export default function EventFormModal({
               }
               className="flex-1 items-center py-[7px] rounded-[4px] text-[12px] bg-yellow-600 font-semibold text-black cursor-pointer transition-opacity disabled:opacity-40"
             >
-              저장
+              {t("save")}
             </button>
           </div>
         </div>

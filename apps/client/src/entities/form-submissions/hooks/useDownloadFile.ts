@@ -1,8 +1,10 @@
+import { useTranslations } from "next-intl";
 import { useMutation } from "@tanstack/react-query";
 import { downloadFile } from "../api/api";
 import { toast } from "sonner";
 
 export function useDownloadFile() {
+  const t = useTranslations("formSubmission.toast");
   return useMutation({
     mutationFn: ({ fileUrl }: { fileUrl: string; fileName: string }) => {
       // 상대경로면 BASE_URL 붙이기
@@ -19,6 +21,6 @@ export function useDownloadFile() {
       a.click();
       URL.revokeObjectURL(url);
     },
-    onError: () => toast.error("파일 다운로드에 실패했습니다."),
+    onError: () => toast.error(t("downloadError")),
   });
 }

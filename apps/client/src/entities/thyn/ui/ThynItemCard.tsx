@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import type { ThynItem } from "../model/type";
 
 export type ThynItemCardMode = "closet" | "shop";
@@ -17,13 +18,18 @@ export default function ThynItemCard({
   selected = false,
   onClick,
 }: ThynItemCardProps) {
+  const t = useTranslations("thyn.item");
   const isFace = item.category === "face";
   // 기본 아이템은 저장할 때 자동으로 받으므로 보유 아이템처럼 보여준다
   const owned = item.owned || item.isDefault;
   // 옷장에서는 보유하지 않은 아이템을 모두 무채색으로 보여준다
   const muted = mode === "closet" && !owned;
 
-  const statusLabel = owned ? "보유중" : mode === "closet" ? "미보유" : `${item.price}코인`;
+  const statusLabel = owned
+    ? t("owned")
+    : mode === "closet"
+      ? t("notOwned")
+      : t("price", { price: item.price });
 
   return (
     <button

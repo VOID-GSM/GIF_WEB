@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useGetAiSummary } from "@/entities/retrospective";
 
 function SparkleIcon() {
@@ -22,25 +23,26 @@ interface AiSummaryCardProps {
 }
 
 export default function AiSummaryCard({ content }: AiSummaryCardProps) {
+  const t = useTranslations("retrospective.ai");
   const { data: bullets, isLoading } = useGetAiSummary(content);
 
   if (!isLoading && bullets.length === 0) return null;
 
   return (
     <section
-      aria-label="AI 요약"
+      aria-label={t("summary")}
       className="flex flex-col gap-2 rounded-[12px] border border-gray-200 bg-white p-4"
     >
       <div className="flex items-center gap-1.5 text-yellow-600">
         <SparkleIcon />
         <h2 className="text-[12px] font-semibold tracking-[-0.1px] text-gray-500">
-          AI 요약
+          {t("summary")}
         </h2>
       </div>
 
       {isLoading ? (
         <p className="text-[12px] text-gray-400" aria-live="polite">
-          내용을 요약하는 중...
+          {t("summarizing")}
         </p>
       ) : (
         <ul className="flex flex-col gap-1.5">

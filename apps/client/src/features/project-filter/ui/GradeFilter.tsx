@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 
 import { Chevron } from "@repo/ui";
@@ -11,6 +12,7 @@ interface GradeFilterProps {
 }
 
 export default function GradeFilter({ value, onChange }: GradeFilterProps) {
+  const t = useTranslations("grade");
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -33,7 +35,7 @@ export default function GradeFilter({ value, onChange }: GradeFilterProps) {
         onClick={() => setIsOpen((prev) => !prev)}
         className="flex h-[40px] w-[120px] cursor-pointer items-center justify-between rounded-[32px] border border-gray-300 bg-white px-4 text-[16px] font-medium text-gray-600 transition-colors hover:border-gray-400"
       >
-        {value}학년
+        {t("label", { grade: value })}
         <Chevron
           direction={isOpen ? "up" : "down"}
           className="h-4 w-4 text-gray-400 transition-transform duration-200"
@@ -56,7 +58,7 @@ export default function GradeFilter({ value, onChange }: GradeFilterProps) {
                     selected ? "font-semibold text-gray-900" : "text-gray-600"
                   }`}
                 >
-                  {grade}학년
+                  {t("label", { grade })}
                 </button>
               </li>
             );

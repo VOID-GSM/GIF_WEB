@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -21,6 +22,7 @@ import {
 } from "@/widgets/assessment";
 
 export default function AssessmentView() {
+  const t = useTranslations("assessment.setup");
   const router = useRouter();
   const [type, setType] = useState<AssessmentType | null>(null);
   const [count, setCount] = useState(DEFAULT_QUESTION_COUNT);
@@ -50,11 +52,10 @@ export default function AssessmentView() {
         <header className="mb-6 flex flex-wrap items-end justify-between gap-4">
           <div>
             <h1 className="text-[24px] font-semibold tracking-[-0.6px] text-gray-900 md:text-[26px]">
-              역량검사
+              {t("title")}
             </h1>
             <p className="mt-1 text-[14px] text-gray-600">
-              짧은 게임을 풀며 작업 기억·공간 지각 같은 문제 해결 역량을
-              확인하는 검사예요.
+              {t("description")}
             </p>
           </div>
           <CoinBalanceBadge />
@@ -65,7 +66,7 @@ export default function AssessmentView() {
           <section className="flex flex-col gap-6 rounded-[20px] bg-white p-5 shadow md:p-7">
             {/* 사이드가 더 길 때 남는 높이를 유형 카드가 채운다 */}
             <div className="flex flex-1 flex-col">
-              <StepTitle step={1} title="검사 유형 선택" />
+              <StepTitle step={1} title={t("selectType")} />
               <div className="mt-3 grid flex-1 gap-3 sm:grid-cols-2">
                 {ASSESSMENTS.map((a) => (
                   <AssessmentTypeCard
@@ -79,17 +80,17 @@ export default function AssessmentView() {
             </div>
 
             <div>
-              <StepTitle step={2} title="문항 수" />
+              <StepTitle step={2} title={t("questionCount")} />
               <div className="mt-3">
                 <QuestionCountSelector value={count} onChange={setCount} />
               </div>
               <p className="mt-2.5 flex flex-wrap gap-x-2 gap-y-1 text-[12px] text-gray-500">
-                <span>1문항 이상 맞히면 기본 {BASE_REWARD_COIN}코인</span>
+                <span>{t("baseReward", { coin: BASE_REWARD_COIN })}</span>
                 <span aria-hidden>·</span>
-                <span>맞힐 때마다 +{REWARD_PER_CORRECT}코인</span>
+                <span>{t("perCorrect", { coin: REWARD_PER_CORRECT })}</span>
                 <span aria-hidden>·</span>
                 <span className="font-semibold text-orange-800">
-                  최대 {getMaxReward(count)}코인
+                  {t("maxReward", { coin: getMaxReward(count) })}
                 </span>
               </p>
             </div>
@@ -101,12 +102,12 @@ export default function AssessmentView() {
               className="h-12 w-full rounded-[12px] bg-yellow-600 text-[16px] font-semibold tracking-[-0.5px] text-white transition-colors hover:bg-yellow-700 disabled:cursor-not-allowed disabled:bg-gray-300"
             >
               {!type
-                ? "검사 유형을 선택해주세요"
+                ? t("selectTypeFirst")
                 : !selected?.playable
-                  ? "곧 열릴 예정이에요"
+                  ? t("comingSoon")
                   : isStarting
-                    ? "검사 준비 중…"
-                    : "시작하기"}
+                    ? t("preparing")
+                    : t("start")}
             </button>
           </section>
 

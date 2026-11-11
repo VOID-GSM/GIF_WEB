@@ -1,14 +1,16 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 
-import { SigninCard } from "@repo/ui";
+import { LanguageToggle, SigninCard } from "@repo/ui";
 
 import type { OAuthProvider } from "@/entities/auth";
 import { OAUTH_SESSION_KEYS, SEARCH_PARAM_KEYS } from "@/shared/constants";
 import { sanitizeReturnPath } from "@/shared/utils";
 
 export default function SigninView() {
+  const t = useTranslations("auth.signin");
   const searchParams = useSearchParams();
   // 로그인 후 돌아갈 경로 — 서버가 OAuth state 에 담았다가 콜백 응답(returnTo)으로 돌려준다.
   const returnTo = sanitizeReturnPath(
@@ -29,13 +31,16 @@ export default function SigninView() {
   };
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-background p-4 md:p-0">
+    <main className="relative min-h-screen flex items-center justify-center bg-background p-4 md:p-0">
+      <div className="absolute top-4 right-4 md:top-6 md:right-6">
+        <LanguageToggle />
+      </div>
       <SigninCard
         onLogin={() => startLogin("dg")}
         secondary={{
           provider: "google",
           onLogin: () => startLogin("google"),
-          caption: "외부 방문객이신가요? 좋아요·댓글로 참여해 보세요.",
+          caption: t("visitorCaption"),
         }}
       />
     </main>

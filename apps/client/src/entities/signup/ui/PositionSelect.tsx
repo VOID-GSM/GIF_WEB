@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { POSITIONS, type ClientRole } from "@/entities/signup";
 
 interface PositionSelectProps {
@@ -8,6 +9,7 @@ interface PositionSelectProps {
 }
 
 export default function PositionSelect({ value, onChange }: PositionSelectProps) {
+  const t = useTranslations("auth.position");
   return (
     <div className="flex gap-[10px] w-full">
       {POSITIONS.map((position) => {
@@ -23,7 +25,7 @@ export default function PositionSelect({ value, onChange }: PositionSelectProps)
                 : "bg-white border-gray-500 text-gray-500"
             }`}
           >
-            {position.label}
+            {t(position.value)}
           </button>
         );
       })}

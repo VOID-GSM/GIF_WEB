@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
@@ -11,6 +12,7 @@ import {
 import type { UpsertRetrospectiveRequest } from "../model/type";
 
 export function useUpsertRetrospective() {
+  const t = useTranslations("retrospective.toast");
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -34,10 +36,10 @@ export function useUpsertRetrospective() {
       queryClient.invalidateQueries({ queryKey: ["retrospective"] });
       toast.success(
         payload.id === undefined
-          ? "회고록이 작성되었습니다."
-          : "회고록이 수정되었습니다.",
+          ? t("created")
+          : t("updated"),
       );
     },
-    onError: () => toast.error("회고록 저장에 실패했습니다."),
+    onError: () => toast.error(t("saveError")),
   });
 }

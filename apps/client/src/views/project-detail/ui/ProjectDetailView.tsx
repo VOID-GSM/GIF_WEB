@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useEffect, useRef } from "react";
 
 import { useRouter } from "next/navigation";
@@ -26,6 +27,7 @@ interface ProjectDetailViewProps {
 export default function ProjectDetailView({
   projectId,
 }: ProjectDetailViewProps) {
+  const t = useTranslations("project.detail");
   const router = useRouter();
 
   // 공개 페이지 — 비로그인·외부 사용자도 볼 수 있고, 팀 관리 영역은 재학생에게만 보인다.
@@ -71,7 +73,7 @@ export default function ProjectDetailView({
     return (
       <div className="flex min-h-dvh items-center justify-center bg-background px-4">
         <p className="text-[14px] text-gray-600">
-          {isError ? "프로젝트를 불러오지 못했습니다." : "불러오는 중..."}
+          {isError ? t("loadError") : t("loading")}
         </p>
       </div>
     );
@@ -85,7 +87,7 @@ export default function ProjectDetailView({
           onClick={() => router.back()}
           className="mb-4 flex w-fit cursor-pointer items-center gap-2 text-lg font-semibold text-gray-700 transition-colors hover:text-gray-900"
         >
-          ← 뒤로
+          {t("back")}
         </button>
 
         {/* 정보 영역 — 생성 페이지와 동일한 레이아웃 (로고 · 팀 정보 · 설명) */}
@@ -110,7 +112,7 @@ export default function ProjectDetailView({
 
         {/* 참여 지표 — 조회수 · 좋아요 · 댓글 수 */}
         <div className="mt-6 flex items-center gap-4 text-sm text-gray-600">
-          <span className="flex items-center gap-1.5" aria-label="조회수">
+          <span className="flex items-center gap-1.5" aria-label={t("views")}>
             <EyeIcon className="h-4 w-4" />
             {project.viewCount.toLocaleString()}
           </span>
@@ -119,7 +121,7 @@ export default function ProjectDetailView({
             isLiked={project.isLiked}
             likeCount={project.likeCount}
           />
-          <span className="flex items-center gap-1.5" aria-label="댓글 수">
+          <span className="flex items-center gap-1.5" aria-label={t("comments")}>
             <CommentIcon className="h-4 w-4" />
             {project.commentCount.toLocaleString()}
           </span>
@@ -151,7 +153,7 @@ export default function ProjectDetailView({
               onClick={goToEdit}
               className="rounded-full bg-yellow-600 px-10 py-2.5 text-sm font-semibold text-gray-900 transition-opacity hover:opacity-90"
             >
-              수정하기
+              {t("edit")}
             </button>
           </div>
         )}
@@ -165,15 +167,14 @@ export default function ProjectDetailView({
         {isGuest && (
           <div className="mt-[60px] flex flex-col items-center gap-3 text-center">
             <p className="text-sm text-gray-500">
-              우리 팀 프로젝트라면 로그인하고 수정·양식 제출을 이어서 할 수
-              있어요.
+              {t("signinHint")}
             </p>
             <button
               type="button"
               onClick={goToSignin}
               className="cursor-pointer rounded-full border border-yellow-600 bg-yellow-50 px-8 py-2.5 text-sm font-semibold text-gray-900 transition-colors hover:bg-yellow-100"
             >
-              로그인하기
+              {t("signin")}
             </button>
           </div>
         )}

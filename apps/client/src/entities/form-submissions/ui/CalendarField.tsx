@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { EventViewModal, EventFormModal } from "@repo/ui";
 
@@ -79,6 +80,7 @@ function DayCell({
   onEventClick: (event: CalendarEvent) => void;
   onHover: (dateStr: string | null) => void;
 }) {
+  const t = useTranslations("form.calendar");
   const dateStr = getDateStr(year, month, day);
   const isToday = dateStr === today;
   const isWrite = mode === "write";
@@ -118,12 +120,12 @@ function DayCell({
   const labelText = !isWrite
     ? null
     : selectStart === dateStr
-      ? "시작"
+      ? t("rangeStart")
       : endLabelDate === dateStr
-        ? "종료"
+        ? t("rangeEnd")
         : null;
 
-  const dateLabel = `${month + 1}월 ${day}일`;
+  const dateLabel = t("date", { month: month + 1, day });
 
   if (event) {
     const colorVar = resolveColor(event.color);
@@ -226,15 +228,6 @@ function DayCell({
   );
 }
 
-const GUIDE = {
-  1: { title: "시작일 선택", message: "일정의 시작일을 선택해 주세요." },
-  2: {
-    title: "종료일 선택",
-    message: "시작일이 선택되었어요. 이제 종료일을 선택해 주세요.",
-  },
-  3: { title: "선택 완료", message: "기간이 선택되었어요." },
-} as const;
-
 export default function CalendarField({
   fieldId,
   mode = "write",
@@ -248,6 +241,7 @@ export default function CalendarField({
   events?: CalendarEvent[];
   onChange?: (fieldId: number, events: CalendarEvent[]) => void;
 }) {
+  const t = useTranslations("form.calendar");
   const todayDate = new Date();
 
   const todayStr = getDateStr(
@@ -281,7 +275,7 @@ export default function CalendarField({
     const d = new Date(year, month + (i - 3));
 
     return {
-      label: `${d.getMonth() + 1}월`,
+      label: t("month", { month: d.getMonth() + 1 }),
       year: d.getFullYear(),
       month: d.getMonth(),
     };
@@ -368,7 +362,11 @@ export default function CalendarField({
   };
 
   const guideStep = !selectStart ? 1 : !selectEnd ? 2 : 3;
-  const guide = GUIDE[guideStep];
+  // 단계별 안내 문구는 form.calendar.guide.<단계> 에 있다
+  const guide = {
+    title: t(`guide.${guideStep}.title`),
+    message: t(`guide.${guideStep}.message`),
+  };
 
   return (
     <>
@@ -388,7 +386,7 @@ export default function CalendarField({
           endDate={formTarget.end}
           initialTitle={formTarget.event?.title}
           initialColor={formTarget.event?.color}
-          submitLabel={formTarget.isEditing ? "수정하기" : "추가하기"}
+          submitLabel={formTarget.isEditing ? t("edit") : t("add")}
           showCancel={formTarget.isEditing}
           onSubmit={handleFormSubmit}
           onCancel={handleFormCancel}
@@ -423,7 +421,7 @@ export default function CalendarField({
               onClick={handleSelectCancel}
               className={`ml-auto shrink-0 cursor-pointer rounded-full px-3 py-1 text-xs font-medium text-white transition-opacity hover:opacity-90 sm:text-sm ${CAL.accentBg}`}
             >
-              선택 취소
+              {t("cancelSelect")}
             </button>
           )}
         </div>
@@ -437,7 +435,7 @@ export default function CalendarField({
         <button
           className={`cursor-pointer px-1 text-gray-500 transition-colors sm:px-2 sm:pl-6 ${CAL.accentHoverText}`}
           onClick={() => setCurrentMonth(new Date(year, month - 1))}
-          aria-label="이전 달"
+          aria-label={t("prevMonth")}
         >
           {"<"}
         </button>
@@ -459,7 +457,7 @@ export default function CalendarField({
         <button
           className={`cursor-pointer px-1 text-gray-500 transition-colors sm:px-2 sm:pr-6 ${CAL.accentHoverText}`}
           onClick={() => setCurrentMonth(new Date(year, month + 1))}
-          aria-label="다음 달"
+          aria-label={t("nextMonth")}
         >
           {">"}
         </button>

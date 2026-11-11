@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useEffect } from "react";
 
 import { useRouter, useSearchParams } from "next/navigation";
@@ -26,18 +27,20 @@ function useRedirectReasonNotice() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const reason = searchParams.get(SEARCH_PARAM_KEYS.REASON);
+  const tAuth = useTranslations("auth");
 
   useEffect(() => {
     if (reason !== REDIRECT_REASONS.EXTERNAL_ONLY) return;
-    toast.info("재학생만 이용할 수 있는 기능입니다.", {
+    toast.info(tAuth("studentOnly"), {
       id: REDIRECT_REASONS.EXTERNAL_ONLY,
     });
     router.replace(PUBLIC_HOME_PATH);
-  }, [reason, router]);
+  }, [reason, router, tAuth]);
 }
 
 // 공개 프로젝트 목록 — 비로그인·외부 사용자도 학년별 프로젝트를 둘러볼 수 있다.
 export default function PublicProjectListView() {
+  const t = useTranslations("project.list");
   useRedirectReasonNotice();
 
   const { isGuest, isExternal } = useAuthSession();
@@ -63,10 +66,10 @@ export default function PublicProjectListView() {
       <div className="flex min-h-dvh min-w-0 flex-1 flex-col items-start gap-8 px-4 pt-16 pb-6 min-[900px]:gap-12 min-[900px]:py-10">
         <div className="flex flex-col gap-2">
           <h1 className="text-[22px] font-semibold tracking-[-0.5px] text-gray-900">
-            프로젝트 둘러보기
+            {t("browseTitle")}
           </h1>
           <p className="text-[14px] text-gray-500">
-            아이디어 페스티벌에 참가한 팀들의 프로젝트를 확인해 보세요.
+            {t("browseDesc")}
           </p>
         </div>
 
@@ -74,18 +77,18 @@ export default function PublicProjectListView() {
         {sideCard && <div className="w-full min-[900px]:hidden">{sideCard}</div>}
 
         {grade === null ? (
-          <p className="text-gray-600">불러오는 중...</p>
+          <p className="text-gray-600">{t("loading")}</p>
         ) : (
           <>
             <GradeFilter value={grade} onChange={setGrade} />
 
             {isPending ? (
-              <p className="text-gray-600">불러오는 중...</p>
+              <p className="text-gray-600">{t("loading")}</p>
             ) : isError ? (
-              <p className="text-gray-600">프로젝트를 불러오지 못했습니다.</p>
+              <p className="text-gray-600">{t("loadError")}</p>
             ) : !visibleProjects || visibleProjects.length === 0 ? (
               <p className="w-full py-20 text-center text-gray-600">
-                해당 학년의 프로젝트가 없습니다.
+                {t("emptyGrade")}
               </p>
             ) : (
               <div className="grid w-full max-w-[1000px] grid-cols-[repeat(auto-fill,224px)] justify-start gap-6">

@@ -5,6 +5,7 @@ import { Sidebar } from "@repo/ui";
 import { NavbarProps } from "@repo/ui";
 import { Menu } from "@repo/ui";
 import NotificationBell from "../../Notification/ui/NotificationBell";
+import LanguageToggle from "../../Language/ui/LanguageToggle";
 import {
   useGetScoreNotice,
   useNotificationPushListener,
@@ -15,6 +16,7 @@ export default function Navbar({
   navItems,
   isGuest = false,
   homePath = "/",
+  showLanguageToggle = false,
 }: NavbarProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   // 알림 벨은 모바일·데스크톱에 두 번 렌더링되므로
@@ -45,7 +47,10 @@ export default function Navbar({
           <Menu className="h-6 w-6 text-gray-600" />
         </button>
 
-        {!isGuest && <NotificationBell align="right" className="ml-auto" />}
+        <div className="ml-auto flex items-center gap-3">
+          {showLanguageToggle && <LanguageToggle />}
+          {!isGuest && <NotificationBell align="right" />}
+        </div>
       </div>
 
       {isSidebarOpen && (
@@ -61,6 +66,7 @@ export default function Navbar({
         onClose={() => setIsSidebarOpen(false)}
         isGuest={isGuest}
         homePath={homePath}
+        showLanguageToggle={showLanguageToggle}
       />
     </>
   );

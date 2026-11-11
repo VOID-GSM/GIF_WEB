@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import Logout from "./svg/Logout";
 import Chevron from "./svg/Chevron";
 
@@ -27,6 +28,7 @@ export default function MypageCard({
   onEdit,
   nameSuffix,
 }: MypageCardProps) {
+  const t = useTranslations("mypage");
   const [isEditing, setIsEditing] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [editValues, setEditValues] = useState<Record<string, string>>({});
@@ -113,7 +115,7 @@ export default function MypageCard({
                 : "border-gray-300 hover:border-gray-400"
             }`}
           >
-            {editValues[item.key] || "선택"}
+            {editValues[item.key] || t("select")}
             <Chevron
               direction={isOpen ? "up" : "down"}
               className="h-4 w-4 text-gray-500 transition-transform duration-300"
@@ -157,9 +159,9 @@ export default function MypageCard({
     <section className="w-full max-w-[440px] rounded-[28px] bg-white px-8 py-9 shadow-new">
       {/* 헤더 — 이름 */}
       <div className="flex flex-col gap-1">
-        <span className="text-[13px] font-medium text-gray-400">내 프로필</span>
+        <span className="text-[13px] font-medium text-gray-400">{t("myProfile")}</span>
         <h2 className="flex items-baseline gap-1.5 text-[24px] font-semibold tracking-[-0.5px] text-gray-900">
-          {name && name !== "-" ? name : "프로필"}
+          {name && name !== "-" ? name : t("profile")}
           {nameSuffix && (
             <span className="text-[14px] font-medium text-gray-400">
               {nameSuffix}
@@ -196,14 +198,14 @@ export default function MypageCard({
               onClick={handleCancel}
               className="h-[48px] flex-1 cursor-pointer rounded-[14px] border border-gray-300 text-[15px] font-semibold text-gray-600 transition-colors hover:bg-gray-50"
             >
-              취소
+              {t("cancel")}
             </button>
             <button
               type="button"
               onClick={handleSave}
               className="h-[48px] flex-1 cursor-pointer rounded-[14px] bg-yellow-600 text-[15px] font-semibold text-gray-900 shadow-sm transition-all hover:bg-yellow-400 active:scale-[0.98]"
             >
-              저장하기
+              {t("save")}
             </button>
           </div>
         ) : (
@@ -214,7 +216,7 @@ export default function MypageCard({
                 onClick={() => setIsEditing(true)}
                 className="h-[48px] w-full cursor-pointer rounded-[14px] bg-yellow-600 text-[15px] font-semibold text-gray-900 shadow-sm transition-all hover:bg-yellow-400 active:scale-[0.98]"
               >
-                수정하기
+                {t("edit")}
               </button>
             )}
             <button
@@ -223,7 +225,7 @@ export default function MypageCard({
               className="flex h-[48px] w-full cursor-pointer items-center justify-center gap-2 rounded-[14px] bg-gray-100 text-[15px] font-medium text-gray-600 transition-colors hover:bg-gray-200 hover:text-gray-700"
             >
               <Logout className="h-[15px] w-[18px]" aria-hidden="true" />
-              로그아웃
+              {t("logout")}
             </button>
           </>
         )}

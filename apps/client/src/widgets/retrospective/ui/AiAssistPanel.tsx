@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 
 function PencilIcon() {
@@ -94,9 +95,9 @@ function SparkleIcon() {
 }
 
 const AI_ACTIONS = [
-  { key: "polish", label: "내용 다듬기", icon: <PencilIcon /> },
-  { key: "structure", label: "구조 추천", icon: <StructureIcon /> },
-  { key: "portfolio", label: "포트폴리오로 변환", icon: <PortfolioIcon /> },
+  { key: "polish", icon: <PencilIcon /> },
+  { key: "structure", icon: <StructureIcon /> },
+  { key: "portfolio", icon: <PortfolioIcon /> },
 ];
 
 interface AiAssistPanelProps {
@@ -105,8 +106,9 @@ interface AiAssistPanelProps {
 }
 
 export default function AiAssistPanel({ compact = false }: AiAssistPanelProps) {
+  const t = useTranslations("retrospective.ai");
   // TODO(backend): AI 지원 API가 생기면 각 버튼을 실제 요청으로 교체한다.
-  const handleClick = () => toast.info("추후 지원 예정 기능입니다.");
+  const handleClick = () => toast.info(t("comingSoon"));
 
   return (
     <aside
@@ -120,14 +122,12 @@ export default function AiAssistPanel({ compact = false }: AiAssistPanelProps) {
             <SparkleIcon />
           </span>
           <h2 className="text-[15px] font-bold text-gray-900">
-            AI 도움받기
+            {t("title")}
           </h2>
         </div>
         {!compact && (
           <p className="mt-2 text-[12px] leading-relaxed font-medium text-gray-600">
-            AI가 글을 더 정리하고
-            <br />
-            포트폴리오 작성에 도움을 드려요.
+            {t.rich("description", { br: () => <br /> })}
           </p>
         )}
       </div>
@@ -149,7 +149,7 @@ export default function AiAssistPanel({ compact = false }: AiAssistPanelProps) {
             }`}
           >
             <span className="text-gray-500">{action.icon}</span>
-            {action.label}
+            {t(`actions.${action.key}`)}
           </button>
         ))}
       </div>

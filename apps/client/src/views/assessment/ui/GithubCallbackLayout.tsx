@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
 
 // 콜백 화면과 Suspense fallback 이 같은 카드를 써서 전환 시 깜빡이지 않게 한다.
@@ -12,10 +13,11 @@ export function GithubCallbackLayout({ children }: { children: ReactNode }) {
 }
 
 export function GithubCallbackPending() {
+  const t = useTranslations("assessment.githubCallback");
   return (
     <GithubCallbackLayout>
-      <p className="text-base font-semibold text-gray-900">GitHub 연동 중</p>
-      <p className="text-sm text-gray-600">잠시만 기다려주세요.</p>
+      <p className="text-base font-semibold text-gray-900">{t("pending")}</p>
+      <p className="text-sm text-gray-600">{t("wait")}</p>
     </GithubCallbackLayout>
   );
 }

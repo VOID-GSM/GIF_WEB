@@ -1,13 +1,11 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import Link from "next/link";
 
 import {
-  CAT_COLOR_LABELS,
-  CONFIDENCE_LABELS,
   DEFAULT_CAT_CHASE_BOARD_SIDE,
-  JUDGMENT_LABELS,
   getCatColor,
   useGetCatChaseRound,
   type CatChaseQuestionResult,
@@ -27,6 +25,7 @@ export default function CatChaseRecordDetailView({
   roundId,
   initialSequence,
 }: CatChaseRecordDetailViewProps) {
+  const t = useTranslations("catChase.record");
   const { data, isPending, isError } = useGetCatChaseRound(roundId);
   const [selectedSequence, setSelectedSequence] = useState(
     initialSequence ?? 1,
@@ -43,39 +42,42 @@ export default function CatChaseRecordDetailView({
           href="/assessment/cat-chase/records"
           className="text-[14px] text-gray-500 underline-offset-2 hover:underline"
         >
-          ← 기록 목록
+          {t("backToList")}
         </Link>
 
         {isPending ? (
           <div className="mt-4 h-[600px] animate-pulse rounded-[20px] bg-gray-100" />
         ) : isError || !data ? (
           <p className="mt-4 rounded-[20px] bg-white py-16 text-center text-[15px] text-gray-600 shadow">
-            기록을 불러오지 못했어요.
+            {t("loadError")}
           </p>
         ) : (
           <>
             <header className="mb-5 mt-3 flex flex-wrap items-center gap-3">
               <h1 className="text-[24px] font-semibold tracking-[-0.6px] text-gray-900 md:text-[26px]">
-                {formatTimestamp(data.createdAt)} 기록
+                {t("detailTitle", { date: formatTimestamp(data.createdAt) })}
               </h1>
               <RoundStatusBadge
                 finished={!!data.finishedAt}
                 completed={data.completed}
               />
               <p className="text-[14px] text-gray-600 tabular-nums">
-                {data.correctCount} / {data.questionCount}문항 정답 ·{" "}
-                {data.earnedCoin}코인
+                {t("detailSummary", {
+                  correct: data.correctCount,
+                  total: data.questionCount,
+                  coin: data.earnedCoin,
+                })}
               </p>
             </header>
 
             {questions.length === 0 ? (
               <p className="rounded-[20px] bg-white py-16 text-center text-[15px] text-gray-600 shadow">
-                푼 문항이 없어요.
+                {t("noQuestions")}
               </p>
             ) : (
               <>
                 <nav
-                  aria-label="문항 선택"
+                  aria-label={t("selectQuestion")}
                   className="mb-4 flex flex-wrap gap-2"
                 >
                   {questions.map((q) => (
@@ -107,6 +109,7 @@ function QuestionTab({
   selected: boolean;
   onSelect: () => void;
 }) {
+  const t = useTranslations("catChase.record");
   const tone = !question.answered
     ? "text-gray-400"
     : question.correct
@@ -124,7 +127,7 @@ function QuestionTab({
           : "border-gray-300 bg-white text-gray-700 hover:bg-gray-100"
       }`}
     >
-      {question.sequence}번
+      {t("questionTab", { sequence: question.sequence })}
       <span className={selected ? "" : tone} aria-hidden>
         {!question.answered ? "–" : question.correct ? "O" : "X"}
       </span>
@@ -133,6 +136,9 @@ function QuestionTab({
 }
 
 function QuestionDetail({ question }: { question: CatChaseQuestionResult }) {
+  const t = useTranslations("catChase.record");
+  const tc = useTranslations("catChase.confidence");
+  const tColor = useTranslations("catChase.catColor");
   return (
     <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_300px]">
       <section className="flex flex-col items-center gap-4 rounded-[20px] bg-white p-5 shadow md:p-7">
@@ -141,20 +147,20 @@ function QuestionDetail({ question }: { question: CatChaseQuestionResult }) {
           cells={buildResultCells(question)}
         />
         <p className="text-[13px] text-gray-500">
-          고양이 칸의 작은 쥐는 실제로 쥐가 있던 자리예요.
+          {t("boardHint")}
         </p>
       </section>
 
       <section className="h-fit rounded-[20px] bg-white p-5 shadow">
         <div className="flex items-center justify-between">
           <h2 className="text-[16px] font-semibold tracking-[-0.4px] text-gray-800">
-            내 판단
+            {t("myJudgment")}
           </h2>
           {question.answered && <ResultBadge correct={question.correct} />}
         </div>
         {question.responses.length === 0 ? (
           <p className="mt-3 text-[14px] text-gray-500">
-            제출하지 않은 문항이에요.
+            {t("notSubmitted")}
           </p>
         ) : (
           <ol className="mt-3 flex flex-col gap-2">
@@ -170,13 +176,16 @@ function QuestionDetail({ question }: { question: CatChaseQuestionResult }) {
                 >
                   <div className="flex flex-col">
                     <span className="text-[14px] font-medium text-gray-800">
-                      {color ? CAT_COLOR_LABELS[color] : `${i + 1}번 고양이`} ·{" "}
-                      {JUDGMENT_LABELS[response.judgment]}
+                      {color
+                        ? tColor(color)
+                        : t("catJudgment", { index: i + 1 })}{" "}
+                      ·{" "}
+                      {t(`judgment.${response.judgment}`)}
                     </span>
                     <span className="text-[12px] text-gray-500">
                       {response.confidence &&
-                        `${CONFIDENCE_LABELS[response.confidence]} · `}
-                      실제 {response.hadMouse ? "쥐 있음" : "쥐 없음"}
+                        `${tc(response.confidence)} · `}
+                      {response.hadMouse ? t("actualMouse") : t("actualNoMouse")}
                     </span>
                   </div>
                   <ResultBadge correct={response.correct} />

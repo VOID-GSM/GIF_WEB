@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 
 import type { AssessmentMeta } from "@/entities/assessment";
@@ -26,6 +27,7 @@ export default function AssessmentTypeCard({
   selected,
   onSelect,
 }: AssessmentTypeCardProps) {
+  const t = useTranslations("assessment.types");
   const tone = TONE_STYLES[assessment.tone];
 
   return (
@@ -41,16 +43,16 @@ export default function AssessmentTypeCard({
     >
       <div className="flex items-center gap-2">
         <h3 className="text-[17px] font-semibold tracking-[-0.4px] text-gray-900">
-          {assessment.title}
+          {t(`${assessment.type}.title`)}
         </h3>
         <span
           className={`rounded-full px-2 py-0.5 text-[12px] font-medium ${tone.badge}`}
         >
-          {assessment.ability}
+          {t(`${assessment.type}.ability`)}
         </span>
       </div>
       <p className="mt-1 text-[13px] text-gray-600">
-        {assessment.description}
+        {t(`${assessment.type}.description`)}
       </p>
 
       {/* 카드 높이가 늘어나면 이미지도 함께 커진다 */}

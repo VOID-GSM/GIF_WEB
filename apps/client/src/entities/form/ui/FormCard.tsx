@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { formatDeadlineDate, formatDeadlineTime } from "../lib/formatDeadline";
 import { isDeadlinePassed } from "../lib/isDeadlinePassed";
 import type { FormSummary } from "../model/types";
@@ -23,6 +24,7 @@ export default function FormCard({
   onSubmit,
   onEdit,
 }: FormCardProps) {
+  const t = useTranslations("form.card");
   const { id, title, deadline, submitted } = form;
   const time = formatDeadlineTime(deadline);
   // 마감 후 이미 제출한 건은 수정 불가. (미제출은 마감 후에도 제출 가능 — 미준수로 판정)
@@ -50,7 +52,7 @@ export default function FormCard({
               : "border-gray-200 bg-gray-100 text-gray-500"
           }`}
         >
-          {submitted ? "제출" : "미제출"}
+          {submitted ? t("submitted") : t("notSubmitted")}
         </span>
       </div>
 
@@ -72,7 +74,7 @@ export default function FormCard({
                 : "border-yellow-600 bg-yellow-50 text-gray-900 hover:bg-yellow-100"
           }`}
         >
-          {editLocked ? "보기" : submitted ? "수정" : "작성"}
+          {editLocked ? t("view") : submitted ? t("edit") : t("write")}
         </button>
       </div>
     </div>

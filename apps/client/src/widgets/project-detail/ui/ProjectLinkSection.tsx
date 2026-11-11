@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useRef, useState } from "react";
 
 import { isValidUrl, normalizeUrl } from "@repo/lib";
@@ -31,6 +32,7 @@ function LinkForm({
   onSubmit,
   onCancel,
 }: LinkFormProps) {
+  const t = useTranslations("project.link");
   const [title, setTitle] = useState(initialTitle);
   const [url, setUrl] = useState(initialUrl);
   const [error, setError] = useState("");
@@ -47,11 +49,11 @@ function LinkForm({
     if (isPending) return;
 
     if (!title.trim()) {
-      setError("이름을 입력해 주세요.");
+      setError(t("nameRequired"));
       return;
     }
     if (!isValidUrl(url)) {
-      setError("올바른 주소를 입력해 주세요. (예: github.com/void-gsm)");
+      setError(t("invalidUrl"));
       return;
     }
 
@@ -77,7 +79,7 @@ function LinkForm({
             applyValue(e.currentTarget.value, setTitle);
           }}
           maxLength={TITLE_MAX_LENGTH}
-          placeholder="이름"
+          placeholder={t("name")}
           className={`${inputClassName} w-[92px]`}
         />
         <input
@@ -98,12 +100,12 @@ function LinkForm({
           disabled={isPending}
           className="cursor-pointer rounded-full bg-yellow-600 px-3 py-1 text-xs font-semibold text-gray-900 transition-opacity hover:opacity-90 disabled:opacity-40"
         >
-          저장
+          {t("save")}
         </button>
         <button
           type="button"
           onClick={onCancel}
-          aria-label="입력 취소"
+          aria-label={t("cancelInput")}
           className="cursor-pointer p-1 text-gray-400 transition-colors hover:text-gray-600"
         >
           <Close width={9} height={9} />
@@ -133,27 +135,28 @@ function LinkChip({
   onEdit,
   onDelete,
 }: LinkChipProps) {
+  const t = useTranslations("project.link");
   // 삭제는 되돌릴 수 없으므로 한 번 더 확인받는다.
   const [confirming, setConfirming] = useState(false);
 
   if (confirming) {
     return (
       <span className="inline-flex items-center gap-1.5 rounded-full border border-gray-200 bg-white py-1 pl-3 pr-2 text-xs font-medium">
-        <span className="text-gray-600">삭제할까요?</span>
+        <span className="text-gray-600">{t("deleteConfirm")}</span>
         <button
           type="button"
           disabled={isDeleting}
           onClick={onDelete}
           className="cursor-pointer font-semibold text-orange-900 disabled:opacity-40"
         >
-          예
+          {t("yes")}
         </button>
         <button
           type="button"
           onClick={() => setConfirming(false)}
           className="cursor-pointer font-semibold text-gray-500"
         >
-          아니오
+          {t("no")}
         </button>
       </span>
     );
@@ -171,11 +174,11 @@ function LinkChip({
               onClick={onEdit}
               className="cursor-pointer px-1 text-[11px] text-gray-500 transition-colors hover:text-gray-700"
             >
-              수정
+              {t("edit")}
             </button>
             <button
               type="button"
-              aria-label={`${link.title} 링크 삭제`}
+              aria-label={t("deleteLabel", { title: link.title })}
               onClick={() => setConfirming(true)}
               className="cursor-pointer px-1 text-gray-400 transition-colors hover:text-gray-600"
             >
@@ -199,6 +202,7 @@ export default function ProjectLinkSection({
   projectId,
   editable = false,
 }: ProjectLinkSectionProps) {
+  const t = useTranslations("project.link");
   const { data: links, isPending, isError } = useGetProjectLinks(projectId);
 
   const createLink = useCreateProjectLink(projectId);
@@ -265,7 +269,7 @@ export default function ProjectLinkSection({
             className="inline-flex cursor-pointer items-center gap-1.5 rounded-full border border-dashed border-gray-300 px-3 py-1 text-xs font-medium text-gray-500 transition-colors hover:border-gray-400 hover:text-gray-700"
           >
             <Plus width={8} height={8} />
-            링크 추가
+            {t("add")}
           </button>
         ))}
     </div>

@@ -10,11 +10,8 @@ export {
 export {
   DEFAULT_CAT_CHASE_BOARD_SIDE,
   CAT_CHASE_TIMING,
-  CONFIDENCE_OPTIONS,
-  CONFIDENCE_LABELS,
+  CONFIDENCE_VALUES,
   CAT_COLORS,
-  CAT_COLOR_LABELS,
-  JUDGMENT_LABELS,
   getCatColor,
   toBoardSide,
 } from "./model/constants";
