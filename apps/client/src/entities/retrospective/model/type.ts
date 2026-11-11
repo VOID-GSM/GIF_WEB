@@ -91,3 +91,18 @@ export interface RetrospectivePageResponse {
   last: boolean;
   empty: boolean;
 }
+
+/** POST /api/ai/retrospective/{action} — 회고록 AI 도움받기 */
+export type RetrospectiveAiAction = "polish" | "structure" | "portfolio";
+
+export interface RetrospectiveAiRequest {
+  title?: string;
+  category: RetrospectiveCategory;
+  content: string;
+}
+
+export interface RetrospectiveAiResult {
+  content: string;
+  /** 구조 추천(structure)에서만 내려오는 추천 목차 */
+  sections?: string[];
+}

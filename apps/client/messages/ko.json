@@ -424,16 +424,27 @@
       "BOOKMARK": "인기순"
     },
     "ai": {
-      "comingSoon": "추후 지원 예정 기능입니다.",
       "title": "AI 도움받기",
-      "description": "AI가 글을 더 정리하고<br></br>포트폴리오 작성에 도움을 드려요.",
+      "description": "AI가 작성한 초안을 확인하고<br></br>원하는 경우 본문에 적용할 수 있어요.",
       "actions": {
         "polish": "내용 다듬기",
         "structure": "구조 추천",
         "portfolio": "포트폴리오로 변환"
       },
       "summary": "AI 요약",
-      "summarizing": "내용을 요약하는 중..."
+      "summarizing": "내용을 요약하는 중...",
+      "generating": "생성 중…",
+      "pending": "AI가 결과를 만들고 있습니다…",
+      "minContentHint": "본문을 {min}자 이상 쓰면 다듬기와 포트폴리오 변환을 쓸 수 있어요.",
+      "tooLong": "본문이 {max, number}자를 넘었습니다. 분량을 줄여 주세요.",
+      "result": {
+        "title": "{action} 결과 미리보기",
+        "sections": "추천 목차",
+        "contentChanged": "요청 후 본문이 수정되었습니다. 적용하면 그 뒤에 쓴 내용이 이 결과로 바뀝니다.",
+        "cancel": "취소",
+        "apply": "본문에 적용",
+        "applyAnyway": "그래도 적용"
+      }
     },
     "draft": {
       "title": "임시 저장 목록",

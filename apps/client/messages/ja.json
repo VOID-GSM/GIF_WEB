@@ -424,16 +424,27 @@
       "BOOKMARK": "人気順"
     },
     "ai": {
-      "comingSoon": "今後対応予定の機能です。",
       "title": "AIアシスト",
-      "description": "AIが文章を整理し、<br></br>ポートフォリオ作成をお手伝いします。",
+      "description": "AIが作成した下書きを確認し、<br></br>必要に応じて本文に適用できます。",
       "actions": {
         "polish": "内容を整える",
         "structure": "構成のおすすめ",
         "portfolio": "ポートフォリオに変換"
       },
       "summary": "AI要約",
-      "summarizing": "内容を要約しています..."
+      "summarizing": "内容を要約しています...",
+      "generating": "生成中…",
+      "pending": "AIが結果を作成しています…",
+      "minContentHint": "本文を{min}文字以上書くと、整える機能とポートフォリオ変換が使えます。",
+      "tooLong": "本文が{max, number}文字を超えています。分量を減らしてください。",
+      "result": {
+        "title": "{action}の結果プレビュー",
+        "sections": "おすすめの目次",
+        "contentChanged": "リクエスト後に本文が変更されました。適用すると、その後に書いた内容がこの結果に置き換わります。",
+        "cancel": "キャンセル",
+        "apply": "本文に適用",
+        "applyAnyway": "それでも適用"
+      }
     },
     "draft": {
       "title": "下書き一覧",
