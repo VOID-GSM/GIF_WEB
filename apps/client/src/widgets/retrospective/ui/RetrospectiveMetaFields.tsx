@@ -1,5 +1,6 @@
+import { useTranslations } from "next-intl";
 import {
-  CATEGORY_OPTIONS,
+  CATEGORY_ORDER,
   type RetrospectiveCategory,
   type RetrospectiveVisibility,
 } from "@/entities/retrospective";
@@ -26,7 +27,13 @@ export default function RetrospectiveMetaFields({
   tags,
   onTagsChange,
 }: RetrospectiveMetaFieldsProps) {
+  const t = useTranslations("retrospective.meta");
   const isPublic = visibility === "PUBLIC";
+  const tc = useTranslations("retrospective.category");
+  const categoryOptions = CATEGORY_ORDER.map((value) => ({
+    value,
+    label: tc(value),
+  }));
 
   const addTag = (value: string) => {
     const tag = value.trim().replace(/^#/, "");
@@ -56,27 +63,27 @@ export default function RetrospectiveMetaFields({
             htmlFor="retrospective-category"
             className="mb-1 block text-[12px] font-medium text-gray-500"
           >
-            기록 유형
+            {t("category")}
           </label>
           <CustomSelect
             id="retrospective-category"
             value={category}
-            options={CATEGORY_OPTIONS}
+            options={categoryOptions}
             onChange={onCategoryChange}
-            ariaLabel="기록 유형"
+            ariaLabel={t("category")}
           />
         </div>
 
         {/* 공개 범위 */}
         <div className="w-[132px] shrink-0">
           <span className="mb-1 block text-[12px] font-medium text-gray-500">
-            공개 범위
+            {t("visibility")}
           </span>
           <button
             type="button"
             role="switch"
             aria-checked={isPublic}
-            aria-label="공개 여부"
+            aria-label={t("visibilityToggle")}
             onClick={() => onVisibilityChange(isPublic ? "PRIVATE" : "PUBLIC")}
             className="flex w-full cursor-pointer items-center gap-2 rounded-[10px] border border-gray-200 bg-white px-3 py-2 text-[13px] font-medium text-gray-700 transition-all duration-150 hover:border-gray-300 active:brightness-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-600"
           >
@@ -92,21 +99,21 @@ export default function RetrospectiveMetaFields({
                 }`}
               />
             </span>
-            {isPublic ? "공개" : "비공개"}
+            {isPublic ? t("public") : t("private")}
           </button>
         </div>
       </div>
 
       <div>
         <label htmlFor="retrospective-title" className="sr-only">
-          제목
+          {t("title")}
         </label>
         <input
           id="retrospective-title"
           type="text"
           value={title}
           onChange={(e) => onTitleChange(e.target.value)}
-          placeholder="제목을 입력하세요"
+          placeholder={t("titlePlaceholder")}
           className="w-full rounded-[10px] border border-gray-200 bg-white px-4 py-3 text-[15px] font-semibold text-black outline-none transition-colors placeholder:font-medium placeholder:text-gray-400 focus:border-yellow-600"
         />
       </div>
@@ -116,7 +123,7 @@ export default function RetrospectiveMetaFields({
           htmlFor="retrospective-tags"
           className="mb-1 block text-[12px] font-medium text-gray-500"
         >
-          태그
+          {t("tags")}
         </label>
         <div className="flex min-h-[44px] flex-wrap items-center gap-1.5 rounded-[10px] border border-gray-200 bg-white px-3 py-2 transition-colors focus-within:border-yellow-600">
           {tags.map((tag) => (
@@ -124,7 +131,7 @@ export default function RetrospectiveMetaFields({
               key={tag}
               type="button"
               onClick={() => onTagsChange(tags.filter((item) => item !== tag))}
-              aria-label={`${tag} 태그 삭제`}
+              aria-label={t("removeTag", { tag })}
               className="cursor-pointer rounded-full bg-yellow-50 px-2 py-1 text-[12px] font-medium text-yellow-800 transition-colors hover:bg-yellow-100"
             >
               #{tag} ×
@@ -135,12 +142,12 @@ export default function RetrospectiveMetaFields({
             type="text"
             onKeyDown={handleTagKeyDown}
             onBlur={handleTagBlur}
-            placeholder={tags.length ? "태그 추가" : "태그를 입력하고 Enter"}
+            placeholder={tags.length ? t("addTag") : t("tagPlaceholder")}
             className="min-w-[140px] flex-1 bg-transparent py-1 text-[13px] font-medium text-black outline-none placeholder:text-gray-400"
           />
         </div>
         <p className="mt-1 text-[11px] text-gray-400">
-          최대 5개까지 추가할 수 있어요.
+          {t("tagLimit")}
         </p>
       </div>
     </>

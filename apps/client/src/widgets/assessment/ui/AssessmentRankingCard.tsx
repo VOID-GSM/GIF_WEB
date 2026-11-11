@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { Coin, Crown } from "@repo/ui";
 
@@ -18,6 +19,7 @@ const TOP_RANK_BADGES: Record<number, string> = {
 };
 
 function RankBadge({ rank }: { rank: number }) {
+  const t = useTranslations("assessment.ranking");
   const badge = TOP_RANK_BADGES[rank];
   if (!badge) {
     return <span className="text-[14px] font-semibold text-gray-700">{rank}</span>;
@@ -32,7 +34,7 @@ function RankBadge({ rank }: { rank: number }) {
       )}
       <span
         className={`flex size-6 items-center justify-center rounded-full text-[12px] font-bold text-white shadow-sm ${badge}`}
-        aria-label={`${rank}위`}
+        aria-label={t("rankLabel", { rank })}
       >
         {rank}
       </span>
@@ -49,6 +51,7 @@ function RankingRow({
   entry: AssessmentRankingEntry;
   isMe: boolean;
 }) {
+  const t = useTranslations("assessment.ranking");
   return (
     <li
       className={`${GRID} items-center border-t border-gray-200 px-2 py-2 text-[14px] ${
@@ -60,11 +63,11 @@ function RankingRow({
       </span>
       <span className="flex min-w-0 items-baseline gap-1.5 pl-2">
         <span className="truncate font-semibold text-gray-900">
-          {isMe ? "나" : entry.name}
+          {isMe ? t("me") : entry.name}
         </span>
         {entry.grade != null && (
           <span className="shrink-0 text-[12px] text-gray-500">
-            {entry.grade}학년
+            {t("grade", { grade: entry.grade })}
           </span>
         )}
       </span>
@@ -90,6 +93,8 @@ export default function AssessmentRankingCard({
   questionCount,
   selectedType,
 }: AssessmentRankingCardProps) {
+  const t = useTranslations("assessment.ranking");
+  const tt = useTranslations("assessment.types");
   const [tab, setTab] = useState<AssessmentType>(selectedType ?? "cat-chase");
   const [prevSelectedType, setPrevSelectedType] = useState(selectedType);
   // effect 대신 렌더 중에 prop 변화를 감지해 탭을 맞춘다 (추가 렌더·깜빡임 없음).
@@ -109,7 +114,7 @@ export default function AssessmentRankingCard({
     <section className="rounded-[20px] bg-white p-5 shadow">
       <div className="flex items-center justify-between gap-3">
         <h2 className="text-[16px] font-semibold tracking-[-0.4px] text-gray-900">
-          GSM 랭킹
+          {t("title")}
         </h2>
         <div className="flex rounded-[12px] bg-gray-100 p-1" role="tablist">
           {ASSESSMENTS.map((a) => {
@@ -127,22 +132,22 @@ export default function AssessmentRankingCard({
                     : "text-gray-500 hover:text-gray-700"
                 }`}
               >
-                {a.title}
+                {tt(`${a.type}.title`)}
               </button>
             );
           })}
         </div>
       </div>
       <p className="mt-0.5 text-[12px] text-gray-500">
-        {questionCount}문항 기록 중 맞힌 문항으로 순위를 매겨요.
+        {t("description", { count: questionCount })}
       </p>
 
       <div className="mt-3 overflow-hidden rounded-[14px] border border-gray-200">
         <div className={`${GRID} bg-yellow-100 px-2 py-2.5 text-[12px] font-medium text-gray-600`}>
-          <span className="text-center">순위</span>
-          <span className="pl-2">이름</span>
-          <span className="text-center">맞힌 수</span>
-          <span className="text-center">코인</span>
+          <span className="text-center">{t("rank")}</span>
+          <span className="pl-2">{t("name")}</span>
+          <span className="text-center">{t("correct")}</span>
+          <span className="text-center">{t("coin")}</span>
         </div>
 
         {isPending ? (
@@ -155,15 +160,15 @@ export default function AssessmentRankingCard({
           </ul>
         ) : isError ? (
           <p className="px-4 py-9 text-center text-[13px] text-gray-500">
-            랭킹을 불러오지 못했어요.
+            {t("error")}
           </p>
         ) : entries.length === 0 ? (
           <div className="flex flex-col items-center gap-1 px-4 py-9 text-center">
             <p className="text-[14px] font-medium text-gray-700">
-              아직 기록이 없어요
+              {t("emptyTitle")}
             </p>
             <p className="text-[13px] text-gray-500">
-              첫 번째 랭커가 되어보세요!
+              {t("emptyDesc")}
             </p>
           </div>
         ) : (

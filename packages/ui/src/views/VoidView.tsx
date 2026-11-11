@@ -1,15 +1,19 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 import Reveal from "../landing/Reveal";
 import { MEMBERS, type MemberItem } from "../landing/data";
 
-const INTRO = [
-  "VOID는 프로젝트 중심으로 진행하는 웹 개발 동아리입니다.",
-  "Front-end, Back-end, Design, DevOps 등 여러 전공 분야의 팀원들이 소속해 서로의 전공을 이해하고 협업하며 프로젝트를 진행합니다.",
-  "VOID에 합류하면 과제 기반 학습과 프로젝트 경험을 통해 개발 역량을 키우고, 활발한 전공 공유를 통해 지속적으로 성장할 수 있습니다.",
-];
+const INTRO_KEYS = ["intro1", "intro2", "intro3"] as const;
+
+const highlight = (chunks: React.ReactNode) => (
+  <span className="rounded-md bg-yellow-200 px-2">{chunks}</span>
+);
+
 
 function MemberCard({ member }: { member: MemberItem }) {
+  const t = useTranslations("intro.void");
   const inner = (
     <>
       <div className="flex items-center gap-4">
@@ -29,12 +33,12 @@ function MemberCard({ member }: { member: MemberItem }) {
             </h3>
             {member.lead && (
               <span className="shrink-0 rounded-full border border-yellow-600 bg-white px-2 py-0.5 text-[11px] font-bold text-gray-900">
-                부장
+                {t("lead")}
               </span>
             )}
           </div>
           <p className="mt-0.5 truncate text-[13px] text-gray-500">
-            {member.role}
+            {member.lead ? `${t("lead")} · ${member.role}` : member.role}
           </p>
         </div>
       </div>
@@ -51,11 +55,11 @@ function MemberCard({ member }: { member: MemberItem }) {
             >
               <path d="M12 .5A11.5 11.5 0 0 0 .5 12a11.5 11.5 0 0 0 7.86 10.92c.58.1.79-.25.79-.56v-2c-3.2.7-3.87-1.36-3.87-1.36-.53-1.34-1.3-1.7-1.3-1.7-1.06-.72.08-.71.08-.71 1.17.08 1.79 1.2 1.79 1.2 1.04 1.79 2.73 1.27 3.4.97.1-.76.4-1.27.74-1.56-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.79 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.24 2.76.12 3.05.74.81 1.18 1.83 1.18 3.09 0 4.41-2.69 5.38-5.25 5.67.41.35.78 1.05.78 2.12v3.14c0 .31.2.67.8.56A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5Z" />
             </svg>
-            GitHub 방문
+            {t("visitGithub")}
             <span className="transition group-hover:translate-x-0.5">→</span>
           </span>
         ) : (
-          <span className="text-[13px] text-gray-400">GitHub 미연결</span>
+          <span className="text-[13px] text-gray-400">{t("noGithub")}</span>
         )}
       </div>
     </>
@@ -84,6 +88,7 @@ function MemberCard({ member }: { member: MemberItem }) {
 }
 
 export default function VoidView() {
+  const t = useTranslations("intro.void");
   return (
     <main className="pb-28 pt-15">
       {/* ===== Hero (움직이는 배경 애니메이션) ===== */}
@@ -103,14 +108,10 @@ export default function VoidView() {
           </Reveal>
           <Reveal delay={140}>
             <p className="mt-8 text-[18px] font-medium leading-relaxed text-gray-700 sm:text-[22px]">
-              VOID에게 공백은 아무것도 없는 상태가 아니라,
-              <br className="hidden sm:block" />{" "}
-              <span className="font-bold">
-                <span className="rounded-md bg-yellow-200 px-2">
-                  무엇이든 담을 수 있는 가능성
-                </span>
-              </span>
-              입니다.
+              {t.rich("hero", {
+                br: () => <br className="hidden sm:block" />,
+                hl: (chunks) => <span className="font-bold">{highlight(chunks)}</span>,
+              })}
             </p>
           </Reveal>
         </div>
@@ -141,12 +142,12 @@ export default function VoidView() {
           </h2>
         </Reveal>
         <div className="mt-8 space-y-4">
-          {INTRO.map((text, i) => (
-            <Reveal key={i} delay={(i % 3) * 100}>
+          {INTRO_KEYS.map((key, i) => (
+            <Reveal key={key} delay={(i % 3) * 100}>
               <div className="flex gap-4 rounded-3xl border border-yellow-100 bg-white p-6 shadow-sm">
                 <span className="mt-1 block h-2.5 w-2.5 shrink-0 rounded-full bg-yellow-400" />
                 <p className="text-[15px] leading-relaxed text-gray-600 sm:text-[16px]">
-                  {text}
+                  {t(key)}
                 </p>
               </div>
             </Reveal>
@@ -156,10 +157,10 @@ export default function VoidView() {
         {/* ===== Members ===== */}
         <Reveal>
           <h2 className="mt-20 text-[26px] font-bold text-gray-900 sm:text-[32px]">
-            함께 만든 <span className="rounded-md bg-yellow-200 px-2">사람들</span>
+            {t.rich("membersTitle", { hl: highlight })}
           </h2>
           <p className="mt-3 text-[15px] text-gray-500">
-            카드를 누르면 각 팀원의 GitHub으로 이동해요.
+            {t("membersDesc")}
           </p>
         </Reveal>
         <div className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -174,10 +175,10 @@ export default function VoidView() {
         <Reveal delay={120}>
           <div className="mt-14 rounded-3xl border border-yellow-100 bg-yellow-50 px-8 py-10 text-center">
             <p className="text-[16px] font-semibold text-gray-900">
-              문의나 제안이 있으신가요?
+              {t("contactTitle")}
             </p>
             <p className="mt-2 text-[14px] text-gray-500">
-              언제든 Team VOID에게 편하게 연락해 주세요.
+              {t("contactDesc")}
             </p>
             <a
               href="mailto:teamvoid0107@gmail.com"

@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 
 import { Chevron } from "@repo/ui";
@@ -8,18 +9,18 @@ import { GRADES, type GradeFilterValue } from "@/entities/project";
 // 전체를 맨 앞에 두고 1학년, 2학년 순으로 보여준다
 const OPTIONS: readonly GradeFilterValue[] = ["all", ...GRADES];
 
-function getLabel(value: GradeFilterValue) {
-  return value === "all" ? "전체" : `${value}학년`;
-}
-
 interface GradeFilterProps {
   value: GradeFilterValue;
   onChange: (grade: GradeFilterValue) => void;
 }
 
 export default function GradeFilter({ value, onChange }: GradeFilterProps) {
+  const t = useTranslations("grade");
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  const getLabel = (option: GradeFilterValue) =>
+    option === "all" ? t("all") : t("label", { grade: option });
 
   useEffect(() => {
     if (!isOpen) return;

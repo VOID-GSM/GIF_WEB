@@ -1,8 +1,8 @@
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 
 import {
   CATEGORY_COLOR,
-  CATEGORY_LABELS,
   type ListRetrospectiveResponse,
 } from "@/entities/retrospective";
 
@@ -16,6 +16,8 @@ export default function RetrospectiveCard({
   retrospective,
   animationDelayMs = 0,
 }: RetrospectiveCardProps) {
+  const t = useTranslations("retrospective.card");
+  const tc = useTranslations("retrospective.category");
   const {
     title,
     summary,
@@ -44,28 +46,28 @@ export default function RetrospectiveCard({
           <span
             className={`shrink-0 rounded-full border px-2 py-0.5 text-[11px] font-medium ${CATEGORY_COLOR[category]}`}
           >
-            {CATEGORY_LABELS[category]}
+            {tc(category)}
           </span>
           {visibility === "PRIVATE" && (
             <span className="shrink-0 rounded-full border border-gray-200 bg-gray-100 px-2 py-0.5 text-[11px] font-medium text-gray-500">
-              비공개
+              {t("private")}
             </span>
           )}
         </div>
 
         <h2 className="line-clamp-2 text-[15px] font-semibold tracking-[-0.2px] text-gray-900">
-          {title || "제목 없음"}
+          {title || t("untitled")}
         </h2>
 
         <p className="line-clamp-2 text-[13px] leading-relaxed text-gray-500">
-          {summary || "내용이 아직 없습니다."}
+          {summary || t("noContent")}
         </p>
       </Link>
 
       <div className="flex items-end justify-between gap-3 pt-1">
         <div className="min-w-0 text-[12px] text-gray-400">
           <p className="truncate">
-            {authorName} · {grade}학년 · {createdAt.slice(0, 10)}
+            {authorName} · {t("grade", { grade })} · {createdAt.slice(0, 10)}
           </p>
           {teamName && projectId !== undefined && (
             <Link

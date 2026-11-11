@@ -124,7 +124,12 @@ export default function ScoreAssignView() {
               onConfirmed={handlePeriodConfirmed}
             />
           )}
-          <ScoreAssignTable isLoading={isLoading} teams={teams} allowedAreas={allowedAreas} />
+          <ScoreAssignTable
+            isLoading={isLoading}
+            teams={teams}
+            allowedAreas={allowedAreas}
+            canGradeItems={!!myInfo && !isPrivilegedAdmin}
+          />
         </div>
       </div>
     </div>

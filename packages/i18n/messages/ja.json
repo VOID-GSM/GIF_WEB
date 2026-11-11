@@ -1,0 +1,318 @@
+{
+  "language": {
+    "switchTo": "{locale, select, ja {日本語で表示} other {韓国語で表示}}"
+  },
+  "nav": {
+    "main": "メイン",
+    "notice": "お知らせ",
+    "form": "フォーム",
+    "rank": "順位",
+    "score": "点数",
+    "teachers": "先生管理",
+    "inquiry": "お問い合わせ",
+    "inquiryAdmin": "お問い合わせ管理",
+    "retrospective": "振り返り",
+    "assessment": "能力検査",
+    "thyn": "Thynカスタマイズ",
+    "projects": "プロジェクト",
+    "signin": "ログイン",
+    "logout": "ログアウト"
+  },
+  "theme": {
+    "select": "テーマ選択",
+    "light": "ライト",
+    "dark": "ダーク"
+  },
+  "badge": {
+    "deadlineBefore": "締切前",
+    "deadline": "締切",
+    "edit": "編集",
+    "complete": "完了",
+    "write": "作成",
+    "section": {
+      "major": "専攻中心領域",
+      "report": "報告書領域",
+      "social": "社会中心領域"
+    }
+  },
+  "button": {
+    "notice": "お知らせする",
+    "next": "次へ",
+    "leader": "リーダー",
+    "member": "メンバー",
+    "granted": "採点済み",
+    "ungranted": "未採点"
+  },
+  "notFound": {
+    "message": "申し訳ありません。ページが見つかりません",
+    "back": "前のページに戻る"
+  },
+  "input": {
+    "titlePlaceholder": "フォームのタイトルを入力してください",
+    "contentPlaceholder": "内容を入力してください"
+  },
+    "grade": {
+    "label": "{grade}年生",
+    "all": "全体"
+  },
+  "fileUpload": {
+    "upload": "ファイルをアップロード"
+  },
+  "styleDropdown": {
+    "file": "ファイル",
+    "text": "テキスト",
+    "calendar": "カレンダー",
+    "placeholder": "スタイルを選択してください"
+  },
+  "filePreview": {
+    "error": "プレビューを読み込めませんでした。ダウンロードして確認してください。",
+    "loading": "プレビューを読み込み中",
+    "openOriginal": "{fileName} を元のサイズで表示",
+    "title": "{fileName} のプレビュー"
+  },
+  "signin": {
+    "title": "ログイン",
+    "system": "GSM IdeaFestival 管理システム",
+    "headline": "GIFでアイデアフェスティバルを<br></br>スムーズに進めましょう！",
+    "description": "プロジェクト報告書の提出から点数管理、AI要約機能まで<br></br>アイデアフェスティバルのすべての進行をGIFと一緒に。",
+    "datagsm": {
+      "description": "DataGSMで安全にログインしましょう！",
+      "button": "DataGsmでログイン"
+    },
+    "google": {
+      "description": "Googleアカウントで安全にログインしましょう！",
+      "button": "Googleでログイン"
+    }
+  },
+  "mypage": {
+    "select": "選択",
+    "myProfile": "マイプロフィール",
+    "profile": "プロフィール",
+    "cancel": "キャンセル",
+    "save": "保存する",
+    "edit": "編集する",
+    "logout": "ログアウト"
+  },
+  "notification": {
+    "title": "通知",
+    "unreadLabel": "未読の通知 {count}件",
+    "unreadItem": "{title}（未読）",
+    "recentDays": "直近{days}日",
+    "processing": "処理中...",
+    "readAll": "すべて既読",
+    "pushOff": "端末通知をオフ",
+    "pushOn": "端末通知を受け取る",
+    "loading": "通知を読み込んでいます。",
+    "error": "通知を読み込めませんでした。しばらくしてからもう一度お試しください。",
+    "empty": "直近{days}日間に届いた通知はありません。",
+    "loadingMore": "読み込み中...",
+    "loadMoreError": "読み込めませんでした。再試行",
+    "loadMore": "以前の通知をもっと見る",
+    "close": "閉じる",
+    "readAllSuccess": "すべての通知を既読にしました。",
+    "readAllError": "通知を既読にできませんでした。もう一度お試しください。",
+    "readError": "通知を既読にできませんでした。"
+  },
+  "formCard": {
+    "reorder": "項目の順序を変更",
+    "reorderHint": "ドラッグして順序を変更できます",
+    "style": {
+      "file": "ファイル",
+      "text": "テキスト",
+      "calendar": "カレンダー"
+    },
+    "allowedExtensions": "許可するファイル形式",
+    "submitMethod": "提出方法",
+    "allowUrl": "外部リンク（URL）での提出を許可",
+    "allowUrlHint": "Canva・MiriCanvas・Googleドライブなどの共有リンクでも提出できます。",
+    "required": "必須項目",
+    "requiredOn": "学生は必ず回答する必要があります。",
+    "requiredOff": "学生は空欄のまま提出できます。",
+    "requiredToggle": "必須項目かどうか"
+  },
+  "projectDetail": {
+    "aiSummary": "AI要約",
+    "deadlineStatus": "締切状況",
+    "total": "全体",
+    "met": "遵守",
+    "notMet": "未遵守",
+    "pending": "待機",
+    "formList": "フォーム提出一覧",
+    "noForms": "まだ公開されたフォームはありません。",
+    "projectName": "プロジェクト名",
+    "teamName": "チーム名",
+    "members": "メンバー"
+  },
+  "calendarEvent": {
+    "titlePlaceholder": "予定を入力してください",
+    "date": "日付: {date}",
+    "period": "期間: {start} ~ {end}",
+    "cancel": "キャンセル",
+    "save": "保存",
+    "delete": "削除",
+    "edit": "編集"
+  },
+  "datePicker": {
+    "weekdays": "日,月,火,水,木,金,土",
+    "placeholder": "日付を選択してください",
+    "yearMonth": "{year}年{month}月"
+  },
+  "timePicker": {
+    "placeholder": "時間を選択"
+  },
+  "rank": {
+    "error": "順位情報を読み込めませんでした",
+    "empty": "まだ順位は発表されていません"
+  },
+  "intro": {
+    "nav": {
+      "main": "メイン",
+      "about": "アイデアフェスティバルとは？",
+      "winners": "受賞作品",
+      "void": "VOID",
+      "projects": "プロジェクトを見る",
+      "signin": "ログイン",
+      "openMenu": "メニューを開く"
+    },
+    "footer": {
+      "description": "光州ソフトウェアマイスター高校アイデアフェスティバルのチーム編成から資料提出、評価、点数集計まで、すべての工程を一つにまとめた運営プラットフォームです。",
+      "shortcuts": "ショートカット",
+      "contact": "お問い合わせ",
+      "school": "光州ソフトウェアマイスター高等学校"
+    },
+    "landing": {
+      "hero": "アイデアが現実になる場所、<br></br> 光州ソフトウェアマイスター高校アイデアフェスティバル",
+      "start": "はじめる →",
+      "featuresTitle": "<hl>GIF</hl>がお手伝いします",
+      "featuresDesc": "チーム編成から資料提出、評価、点数集計まで — フェスティバル運営に必要なすべての機能を一つのプラットフォームにまとめました。",
+      "features": {
+        "team": {
+          "title": "チームプロジェクト管理",
+          "desc": "チーム編成からプロジェクトの進捗まで一か所で管理できます。"
+        },
+        "submit": {
+          "title": "資料提出",
+          "desc": "企画書・発表資料などすべての成果物をオンラインで提出できます。"
+        },
+        "form": {
+          "title": "カスタムフォーム",
+          "desc": "担当の先生が作成したフォームに沿って簡単に作成・提出できます。"
+        },
+        "score": {
+          "title": "評価・点数集計",
+          "desc": "領域別の評価と点数の合算が自動で行われます。"
+        },
+        "ai": {
+          "title": "AI要約",
+          "desc": "プロジェクトと提出回答をAIが要約し、審査をスピーディーにサポートします。"
+        },
+        "rank": {
+          "title": "順位発表",
+          "desc": "集計が終わると、チームの順位をお知らせで確認できます。"
+        }
+      },
+      "stepsTitle": "このように<hl>参加</hl>します",
+      "stepsDesc": "チーム編成から発表・審査まで、フェスティバルはこのように進みます。",
+      "steps": {
+        "team": {
+          "title": "チーム編成",
+          "desc": "一緒に取り組むメンバーを集めてチームを作り、プロジェクトを登録します。"
+        },
+        "build": {
+          "title": "企画・開発",
+          "desc": "自由なテーマでアイデアを具体化し、自分たちの手で作ります。"
+        },
+        "submit": {
+          "title": "資料提出",
+          "desc": "先生が作成したフォームに沿って成果物をオンラインで提出します。"
+        },
+        "present": {
+          "title": "発表・審査",
+          "desc": "完成した成果物を発表し、部門別の審査を受けます。"
+        }
+      },
+      "ctaTitle": "今こそ、あなたのアイデアを始めましょう",
+      "ctaDesc": "GIFと一緒なら、準備から受賞までもう一歩です。"
+    },
+    "about": {
+      "title": "<hl>アイデアフェスティバル</hl>とは？",
+      "intro1": "アイデアフェスティバルは、光州ソフトウェアマイスター高校の生徒がチームを組み、自由なテーマでプロジェクトを企画・開発し、その成果を発表・審査される校内最大規模の創作フェスティバルです。頭の中のアイデアを自らの手で形にしながら、企画力や開発力はもちろん、チームで協働する経験も積むことができます。",
+      "intro2": "GIF（Gsm Idea Festival）は、従来の手作業による運営から脱却し、チーム編成から資料提出、評価、点数集計までのすべての工程を一つのプラットフォームに統合して運営効率を最大化します。生徒は提出に集中でき、先生は審査と集計をより速く正確に進められます。",
+      "stats": {
+        "teams": "参加チーム",
+        "students": "参加生徒",
+        "grades": "参加学年",
+        "areas": "審査領域"
+      },
+      "pointsTitle": "ここが<hl>特別</hl>です",
+      "points": {
+        "freeTopic": {
+          "title": "自由なテーマ",
+          "desc": "決まった枠にとらわれず、チームが望むアイデアを自由に実現します。"
+        },
+        "teamProject": {
+          "title": "チームプロジェクト",
+          "desc": "企画から開発、発表までメンバーと一緒に一つの成果物を完成させます。"
+        },
+        "areaReview": {
+          "title": "領域別審査",
+          "desc": "専攻中心領域・社会中心領域・報告書領域に分けて評価します。"
+        },
+        "gradeAward": {
+          "title": "学年別表彰",
+          "desc": "1・2年生それぞれ最優秀賞・優秀賞・奨励賞で優れたチームを表彰します。"
+        }
+      },
+      "scheduleTitle": "全体<hl>スケジュール</hl>",
+      "scheduleDesc": "集中期間には通常授業がなく、フェスティバルの準備だけに集中します。",
+      "schedule": {
+        "teamBuilding": "チーム編成",
+        "focus1": "第1次集中期間",
+        "midterm": "中間発表",
+        "focus2": "第2次集中期間",
+        "final": "最終発表",
+        "exhibition": "アイデアフェスティバル展示"
+      },
+      "focusNote": "授業なしでフェスティバルの準備だけに集中する期間"
+    },
+    "winners": {
+      "title": "2025 <hl>受賞作品</hl>",
+      "subtitle": "過去のフェスティバルを彩ったチームを紹介します。学年を選んでご覧ください。",
+      "grade": "{grade}年生",
+      "rank": {
+        "grand": "最優秀賞",
+        "excellence": "優秀賞",
+        "encouragement": "奨励賞"
+      },
+      "desc": {
+        "story": "ポートフォリオやブログの作成に慣れていない学生が、AIの助けを借りて手軽に自分だけの文章を完成させ、それを共有できるプラットフォームです。",
+        "gsmMarket": "GSM Marketは、学生同士が直接物を売り買いしながら自由に交流できる校内中心のフリーマーケットプラットフォームです。使わなくなった物に新たな価値を加え、先輩・後輩や同級生と温かい交流ができます。",
+        "codingGo": "誰でも簡単に楽しくコーディングを学び、継続的な学習を通じて成長できるようサポートするコーディング学習プラットフォーム、Coding GO!",
+        "nochu": "AIによるリアルタイムの表情認識でユーザーの現在の感情を分析し、最適なおすすめ音楽を提案するモバイルアプリケーション",
+        "dondon": "青少年のための経済・金融プラットフォーム",
+        "aa": "開発者専用のコーヒーチャット・ネットワーキングプラットフォーム「아.아.」。気軽に会って技術やキャリアについて話してみましょう。아.아.は、開発者が気兼ねなく信頼を築いていく新しいネットワーキング文化を作ります。"
+      }
+    },
+    "void": {
+      "hero": "VOIDにとって空白とは、何もない状態ではなく、<br></br> <hl>何でも入れられる可能性</hl>です。",
+      "intro1": "VOIDはプロジェクト中心で活動するWeb開発部です。",
+      "intro2": "Front-end、Back-end、Design、DevOpsなど様々な専攻分野のメンバーが所属し、互いの専攻を理解し協力しながらプロジェクトを進めています。",
+      "intro3": "VOIDに参加すると、課題ベースの学習とプロジェクト経験を通じて開発力を伸ばし、活発な知識共有によって継続的に成長できます。",
+      "lead": "部長",
+      "visitGithub": "GitHubを見る",
+      "noGithub": "GitHub未連携",
+      "membersTitle": "一緒に作った<hl>メンバー</hl>",
+      "membersDesc": "カードを押すと各メンバーのGitHubに移動します。",
+      "contactTitle": "お問い合わせやご提案はありますか？",
+      "contactDesc": "いつでもお気軽にTeam VOIDまでご連絡ください。"
+    }
+  },
+  "push": {
+    "enabled": "この端末で通知を受け取ります。",
+    "permissionRequired": "ブラウザで通知を許可してください。",
+    "enableError": "端末通知をオンにできませんでした。もう一度お試しください。",
+    "disabled": "この端末の通知をオフにします。",
+    "disableError": "端末通知をオフにできませんでした。もう一度お試しください。",
+    "blocked": "ブラウザの設定でこのサイトの通知ブロックを解除してください。"
+  }
+}

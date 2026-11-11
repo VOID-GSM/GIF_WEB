@@ -4,15 +4,7 @@ import type {
   RetrospectiveSort,
 } from "./type";
 
-export const CATEGORY_LABELS: Record<RetrospectiveCategory, string> = {
-  FEATURE: "기능 개발",
-  IMPROVEMENT: "기능 개선",
-  REFACTORING: "리팩토링",
-  TROUBLESHOOTING: "트러블슈팅",
-  RETROSPECT: "회고",
-  PORTFOLIO: "포트폴리오",
-};
-
+// 카테고리·정렬 라벨은 번역 리소스(retrospective.category / retrospective.sort)에 있다.
 export const CATEGORY_ORDER: RetrospectiveCategory[] = [
   "FEATURE",
   "IMPROVEMENT",
@@ -22,17 +14,11 @@ export const CATEGORY_ORDER: RetrospectiveCategory[] = [
   "PORTFOLIO",
 ];
 
-/** 작성 페이지의 기록 유형 select 용 — "전체"를 포함하지 않는다 */
-export const CATEGORY_OPTIONS: {
-  value: RetrospectiveCategory;
-  label: string;
-}[] = CATEGORY_ORDER.map((value) => ({ value, label: CATEGORY_LABELS[value] }));
-
 /** 목록 필터 pill 용 — 맨 앞에 "전체"를 둔다 */
-export const CATEGORY_FILTER_OPTIONS: {
-  value: RetrospectiveCategoryFilter;
-  label: string;
-}[] = [{ value: "ALL", label: "전체" }, ...CATEGORY_OPTIONS];
+export const CATEGORY_FILTER_VALUES: RetrospectiveCategoryFilter[] = [
+  "ALL",
+  ...CATEGORY_ORDER,
+];
 
 /**
  * 카테고리 태그 pill 색상.
@@ -56,8 +42,4 @@ export const CATEGORY_COLOR: Record<RetrospectiveCategory, string> = {
     "border-gray-200 bg-gray-100 text-gray-900 dark:border-gray-600 dark:bg-gray-800",
 };
 
-export const SORT_OPTIONS: { value: RetrospectiveSort; label: string }[] = [
-  { value: "LATEST", label: "최신순" },
-  { value: "OLDEST", label: "오래된순" },
-  { value: "BOOKMARK", label: "인기순" },
-];
+export const SORT_VALUES: RetrospectiveSort[] = ["LATEST", "OLDEST", "BOOKMARK"];

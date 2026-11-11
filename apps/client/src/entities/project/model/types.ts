@@ -1,3 +1,5 @@
+import type { EngagementFields, RawEngagement } from "./engagement";
+
 export interface CreateProjectRequest {
   name: string;
   teamName: string;
@@ -42,20 +44,18 @@ export type Grade = (typeof GRADES)[number];
 // 학년 필터 값 — "all"(전체 보기)은 필터 전용이라 프로젝트 생성용 Grade 타입과 분리한다.
 export type GradeFilterValue = Grade | "all";
 
-export interface FilteredProject {
+// isLiked: 비로그인 요청은 항상 false
+export interface FilteredProject
+  extends Pick<EngagementFields, "likeCount" | "isLiked" | "commentCount"> {
   id: number;
   name: string;
   teamName: string;
   logo: string;
   grade: Grade;
-  likeCount: number;
-  // 비로그인 요청은 항상 false
-  isLiked: boolean;
-  commentCount: number;
 }
 
-// GET /api/project/filter?grade= — 학년별 프로젝트 목록
-export type GetFilteredProjectsResponse = FilteredProject[];
+// GET /api/project/filter?grade= — 학년별 프로젝트 목록 (참여 지표 누락 가능)
+export type GetFilteredProjectsResponse = RawEngagement<FilteredProject>[];
 
 export interface ProjectMember {
   userId: number;
@@ -70,17 +70,13 @@ export interface PublicProjectMember {
   role: string;
 }
 
-interface ProjectDetailBase {
+interface ProjectDetailBase extends EngagementFields {
   id: number;
   name: string;
   teamName: string;
   description: string;
   logo: string;
   grade: number;
-  likeCount: number;
-  isLiked: boolean;
-  viewCount: number;
-  commentCount: number;
 }
 
 // GET /api/project/{projectId} — 교내 사용자(재학생·선생님)가 받는 프로젝트 상세
@@ -124,4 +120,3 @@ export interface UpdateProjectRequest {
   removeMemberIds: number[];
   logo?: File;
 }
-

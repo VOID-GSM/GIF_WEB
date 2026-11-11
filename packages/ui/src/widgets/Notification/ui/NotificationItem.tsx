@@ -1,5 +1,6 @@
 "use client";
 
+import { useLocale, useTranslations } from "next-intl";
 import type { GetNotificationResponse } from "@repo/lib";
 import { resolveNotificationTarget } from "@repo/lib";
 
@@ -14,6 +15,8 @@ export default function NotificationItem({
   notification,
   onSelect,
 }: NotificationItemProps) {
+  const t = useTranslations("notification");
+  const locale = useLocale();
   const { title, body, isRead, createdAt, targetUrl } = notification;
 
   // 읽은 알림이어도 이동할 경로가 있으면 다시 눌러 이동할 수 있어야 한다.
@@ -25,7 +28,7 @@ export default function NotificationItem({
         type="button"
         onClick={() => onSelect(notification)}
         disabled={!isInteractive}
-        aria-label={isRead ? title : `${title} (읽지 않음)`}
+        aria-label={isRead ? title : t("unreadItem", { title })}
         className={`flex w-full flex-col items-start gap-1 px-4 py-3 text-left transition-colors ${
           isRead
             ? "bg-white hover:bg-gray-100 disabled:cursor-default disabled:hover:bg-white"
@@ -43,7 +46,7 @@ export default function NotificationItem({
             {title}
           </span>
           <span className="shrink-0 text-[11px] text-gray-500">
-            {formatNotificationTime(createdAt)}
+            {formatNotificationTime(createdAt, locale)}
           </span>
         </div>
 

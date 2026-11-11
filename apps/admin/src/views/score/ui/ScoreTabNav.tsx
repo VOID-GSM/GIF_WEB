@@ -6,14 +6,20 @@ import { usePathname } from "next/navigation";
 const TABS = [
   { label: "점수 부여", href: "/score" },
   { label: "점수 합계", href: "/score/collection" },
+  { label: "평가 기준", href: "/score/criteria" },
 ] as const;
+
+// "점수 부여" 탭이 아닌 /score 하위 경로
+const OTHER_TAB_PATHS = ["/score/collection", "/score/criteria"];
 
 export default function ScoreTabNav() {
   const pathname = usePathname();
 
   function isActive(href: string) {
-    if (href === "/score/collection") return pathname.startsWith("/score/collection");
-    if (href === "/score") return pathname === "/score" || (pathname.startsWith("/score/") && !pathname.startsWith("/score/collection"));
+    if (href === "/score") {
+      // /score/[area], /score/items 등 채점 화면은 "점수 부여" 탭으로 본다.
+      return pathname === "/score" || (pathname.startsWith("/score/") && !OTHER_TAB_PATHS.some((p) => pathname.startsWith(p)));
+    }
     return pathname === href || pathname.startsWith(href + "/");
   }
 

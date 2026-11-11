@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
 
 import {
@@ -26,28 +27,28 @@ export interface ToolbarItem {
 }
 
 export const TOOLBAR_ITEMS: ToolbarItem[] = [
-  { key: "bold", title: "굵게", icon: <BoldIcon />, wrap: ["**", "**"] },
-  { key: "italic", title: "기울임", icon: <ItalicIcon />, wrap: ["_", "_"] },
+  { key: "bold", title: "bold", icon: <BoldIcon />, wrap: ["**", "**"] },
+  { key: "italic", title: "italic", icon: <ItalicIcon />, wrap: ["_", "_"] },
   {
     key: "underline",
-    title: "밑줄",
+    title: "underline",
     icon: <UnderlineIcon />,
     wrap: ["<u>", "</u>"],
   },
-  { key: "h1", title: "제목 1", icon: <H1Icon />, prefix: "# " },
-  { key: "h2", title: "제목 2", icon: <H2Icon />, prefix: "## " },
-  { key: "list", title: "목록", icon: <ListIcon />, prefix: "- " },
-  { key: "quote", title: "인용", icon: <QuoteIcon />, prefix: "> " },
+  { key: "h1", title: "h1", icon: <H1Icon />, prefix: "# " },
+  { key: "h2", title: "h2", icon: <H2Icon />, prefix: "## " },
+  { key: "list", title: "list", icon: <ListIcon />, prefix: "- " },
+  { key: "quote", title: "quote", icon: <QuoteIcon />, prefix: "> " },
   {
     key: "code",
-    title: "코드 블록",
+    title: "code",
     icon: <CodeIcon />,
     wrap: ["```\n", "\n```"],
   },
-  { key: "link", title: "링크", icon: <LinkIcon />, wrap: ["[", "](https://)"] },
+  { key: "link", title: "link", icon: <LinkIcon />, wrap: ["[", "](https://)"] },
   {
     key: "image",
-    title: "이미지 추가 (준비 중)",
+    title: "image",
     icon: <ImageIcon />,
     disabled: true,
   },
@@ -58,17 +59,18 @@ interface EditorToolbarProps {
 }
 
 export default function EditorToolbar({ onItemClick }: EditorToolbarProps) {
+  const t = useTranslations("retrospective.toolbar");
   return (
     <div
       role="toolbar"
-      aria-label="마크다운 서식"
+      aria-label={t("label")}
       className="flex flex-wrap justify-evenly gap-2 rounded-[10px] border border-gray-200 bg-gray-100 p-1.5"
     >
       {TOOLBAR_ITEMS.map((item) => (
         <div key={item.key} className="group relative">
           <button
             type="button"
-            aria-label={item.title}
+            aria-label={t(item.title)}
             aria-disabled={item.disabled}
             onClick={() => onItemClick(item)}
             className={`flex h-7 w-8 cursor-pointer items-center justify-center rounded-[6px] text-gray-600 transition-all duration-150 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-yellow-600 ${
@@ -83,7 +85,7 @@ export default function EditorToolbar({ onItemClick }: EditorToolbarProps) {
             role="tooltip"
             className="pointer-events-none absolute bottom-[calc(100%+6px)] left-1/2 z-10 -translate-x-1/2 translate-y-1 rounded-[6px] bg-gray-900 px-2 py-1 text-[11px] font-medium whitespace-nowrap text-white opacity-0 transition-all duration-150 delay-150 group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:translate-y-0 group-focus-within:opacity-100"
           >
-            {item.title}
+            {t(item.title)}
           </span>
         </div>
       ))}

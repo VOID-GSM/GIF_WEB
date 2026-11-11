@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
 
@@ -24,6 +25,7 @@ export default function RelatedWorkAddForm({
   onAdd,
   onCancel,
 }: RelatedWorkAddFormProps) {
+  const t = useTranslations("retrospective.relatedWork");
   const [isFetchingTitle, setIsFetchingTitle] = useState(false);
   const [titleFetchError, setTitleFetchError] = useState<
     "rate-limit" | "not-found" | null
@@ -79,11 +81,11 @@ export default function RelatedWorkAddForm({
     const parsed = Number(number);
 
     if (!Number.isInteger(parsed) || parsed <= 0) {
-      toast.error("번호는 1 이상의 숫자로 입력해주세요.");
+      toast.error(t("invalidNumber"));
       return;
     }
     if (!title.trim()) {
-      toast.error("제목을 입력해주세요.");
+      toast.error(t("titleRequired"));
       return;
     }
 
@@ -94,7 +96,7 @@ export default function RelatedWorkAddForm({
     <div className="animate-fade-in-up flex flex-col gap-2 rounded-[10px] border border-gray-200 bg-gray-100 p-2.5 dark:border-gray-700 dark:bg-gray-800">
       <div>
         <label htmlFor="related-work-link" className="sr-only">
-          GitHub 이슈·PR 링크
+          {t("linkLabel")}
         </label>
         <input
           id="related-work-link"
@@ -105,43 +107,42 @@ export default function RelatedWorkAddForm({
           autoCorrect="off"
           value={link}
           onChange={(e) => void handleLinkChange(e.target.value)}
-          placeholder="GitHub 이슈·PR 링크를 붙여넣으면 자동으로 채워져요 (선택)"
+          placeholder={t("linkPlaceholder")}
           className="w-full rounded-[8px] border border-gray-200 bg-white px-2.5 py-1.5 text-[12px] font-medium text-black outline-none placeholder:text-gray-400 focus:border-yellow-600 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:placeholder:text-gray-500"
         />
         <p className="mt-1 text-[11px] text-gray-400">
-          공개 저장소의 이슈·PR만 제목을 자동으로 가져올 수 있어요. 비공개
-          저장소는 제목을 직접 입력해주세요.
+          {t("hint")}
         </p>
         {isFetchingTitle && (
           <p className="mt-1 text-[11px] text-gray-400" aria-live="polite">
-            제목을 가져오는 중...
+            {t("fetching")}
           </p>
         )}
         {titleFetchError && (
           <p className="mt-1 text-[11px] text-red-500" aria-live="polite">
             {titleFetchError === "rate-limit"
-              ? "요청이 많아 제목을 가져오지 못했어요. 잠시 후 다시 시도하거나 제목을 직접 입력해주세요."
-              : "비공개 저장소이거나 찾을 수 없어 제목을 자동으로 가져오지 못했어요. 제목을 직접 입력해주세요."}
+              ? t("rateLimit")
+              : t("notFound")}
           </p>
         )}
       </div>
 
       <div className="flex flex-wrap items-center gap-1.5">
         <label htmlFor="related-work-type" className="sr-only">
-          작업 유형
+          {t("type")}
         </label>
         <CustomSelect
           id="related-work-type"
           value={type}
           options={TYPE_OPTIONS}
           onChange={handleTypeChange}
-          ariaLabel="작업 유형"
+          ariaLabel={t("type")}
           size="sm"
           className="w-[92px] shrink-0"
         />
 
         <label htmlFor="related-work-number" className="sr-only">
-          번호
+          {t("number")}
         </label>
         <input
           id="related-work-number"
@@ -149,19 +150,19 @@ export default function RelatedWorkAddForm({
           min={1}
           value={number}
           onChange={(e) => handleNumberChange(e.target.value)}
-          placeholder="번호"
+          placeholder={t("number")}
           className="w-[80px] shrink-0 rounded-[8px] border border-gray-200 bg-white px-2 py-1.5 text-[12px] font-medium text-black outline-none placeholder:text-gray-400 focus:border-yellow-600 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:placeholder:text-gray-500"
         />
 
         <label htmlFor="related-work-title" className="sr-only">
-          작업 제목
+          {t("workTitle")}
         </label>
         <input
           id="related-work-title"
           type="text"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          placeholder="제목을 직접 입력해도 돼요"
+          placeholder={t("titlePlaceholder")}
           className="min-w-[140px] flex-1 rounded-[8px] border border-gray-200 bg-white px-2 py-1.5 text-[12px] font-medium text-black outline-none placeholder:text-gray-400 focus:border-yellow-600 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:placeholder:text-gray-500"
         />
 
@@ -170,14 +171,14 @@ export default function RelatedWorkAddForm({
           onClick={handleAdd}
           className="cursor-pointer rounded-[8px] bg-yellow-600 px-3 py-1.5 text-[12px] font-medium text-gray-900 transition-colors hover:bg-yellow-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-600"
         >
-          추가
+          {t("add")}
         </button>
         <button
           type="button"
           onClick={onCancel}
           className="cursor-pointer rounded-[8px] px-2 py-1.5 text-[12px] font-medium text-gray-500 transition-colors hover:text-gray-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-600"
         >
-          취소
+          {t("cancel")}
         </button>
       </div>
     </div>

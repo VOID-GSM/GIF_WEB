@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { Chevron, File as FileIcon, Markdown } from "@repo/ui";
 import { formatTimestamp } from "@/entities/form/lib/formatDeadline";
@@ -9,15 +10,15 @@ import type { InquiryStatus } from "@/entities/inquiry";
 
 const STATUS_META: Record<
   InquiryStatus,
-  { label: string; className: string }
+  { labelKey: "pending" | "answered"; className: string }
 > = {
   PENDING: {
-    label: "답변 대기",
+    labelKey: "pending",
     className:
       "bg-gray-100 text-gray-500 border-gray-200",
   },
   ANSWERED: {
-    label: "답변 완료",
+    labelKey: "answered",
     className:
       "bg-yellow-50 text-yellow-700 border-yellow-600",
   },
@@ -35,6 +36,7 @@ interface MyInquiryDetailViewProps {
 export default function MyInquiryDetailView({
   inquiryId,
 }: MyInquiryDetailViewProps) {
+  const t = useTranslations("inquiry.my");
   const router = useRouter();
   const { data, isPending, isError } = useGetMyInquiryDetail(inquiryId);
   const { mutate: download, isPending: isDownloading } = useDownloadFile();
@@ -52,16 +54,16 @@ export default function MyInquiryDetailView({
             direction="left"
             className="h-3.5 w-3.5 transition-transform group-hover:-translate-x-0.5"
           />
-          내 문의 내역
+          {t("title")}
         </button>
 
         {isPending ? (
           <p className="py-16 text-center text-[13px] font-medium text-gray-400">
-            불러오는 중
+            {t("loading")}
           </p>
         ) : isError || !data ? (
           <p className="py-16 text-center text-[13px] font-medium text-red-500">
-            문의 내용을 불러오지 못했습니다.
+            {t("detailLoadError")}
           </p>
         ) : (
           <>
@@ -75,7 +77,7 @@ export default function MyInquiryDetailView({
                   <span
                     className={`rounded-full border px-2.5 py-0.5 text-[11px] font-medium ${STATUS_META[data.status].className}`}
                   >
-                    {STATUS_META[data.status].label}
+                    {t(`status.${STATUS_META[data.status].labelKey}`)}
                   </span>
                   {data.status === "PENDING" && (
                     <button
@@ -85,7 +87,7 @@ export default function MyInquiryDetailView({
                       }
                       className="cursor-pointer rounded-[10px] border border-gray-200 px-3 py-1 text-[13px] font-medium text-gray-600 transition-colors hover:border-yellow-600 hover:text-yellow-700"
                     >
-                      수정
+                      {t("edit")}
                     </button>
                   )}
                 </div>
@@ -99,7 +101,7 @@ export default function MyInquiryDetailView({
             <div className="mt-5 flex flex-col gap-4">
               <div className="flex flex-col gap-1.5">
                 <span className="text-[13px] font-medium text-gray-700">
-                  문의 내용
+                  {t("content")}
                 </span>
                 <div className="rounded-[10px] border border-gray-200 bg-white px-3.5 py-3">
                   <Markdown content={data.content} />
@@ -110,7 +112,7 @@ export default function MyInquiryDetailView({
               {data.filePath && (
                 <div className="flex flex-col gap-1.5">
                   <span className="text-[13px] font-medium text-gray-700">
-                    첨부파일
+                    {t("attachment")}
                   </span>
                   <button
                     type="button"
@@ -121,7 +123,7 @@ export default function MyInquiryDetailView({
                         fileName:
                           data.originalFileName ??
                           data.filePath.split("/").pop() ??
-                          "첨부파일",
+                          t("attachment"),
                       });
                     }}
                     disabled={isDownloading}
@@ -133,7 +135,7 @@ export default function MyInquiryDetailView({
                         <span className="truncate text-[13px] font-medium text-gray-700">
                           {data.originalFileName ??
                             data.filePath.split("/").pop() ??
-                            "첨부파일"}
+                            t("attachment")}
                         </span>
                         {typeof data.fileSize === "number" && (
                           <span className="text-[11px] text-gray-500">
@@ -151,7 +153,7 @@ export default function MyInquiryDetailView({
                 <div className="mt-2 flex flex-col gap-1.5 rounded-[12px] border border-yellow-600 bg-yellow-50 px-4 py-3.5">
                   <div className="flex items-center justify-between">
                     <span className="text-[13px] font-semibold text-yellow-700">
-                      답변
+                      {t("answer")}
                     </span>
                     {data.answeredAt && (
                       <span className="text-[11px] text-gray-500">

@@ -1,6 +1,10 @@
 import type { CatChaseQuestion } from "@/entities/assessment";
 
-export type CatChaseJudgment = "FOUND" | "MISSED";
+// TIMEOUT: 제한 시간 안에 답하지 않음. 서버가 항상 오답으로 처리한다 (GIF_SERVER#240).
+export type CatChaseJudgment = "FOUND" | "MISSED" | "TIMEOUT";
+
+// 사용자가 직접 고를 수 있는 판단
+export type CatChaseAnswer = Exclude<CatChaseJudgment, "TIMEOUT">;
 
 export type CatChaseConfidence =
   | "VERY_CONFIDENT"
@@ -11,11 +15,12 @@ export type CatChaseConfidence =
 export interface CatChaseJudgmentItem {
   position: number;
   judgment: CatChaseJudgment;
-  confidence: CatChaseConfidence;
+  // TIMEOUT 이면 null
+  confidence: CatChaseConfidence | null;
 }
 
 // POST /rounds/{roundId}/questions/{questionId}/judgments
-// 문항에 나온 고양이마다 정확히 한 번씩 판단해야 한다.
+// 문항에 나온 고양이(빨강, 파랑)마다 정확히 한 번씩 판단해야 한다.
 export interface SubmitCatChaseJudgmentsRequest {
   judgments: CatChaseJudgmentItem[];
 }

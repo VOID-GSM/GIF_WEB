@@ -24,6 +24,8 @@ interface Props {
   isLoading: boolean;
   teams: TeamRow[];
   allowedAreas: ScoreArea[];
+  /** 항목 기반 채점(/score/items) 진입 버튼 노출 여부 — VOID 계정 제외 선생님 전체 */
+  canGradeItems?: boolean;
 }
 
 const AREAS: ScoreArea[] = ["major", "report", "social"];
@@ -35,11 +37,38 @@ export default function ScoreAssignTable({
   isLoading,
   teams,
   allowedAreas,
+  canGradeItems = false,
 }: Props) {
   const router = useRouter();
 
+  function renderItemGradeButton(team: TeamRow, compact = false) {
+    if (!canGradeItems) return null;
+    return (
+      <button
+        key="items"
+        type="button"
+        onClick={() =>
+          router.push(
+            `/score/items?projectId=${team.id}&teamName=${encodeURIComponent(team.teamName)}`,
+          )
+        }
+        className={`shrink-0 flex items-center w-fit border rounded-full bg-yellow-50 border-yellow-600 cursor-pointer hover:bg-yellow-100 transition-colors ${
+          compact ? "py-[2px] px-[10px]" : "py-[1px] px-[21px]"
+        }`}
+      >
+        <span
+          className={`font-semibold whitespace-nowrap text-yellow-700 dark:text-yellow-300 ${
+            compact ? "text-[12px]" : "text-[14px]"
+          }`}
+        >
+          항목 채점
+        </span>
+      </button>
+    );
+  }
+
   function renderBadges(team: TeamRow, compact = false) {
-    return AREAS.map((area) => {
+    const areaBadges = AREAS.map((area) => {
       const isAllowed = allowedAreas.includes(area);
       const isScored = team.scoredAreas?.includes(area) ?? false;
       const variant = isAllowed
@@ -77,6 +106,7 @@ export default function ScoreAssignTable({
         </div>
       );
     });
+    return [...areaBadges, renderItemGradeButton(team, compact)];
   }
 
   if (isLoading) {

@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -10,6 +11,7 @@ import { SEARCH_PARAM_KEYS } from "@/shared/constants";
 import { buildSignupPath, sanitizeReturnPath } from "@/shared/utils";
 
 export default function SignupView() {
+  const t = useTranslations("auth.signup");
   const router = useRouter();
   const searchParams = useSearchParams();
   // 로그인 전에 보던 페이지 — 가입을 마치면 이곳으로 돌아간다.
@@ -39,7 +41,7 @@ export default function SignupView() {
   if (isMeLoading || alreadySignedUp) {
     return (
       <main className="min-h-screen flex items-center justify-center bg-background">
-        <p className="text-sm text-gray-600">불러오는 중...</p>
+        <p className="text-sm text-gray-600">{t("loading")}</p>
       </main>
     );
   }
@@ -68,7 +70,7 @@ export default function SignupView() {
                 : "bg-gray-400 cursor-not-allowed"
             }`}
           >
-            다음
+            {t("next")}
           </button>
         </div>
       </div>

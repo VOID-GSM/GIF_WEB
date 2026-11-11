@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 
 import {
@@ -10,7 +11,7 @@ import {
   useStoredGrade,
 } from "@/entities/project";
 import GradeFilter from "@/features/project-filter/ui/GradeFilter";
-import { getEmptyMessage } from "@/features/project-filter/lib/getEmptyMessage";
+import { getEmptyMessageKey } from "@/features/project-filter/lib/getEmptyMessage";
 import DeadlineCountdownCard from "@/widgets/dashboard/ui/DeadlineCountdownCard";
 import NoticeBanner from "@/widgets/dashboard/ui/NoticeBanner";
 import ScheduleTimelineCard from "@/widgets/dashboard/ui/ScheduleTimelineCard";
@@ -18,6 +19,7 @@ import MyProjectCard from "@/widgets/dashboard/ui/MyProjectCard";
 import ProfileSummaryCard from "@/widgets/dashboard/ui/ProfileSummaryCard";
 
 export default function ProjectBrowse() {
+  const t = useTranslations("project.list");
   // 마지막으로 선택한 학년을 복원한다 (확정 전엔 null → 초기 학년 깜빡임 방지)
   const { grade, setGrade } = useStoredGrade();
   const { data: myProjects } = useGetMyProject();
@@ -39,12 +41,12 @@ export default function ProjectBrowse() {
   const myProject = visibleProjects?.find(
     (project) => project.id === myProjectId,
   );
-  const emptyMessage = getEmptyMessage(grade);
+  const emptyKey = getEmptyMessageKey(grade);
 
   if (grade === null) {
     return (
       <div className="flex min-h-dvh flex-col items-start gap-12 bg-background px-4 py-10">
-        <p className="text-gray-600">불러오는 중...</p>
+        <p className="text-gray-600">{t("loading")}</p>
       </div>
     );
   }
@@ -58,22 +60,22 @@ export default function ProjectBrowse() {
         <GradeFilter value={grade} onChange={setGrade} />
 
         {isPending ? (
-          <p className="text-gray-600">불러오는 중...</p>
+          <p className="text-gray-600">{t("loading")}</p>
         ) : isError ? (
-          <p className="text-gray-600">프로젝트를 불러오지 못했습니다.</p>
+          <p className="text-gray-600">{t("loadError")}</p>
         ) : (
           <>
             <div className="flex flex-col gap-3">
               <div className="flex items-center justify-between">
                 <h2 className="text-[15px] font-semibold text-gray-900">
-                  내 프로젝트
+                  {t("myProjects")}
                 </h2>
                 <button
                   type="button"
                   onClick={() => setShowAll((prev) => !prev)}
                   className="cursor-pointer text-[13px] font-medium text-gray-500"
                 >
-                  {showAll ? "접기" : "전체 보기 ›"}
+                  {showAll ? t("collapse") : t("showAll")}
                 </button>
               </div>
               {myProject && <MyProjectCard project={myProject} />}
@@ -81,7 +83,7 @@ export default function ProjectBrowse() {
 
             {showAll &&
               (!visibleProjects || visibleProjects.length === 0 ? (
-                <p className="text-gray-600">{emptyMessage}</p>
+                <p className="text-gray-600">{t(emptyKey)}</p>
               ) : (
                 <div className="grid w-full grid-cols-[repeat(auto-fill,224px)] justify-start gap-6">
                   {visibleProjects.map((project) => (
@@ -104,12 +106,12 @@ export default function ProjectBrowse() {
         <GradeFilter value={grade} onChange={setGrade} />
 
         {isPending ? (
-          <p className="text-gray-600">불러오는 중...</p>
+          <p className="text-gray-600">{t("loading")}</p>
         ) : isError ? (
-          <p className="text-gray-600">프로젝트를 불러오지 못했습니다.</p>
+          <p className="text-gray-600">{t("loadError")}</p>
         ) : !visibleProjects || visibleProjects.length === 0 ? (
           <p className="w-full pt-70 text-center text-gray-600">
-            {emptyMessage}
+            {t(emptyKey)}
           </p>
         ) : (
           <div className="grid w-full max-w-[1000px] grid-cols-[repeat(auto-fill,224px)] justify-start gap-6">

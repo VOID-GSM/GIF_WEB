@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import { useRef, useEffect } from "react";
 import { stripInvisibleChars } from "@repo/ui";
 
@@ -16,6 +17,7 @@ export default function TextField({
   readOnly = false,
   onChange,
 }: TextFieldProps) {
+  const t = useTranslations("form.field");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   // 한글(IME) 조합 중에는 값을 자르지 않는다 — 조합 도중 강제로 잘라내면
   // composition 세션이 깨져 마지막 글자가 누락되거나 조합이 끊길 수 있다.
@@ -31,7 +33,7 @@ export default function TextField({
   if (readOnly) {
     return (
       <div className="min-h-20 w-full break-words border border-gray-80 rounded-[10px] p-[15px] font-medium text-gray-800 whitespace-pre-wrap">
-        {value || <span className="text-gray-400">답변 없음</span>}
+        {value || <span className="text-gray-400">{t("noAnswer")}</span>}
       </div>
     );
   }
@@ -41,7 +43,7 @@ export default function TextField({
       <textarea
         ref={textareaRef}
         className="min-h-20 w-full break-words border border-gray-80 rounded-[10px] p-[15px] font-medium text-gray-800 outline-none resize-none overflow-hidden placeholder:text-gray-500"
-        placeholder="답변을 입력하세요"
+        placeholder={t("answerPlaceholder")}
         value={value}
         maxLength={TEXT_MAX_LENGTH}
         onChange={(e) => {

@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useRef, useState, useEffect, type ChangeEvent } from "react";
+import { useTranslations } from "next-intl";
 
 import Close from "../../svg/Close";
 import DashedBorder from "../../svg/DashedBorder";
@@ -13,6 +14,7 @@ interface FileUploadProps {
 }
 
 export default function FileUpload({ onChange, className = "" }: FileUploadProps) {
+  const t = useTranslations("fileUpload");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -80,7 +82,7 @@ export default function FileUpload({ onChange, className = "" }: FileUploadProps
           <>
             <DashedBorder />
             <Upload width={98} height={39} />
-            <span>파일 업로드</span>
+            <span>{t("upload")}</span>
           </>
         )}
       </button>

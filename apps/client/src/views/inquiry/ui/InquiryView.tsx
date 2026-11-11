@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { ChangeEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -24,6 +25,7 @@ const formatFileSize = (bytes: number) => {
 };
 
 export default function InquiryView() {
+  const t = useTranslations("inquiry.form");
   const router = useRouter();
   const { mutate, isPending } = usePostInquiry();
 
@@ -36,7 +38,7 @@ export default function InquiryView() {
     const selected = e.target.files?.[0];
     if (!selected) return;
     if (selected.size > MAX_FILE_SIZE) {
-      toast.error("파일 용량이 커서 업로드할 수 없습니다. (최대 10MB)");
+      toast.error(t("tooLarge"));
       e.target.value = "";
       return;
     }
@@ -51,7 +53,7 @@ export default function InquiryView() {
     const trimmedContent = content.trim();
 
     if (!trimmedTitle || !trimmedContent) {
-      toast.error("제목과 내용을 입력해주세요.");
+      toast.error(t("titleContentRequired"));
       return;
     }
 
@@ -77,10 +79,10 @@ export default function InquiryView() {
         {/* 헤더 */}
         <div className="mt-2.5 border-b border-gray-200 pb-4">
           <h1 className="text-[19px] font-semibold tracking-[-0.3px] text-gray-900">
-            문의하기
+            {t("pageTitle")}
           </h1>
           <p className="mt-1 text-[13px] leading-relaxed text-gray-500">
-            서비스 이용 중 불편한 점이나 궁금한 점을 남겨주세요.
+            {t("pageDesc")}
           </p>
         </div>
 
@@ -90,7 +92,7 @@ export default function InquiryView() {
           <div className="flex flex-col gap-1.5">
             <div className="flex items-center justify-between">
               <label className="text-[13px] font-medium text-gray-700">
-                제목
+                {t("title")}
               </label>
               <span
                 className={`text-[11px] font-medium ${
@@ -103,7 +105,7 @@ export default function InquiryView() {
               </span>
             </div>
             <Input
-              title="제목을 입력하세요"
+              title={t("titlePlaceholder")}
               value={title}
               onChange={(e) =>
                 setTitle(e.target.value.slice(0, MAX_TITLE_LENGTH))
@@ -126,7 +128,7 @@ export default function InquiryView() {
                       : "text-gray-400 hover:text-gray-600"
                   }`}
                 >
-                  작성
+                  {t("write")}
                 </button>
                 <button
                   type="button"
@@ -137,7 +139,7 @@ export default function InquiryView() {
                       : "text-gray-400 hover:text-gray-600"
                   }`}
                 >
-                  미리보기
+                  {t("preview")}
                 </button>
               </div>
               <span
@@ -156,13 +158,13 @@ export default function InquiryView() {
                   <Markdown content={content} />
                 ) : (
                   <p className="text-[13px] text-gray-400">
-                    미리볼 내용이 없습니다.
+                    {t("emptyPreview")}
                   </p>
                 )}
               </div>
             ) : (
               <Textarea
-                title="문의 내용을 자세히 입력해주세요 (마크다운 문법 지원)"
+                title={t("contentPlaceholder")}
                 value={content}
                 onChange={(e) =>
                   setContent(e.target.value.slice(0, MAX_CONTENT_LENGTH))
@@ -178,9 +180,9 @@ export default function InquiryView() {
           {/* 첨부파일 */}
           <div className="flex flex-col gap-1.5">
             <label className="text-[13px] font-medium text-gray-700">
-              첨부파일
+              {t("attachment")}
               <span className="ml-1 text-[12px] font-normal text-gray-400">
-                (선택)
+                {t("optional")}
               </span>
             </label>
             {file ? (
@@ -200,7 +202,7 @@ export default function InquiryView() {
                   type="button"
                   onClick={() => setFile(null)}
                   disabled={isPending}
-                  aria-label="첨부파일 제거"
+                  aria-label={t("removeAttachment")}
                   className="shrink-0 cursor-pointer text-gray-400 transition-colors hover:text-gray-700 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   <Close width={13} height={13} />
@@ -222,7 +224,7 @@ export default function InquiryView() {
                 />
                 <Upload className="h-4 w-4 text-gray-400 transition-colors group-hover:text-yellow-700" />
                 <span className="text-[12px] font-medium text-gray-500 transition-colors group-hover:text-gray-700 dark:group-hover:text-gray-200">
-                  클릭하여 파일 첨부 (최대 10MB)
+                  {t("attachHint")}
                 </span>
               </label>
             )}
@@ -236,7 +238,7 @@ export default function InquiryView() {
             onClick={() => router.push("/")}
             className="h-10 cursor-pointer rounded-[10px] px-4 text-[13px] font-medium text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-800"
           >
-            취소
+            {t("cancel")}
           </button>
           <button
             type="button"
@@ -244,7 +246,7 @@ export default function InquiryView() {
             disabled={isPending}
             className="h-10 cursor-pointer rounded-[10px] bg-yellow-600 px-5 text-[13px] font-semibold text-gray-900 transition-all hover:bg-yellow-400 active:scale-[0.98] disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400 disabled:active:scale-100"
           >
-            {isPending ? "접수 중..." : "문의 접수하기"}
+            {isPending ? t("submitting") : t("submit")}
           </button>
         </div>
       </div>

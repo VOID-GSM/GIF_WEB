@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { Suspense, useEffect, useRef, useState } from "react";
 
 import { useQueryClient } from "@tanstack/react-query";
@@ -20,12 +21,9 @@ import {
   setCookie,
 } from "@/shared/utils";
 
-// 3학년은 아이디어톤 대상이 아니므로 회원가입/로그인이 차단된다.
+// 3학년은 아이디어톤 대상이 아니므로 회원가입/로그인이 차단된다 (auth.callback.grade3Blocked).
 // 백엔드는 403 으로 응답하며, 프론트에서도 방어적으로 학번을 확인한다.
-const GRADE3_BLOCKED_MESSAGE = "3학년은 회원가입할 수 없습니다.";
-// 교내(학생·선생님) 이메일로 Google 로그인하면 서버가 403 으로 막는다.
-const GOOGLE_BLOCKED_MESSAGE =
-  "교내 계정은 Google 로그인을 사용할 수 없습니다. DataGSM으로 로그인해 주세요.";
+// 교내(학생·선생님) 이메일로 Google 로그인하면 서버가 403 으로 막는다 (auth.callback.googleBlocked).
 
 // 로그인을 시작할 때 저장한 제공자를 꺼낸다.
 // 저장값이 없으면(다른 탭에서 시작 등) Google 콜백에만 붙는 scope 파라미터로 추정한다.
@@ -46,9 +44,15 @@ const CallbackContent = () => {
   const searchParams = useSearchParams();
   const queryClient = useQueryClient();
   const { mutateAsync: getOAuthCallback } = useGetOAuthCallback();
+  const t = useTranslations("auth.callback");
 
   const [error, setError] = useState<string | null>(null);
   const hasRequested = useRef(false);
+  // t 참조가 바뀌어 effect 가 재실행되면 리다이렉트 타이머만 지워지므로 ref 로 읽는다.
+  const tRef = useRef(t);
+  useEffect(() => {
+    tRef.current = t;
+  }, [t]);
 
   useEffect(() => {
     let timeoutId: ReturnType<typeof setTimeout>;
@@ -56,6 +60,7 @@ const CallbackContent = () => {
     const handleCallback = async () => {
       if (hasRequested.current) return;
       hasRequested.current = true;
+      const t = tRef.current;
 
       const provider = consumeProvider(new URLSearchParams(searchParams));
 
@@ -63,13 +68,13 @@ const CallbackContent = () => {
         const code = searchParams.get("code");
         const state = searchParams.get("state");
 
-        if (!code || !state) throw new Error("인가 코드가 누락되었습니다.");
+        if (!code || !state) throw new Error(t("missingCode"));
 
         const { data } = await getOAuthCallback({ provider, code, state });
         const isExternal = data.accountType === "EXTERNAL";
 
         if (!isExternal && data.studentNumber?.startsWith("3")) {
-          throw new Error(GRADE3_BLOCKED_MESSAGE);
+          throw new Error(t("grade3Blocked"));
         }
 
         setCookie(COOKIE_KEYS.ACCESS_TOKEN, data.accessToken);
@@ -108,12 +113,12 @@ const CallbackContent = () => {
         const message =
           status === 403
             ? provider === "google"
-              ? GOOGLE_BLOCKED_MESSAGE
-              : GRADE3_BLOCKED_MESSAGE
+              ? t("googleBlocked")
+              : t("grade3Blocked")
             : (axiosMessage ??
               (err instanceof Error
                 ? err.message
-                : "로그인 중 오류가 발생했습니다."));
+                : t("error")));
         setError(message);
         toast.error(message);
         timeoutId = setTimeout(() => router.replace("/signin"), 3000);
@@ -132,16 +137,16 @@ const CallbackContent = () => {
       <div className="bg-white rounded-[20px] shadow-new px-10 py-12 flex flex-col items-center gap-4 w-[400px] text-center">
         {error ? (
           <>
-            <p className="text-base font-semibold text-red-500">로그인 실패</p>
+            <p className="text-base font-semibold text-red-500">{t("failed")}</p>
             <p className="text-sm text-gray-800">{error}</p>
             <p className="text-xs text-gray-500">
-              잠시 후 로그인 페이지로 이동합니다.
+              {t("redirecting")}
             </p>
           </>
         ) : (
           <>
-            <p className="text-base font-semibold text-black">로그인 처리 중</p>
-            <p className="text-sm text-gray-600">잠시만 기다려주세요.</p>
+            <p className="text-base font-semibold text-black">{t("processing")}</p>
+            <p className="text-sm text-gray-600">{t("wait")}</p>
           </>
         )}
       </div>
@@ -149,14 +154,17 @@ const CallbackContent = () => {
   );
 };
 
-const CallbackFallback = () => (
-  <main className="min-h-screen flex items-center justify-center bg-background">
-    <div className="bg-white rounded-[20px] shadow-new px-10 py-12 flex flex-col items-center gap-4 w-[400px] text-center">
-      <p className="text-base font-semibold text-black">로그인 처리 중</p>
-      <p className="text-sm text-gray-600">잠시만 기다려주세요.</p>
-    </div>
-  </main>
-);
+const CallbackFallback = () => {
+  const t = useTranslations("auth.callback");
+  return (
+    <main className="min-h-screen flex items-center justify-center bg-background">
+      <div className="bg-white rounded-[20px] shadow-new px-10 py-12 flex flex-col items-center gap-4 w-[400px] text-center">
+        <p className="text-base font-semibold text-black">{t("processing")}</p>
+        <p className="text-sm text-gray-600">{t("wait")}</p>
+      </div>
+    </main>
+  );
+};
 
 export default function CallbackPage() {
   return (

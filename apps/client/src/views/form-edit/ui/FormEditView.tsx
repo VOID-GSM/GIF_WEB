@@ -1,4 +1,6 @@
 "use client";
+
+import { useTranslations } from "next-intl";
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { splitAllowedExtensions, isValidSubmissionUrl } from "@repo/ui";
@@ -57,6 +59,7 @@ function toCalendarEvents(
 }
 
 export default function FormMySubmitView({ formId }: Props) {
+  const t = useTranslations("form.submission");
   const { data: myInfo } = useGetMyInfo();
   const projectId = myInfo?.projectId;
 
@@ -188,14 +191,14 @@ export default function FormMySubmitView({ formId }: Props) {
       const type = field.type?.toUpperCase();
       if (!isFieldRequired(field)) return;
       if (type === "TEXT" && !getTextValue(fId).trim()) {
-        errors[fId] = "필수 항목입니다.";
+        errors[fId] = t("required");
       }
       // DATE·CALENDAR 는 비워두면 dateAnswer 가 빈 배열로 나가 서버에서 필수 항목 오류가 난다.
       if (
         (type === "DATE" || type === "CALENDAR") &&
         getCalendarValue(fId).length === 0
       ) {
-        errors[fId] = "필수 항목입니다.";
+        errors[fId] = t("required");
       }
       if (type === "FILE") {
         const { allowUrl } = splitAllowedExtensions(field.allowedExtensions);
@@ -203,7 +206,7 @@ export default function FormMySubmitView({ formId }: Props) {
         if (url) {
           if (!isValidSubmissionUrl(url)) {
             errors[fId] =
-              "http:// 또는 https:// 로 시작하는 링크를 입력해주세요.";
+              t("invalidUrl");
           }
         } else {
           const hasNewFile = fileAnswers[fId] instanceof File;
@@ -211,8 +214,8 @@ export default function FormMySubmitView({ formId }: Props) {
           const hasOriginalFile = !!answerMap[fId]?.filePath;
           if (isDeleted || (!hasNewFile && !hasOriginalFile)) {
             errors[fId] = allowUrl
-              ? "파일을 첨부하거나 외부 링크를 입력해주세요."
-              : "파일을 첨부해주세요.";
+              ? t("fileOrLinkRequired")
+              : t("fileRequired");
           }
         }
       }
@@ -220,7 +223,7 @@ export default function FormMySubmitView({ formId }: Props) {
 
     if (Object.keys(errors).length > 0) {
       setFieldErrors(errors);
-      toast.error("필수 항목을 모두 작성해주세요.");
+      toast.error(t("fillRequired"));
       return;
     }
 
@@ -281,7 +284,7 @@ export default function FormMySubmitView({ formId }: Props) {
     try {
       await patchSubmit({ submitId: mySubmit.submitId, answers });
     } catch {
-      toast.error("수정에 실패했습니다. 다시 시도해주세요.");
+      toast.error(t("updateError"));
       return;
     }
 
@@ -319,13 +322,13 @@ export default function FormMySubmitView({ formId }: Props) {
 
       if (results.some((r) => r.status === "rejected")) {
         toast.error(
-          "파일 업로드에 실패했습니다. 허용된 파일 형식(최대 10MB)인지 확인한 뒤 다시 시도해주세요.",
+          t("uploadErrorEdit"),
         );
         return;
       }
     }
 
-    toast.success("답변이 수정되었습니다.");
+    toast.success(t("updated"));
     router.push("/form");
   };
 
@@ -333,15 +336,15 @@ export default function FormMySubmitView({ formId }: Props) {
     <div className="min-h-screen flex flex-col items-center pt-20 px-5 bg-background">
       {detailLoading || submitLoading ? (
         <div className="flex w-full justify-center pt-20 text-gray-500 font-medium">
-          로딩중...
+          {t("loading")}
         </div>
       ) : !mySubmit ? (
         <div className="flex w-full justify-center pt-20 text-gray-500 font-medium">
-          제출 정보를 불러올 수 없습니다.
+          {t("submissionLoadError")}
         </div>
       ) : !formDetail ? (
         <div className="flex w-full justify-center pt-20 text-gray-500 font-medium">
-          양식 정보를 불러올 수 없습니다.
+          {t("formLoadError")}
         </div>
       ) : (
         <div className="mx-auto flex flex-col w-full max-w-[560px] gap-4">
@@ -350,10 +353,10 @@ export default function FormMySubmitView({ formId }: Props) {
               {formDetail.title}
             </span>
             <div className="flex flex-wrap gap-x-4 gap-y-1 text-[14px] font-medium text-gray-900">
-              <span>마감 날짜: {formatDeadlineDate(formDetail.deadline)}</span>
+              <span>{t("deadlineDate", { date: formatDeadlineDate(formDetail.deadline) })}</span>
               {formatDeadlineTime(formDetail.deadline) && (
                 <span>
-                  마감 시간: {formatDeadlineTime(formDetail.deadline)}
+                  {t("deadlineTime", { time: formatDeadlineTime(formDetail.deadline) })}
                 </span>
               )}
             </div>
@@ -388,7 +391,7 @@ export default function FormMySubmitView({ formId }: Props) {
                         <span className="ml-1 text-red-500">*</span>
                       ) : (
                         <span className="ml-2 text-[14px] font-medium text-gray-400">
-                          (선택)
+                          {t("optional")}
                         </span>
                       )}
                     </span>
@@ -460,26 +463,26 @@ export default function FormMySubmitView({ formId }: Props) {
                   className="flex w-full items-center justify-center py-3 font-medium border border-yellow-600 bg-white text-gray-900 rounded-[10px] cursor-pointer"
                   onClick={handleCancel}
                 >
-                  취소
+                  {t("cancel")}
                 </button>
                 <button
                   className="flex w-full items-center justify-center py-3 font-medium bg-yellow-600 rounded-[10px] cursor-pointer disabled:opacity-50"
                   onClick={handlePatch}
                   disabled={isPending}
                 >
-                  {isPending ? "저장 중..." : "완료하기"}
+                  {isPending ? t("saving") : t("complete")}
                 </button>
               </>
             ) : deadlinePassed ? (
               <div className="flex w-full items-center justify-center py-3 font-medium text-gray-500">
-                마감된 양식입니다. 열람만 가능합니다.
+                {t("closed")}
               </div>
             ) : (
               <button
                 className="flex w-full items-center justify-center py-3 font-medium bg-yellow-600 rounded-[10px] cursor-pointer"
                 onClick={() => setIsEditing(true)}
               >
-                수정하기
+                {t("edit")}
               </button>
             )}
           </div>
