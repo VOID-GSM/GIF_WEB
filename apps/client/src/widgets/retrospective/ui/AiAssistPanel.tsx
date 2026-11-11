@@ -68,6 +68,9 @@ interface AiAssistPanelProps {
 
 function getErrorMessage(error: unknown) {
   if (!isAxiosError(error)) return "AI 도움 요청에 실패했습니다. 잠시 후 다시 시도해 주세요.";
+  if (error.code === "ECONNABORTED") {
+    return "AI 응답이 너무 오래 걸려 요청을 중단했습니다. 잠시 후 다시 시도해 주세요.";
+  }
 
   switch (error.response?.status) {
     case 400: {
