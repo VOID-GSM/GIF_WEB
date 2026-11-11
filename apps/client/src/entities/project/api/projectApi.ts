@@ -1,3 +1,4 @@
+import type { Locale } from "@repo/i18n";
 import { apiClient } from "@repo/lib";
 
 import type { RawEngagement } from "../model/engagement";
@@ -48,11 +49,15 @@ export const getProject = async (
 };
 
 // 공개 상세 — 비로그인·외부 사용자는 팀원 userId·학번이 빠진 응답을 받는다.
+// lang=ja 면 서버가 소개(description)를 AI 일본어 번역문으로 준다 (descriptionTranslated 로 구분).
+// 수정 화면은 원문이 필요하므로 getProject 에는 lang 을 넘기지 않는다.
 export const getPublicProject = async (
   projectId: number,
+  lang: Locale,
 ): Promise<RawEngagement<ProjectDetailResponse>> => {
   const { data } = await apiClient.get<RawEngagement<ProjectDetailResponse>>(
     `/api/project/${projectId}`,
+    { params: { lang } },
   );
   return data;
 };
