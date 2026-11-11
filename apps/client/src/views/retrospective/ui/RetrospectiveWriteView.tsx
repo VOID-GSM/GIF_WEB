@@ -15,6 +15,7 @@ import {
   type RetrospectiveCategory,
   type RetrospectiveVisibility,
 } from "@/entities/retrospective";
+import { useAiAssist } from "@/widgets/retrospective/model/useAiAssist";
 import AiAssistPanel from "@/widgets/retrospective/ui/AiAssistPanel";
 import DraftListModal from "@/widgets/retrospective/ui/DraftListModal";
 import RelatedWorkList from "@/widgets/retrospective/ui/RelatedWorkList";
@@ -53,6 +54,13 @@ export default function RetrospectiveWriteView({
   const { data: retrospective } = useGetRetrospectiveDetail(retrospectiveId);
 
   const { mutate: submit, isPending: isSubmitting } = useUpsertRetrospective();
+  // 보기 모드에 따라 패널이 다른 위치에 그려져도 결과·요청이 유지되도록 상태는 여기서 한 번만 만든다
+  const aiAssist = useAiAssist({
+    title,
+    category,
+    content,
+    onApply: setContent,
+  });
   const { mutate: saveDraft, isPending: isSavingDraft } =
     useSaveDraftRetrospective();
 
@@ -200,25 +208,14 @@ export default function RetrospectiveWriteView({
 
             {/* 같이 보기 모드에서는 사이드 패널이 아래로 내려와 전체 폭을 쓴다 */}
             {isSplit && (
-              <AiAssistPanel
-                compact
-                title={title}
-                category={category}
-                content={content}
-                onApply={setContent}
-              />
+              <AiAssistPanel compact content={content} assist={aiAssist} />
             )}
           </div>
 
           {/* 사이드 패널 */}
           {!isSplit && (
             <div className="w-full shrink-0 lg:w-[260px]">
-              <AiAssistPanel
-                title={title}
-                category={category}
-                content={content}
-                onApply={setContent}
-              />
+              <AiAssistPanel content={content} assist={aiAssist} />
             </div>
           )}
         </div>
