@@ -11,11 +11,6 @@ export { useDeleteDraftRetrospective } from "./hooks/useDeleteDraftRetrospective
 export { useToggleBookmark } from "./hooks/useToggleBookmark";
 export { useGetAiSummary } from "./hooks/useGetAiSummary";
 export { useRetrospectiveAiAssist } from "./hooks/useRetrospectiveAiAssist";
-export type {
-  RetrospectiveAiAction,
-  RetrospectiveAiRequest,
-  RetrospectiveAiResult,
-} from "./api/retrospectiveAiApi";
 
 export {
   CATEGORY_LABELS,
@@ -38,4 +33,7 @@ export type {
   RetrospectiveQueryParams,
   UpsertRetrospectiveRequest,
   RetrospectivePageResponse,
+  RetrospectiveAiAction,
+  RetrospectiveAiRequest,
+  RetrospectiveAiResult,
 } from "./model/type";

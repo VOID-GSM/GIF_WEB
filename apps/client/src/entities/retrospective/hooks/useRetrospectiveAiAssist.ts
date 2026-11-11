@@ -2,11 +2,11 @@
 
 import { useMutation } from "@tanstack/react-query";
 
-import {
-  requestRetrospectiveAiAssist,
-  type RetrospectiveAiAction,
-  type RetrospectiveAiRequest,
-} from "../api/retrospectiveAiApi";
+import { requestRetrospectiveAiAssist } from "../api/retrospectiveAiApi";
+import type {
+  RetrospectiveAiAction,
+  RetrospectiveAiRequest,
+} from "../model/type";
 
 export interface RetrospectiveAiAssistVariables {
   action: RetrospectiveAiAction;
