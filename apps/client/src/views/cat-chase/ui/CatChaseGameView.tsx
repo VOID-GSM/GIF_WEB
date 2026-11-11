@@ -110,7 +110,8 @@ function CatChasePlay({
   const { mutate: finishRound, isPending: isFinishing } =
     useFinishCatChaseRound();
 
-  // 서버가 준 순서대로 빨간 고양이, 파란 고양이를 판단한다 (GIF_SERVER#240 반영 전에는 앞의 2마리만 묻는다).
+  // 서버가 준 순서대로 빨간 고양이, 파란 고양이를 판단한다.
+  // 서버가 고양이를 2마리만 내려주는 GIF_SERVER#240 반영 후에만 동작한다 (3마리 이상이면 제출이 400으로 거절된다).
   const targets = question.catPositions.slice(0, CAT_COLORS.length);
 
   const moveTo = (next: CatChaseQuestion) => {
