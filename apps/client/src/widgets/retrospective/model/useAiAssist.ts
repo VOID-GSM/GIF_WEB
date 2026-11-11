@@ -5,6 +5,10 @@ import { isAxiosError } from "axios";
 import { toast } from "sonner";
 
 import {
+  AI_ASSIST_MAX_CONTENT_LENGTH,
+  AI_ASSIST_MAX_TITLE_LENGTH,
+  AI_ASSIST_MIN_CONTENT_LENGTH,
+  isAiContentTooShort,
   useRetrospectiveAiAssist,
   type RetrospectiveAiAction,
   type RetrospectiveAiResult,
@@ -36,7 +40,7 @@ function getErrorMessage(error: unknown) {
       const message = (error.response.data as { message?: unknown } | undefined)?.message;
       return typeof message === "string" && message.trim()
         ? message
-        : "본문은 5,000자 이하여야 하며, 다듬기와 포트폴리오 변환은 20자 이상 입력해 주세요.";
+        : `본문은 ${AI_ASSIST_MAX_CONTENT_LENGTH.toLocaleString()}자 이하여야 하며, 다듬기와 포트폴리오 변환은 ${AI_ASSIST_MIN_CONTENT_LENGTH}자 이상 입력해 주세요.`;
     }
     case 429:
       return "오늘 사용할 수 있는 AI 도움 횟수(20회)를 모두 사용했습니다.";
@@ -57,17 +61,15 @@ function getErrorMessage(error: unknown) {
 export function useAiAssist({ title, category, content, onApply }: UseAiAssistParams) {
   const { mutate, isPending } = useRetrospectiveAiAssist();
   const [result, setResult] = useState<AiAssistResult | null>(null);
-  const trimmedContent = content.trim();
-
   const requestAssist = (action: RetrospectiveAiAction) => {
     // 버튼이 비활성화되기 전 연속 클릭으로 요청이 두 번 나가지 않게 막는다
     if (isPending) return;
-    if (content.length > 5000) {
-      toast.error("본문은 5,000자 이하로 입력해 주세요.");
+    if (content.length > AI_ASSIST_MAX_CONTENT_LENGTH) {
+      toast.error(`본문은 ${AI_ASSIST_MAX_CONTENT_LENGTH.toLocaleString()}자 이하로 입력해 주세요.`);
       return;
     }
-    if ((action === "polish" || action === "portfolio") && trimmedContent.length < 20) {
-      toast.error("이 기능을 사용하려면 본문을 20자 이상 입력해 주세요.");
+    if (isAiContentTooShort(action, content)) {
+      toast.error(`이 기능을 사용하려면 본문을 ${AI_ASSIST_MIN_CONTENT_LENGTH}자 이상 입력해 주세요.`);
       return;
     }
 
@@ -75,7 +77,7 @@ export function useAiAssist({ title, category, content, onApply }: UseAiAssistPa
       {
         action,
         payload: {
-          ...(title.trim() ? { title: title.trim().slice(0, 100) } : {}),
+          ...(title.trim() ? { title: title.trim().slice(0, AI_ASSIST_MAX_TITLE_LENGTH) } : {}),
           category,
           content,
         },

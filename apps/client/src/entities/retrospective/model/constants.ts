@@ -1,4 +1,5 @@
 import type {
+  RetrospectiveAiAction,
   RetrospectiveCategory,
   RetrospectiveCategoryFilter,
   RetrospectiveSort,
@@ -61,3 +62,17 @@ export const SORT_OPTIONS: { value: RetrospectiveSort; label: string }[] = [
   { value: "OLDEST", label: "오래된순" },
   { value: "BOOKMARK", label: "인기순" },
 ];
+
+/** AI 도움받기 요청 제한 (서버 검증 기준과 같다) */
+export const AI_ASSIST_MAX_CONTENT_LENGTH = 5000;
+export const AI_ASSIST_MIN_CONTENT_LENGTH = 20;
+export const AI_ASSIST_MAX_TITLE_LENGTH = 100;
+
+/** 다듬기·포트폴리오 변환은 본문이 최소 길이 이상이어야 한다 (구조 추천은 빈 본문도 가능) */
+export const aiActionNeedsMinContent = (action: RetrospectiveAiAction) =>
+  action === "polish" || action === "portfolio";
+
+/** 공백을 뺀 본문 길이가 부족해 이 기능을 쓸 수 없는지 */
+export const isAiContentTooShort = (action: RetrospectiveAiAction, content: string) =>
+  aiActionNeedsMinContent(action) &&
+  content.trim().length < AI_ASSIST_MIN_CONTENT_LENGTH;

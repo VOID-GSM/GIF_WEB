@@ -2,7 +2,12 @@
 
 import type { ReactNode } from "react";
 
-import type { RetrospectiveAiAction } from "@/entities/retrospective";
+import {
+  AI_ASSIST_MAX_CONTENT_LENGTH,
+  AI_ASSIST_MIN_CONTENT_LENGTH,
+  isAiContentTooShort,
+  type RetrospectiveAiAction,
+} from "@/entities/retrospective";
 
 import type { AiAssistState } from "../model/useAiAssist";
 
@@ -73,7 +78,11 @@ export default function AiAssistPanel({
     dismissResult,
     applyResult,
   } = assist;
-  const trimmedContent = content.trim();
+  const isContentTooLong = content.length > AI_ASSIST_MAX_CONTENT_LENGTH;
+  // 다듬기·포트폴리오 변환이 막혀 있는 이유를 버튼 아래에 알려 준다
+  const hasShortContentAction = AI_ACTIONS.some((action) =>
+    isAiContentTooShort(action.key, content),
+  );
 
   return (
     <aside
@@ -98,8 +107,7 @@ export default function AiAssistPanel({
 
       <div className={compact ? "flex flex-1 flex-wrap gap-1.5" : "mt-1 flex flex-col gap-2"}>
         {AI_ACTIONS.map((action) => {
-          const disabled = isPending ||
-            ((action.key === "polish" || action.key === "portfolio") && trimmedContent.length < 20);
+          const disabled = isPending || isAiContentTooShort(action.key, content);
           return (
             <button
               key={action.key}
@@ -115,8 +123,15 @@ export default function AiAssistPanel({
         })}
       </div>
 
-      {content.length > 5000 && (
-        <p className="text-[12px] text-red-600" role="alert">본문이 5,000자를 넘었습니다. 분량을 줄여 주세요.</p>
+      {hasShortContentAction && !isPending && (
+        <p className="text-[12px] text-gray-500">
+          본문을 {AI_ASSIST_MIN_CONTENT_LENGTH}자 이상 쓰면 다듬기와 포트폴리오 변환을 쓸 수 있어요.
+        </p>
+      )}
+      {isContentTooLong && (
+        <p className="text-[12px] text-red-600" role="alert">
+          본문이 {AI_ASSIST_MAX_CONTENT_LENGTH.toLocaleString()}자를 넘었습니다. 분량을 줄여 주세요.
+        </p>
       )}
       {isPending && <p className="text-[12px] text-gray-500" role="status">AI가 결과를 만들고 있습니다…</p>}
 
