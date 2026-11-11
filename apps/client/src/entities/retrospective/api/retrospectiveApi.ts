@@ -167,6 +167,7 @@ export async function getRetrospectives(
       keyword: params.keyword?.trim() || undefined,
       sort: params.sort,
       bookmarkedOnly: params.bookmarkedOnly || undefined,
+      mine: params.mine || undefined,
       page: 0,
       size: 100,
     },
