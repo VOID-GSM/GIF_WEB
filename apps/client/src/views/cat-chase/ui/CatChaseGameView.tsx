@@ -24,6 +24,7 @@ import {
 import {
   CatChaseBoard,
   JudgmentCard,
+  toCatCellContent,
   type BoardCell,
 } from "@/widgets/cat-chase";
 
@@ -229,9 +230,7 @@ function CatChasePlay({
     }
     if (phase.name === "cats") {
       targets.forEach((p, i) =>
-        map.set(p, {
-          content: CAT_COLORS[i] === "red" ? "cat-red" : "cat-blue",
-        }),
+        map.set(p, { content: toCatCellContent(CAT_COLORS[i]) }),
       );
     }
     return map;
