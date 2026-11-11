@@ -46,17 +46,21 @@ export default function CommentManagementView() {
 
   // 프로젝트 필터 목록과 projectId → 팀명 표시에 통계 API의 프로젝트 목록을 재사용한다.
   const { data: projects } = useGetProjectStats({ sort: "VIEWS" }, isVoid);
-  const sortedProjects = useMemo(
+  // 팀명이 없는 프로젝트는 프로젝트 이름으로 대신 표시한다.
+  const projectOptions = useMemo(
     () =>
-      [...(projects ?? [])].sort((a, b) =>
-        a.teamName.localeCompare(b.teamName, "ko"),
-      ),
+      (projects ?? [])
+        .map((p) => ({
+          projectId: p.projectId,
+          label: p.teamName ?? p.name ?? `#${p.projectId}`,
+          grade: p.grade,
+        }))
+        .sort((a, b) => a.label.localeCompare(b.label, "ko")),
     [projects],
   );
   const projectNameMap = useMemo(
-    () =>
-      new Map((projects ?? []).map((p) => [p.projectId, p.teamName] as const)),
-    [projects],
+    () => new Map(projectOptions.map((p) => [p.projectId, p.label] as const)),
+    [projectOptions],
   );
 
   const hideMutation = useHideComment();
@@ -131,9 +135,9 @@ export default function CommentManagementView() {
             }}
           >
             <option value="">전체 프로젝트</option>
-            {sortedProjects.map((p) => (
+            {projectOptions.map((p) => (
               <option key={p.projectId} value={p.projectId}>
-                {p.teamName}
+                {p.label}
                 {p.grade ? ` (${p.grade}학년)` : ""}
               </option>
             ))}

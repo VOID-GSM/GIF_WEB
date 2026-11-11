@@ -11,7 +11,7 @@ export interface GetProjectStatsParams {
 export interface ProjectStats {
   projectId: number;
   name: string;
-  teamName: string;
+  teamName: string | null; // 팀 설정 전 프로젝트는 비어 있을 수 있다
   grade: number | null;
   classNo: number | null;
   viewCount: number;

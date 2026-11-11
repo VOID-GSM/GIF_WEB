@@ -71,7 +71,7 @@ export default function ProjectStatsTable({
                   href={`/projects/${row.projectId}`}
                   className="truncate text-sm text-[var(--color-gray-800)] underline-offset-2 transition-colors hover:text-yellow-700 hover:underline dark:text-gray-200"
                 >
-                  {row.teamName}
+                  {row.teamName ?? "팀 미정"}
                 </Link>
                 <span className="truncate text-[11px] text-gray-400">
                   {row.name}

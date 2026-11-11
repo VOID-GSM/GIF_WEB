@@ -35,7 +35,7 @@ export default function TopProjectsChart({ rows, sortKey }: Props) {
           return (
             <li key={row.projectId} className="flex items-center gap-3">
               <span className="w-28 shrink-0 truncate text-[12px] text-gray-600 sm:w-36">
-                {row.teamName}
+                {row.teamName ?? row.name}
               </span>
               <div className="h-2.5 min-w-0 flex-1 rounded-full bg-gray-100 dark:bg-gray-800">
                 <div
