@@ -1,6 +1,6 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { useEffect, type ReactNode } from "react";
 
 import {
   AI_ASSIST_MAX_CONTENT_LENGTH,
@@ -136,34 +136,88 @@ export default function AiAssistPanel({
       {isPending && <p className="text-[12px] text-gray-500" role="status">AI가 결과를 만들고 있습니다…</p>}
 
       {result && (
-        <section className="w-full rounded-[12px] border border-yellow-200 bg-white p-3 sm:basis-full" aria-label="AI 결과 미리보기">
-          <h3 className="text-[13px] font-semibold text-gray-800">
-            {AI_ACTIONS.find((action) => action.key === result.action)?.label} 결과 미리보기
-          </h3>
-          {result.data.sections && result.data.sections.length > 0 && (
-            <div className="mt-2">
-              <p className="text-[11px] font-semibold text-gray-500">추천 목차</p>
-              <ol className="mt-1 list-inside list-decimal space-y-0.5 text-[12px] text-gray-700">
-                {result.data.sections.map((section, index) => <li key={`${section}-${index}`}>{section}</li>)}
+        <AiResultModal
+          title={`${AI_ACTIONS.find((action) => action.key === result.action)?.label} 결과 미리보기`}
+          sections={result.data.sections}
+          content={result.data.content}
+          isContentChanged={isContentChangedSinceRequest}
+          onClose={dismissResult}
+          onApply={applyResult}
+        />
+      )}
+    </aside>
+  );
+}
+
+interface AiResultModalProps {
+  title: string;
+  sections?: string[];
+  content: string;
+  isContentChanged: boolean;
+  onClose: () => void;
+  onApply: () => void;
+}
+
+// 사이드 패널은 폭이 좁아 결과를 읽기 어려우므로 넓은 모달로 보여 준다
+function AiResultModal({
+  title,
+  sections,
+  content,
+  isContentChanged,
+  onClose,
+  onApply,
+}: AiResultModalProps) {
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [onClose]);
+
+  return (
+    <div
+      className="animate-fade-in fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4"
+      onClick={onClose}
+    >
+      <section
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="ai-result-title"
+        onClick={(e) => e.stopPropagation()}
+        className="animate-modal-in flex max-h-[85dvh] w-full max-w-[760px] flex-col rounded-[16px] bg-white p-6"
+      >
+        <h3 id="ai-result-title" className="text-[18px] font-bold text-gray-900">
+          {title}
+        </h3>
+
+        <div className="thin-scrollbar mt-4 flex-1 overflow-y-auto">
+          {sections && sections.length > 0 && (
+            <div className="mb-4">
+              <p className="text-[13px] font-semibold text-gray-600">추천 목차</p>
+              <ol className="mt-2 list-inside list-decimal space-y-1 text-[15px] text-gray-800">
+                {sections.map((section, index) => <li key={`${section}-${index}`}>{section}</li>)}
               </ol>
             </div>
           )}
-          <pre className="mt-2 max-h-72 overflow-auto whitespace-pre-wrap break-words rounded-[8px] bg-gray-50 p-3 font-sans text-[12px] leading-relaxed text-gray-700">
-            {result.data.content}
+          <pre className="whitespace-pre-wrap break-words rounded-[10px] border border-gray-200 bg-gray-100 p-5 font-sans text-[15px] leading-[1.8] text-gray-900">
+            {content}
           </pre>
-          {isContentChangedSinceRequest && (
-            <p className="mt-2 text-[12px] text-red-600" role="alert">
-              요청 후 본문이 수정되었습니다. 적용하면 그 뒤에 쓴 내용이 이 결과로 바뀝니다.
-            </p>
-          )}
-          <div className="mt-3 flex justify-end gap-2">
-            <button type="button" onClick={dismissResult} className="rounded-[8px] border border-gray-200 px-3 py-2 text-[12px] font-medium text-gray-600 hover:bg-gray-50">취소</button>
-            <button type="button" onClick={applyResult} className="rounded-[8px] bg-yellow-500 px-3 py-2 text-[12px] font-semibold text-gray-900 hover:bg-yellow-400">
-              {isContentChangedSinceRequest ? "그래도 적용" : "본문에 적용"}
-            </button>
-          </div>
-        </section>
-      )}
-    </aside>
+        </div>
+
+        {isContentChanged && (
+          <p className="mt-3 text-[13px] text-red-600" role="alert">
+            요청 후 본문이 수정되었습니다. 적용하면 그 뒤에 쓴 내용이 이 결과로 바뀝니다.
+          </p>
+        )}
+        <div className="mt-4 flex justify-end gap-2">
+          <button type="button" onClick={onClose} className="rounded-[10px] border border-gray-200 px-4 py-2.5 text-[14px] font-medium text-gray-700 hover:bg-gray-100">취소</button>
+          <button type="button" onClick={onApply} className="rounded-[10px] bg-yellow-500 px-4 py-2.5 text-[14px] font-semibold text-gray-900 hover:bg-yellow-400">
+            {isContentChanged ? "그래도 적용" : "본문에 적용"}
+          </button>
+        </div>
+      </section>
+    </div>
   );
 }
