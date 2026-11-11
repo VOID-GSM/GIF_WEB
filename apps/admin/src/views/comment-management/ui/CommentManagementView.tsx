@@ -71,9 +71,9 @@ export default function CommentManagementView() {
   const totalPages = Math.max(1, Math.ceil(totalElements / PAGE_SIZE));
   const comments = data?.content ?? [];
 
-  // 마지막 페이지의 댓글을 모두 지우면 빈 페이지가 되므로 한 페이지 앞으로 보낸다.
+  // 댓글이 줄어 현재 페이지가 비면 남은 마지막 페이지로 한 번에 옮긴다.
   if (data && comments.length === 0 && page > 1 && !isPlaceholderData) {
-    setPage(page - 1);
+    setPage(Math.min(page - 1, totalPages));
   }
 
   // 여러 댓글을 연달아 처리해도 요청 중인 댓글마다 버튼을 막는다.
