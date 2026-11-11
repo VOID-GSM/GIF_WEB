@@ -1,8 +1,10 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useMutationState } from "@tanstack/react-query";
 
 import {
+  commentMutationKeys,
   useDeleteComment,
   useGetAdminComments,
   useHideComment,
@@ -70,10 +72,11 @@ export default function CommentManagementView() {
     setPage(page - 1);
   }
 
-  const pendingId =
-    (hideMutation.isPending && hideMutation.variables) ||
-    (unhideMutation.isPending && unhideMutation.variables) ||
-    undefined;
+  // 여러 댓글을 연달아 처리해도 요청 중인 댓글마다 버튼을 막는다.
+  const pendingIds = useMutationState({
+    filters: { mutationKey: commentMutationKeys.all, status: "pending" },
+    select: (mutation) => mutation.state.variables as number,
+  });
 
   const handleConfirmDelete = () => {
     if (!deleteTarget) return;
@@ -177,7 +180,7 @@ export default function CommentManagementView() {
                   key={comment.id}
                   comment={comment}
                   projectName={projectNameMap.get(comment.projectId)}
-                  isPending={pendingId === comment.id}
+                  isPending={pendingIds.includes(comment.id)}
                   onSelectAuthor={() => {
                     setAuthor({
                       userId: comment.userId,
