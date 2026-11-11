@@ -13,6 +13,7 @@ import {
   useStoredGrade,
 } from "@/entities/project";
 import GradeFilter from "@/features/project-filter/ui/GradeFilter";
+import { getEmptyMessage } from "@/features/project-filter/lib/getEmptyMessage";
 import {
   PUBLIC_HOME_PATH,
   REDIRECT_REASONS,
@@ -47,12 +48,10 @@ export default function PublicProjectListView() {
     isPending,
     isError,
   } = useGetFilteredProjects(grade ?? GRADES[0], grade !== null);
-  // 서버가 grade로 거르지 않고 전체를 반환하므로 선택 학년으로 한 번 더 거른다 (전체일 때는 거르지 않는다)
-  const visibleProjects = projects?.filter(
-    (project) => grade === "all" || project.grade === grade,
-  );
-  const emptyMessage =
-    grade === "all" ? "프로젝트가 없습니다." : "해당 학년의 프로젝트가 없습니다.";
+  // 서버가 선택한 학년으로 거른 목록을 내려준다 (전체는 grade 없이 요청해 모든 학년을 받는다)
+  // 전체를 볼 때 학년이 섞이므로 학년 순으로 정렬한다
+  const visibleProjects = projects?.slice().sort((a, b) => a.grade - b.grade);
+  const emptyMessage = getEmptyMessage(grade);
 
   const sideCard = isGuest ? (
     <SigninPromptCard />
