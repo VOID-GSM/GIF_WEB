@@ -10,8 +10,8 @@ export default function AdminNavbar() {
   const canManageInquiry = myInfo?.email === PRIVILEGED_ADMIN_EMAIL;
   // 선생님 관리는 아이디어페스티벌 담당(MASTER)만 사이드바에서 볼 수 있다.
   const isMaster = myInfo?.adminRole === "MASTER";
-  // 댓글 관리는 VOID 권한 계정만 볼 수 있다.
-  const isVoid = myInfo?.adminRole === "VOID";
+  // 댓글 관리는 VOID 권한 계정(또는 운영 계정)만 볼 수 있다.
+  const isVoid = myInfo?.adminRole === "VOID" || canManageInquiry;
 
   const navItems = ADMIN_NAV_ITEMS.filter((item) => {
     if (item.path === "/inquiry/admin") return canManageInquiry;

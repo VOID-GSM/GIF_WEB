@@ -11,6 +11,7 @@ import {
 } from "@/entities/comment";
 import { useGetMyInfo } from "@/entities/mypage";
 import { useGetProjectStats } from "@/entities/project-stats";
+import { PRIVILEGED_ADMIN_EMAIL } from "@/shared/constants";
 
 import CommentRow from "./CommentRow";
 import DeleteCommentConfirmModal from "./DeleteCommentConfirmModal";
@@ -22,8 +23,9 @@ const SELECT_CLASS =
 
 export default function CommentManagementView() {
   const { data: myInfo, isLoading: isMyInfoLoading } = useGetMyInfo();
-  // 댓글 관리는 VOID 권한 계정만 사용한다.
-  const isVoid = myInfo?.adminRole === "VOID";
+  // 댓글 관리는 VOID 권한 계정(또는 운영 계정)만 사용한다.
+  const isVoid =
+    myInfo?.adminRole === "VOID" || myInfo?.email === PRIVILEGED_ADMIN_EMAIL;
 
   const [projectId, setProjectId] = useState<number | undefined>();
   const [author, setAuthor] = useState<{ userId: number; name: string }>();
