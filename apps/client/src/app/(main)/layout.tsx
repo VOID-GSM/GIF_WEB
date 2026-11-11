@@ -8,9 +8,16 @@ import { COOKIE_KEYS, PUBLIC_HOME_PATH } from "@/shared/constants";
 // 1. Next.js전용 Script 컴포넌트를 import 합니다.
 import Script from "next/script";
 
-// 비로그인·외부 사용자는 공개 프로젝트 목록만 이용한다.
+// 비로그인 사용자는 공개 프로젝트 목록만 이용한다.
 const PUBLIC_NAV_ITEMS: NavItem[] = [
   { labelKey: "projects", path: PUBLIC_HOME_PATH },
+];
+
+// 외부 사용자(Google 로그인)는 공개 목록에 더해 역량검사·Thyn 꾸미기를 이용한다.
+const EXTERNAL_NAV_ITEMS: NavItem[] = [
+  ...PUBLIC_NAV_ITEMS,
+  { labelKey: "assessment", path: "/assessment" },
+  { labelKey: "thyn", path: "/thyn" },
 ];
 
 export default async function MainLayout({
@@ -23,7 +30,13 @@ export default async function MainLayout({
   const isLoggedIn = cookieStore.has(COOKIE_KEYS.ACCESS_TOKEN);
   const rawAccountType = cookieStore.get(COOKIE_KEYS.ACCOUNT_TYPE)?.value;
   const accountType = isAccountType(rawAccountType) ? rawAccountType : null;
-  const isPublicOnly = !isLoggedIn || accountType === "EXTERNAL";
+  const isExternal = isLoggedIn && accountType === "EXTERNAL";
+  const isPublicOnly = !isLoggedIn || isExternal;
+  const navItems = !isLoggedIn
+    ? PUBLIC_NAV_ITEMS
+    : isExternal
+      ? EXTERNAL_NAV_ITEMS
+      : CLIENT_NAV_ITEMS;
 
   // QueryClient·Toaster 등 Providers는 루트 레이아웃에서 한 번만 렌더링한다.
   return (
@@ -54,7 +67,7 @@ export default async function MainLayout({
       </noscript>
 
       <Navbar
-        navItems={isPublicOnly ? PUBLIC_NAV_ITEMS : CLIENT_NAV_ITEMS}
+        navItems={navItems}
         isGuest={!isLoggedIn}
         homePath={isPublicOnly ? PUBLIC_HOME_PATH : "/"}
         showLanguageToggle
