@@ -14,6 +14,8 @@ import {
 export interface AiAssistResult {
   action: RetrospectiveAiAction;
   data: RetrospectiveAiResult;
+  /** 요청을 보낸 시점의 본문. 적용 전에 본문이 바뀌었는지 비교한다 */
+  requestedContent: string;
 }
 
 interface UseAiAssistParams {
@@ -84,7 +86,7 @@ export function useAiAssist({ title, category, content, onApply }: UseAiAssistPa
             toast.error("AI가 결과를 만들지 못했습니다. 잠시 후 다시 시도해 주세요.");
             return;
           }
-          setResult({ action, data });
+          setResult({ action, data, requestedContent: content });
         },
         onError: (error) => toast.error(getErrorMessage(error)),
       },
@@ -92,15 +94,29 @@ export function useAiAssist({ title, category, content, onApply }: UseAiAssistPa
     setResult(null);
   };
 
+  // 요청 이후 본문을 고쳤다면, 적용 시 그 수정이 사라진다는 것을 미리보기에서 알린다
+  const isContentChangedSinceRequest =
+    result !== null && result.requestedContent !== content;
+
   const dismissResult = () => setResult(null);
   const applyResult = () => {
     if (!result) return;
+    const previousContent = content;
     onApply(result.data.content);
     setResult(null);
-    toast.success("AI 결과를 본문에 적용했습니다.");
+    toast.success("AI 결과를 본문에 적용했습니다.", {
+      action: { label: "되돌리기", onClick: () => onApply(previousContent) },
+    });
   };
 
-  return { isPending, result, requestAssist, dismissResult, applyResult };
+  return {
+    isPending,
+    result,
+    isContentChangedSinceRequest,
+    requestAssist,
+    dismissResult,
+    applyResult,
+  };
 }
 
 export type AiAssistState = ReturnType<typeof useAiAssist>;

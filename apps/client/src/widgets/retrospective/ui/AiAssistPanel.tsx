@@ -65,7 +65,14 @@ export default function AiAssistPanel({
   content,
   assist,
 }: AiAssistPanelProps) {
-  const { isPending, result, requestAssist, dismissResult, applyResult } = assist;
+  const {
+    isPending,
+    result,
+    isContentChangedSinceRequest,
+    requestAssist,
+    dismissResult,
+    applyResult,
+  } = assist;
   const trimmedContent = content.trim();
 
   return (
@@ -129,9 +136,16 @@ export default function AiAssistPanel({
           <pre className="mt-2 max-h-72 overflow-auto whitespace-pre-wrap break-words rounded-[8px] bg-gray-50 p-3 font-sans text-[12px] leading-relaxed text-gray-700">
             {result.data.content}
           </pre>
+          {isContentChangedSinceRequest && (
+            <p className="mt-2 text-[12px] text-red-600" role="alert">
+              요청 후 본문이 수정되었습니다. 적용하면 그 뒤에 쓴 내용이 이 결과로 바뀝니다.
+            </p>
+          )}
           <div className="mt-3 flex justify-end gap-2">
             <button type="button" onClick={dismissResult} className="rounded-[8px] border border-gray-200 px-3 py-2 text-[12px] font-medium text-gray-600 hover:bg-gray-50">취소</button>
-            <button type="button" onClick={applyResult} className="rounded-[8px] bg-yellow-500 px-3 py-2 text-[12px] font-semibold text-gray-900 hover:bg-yellow-400">본문에 적용</button>
+            <button type="button" onClick={applyResult} className="rounded-[8px] bg-yellow-500 px-3 py-2 text-[12px] font-semibold text-gray-900 hover:bg-yellow-400">
+              {isContentChangedSinceRequest ? "그래도 적용" : "본문에 적용"}
+            </button>
           </div>
         </section>
       )}
