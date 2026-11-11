@@ -1,5 +1,6 @@
 import { apiClient } from "@repo/lib";
 
+import type { RawEngagement } from "../model/engagement";
 import type {
   CreateProjectRequest,
   ProjectDetail,
@@ -36,8 +37,11 @@ export const getMyProject = async (): Promise<ProjectResponse> => {
 };
 
 // 교내 사용자 전용 화면(수정·대시보드)에서 쓰는 상세 — 팀원 userId·학번이 포함된다.
-export const getProject = async (projectId: number): Promise<ProjectDetail> => {
-  const { data } = await apiClient.get<ProjectDetail>(
+// 참여 지표 필드가 빠질 수 있어 원본 응답 타입으로 받는다 — 훅에서 정규화한다.
+export const getProject = async (
+  projectId: number,
+): Promise<RawEngagement<ProjectDetail>> => {
+  const { data } = await apiClient.get<RawEngagement<ProjectDetail>>(
     `/api/project/${projectId}`,
   );
   return data;
@@ -46,8 +50,8 @@ export const getProject = async (projectId: number): Promise<ProjectDetail> => {
 // 공개 상세 — 비로그인·외부 사용자는 팀원 userId·학번이 빠진 응답을 받는다.
 export const getPublicProject = async (
   projectId: number,
-): Promise<ProjectDetailResponse> => {
-  const { data } = await apiClient.get<ProjectDetailResponse>(
+): Promise<RawEngagement<ProjectDetailResponse>> => {
+  const { data } = await apiClient.get<RawEngagement<ProjectDetailResponse>>(
     `/api/project/${projectId}`,
   );
   return data;
