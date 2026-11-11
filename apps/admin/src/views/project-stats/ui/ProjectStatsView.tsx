@@ -20,6 +20,12 @@ const SORT_OPTIONS: { value: StatsSortKey; label: string }[] = [
   { value: "COMMENTS", label: "댓글순" },
 ];
 
+const SORT_PICKERS: Record<StatsSortKey, (row: ProjectStats) => number> = {
+  VIEWS: (row) => row.viewCount,
+  LIKES: (row) => row.likeCount,
+  COMMENTS: (row) => row.commentCount,
+};
+
 const GRADE_OPTIONS = [1, 2] as const;
 const CLASS_OPTIONS = [1, 2, 3, 4] as const;
 
@@ -31,17 +37,19 @@ export default function ProjectStatsView() {
   const [classNo, setClassNo] = useState<number | undefined>();
   const [sortKey, setSortKey] = useState<StatsSortKey>("VIEWS");
 
-  const { data, isLoading, isError } = useGetProjectStats({
+  const { data, isLoading, isError, isPlaceholderData } = useGetProjectStats({
     grade,
     classNo,
-    // 댓글순은 서버가 지원하지 않으므로 기본 정렬로 받아 화면에서 다시 정렬한다.
+    // 댓글순은 서버가 지원하지 않으므로 기본 정렬로 받는다.
     sort: sortKey === "COMMENTS" ? "VIEWS" : sortKey,
   });
 
+  // 정렬을 바꾼 직후에는 이전 정렬의 데이터가 잠시 남아 있으므로,
+  // 서버 정렬과 상관없이 화면에서도 선택한 기준으로 다시 정렬한다.
   const rows = useMemo<ProjectStats[]>(() => {
     if (!data) return [];
-    if (sortKey !== "COMMENTS") return data;
-    return [...data].sort((a, b) => b.commentCount - a.commentCount);
+    const pick = SORT_PICKERS[sortKey];
+    return [...data].sort((a, b) => pick(b) - pick(a));
   }, [data, sortKey]);
 
   const totals = useMemo(
@@ -125,7 +133,11 @@ export default function ProjectStatsView() {
         </div>
 
         {isReady && (
-          <div className="mt-4 grid shrink-0 grid-cols-3 gap-2">
+          <div
+            className={`mt-4 grid shrink-0 grid-cols-3 gap-2 transition-opacity ${
+              isPlaceholderData ? "opacity-60" : ""
+            }`}
+          >
             <SummaryTile label="총 조회수" value={totals.views} />
             <SummaryTile label="총 좋아요" value={totals.likes} />
             <SummaryTile label="총 댓글" value={totals.comments} />
@@ -133,10 +145,18 @@ export default function ProjectStatsView() {
         )}
 
         {isReady && rows.length > 0 && (
-          <TopProjectsChart rows={rows} sortKey={sortKey} />
+          <div
+            className={`transition-opacity ${isPlaceholderData ? "opacity-60" : ""}`}
+          >
+            <TopProjectsChart rows={rows} sortKey={sortKey} />
+          </div>
         )}
 
-        <div className="mt-4 flex min-h-0 flex-1 flex-col">
+        <div
+          className={`mt-4 flex min-h-0 flex-1 flex-col transition-opacity ${
+            isPlaceholderData ? "opacity-60" : ""
+          }`}
+        >
           <ProjectStatsTable
             isLoading={isLoading}
             isError={isError}
