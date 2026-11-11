@@ -84,8 +84,9 @@ export default function CommentManagementView() {
 
   const handleConfirmDelete = () => {
     if (!deleteTarget) return;
+    // 실패하면 모달을 열어 둬서 바로 다시 시도할 수 있게 한다.
     deleteMutation.mutate(deleteTarget.id, {
-      onSettled: () => setDeleteTarget(null),
+      onSuccess: () => setDeleteTarget(null),
     });
   };
 
