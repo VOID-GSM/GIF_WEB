@@ -1,23 +1,19 @@
 import type { AssessmentMeta } from "./types";
 
+// 검사 이름·능력·설명 문구는 번역 리소스(assessment.types.<type>)에 있다.
+
 export const ASSESSMENTS: AssessmentMeta[] = [
   {
     type: "cat-chase",
-    title: "고양이 술래잡기",
-    ability: "작업 기억",
-    description: "쥐가 숨은 자리를 기억하고 찾아내요",
     image: "/assessment/cat-chase.png",
     tone: "yellow",
     playable: true,
   },
   {
     type: "road-making",
-    title: "길 만들기",
-    ability: "공간 지각",
-    description: "울타리를 세워 차가 목적지에 닿게 해요",
     image: "/assessment/road-making.png",
     tone: "orange",
-    playable: false,
+    playable: true,
   },
 ];
 

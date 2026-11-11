@@ -1,1 +1,1 @@
-export { useGetGoogleCallback } from "./hooks/useGetGoogleCallback";
+export { useGetDgCallback } from "./hooks/useGetDgCallback";

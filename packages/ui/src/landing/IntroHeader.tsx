@@ -4,31 +4,45 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { Menu } from "@repo/ui";
 
+import LanguageToggle from "../widgets/Language/ui/LanguageToggle";
+
 interface IntroNavItem {
-  label: string;
+  // intro.nav.* 번역 키
+  labelKey: string;
   path: string;
 }
 
 // 각 항목은 /intro 하위의 개별 페이지로 이동한다.
 const INTRO_NAV: IntroNavItem[] = [
-  { label: "메인", path: "/intro" },
-  { label: "아이디어페스티벌이란?", path: "/intro/about" },
-  { label: "수상작 모음", path: "/intro/winners" },
-  { label: "VOID", path: "/intro/void" },
+  { labelKey: "main", path: "/intro" },
+  { labelKey: "about", path: "/intro/about" },
+  { labelKey: "winners", path: "/intro/winners" },
+  { labelKey: "void", path: "/intro/void" },
 ];
 
 interface IntroHeaderProps {
   /** 로그인 페이지 경로 */
   signinHref?: string;
+  /** 공개 프로젝트 목록 경로 (client 전용) */
+  projectsHref?: string;
+  /** 언어 전환(JP/KR) 버튼 노출 여부 */
+  showLanguageToggle?: boolean;
 }
 
 export default function IntroHeader({
   signinHref = "/signin",
+  projectsHref,
+  showLanguageToggle = false,
 }: IntroHeaderProps) {
+  const t = useTranslations("intro.nav");
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
+  const navItems = projectsHref
+    ? [...INTRO_NAV, { labelKey: "projects", path: projectsHref }]
+    : INTRO_NAV;
 
   return (
     <>
@@ -51,7 +65,7 @@ export default function IntroHeader({
 
           {/* 데스크톱 중앙 메뉴 */}
           <nav className="pointer-events-none absolute inset-0 hidden items-center justify-center md:flex">
-            {INTRO_NAV.map(({ label, path }) => (
+            {navItems.map(({ labelKey, path }) => (
               <Link
                 key={path}
                 href={path}
@@ -62,24 +76,25 @@ export default function IntroHeader({
                       : "border-transparent hover:border-yellow-600"
                   }`}
               >
-                {label}
+                {t(labelKey)}
               </Link>
             ))}
           </nav>
 
-          {/* 데스크톱 로그아웃 + 모바일 햄버거 */}
+          {/* 언어 전환 + 데스크톱 로그인 + 모바일 햄버거 */}
           <div className="flex items-center gap-2">
+            {showLanguageToggle && <LanguageToggle />}
             <Link
               href={signinHref}
               className="hidden cursor-pointer rounded-full border border-yellow-600 bg-yellow-50 px-5 py-1.5 text-[15px] font-bold text-gray-900 transition hover:bg-yellow-100 active:scale-95 md:inline-flex"
             >
-              로그인
+              {t("signin")}
             </Link>
             <button
               type="button"
               className="flex cursor-pointer items-center justify-center md:hidden"
               onClick={() => setIsOpen((prev) => !prev)}
-              aria-label="메뉴 열기"
+              aria-label={t("openMenu")}
             >
               <Menu className="h-8 w-8 text-gray-600" />
             </button>
@@ -99,7 +114,7 @@ export default function IntroHeader({
           ${isOpen ? "translate-x-0 opacity-100" : "translate-x-full opacity-0"}`}
       >
         <div className="flex flex-col gap-2 py-4">
-          {INTRO_NAV.map(({ label, path }) => (
+          {navItems.map(({ labelKey, path }) => (
             <Link
               key={path}
               href={path}
@@ -111,7 +126,7 @@ export default function IntroHeader({
                     : "text-gray-700 hover:bg-gray-100"
                 }`}
             >
-              {label}
+              {t(labelKey)}
             </Link>
           ))}
           <Link
@@ -119,7 +134,7 @@ export default function IntroHeader({
             onClick={() => setIsOpen(false)}
             className="mx-2 cursor-pointer rounded-lg border border-yellow-600 bg-yellow-50 px-4 py-3 text-left font-bold text-gray-900 transition-all duration-200 hover:bg-yellow-100"
           >
-            로그인
+            {t("signin")}
           </Link>
         </div>
       </div>

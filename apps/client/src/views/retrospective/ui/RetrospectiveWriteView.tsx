@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { startTransition, useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -15,6 +16,7 @@ import {
   type RetrospectiveCategory,
   type RetrospectiveVisibility,
 } from "@/entities/retrospective";
+import { useAiAssist } from "@/widgets/retrospective/model/useAiAssist";
 import AiAssistPanel from "@/widgets/retrospective/ui/AiAssistPanel";
 import DraftListModal from "@/widgets/retrospective/ui/DraftListModal";
 import RelatedWorkList from "@/widgets/retrospective/ui/RelatedWorkList";
@@ -31,6 +33,7 @@ interface RetrospectiveWriteViewProps {
 export default function RetrospectiveWriteView({
   retrospectiveId,
 }: RetrospectiveWriteViewProps) {
+  const t = useTranslations("retrospective.write");
   const router = useRouter();
 
   const [draftId, setDraftId] = useState<number | undefined>(undefined);
@@ -53,6 +56,13 @@ export default function RetrospectiveWriteView({
   const { data: retrospective } = useGetRetrospectiveDetail(retrospectiveId);
 
   const { mutate: submit, isPending: isSubmitting } = useUpsertRetrospective();
+  // 보기 모드에 따라 패널이 다른 위치에 그려져도 결과·요청이 유지되도록 상태는 여기서 한 번만 만든다
+  const aiAssist = useAiAssist({
+    title,
+    category,
+    content,
+    onApply: setContent,
+  });
   const { mutate: saveDraft, isPending: isSavingDraft } =
     useSaveDraftRetrospective();
 
@@ -70,7 +80,7 @@ export default function RetrospectiveWriteView({
 
     // 주소(/retrospective/write?id=...)로 직접 들어와도 남의 글은 수정 화면을 열지 않는다
     if (!retrospective.isMine) {
-      toast.error("본인이 작성한 회고록만 수정할 수 있습니다.");
+      toast.error(t("notOwner"));
       router.replace(`/retrospective/${retrospective.id}`);
       return;
     }
@@ -80,7 +90,7 @@ export default function RetrospectiveWriteView({
       setDraftId(undefined);
       fillForm(retrospective);
     });
-  }, [retrospective, router]);
+  }, [retrospective, router, t]);
 
   const buildPayload = () => ({
     id: editingId ?? draftId,
@@ -98,12 +108,12 @@ export default function RetrospectiveWriteView({
     setEditingId(undefined);
     fillForm(draft);
     setIsDraftModalOpen(false);
-    toast.success("임시 저장한 내용을 불러왔습니다.");
+    toast.success(t("draftLoaded"));
   };
 
   const handleSaveDraft = () => {
     if (!title.trim() && !content.trim()) {
-      toast.error("제목이나 내용을 입력해주세요.");
+      toast.error(t("titleOrContentRequired"));
       return;
     }
 
@@ -120,11 +130,11 @@ export default function RetrospectiveWriteView({
 
   const handleSubmit = () => {
     if (!title.trim()) {
-      toast.error("제목을 입력해주세요.");
+      toast.error(t("titleRequired"));
       return;
     }
     if (!content.trim()) {
-      toast.error("내용을 입력해주세요.");
+      toast.error(t("contentRequired"));
       return;
     }
 
@@ -154,20 +164,20 @@ export default function RetrospectiveWriteView({
             direction="left"
             className="h-3.5 w-3.5 transition-transform group-hover:-translate-x-0.5"
           />
-          회고록
+          {t("breadcrumb")}
         </button>
 
         {/* 헤더 */}
         <div className="mt-2 flex flex-wrap items-center justify-between gap-3 border-b border-gray-200 pb-4">
           <h1 className="text-[19px] font-semibold tracking-[-0.3px] text-gray-900">
-            {editingId ? "회고록 수정" : "새 회고록 작성"}
+            {editingId ? t("editTitle") : t("createTitle")}
           </h1>
           <button
             type="button"
             onClick={() => setIsDraftModalOpen(true)}
             className="shrink-0 cursor-pointer rounded-[10px] border border-gray-200 px-3 py-2 text-[13px] font-medium text-gray-600 transition-colors hover:border-yellow-600 hover:text-yellow-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-600"
           >
-            임시 저장 목록
+            {t("drafts")}
           </button>
         </div>
 
@@ -199,13 +209,15 @@ export default function RetrospectiveWriteView({
             />
 
             {/* 같이 보기 모드에서는 사이드 패널이 아래로 내려와 전체 폭을 쓴다 */}
-            {isSplit && <AiAssistPanel compact />}
+            {isSplit && (
+              <AiAssistPanel compact content={content} assist={aiAssist} />
+            )}
           </div>
 
           {/* 사이드 패널 */}
           {!isSplit && (
             <div className="w-full shrink-0 lg:w-[260px]">
-              <AiAssistPanel />
+              <AiAssistPanel content={content} assist={aiAssist} />
             </div>
           )}
         </div>

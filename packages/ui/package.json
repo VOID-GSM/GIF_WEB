@@ -9,7 +9,9 @@
     "./tokens.css": "./src/tokens.css"
   },
   "dependencies": {
+    "@repo/i18n": "*",
     "@repo/lib": "*",
+    "next-intl": "4.4.0",
     "react-markdown": "^9.0.1",
     "rehype-raw": "^7.0.0",
     "rehype-sanitize": "^6.0.0",

@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
@@ -9,6 +10,7 @@ import { GITHUB_OAUTH_STATE_KEY } from "@/shared/utils/githubOAuth";
 import { GithubCallbackLayout, GithubCallbackPending } from "./GithubCallbackLayout";
 
 export default function GithubCallbackView() {
+  const t = useTranslations("assessment.githubCallback");
   const router = useRouter();
   const searchParams = useSearchParams();
   const { mutateAsync: connect } = useConnectGithub();
@@ -29,19 +31,19 @@ export default function GithubCallbackView() {
     const isValid = !oauthError && !!code && !!state && state === savedState;
     const invalidMessage =
       oauthError === "access_denied"
-        ? "GitHub 연동을 취소했어요."
+        ? t("cancelled")
         : oauthError
-          ? "GitHub 연동에 실패했습니다."
-          : "잘못된 연동 요청입니다.";
+          ? t("failed")
+          : t("invalid");
 
     (isValid
       ? connect({ code })
       : Promise.reject(new Error(invalidMessage)))
       .then(() => router.replace("/assessment"))
       .catch(() =>
-        setError(isValid ? "GitHub 연동에 실패했습니다." : invalidMessage),
+        setError(isValid ? t("failed") : invalidMessage),
       );
-  }, [searchParams, connect, router]);
+  }, [searchParams, connect, router, t]);
 
   if (!error) return <GithubCallbackPending />;
 
@@ -53,7 +55,7 @@ export default function GithubCallbackView() {
         onClick={() => router.replace("/assessment")}
         className="mt-2 rounded-[10px] bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-200"
       >
-        역량검사로 돌아가기
+        {t("back")}
       </button>
     </GithubCallbackLayout>
   );

@@ -1,3 +1,5 @@
+import { useTranslations } from "next-intl";
+
 export type MemberRole = "leader" | "member";
 
 interface MemberButtonProps {
@@ -11,6 +13,7 @@ export default function MemberButton({
   isActive,
   onClick,
 }: MemberButtonProps) {
+  const t = useTranslations("button");
   return (
     <button
       className={`w-[120px] h-[28px] rounded-[4px] text-[12px] border cursor-pointer
@@ -21,7 +24,7 @@ export default function MemberButton({
         }`}
       onClick={onClick}
     >
-      {role === "leader" ? "팀장" : "팀원"}
+      {role === "leader" ? t("leader") : t("member")}
     </button>
   );
 }

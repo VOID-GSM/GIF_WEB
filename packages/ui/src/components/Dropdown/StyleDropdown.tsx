@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Chevron } from "../..";
 
 export type StyleOption = "file" | "text" | "calendar";
@@ -9,13 +10,10 @@ interface StyleDropdownProps {
   onChange?: (option: StyleOption) => void;
 }
 
-const STYLE_MAP: Record<StyleOption, string> = {
-  file: "파일",
-  text: "줄 글",
-  calendar: "캘린더",
-};
+const STYLE_OPTIONS: StyleOption[] = ["file", "text", "calendar"];
 
 export default function StyleDropdown({ value, onChange }: StyleDropdownProps) {
+  const t = useTranslations("styleDropdown");
   const [isOpen, setIsOpen] = useState(false);
 
   const handleSelect = (option: StyleOption) => {
@@ -30,7 +28,7 @@ export default function StyleDropdown({ value, onChange }: StyleDropdownProps) {
         onClick={() => setIsOpen(!isOpen)}
       >
         <span className={value ? "text-black" : "text-gray-500"}>
-          {value ? STYLE_MAP[value] : "스타일을 선택하세요"}
+          {value ? t(value) : t("placeholder")}
         </span>
         <Chevron
           className={`transition-transform text-gray-500 ${isOpen ? "rotate-180" : ""}`}
@@ -39,13 +37,13 @@ export default function StyleDropdown({ value, onChange }: StyleDropdownProps) {
 
       {isOpen && (
         <ul className="absolute top-full w-full bg-white rounded-[4px] overflow-hidden z-10 shadow-new">
-          {Object.entries(STYLE_MAP).map(([key, label]) => (
+          {STYLE_OPTIONS.map((key) => (
             <li key={key}>
               <button
                 className="w-full text-left px-[10px] py-[12px] font-medium text-[12px] transition-colors hover:bg-gray-200 cursor-pointer dark:text-gray-300"
-                onClick={() => handleSelect(key as StyleOption)}
+                onClick={() => handleSelect(key)}
               >
-                {label}
+                {t(key)}
               </button>
             </li>
           ))}

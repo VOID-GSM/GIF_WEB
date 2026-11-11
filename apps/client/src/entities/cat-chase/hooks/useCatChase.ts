@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
@@ -129,12 +130,13 @@ export function useRecoverCatChaseSession() {
 }
 
 export function useFinishCatChaseRound() {
+  const t = useTranslations("catChase.toast");
   const invalidateRoundResult = useInvalidateRoundResult();
 
   return useMutation({
     mutationFn: finishCatChaseRound,
     onSuccess: invalidateRoundResult,
-    onError: () => toast.error("검사를 종료하지 못했어요. 다시 시도해주세요."),
+    onError: () => toast.error(t("finishError")),
   });
 }
 

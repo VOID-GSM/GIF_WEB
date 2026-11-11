@@ -10,12 +10,15 @@ export {
 export {
   DEFAULT_CAT_CHASE_BOARD_SIDE,
   CAT_CHASE_TIMING,
-  CONFIDENCE_OPTIONS,
-  CONFIDENCE_LABELS,
+  CONFIDENCE_VALUES,
+  CAT_COLORS,
+  getCatColor,
   toBoardSide,
 } from "./model/constants";
+export type { CatColor } from "./model/constants";
 export type {
   CatChaseJudgment,
+  CatChaseAnswer,
   CatChaseConfidence,
   CatChaseJudgmentItem,
   CatChaseJudgmentResult,

@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 
 import { EventViewModal } from "@repo/ui";
@@ -31,6 +32,7 @@ export default function ScheduleSection({
   projectId,
   forms = [],
 }: ScheduleSectionProps) {
+  const t = useTranslations("project.schedule");
   // 제출한 양식만 캘린더 답변을 가지므로 그 양식들만 조회한다.
   const submittedFormIds = forms.filter((f) => f.submitted).map((f) => f.id);
   const { events } = useGetProjectSchedule(projectId, submittedFormIds);
@@ -62,12 +64,12 @@ export default function ScheduleSection({
     <section className="flex flex-col gap-3">
       <div className="flex items-center gap-1.5">
         <span className="text-xl font-semibold tracking-tight text-gray-600">
-          일정
+          {t("title")}
         </span>
         <div className="relative flex items-center">
           <button
             type="button"
-            aria-label="일정 안내"
+            aria-label={t("infoLabel")}
             onClick={() => setShowHint((prev) => !prev)}
             onBlur={() => setShowHint(false)}
             className="flex size-4 cursor-pointer items-center justify-center rounded-full border border-gray-400 text-[11px] font-semibold text-gray-400 transition-colors hover:border-gray-500 hover:text-gray-500"
@@ -76,7 +78,7 @@ export default function ScheduleSection({
           </button>
           {showHint && (
             <span className="absolute left-6 top-1/2 z-10 w-max -translate-y-1/2 whitespace-nowrap rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs font-medium tracking-tight text-gray-500 shadow-new">
-              캘린더가 포함된 양식을 제출하면 작성한 일정이 여기에 반영됩니다.
+              {t("info")}
             </span>
           )}
         </div>
@@ -93,7 +95,7 @@ export default function ScheduleSection({
             {"<"}
           </button>
           <span className="text-base font-semibold tracking-tight text-black">
-            {year}년 {month + 1}월
+            {t("yearMonth", { year, month: month + 1 })}
           </span>
           <button
             type="button"

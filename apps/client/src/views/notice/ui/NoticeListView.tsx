@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 
 import { formatTimestamp } from "@/entities/form/lib/formatDeadline";
@@ -7,6 +8,7 @@ import { useVisibleNotices } from "@/entities/notice";
 import NoticeTargetBadges from "./NoticeTargetBadges";
 
 export default function NoticeListView() {
+  const t = useTranslations("notice.list");
   const router = useRouter();
   // 내 학년·팀이 대상인 공지만 보여준다 (서버는 전체 목록을 내려준다)
   const { data, isPending, isError } = useVisibleNotices();
@@ -17,10 +19,10 @@ export default function NoticeListView() {
         {/* 헤더 */}
         <div className="border-b border-gray-200 pb-4">
           <h1 className="text-[19px] font-semibold tracking-[-0.3px] text-gray-900">
-            공지사항
+            {t("title")}
           </h1>
           <p className="mt-1 text-[13px] leading-relaxed text-gray-500">
-            아이디어페스티벌 진행에 대한 공지를 확인할 수 있습니다.
+            {t("description")}
           </p>
         </div>
 
@@ -28,15 +30,15 @@ export default function NoticeListView() {
         <div className="mt-5">
           {isPending ? (
             <p className="py-16 text-center text-[13px] font-medium text-gray-400">
-              불러오는 중
+              {t("loading")}
             </p>
           ) : isError ? (
             <p className="py-16 text-center text-[13px] font-medium text-red-500">
-              공지사항을 불러오지 못했습니다.
+              {t("loadError")}
             </p>
           ) : !data || data.length === 0 ? (
             <p className="py-16 text-center text-[13px] font-medium text-gray-400">
-              등록된 공지가 없습니다.
+              {t("empty")}
             </p>
           ) : (
             <ul className="flex flex-col gap-2.5">

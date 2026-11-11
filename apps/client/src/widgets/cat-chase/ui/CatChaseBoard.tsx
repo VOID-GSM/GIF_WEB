@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 
 const ASSET = "/assessment/cat-chase";
@@ -56,13 +57,14 @@ export default function CatChaseBoard({
 }
 
 function BoardCellView({ cell }: { cell?: BoardCell }) {
+  const t = useTranslations("catChase.board");
   if (!cell || cell.content === "mouse") {
     return (
       <div className="relative aspect-square overflow-hidden rounded-[16.67%] border border-gray-600 bg-white">
         {cell && (
           <Image
             src={`${ASSET}/mouse.svg`}
-            alt="쥐"
+            alt={t("mouse")}
             width={101.5}
             height={92.9478}
             className="animate-pop-in absolute left-[7.5%] top-[9.6%] h-auto w-[84.58%]"
@@ -76,7 +78,7 @@ function BoardCellView({ cell }: { cell?: BoardCell }) {
     <div className="animate-pop-in relative aspect-square">
       <Image
         src={CAT_CELL_IMAGE[cell.content]}
-        alt="고양이"
+        alt={t("cat")}
         width={120}
         height={120}
         className="h-auto w-full"
@@ -84,7 +86,7 @@ function BoardCellView({ cell }: { cell?: BoardCell }) {
       {cell.hadMouse && (
         <Image
           src={`${ASSET}/mouse.svg`}
-          alt="쥐가 있던 칸"
+          alt={t("mouseCell")}
           width={101.5}
           height={92.9478}
           className="absolute -bottom-[6%] -right-[6%] h-auto w-[42%] drop-shadow"
@@ -92,7 +94,7 @@ function BoardCellView({ cell }: { cell?: BoardCell }) {
       )}
       {cell.result && (
         <span
-          aria-label={cell.result === "correct" ? "정답" : "오답"}
+          aria-label={cell.result === "correct" ? t("correct") : t("wrong")}
           className={`absolute -left-[6%] -top-[6%] flex size-[34%] items-center justify-center rounded-full text-[clamp(10px,2vw,18px)] font-bold text-white shadow ${
             cell.result === "correct" ? "bg-green-dark" : "bg-red"
           }`}

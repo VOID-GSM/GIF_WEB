@@ -2,6 +2,7 @@
 
 import { useMutation } from "@tanstack/react-query";
 import { useCallback, useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 
 import { deletePushSubscription, postPushSubscription } from "./api";
@@ -17,6 +18,7 @@ import { subscribeOnDevice } from "./subscribeOnDevice";
 // 알림 패널의 '기기 알림 받기/끄기' 버튼 상태와 동작.
 // 서버와의 재동기화는 패널과 무관하게 useSyncPushSubscription 이 맡는다.
 export function usePushSubscription() {
+  const t = useTranslations("push");
   const [isSupported, setIsSupported] = useState(false);
   const [permission, setPermission] = useState<NotificationPermission>("default");
   const [isSubscribed, setIsSubscribed] = useState(false);
@@ -74,14 +76,14 @@ export function usePushSubscription() {
     },
     onSuccess: () => {
       setIsSubscribed(true);
-      toast.success("이 기기에서 알림을 받습니다.");
+      toast.success(t("enabled"));
     },
     onError: (error: Error) => {
       if (error.message === "permission-not-granted") {
-        toast.error("브라우저에서 알림 권한을 허용해주세요.");
+        toast.error(t("permissionRequired"));
         return;
       }
-      toast.error("기기 알림을 켜지 못했습니다. 다시 시도해주세요.");
+      toast.error(t("enableError"));
     },
   });
 
@@ -104,10 +106,10 @@ export function usePushSubscription() {
     },
     onSuccess: () => {
       setIsSubscribed(false);
-      toast.success("이 기기에서 알림을 끕니다.");
+      toast.success(t("disabled"));
     },
     onError: () => {
-      toast.error("기기 알림을 끄지 못했습니다. 다시 시도해주세요.");
+      toast.error(t("disableError"));
     },
   });
 
@@ -122,12 +124,12 @@ export function usePushSubscription() {
     }
 
     if (permission === "denied") {
-      toast.error("브라우저 설정에서 이 사이트의 알림 차단을 해제해주세요.");
+      toast.error(t("blocked"));
       return;
     }
 
     await enableMutate().catch(() => undefined);
-  }, [disableMutate, enableMutate, isPending, isSubscribed, permission]);
+  }, [disableMutate, enableMutate, isPending, isSubscribed, permission, t]);
 
   return {
     isSupported,

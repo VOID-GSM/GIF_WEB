@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 
 import { FormCard, FORM_TABLE_GRID, useGetFormList } from "@/entities/form";
@@ -7,6 +8,7 @@ import { useGetMyProject } from "@/entities/project";
 import { useGetFormSubmitters } from "@/entities/form-submissions";
 
 export default function FormListView() {
+  const t = useTranslations("form.list");
   const router = useRouter();
 
   const {
@@ -50,18 +52,18 @@ export default function FormListView() {
         }`}
       >
         {isLoading ? (
-          <p className="py-20 text-center text-gray-500">불러오는 중...</p>
+          <p className="py-20 text-center text-gray-500">{t("loading")}</p>
         ) : isError ? (
           <p className="py-20 text-center text-gray-500">
-            양식을 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.
+            {t("loadError")}
           </p>
         ) : hasNoProject ? (
           <p className="py-20 text-center text-gray-500">
-            소속된 프로젝트가 없습니다.
+            {t("noProject")}
           </p>
         ) : !forms || forms.length === 0 ? (
           <p className="py-20 text-center text-gray-500">
-            등록된 양식이 없습니다.
+            {t("empty")}
           </p>
         ) : (
           <div className="overflow-x-auto rounded-xl bg-white shadow [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
@@ -69,12 +71,12 @@ export default function FormListView() {
             <div
               className={`${FORM_TABLE_GRID} border-b border-orange-400 bg-orange-50 px-4 py-2.5`}
             >
-              <span className="text-sm font-semibold text-gray-700">제목</span>
-              <span className="text-sm font-semibold text-gray-700">마감 날짜</span>
-              <span className="text-sm font-semibold text-gray-700">마감 시간</span>
-              <span className="text-sm font-semibold text-gray-700">제출 여부</span>
-              <span className="text-sm font-semibold text-gray-700">제출자</span>
-              <span className="text-sm font-semibold text-gray-700">작업</span>
+              <span className="text-sm font-semibold text-gray-700">{t("title")}</span>
+              <span className="text-sm font-semibold text-gray-700">{t("deadlineDate")}</span>
+              <span className="text-sm font-semibold text-gray-700">{t("deadlineTime")}</span>
+              <span className="text-sm font-semibold text-gray-700">{t("submitted")}</span>
+              <span className="text-sm font-semibold text-gray-700">{t("submitter")}</span>
+              <span className="text-sm font-semibold text-gray-700">{t("action")}</span>
             </div>
 
             {forms.map((form) => (

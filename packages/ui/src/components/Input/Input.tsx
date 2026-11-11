@@ -1,3 +1,5 @@
+import { useTranslations } from "next-intl";
+
 import { stripInvisibleChars } from "../../lib/sanitizeText";
 
 interface InputProps {
@@ -14,7 +16,7 @@ interface InputProps {
 }
 
 export default function Input({
-  title = "양식의 제목을 입력하세요",
+  title,
   value,
   onChange,
   onCompositionStart,
@@ -23,6 +25,7 @@ export default function Input({
   className = "",
   textClassName,
 }: InputProps) {
+  const t = useTranslations("input");
   // 붙여넣기 등으로 들어온 보이지 않는 제어 문자를 부모에게 전달하기 전에 제거한다.
   // 한글(IME) 조합 중에는 값을 건드리지 않는다 — 조합 세션이 깨질 수 있다.
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -44,7 +47,7 @@ export default function Input({
       className={`w-full py-[13px] px-[16px] border border-gray-200 rounded-[10px] placeholder:text-gray-500 outline-none
       transition-colors bg-white focus:border-yellow-600 [&:not(:placeholder-shown)]:border-yellow-600
       dark:focus:border-yellow-500 dark:[&:not(:placeholder-shown)]:border-yellow-500 ${textClassName || "font-medium text-black"} ${className}`}
-      placeholder={title}
+      placeholder={title ?? t("titlePlaceholder")}
       value={value}
       onChange={handleChange}
       onCompositionStart={onCompositionStart}

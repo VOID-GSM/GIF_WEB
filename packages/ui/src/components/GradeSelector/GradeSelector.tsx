@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 export const GRADES = [1, 2] as const;
 
 export type Grade = (typeof GRADES)[number];
@@ -20,6 +22,7 @@ const buttonActiveClass =
 const buttonInactiveClass = "border border-transparent";
 
 export default function GradeSelector({ grade, onGradeChange }: GradeSelectorProps) {
+  const t = useTranslations("grade");
   return (
     <div className={containerClass}>
       {GRADES.map((g) => (
@@ -30,7 +33,7 @@ export default function GradeSelector({ grade, onGradeChange }: GradeSelectorPro
           onClick={() => onGradeChange(g)}
           className={`${buttonBaseClass} ${grade === g ? buttonActiveClass : buttonInactiveClass}`}
         >
-          {g}학년
+          {t("label", { grade: g })}
         </button>
       ))}
     </div>

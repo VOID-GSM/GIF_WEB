@@ -1,11 +1,13 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 import { toggleRetrospectiveBookmark } from "../api/retrospectiveApi";
 
 export function useToggleBookmark() {
+  const t = useTranslations("retrospective.toast");
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -14,6 +16,6 @@ export function useToggleBookmark() {
       queryClient.invalidateQueries({ queryKey: ["retrospective"] });
       queryClient.invalidateQueries({ queryKey: ["retrospective", id] });
     },
-    onError: () => toast.error("북마크 변경에 실패했습니다."),
+    onError: () => toast.error(t("bookmarkError")),
   });
 }

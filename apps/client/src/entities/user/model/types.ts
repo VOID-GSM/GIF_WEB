@@ -1,3 +1,5 @@
+import type { AccountType } from "@/entities/auth";
+
 // GET /api/users/me 응답. 코인 잔액과 GitHub 연동 정보를 함께 내려준다.
 export interface CurrentUserResponse {
   id: number;
@@ -6,6 +8,7 @@ export interface CurrentUserResponse {
   studentNumber: string;
   grade: string | null;
   role: string;
+  accountType: AccountType | null;
   clientRole: string | null;
   clientTeam: string | null;
   projectId: number | null;

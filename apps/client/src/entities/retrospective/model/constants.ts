@@ -1,18 +1,11 @@
 import type {
+  RetrospectiveAiAction,
   RetrospectiveCategory,
   RetrospectiveCategoryFilter,
   RetrospectiveSort,
 } from "./type";
 
-export const CATEGORY_LABELS: Record<RetrospectiveCategory, string> = {
-  FEATURE: "기능 개발",
-  IMPROVEMENT: "기능 개선",
-  REFACTORING: "리팩토링",
-  TROUBLESHOOTING: "트러블슈팅",
-  RETROSPECT: "회고",
-  PORTFOLIO: "포트폴리오",
-};
-
+// 카테고리·정렬 라벨은 번역 리소스(retrospective.category / retrospective.sort)에 있다.
 export const CATEGORY_ORDER: RetrospectiveCategory[] = [
   "FEATURE",
   "IMPROVEMENT",
@@ -22,17 +15,11 @@ export const CATEGORY_ORDER: RetrospectiveCategory[] = [
   "PORTFOLIO",
 ];
 
-/** 작성 페이지의 기록 유형 select 용 — "전체"를 포함하지 않는다 */
-export const CATEGORY_OPTIONS: {
-  value: RetrospectiveCategory;
-  label: string;
-}[] = CATEGORY_ORDER.map((value) => ({ value, label: CATEGORY_LABELS[value] }));
-
 /** 목록 필터 pill 용 — 맨 앞에 "전체"를 둔다 */
-export const CATEGORY_FILTER_OPTIONS: {
-  value: RetrospectiveCategoryFilter;
-  label: string;
-}[] = [{ value: "ALL", label: "전체" }, ...CATEGORY_OPTIONS];
+export const CATEGORY_FILTER_VALUES: RetrospectiveCategoryFilter[] = [
+  "ALL",
+  ...CATEGORY_ORDER,
+];
 
 /**
  * 카테고리 태그 pill 색상.
@@ -56,8 +43,18 @@ export const CATEGORY_COLOR: Record<RetrospectiveCategory, string> = {
     "border-gray-200 bg-gray-100 text-gray-900 dark:border-gray-600 dark:bg-gray-800",
 };
 
-export const SORT_OPTIONS: { value: RetrospectiveSort; label: string }[] = [
-  { value: "LATEST", label: "최신순" },
-  { value: "OLDEST", label: "오래된순" },
-  { value: "BOOKMARK", label: "인기순" },
-];
+export const SORT_VALUES: RetrospectiveSort[] = ["LATEST", "OLDEST", "BOOKMARK"];
+
+/** AI 도움받기 요청 제한 (서버 검증 기준과 같다) */
+export const AI_ASSIST_MAX_CONTENT_LENGTH = 5000;
+export const AI_ASSIST_MIN_CONTENT_LENGTH = 20;
+export const AI_ASSIST_MAX_TITLE_LENGTH = 100;
+
+/** 다듬기·포트폴리오 변환은 본문이 최소 길이 이상이어야 한다 (구조 추천은 빈 본문도 가능) */
+export const aiActionNeedsMinContent = (action: RetrospectiveAiAction) =>
+  action === "polish" || action === "portfolio";
+
+/** 공백을 뺀 본문 길이가 부족해 이 기능을 쓸 수 없는지 */
+export const isAiContentTooShort = (action: RetrospectiveAiAction, content: string) =>
+  aiActionNeedsMinContent(action) &&
+  content.trim().length < AI_ASSIST_MIN_CONTENT_LENGTH;

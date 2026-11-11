@@ -1,25 +1,26 @@
 import { NavItem } from "@repo/ui";
 
+// labelKey 는 "nav" 네임스페이스의 번역 키다.
 export const ADMIN_NAV_ITEMS: NavItem[] = [
-  { label: "메인", path: "/" },
-  { label: "공지", path: "/notice" },
-  { label: "양식", path: "/form" },
-  { label: "등수", path: "/rank" },
-  { label: "점수", path: "/score" },
-  { label: "통계", path: "/stats" },
-  { label: "선생님 관리", path: "/teachers" },
-  { label: "댓글 관리", path: "/comments" },
-  { label: "문의", path: "/inquiry" },
-  { label: "문의 관리", path: "/inquiry/admin" },
+  { labelKey: "main", path: "/" },
+  { labelKey: "notice", path: "/notice" },
+  { labelKey: "form", path: "/form" },
+  { labelKey: "rank", path: "/rank" },
+  { labelKey: "score", path: "/score" },
+  { labelKey: "stats", path: "/stats" },
+  { labelKey: "teachers", path: "/teachers" },
+  { labelKey: "comments", path: "/comments" },
+  { labelKey: "inquiry", path: "/inquiry" },
+  { labelKey: "inquiryAdmin", path: "/inquiry/admin" },
 ];
 
 export const CLIENT_NAV_ITEMS: NavItem[] = [
-  { label: "메인", path: "/" },
-  { label: "공지", path: "/notice" },
-  { label: "양식", path: "/form" },
-  { label: "등수", path: "/rank" },
-  { label: "회고록", path: "/retrospective" },
-  { label: "문의", path: "/inquiry" },
-  { label: "역량검사", path: "/assessment" },
-  { label: "Thyn 꾸미기", path: "/thyn" },
+  { labelKey: "main", path: "/" },
+  { labelKey: "notice", path: "/notice" },
+  { labelKey: "form", path: "/form" },
+  { labelKey: "rank", path: "/rank" },
+  { labelKey: "retrospective", path: "/retrospective" },
+  { labelKey: "inquiry", path: "/inquiry" },
+  { labelKey: "assessment", path: "/assessment" },
+  { labelKey: "thyn", path: "/thyn" },
 ];

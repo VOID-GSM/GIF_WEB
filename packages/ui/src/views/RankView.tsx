@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 import { useGetRank, useGetScoreNotice } from "@repo/lib";
 
@@ -23,6 +24,7 @@ export default function RankView({
   const grade = propGrade ?? localGrade;
   const setGrade = onGradeChange ?? setLocalGrade;
   const router = useRouter();
+  const t = useTranslations("rank");
   const { data: notice, isPending: isNoticePending } = useGetScoreNotice();
   const { data, isPending, isError } = useGetRank({ grade });
 
@@ -48,13 +50,13 @@ export default function RankView({
         ) : isError ? (
           <div className="flex min-h-[50vh] items-center justify-center">
             <p className="text-center text-gray-500">
-              등수 정보를 불러오지 못했습니다
+              {t("error")}
             </p>
           </div>
         ) : data.length === 0 ? (
           <div className="flex min-h-[50vh] items-center justify-center">
             <p className="text-center text-gray-500">
-              아직 등수를 공지하지 않았습니다
+              {t("empty")}
             </p>
           </div>
         ) : (

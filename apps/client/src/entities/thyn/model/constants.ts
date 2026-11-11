@@ -1,12 +1,13 @@
 import type { ItemCategory, ThynAsset, ThynCategory } from "./type";
 
-export const THYN_CATEGORIES: { key: ThynCategory; label: string }[] = [
-  { key: "hair", label: "머리카락" },
-  { key: "clothes", label: "옷" },
-  { key: "face", label: "표정" },
-  { key: "headwear", label: "머리장식" },
-  { key: "glasses", label: "안경" },
-  { key: "prop", label: "소품" },
+// 카테고리 라벨은 번역 리소스(thyn.category.<key>)에 있다.
+export const THYN_CATEGORIES: { key: ThynCategory }[] = [
+  { key: "hair" },
+  { key: "clothes" },
+  { key: "face" },
+  { key: "headwear" },
+  { key: "glasses" },
+  { key: "prop" },
 ];
 
 export const THYN_CATEGORY_MAP: Record<ItemCategory, ThynCategory> = {
