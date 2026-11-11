@@ -126,3 +126,38 @@ body {
   -webkit-box-shadow: 0 0 0 1000px var(--color-gray-900) inset;
   transition: background-color 9999s ease-out 0s;
 }
+
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-pop-in {
+  animation: pop-in 250ms ease-out both;
+}
+
+/* 응답 제한 시간 막대. 길이(animation-duration)는 사용하는 곳에서 정한다. */
+@keyframes timer-shrink {
+  from {
+    width: 100%;
+  }
+  to {
+    width: 0%;
+  }
+}
+
+.animate-timer-shrink {
+  animation: timer-shrink linear forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-pop-in {
+    animation: none;
+  }
+}

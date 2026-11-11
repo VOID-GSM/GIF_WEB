@@ -1,0 +1,320 @@
+{
+  "language": {
+    "switchTo": "{locale, select, ja {일본어로 보기} other {한국어로 보기}}"
+  },
+  "nav": {
+    "main": "메인",
+    "notice": "공지",
+    "form": "양식",
+    "rank": "등수",
+    "score": "점수",
+    "stats": "통계",
+    "teachers": "선생님 관리",
+    "comments": "댓글 관리",
+    "inquiry": "문의",
+    "inquiryAdmin": "문의 관리",
+    "retrospective": "회고록",
+    "assessment": "역량검사",
+    "thyn": "Thyn 꾸미기",
+    "projects": "프로젝트",
+    "signin": "로그인",
+    "logout": "로그아웃"
+  },
+  "theme": {
+    "select": "테마 선택",
+    "light": "라이트",
+    "dark": "다크"
+  },
+  "badge": {
+    "deadlineBefore": "마감 전",
+    "deadline": "마감",
+    "edit": "수정",
+    "complete": "완료",
+    "write": "작성",
+    "section": {
+      "major": "전공 중심 영역",
+      "report": "보고서 영역",
+      "social": "사회 중심 영역"
+    }
+  },
+  "button": {
+    "notice": "공지하기",
+    "next": "다음",
+    "leader": "팀장",
+    "member": "팀원",
+    "granted": "점수 부여 완료",
+    "ungranted": "점수 미부여"
+  },
+  "notFound": {
+    "message": "죄송합니다. 페이지를 찾을 수 없습니다",
+    "back": "이전 페이지로 이동하기"
+  },
+  "input": {
+    "titlePlaceholder": "양식의 제목을 입력하세요",
+    "contentPlaceholder": "내용을 입력하세요"
+  },
+    "grade": {
+    "label": "{grade}학년",
+    "all": "전체"
+  },
+  "fileUpload": {
+    "upload": "파일 업로드"
+  },
+  "styleDropdown": {
+    "file": "파일",
+    "text": "줄 글",
+    "calendar": "캘린더",
+    "placeholder": "스타일을 선택하세요"
+  },
+  "filePreview": {
+    "error": "미리보기를 불러오지 못했어요. 내려받아서 확인해주세요.",
+    "loading": "미리보기 불러오는 중",
+    "openOriginal": "{fileName} 원본 크기로 보기",
+    "title": "{fileName} 미리보기"
+  },
+  "signin": {
+    "title": "로그인",
+    "system": "GSM IdeaFestival 관리 시스템",
+    "headline": "GIF를 통해 아이디어 페스티벌을<br></br>원할하게 진행하세요!",
+    "description": "프로젝트 보고서 제출부터 점수 관리, AI 요약 기능까지<br></br>아이디어 페스티벌 모든 진행을 GIF와 함께해요.",
+    "datagsm": {
+      "description": "DataGSM으로 안전하게 로그인하세요!",
+      "button": "DataGsm으로 로그인"
+    },
+    "google": {
+      "description": "Google 계정으로 안전하게 로그인하세요!",
+      "button": "Google로 로그인"
+    }
+  },
+  "mypage": {
+    "select": "선택",
+    "myProfile": "내 프로필",
+    "profile": "프로필",
+    "cancel": "취소",
+    "save": "저장하기",
+    "edit": "수정하기",
+    "logout": "로그아웃"
+  },
+  "notification": {
+    "title": "알림",
+    "unreadLabel": "알림 {count}건 읽지 않음",
+    "unreadItem": "{title} (읽지 않음)",
+    "recentDays": "최근 {days}일",
+    "processing": "처리 중...",
+    "readAll": "모두 읽기",
+    "pushOff": "기기 알림 끄기",
+    "pushOn": "기기 알림 받기",
+    "loading": "알림을 불러오는 중이에요.",
+    "error": "알림을 불러오지 못했어요. 잠시 후 다시 시도해주세요.",
+    "empty": "최근 {days}일 동안 도착한 알림이 없어요.",
+    "loadingMore": "불러오는 중...",
+    "loadMoreError": "불러오지 못했어요. 다시 시도",
+    "loadMore": "이전 알림 더 보기",
+    "close": "닫기",
+    "readAllSuccess": "모든 알림을 읽음 처리했어요.",
+    "readAllError": "알림을 읽음 처리하지 못했어요. 다시 시도해주세요.",
+    "readError": "알림을 읽음 처리하지 못했어요."
+  },
+  "formCard": {
+    "reorder": "항목 순서 변경",
+    "reorderHint": "드래그해서 순서를 바꿀 수 있습니다",
+    "style": {
+      "file": "파일",
+      "text": "줄 글 텍스트",
+      "calendar": "캘린더"
+    },
+    "allowedExtensions": "허용 파일 형식",
+    "submitMethod": "제출 방식",
+    "allowUrl": "외부 링크(URL) 제출 허용",
+    "allowUrlHint": "캔바·미리캔버스·Google 드라이브 등 공유 링크로도 제출할 수 있습니다.",
+    "required": "필수 항목",
+    "requiredOn": "학생이 반드시 답변해야 합니다.",
+    "requiredOff": "학생이 비워둔 채 제출할 수 있습니다.",
+    "requiredToggle": "필수 항목 여부"
+  },
+  "projectDetail": {
+    "aiSummary": "AI 요약",
+    "deadlineStatus": "마감 현황",
+    "total": "전체",
+    "met": "준수",
+    "notMet": "미준수",
+    "pending": "대기",
+    "formList": "양식 제출 목록",
+    "noForms": "아직 공지된 양식이 없습니다.",
+    "projectName": "프로젝트명",
+    "teamName": "팀명",
+    "members": "팀원"
+  },
+  "calendarEvent": {
+    "titlePlaceholder": "일정을 입력해 주세요",
+    "date": "날짜: {date}",
+    "period": "기간: {start} ~ {end}",
+    "cancel": "취소",
+    "save": "저장",
+    "delete": "삭제",
+    "edit": "수정"
+  },
+  "datePicker": {
+    "weekdays": "일,월,화,수,목,금,토",
+    "placeholder": "날짜를 선택하세요",
+    "yearMonth": "{year}년 {month}월"
+  },
+  "timePicker": {
+    "placeholder": "시간 선택"
+  },
+  "rank": {
+    "error": "등수 정보를 불러오지 못했습니다",
+    "empty": "아직 등수를 공지하지 않았습니다"
+  },
+  "intro": {
+    "nav": {
+      "main": "메인",
+      "about": "아이디어페스티벌이란?",
+      "winners": "수상작 모음",
+      "void": "VOID",
+      "projects": "프로젝트 둘러보기",
+      "signin": "로그인",
+      "openMenu": "메뉴 열기"
+    },
+    "footer": {
+      "description": "광주소프트웨어마이스터고 아이디어 페스티벌의 팀 구성부터 자료 제출, 평가, 점수 집계까지 전 과정을 하나로 통합한 운영 플랫폼이에요.",
+      "shortcuts": "바로가기",
+      "contact": "문의",
+      "school": "광주소프트웨어마이스터고등학교"
+    },
+    "landing": {
+      "hero": "아이디어가 현실이 되는 곳,<br></br> 광주소프트웨어마이스터고 아이디어 페스티벌",
+      "start": "시작하기 →",
+      "featuresTitle": "<hl>GIF</hl>가 도와드려요",
+      "featuresDesc": "팀 구성부터 자료 제출, 평가, 점수 집계까지 — 페스티벌 운영에 필요한 모든 기능을 하나의 플랫폼에 담았어요.",
+      "features": {
+        "team": {
+          "title": "팀 프로젝트 관리",
+          "desc": "팀 구성부터 프로젝트 진행 상황까지 한 곳에서 관리해요."
+        },
+        "submit": {
+          "title": "자료 제출",
+          "desc": "기획서·발표자료 등 모든 산출물을 온라인으로 제출해요."
+        },
+        "form": {
+          "title": "맞춤 양식",
+          "desc": "담당 선생님이 만든 양식에 맞춰 손쉽게 작성하고 제출해요."
+        },
+        "score": {
+          "title": "평가·점수 집계",
+          "desc": "영역별 평가와 점수 합산이 자동으로 이뤄져요."
+        },
+        "ai": {
+          "title": "AI 요약",
+          "desc": "프로젝트와 제출 답변을 AI가 요약해 심사를 빠르게 도와줘요."
+        },
+        "rank": {
+          "title": "등수 공지",
+          "desc": "집계가 끝나면 팀 등수를 공지로 확인할 수 있어요."
+        }
+      },
+      "stepsTitle": "이렇게 <hl>참여</hl>해요",
+      "stepsDesc": "팀 구성부터 발표·심사까지, 페스티벌은 이렇게 진행돼요.",
+      "steps": {
+        "team": {
+          "title": "팀 구성",
+          "desc": "함께할 팀원을 모으고 팀을 만들어 프로젝트를 등록해요."
+        },
+        "build": {
+          "title": "기획 · 개발",
+          "desc": "자유 주제로 아이디어를 구체화하고 직접 만들어요."
+        },
+        "submit": {
+          "title": "자료 제출",
+          "desc": "선생님이 만든 양식에 맞춰 산출물을 온라인으로 제출해요."
+        },
+        "present": {
+          "title": "발표 · 심사",
+          "desc": "완성한 결과물을 발표하고 부문별 심사를 받아요."
+        }
+      },
+      "ctaTitle": "지금, 당신의 아이디어를 시작하세요",
+      "ctaDesc": "GIF와 함께라면 준비부터 수상까지 한 걸음이에요."
+    },
+    "about": {
+      "title": "<hl>아이디어페스티벌</hl>이란?",
+      "intro1": "아이디어 페스티벌은 광주소프트웨어마이스터고 학생들이 팀을 이뤄 자유로운 주제로 프로젝트를 기획·개발하고, 그 결과물을 발표·심사받는 교내 최대 규모의 창작 축제입니다. 상상 속 아이디어를 직접 손으로 구현해 보며, 기획력과 개발 실력은 물론 팀으로 협업하는 경험까지 함께 쌓을 수 있어요.",
+      "intro2": "GIF(Gsm Idea Festival)는 기존의 수기 방식에서 벗어나 팀 구성부터 자료 제출, 평가, 점수 집계까지 전 과정을 하나의 플랫폼으로 통합해 운영 효율을 극대화합니다. 학생은 제출에만 집중하고, 선생님은 심사와 집계를 더 빠르고 정확하게 진행할 수 있어요.",
+      "stats": {
+        "teams": "참가 팀",
+        "students": "참가 학생",
+        "grades": "참가 학년",
+        "areas": "심사 영역"
+      },
+      "pointsTitle": "이런 점이 <hl>특별</hl>해요",
+      "points": {
+        "freeTopic": {
+          "title": "자유로운 주제",
+          "desc": "정해진 틀 없이 팀이 원하는 아이디어를 자유롭게 구현해요."
+        },
+        "teamProject": {
+          "title": "팀 프로젝트",
+          "desc": "기획부터 개발, 발표까지 팀원과 함께 하나의 결과물을 완성해요."
+        },
+        "areaReview": {
+          "title": "영역별 심사",
+          "desc": "전공중심영역·사회중심영역·보고서영역으로 나눠 평가해요."
+        },
+        "gradeAward": {
+          "title": "학년별 시상",
+          "desc": "1·2학년 각각 최우수·우수·장려상으로 우수 팀을 시상해요."
+        }
+      },
+      "scheduleTitle": "전체 <hl>일정</hl>",
+      "scheduleDesc": "집중 기간에는 정규 수업 없이 페스티벌 준비에만 집중해요.",
+      "schedule": {
+        "teamBuilding": "팀 조직",
+        "focus1": "1차 집중 기간",
+        "midterm": "중간 발표",
+        "focus2": "2차 집중 기간",
+        "final": "최종 발표",
+        "exhibition": "아이디어페스티벌 전시"
+      },
+      "focusNote": "수업 없이 페스티벌 준비에만 집중하는 기간"
+    },
+    "winners": {
+      "title": "2025 <hl>수상작</hl> 모음",
+      "subtitle": "지난 페스티벌을 빛낸 팀들을 소개해요. 학년을 선택해 확인해 보세요.",
+      "grade": "{grade}학년",
+      "rank": {
+        "grand": "최우수상",
+        "excellence": "우수상",
+        "encouragement": "장려상"
+      },
+      "desc": {
+        "story": "포트폴리오 및 블로그 작성에 익숙하지 않은 학생들이 AI의 도움으로 손쉽게 자신만의 글을 완성할 수 있도록 도와주고 이를 공유할 수 있는 플랫폼입니다.",
+        "gsmMarket": "GSM Market은 학생들이 직접 물건을 사고팔며 자유롭게 소통하는 교내 중심의 플리마켓 플랫폼입니다. 안 쓰는 물건에 새로운 가치를 더하고, 필요한 선후배 그리고 동기들과 따뜻한 교류를 나눌 수 있습니다.",
+        "codingGo": "누구나 쉽고 재미있게 코딩을 배우고, 꾸준한 학습을 통해 성장할 수 있도록 돕는 코딩 학습 플랫폼, Coding GO!",
+        "nochu": "AI 실시간 표정 인식을 통해 사용자의 현재 감정을 분석하여 최적의 맞춤형 음악을 추천하는 모바일 애플리케이션",
+        "dondon": "청소년들을 위한 경제/금융 플랫폼",
+        "aa": "개발자 전용 커피챗 네트워킹 플랫폼, \"아.아.\" 가볍게 만나서 기술과 커리어 이야기를 나눠보세요. 아.아.는 개발자들이 부담 없이 신뢰를 쌓아가는 새로운 네트워킹 문화를 만들어갑니다."
+      }
+    },
+    "void": {
+      "hero": "VOID에게 공백은 아무것도 없는 상태가 아니라,<br></br> <hl>무엇이든 담을 수 있는 가능성</hl>입니다.",
+      "intro1": "VOID는 프로젝트 중심으로 진행하는 웹 개발 동아리입니다.",
+      "intro2": "Front-end, Back-end, Design, DevOps 등 여러 전공 분야의 팀원들이 소속해 서로의 전공을 이해하고 협업하며 프로젝트를 진행합니다.",
+      "intro3": "VOID에 합류하면 과제 기반 학습과 프로젝트 경험을 통해 개발 역량을 키우고, 활발한 전공 공유를 통해 지속적으로 성장할 수 있습니다.",
+      "lead": "부장",
+      "visitGithub": "GitHub 방문",
+      "noGithub": "GitHub 미연결",
+      "membersTitle": "함께 만든 <hl>사람들</hl>",
+      "membersDesc": "카드를 누르면 각 팀원의 GitHub으로 이동해요.",
+      "contactTitle": "문의나 제안이 있으신가요?",
+      "contactDesc": "언제든 Team VOID에게 편하게 연락해 주세요."
+    }
+  },
+  "push": {
+    "enabled": "이 기기에서 알림을 받습니다.",
+    "permissionRequired": "브라우저에서 알림 권한을 허용해주세요.",
+    "enableError": "기기 알림을 켜지 못했습니다. 다시 시도해주세요.",
+    "disabled": "이 기기에서 알림을 끕니다.",
+    "disableError": "기기 알림을 끄지 못했습니다. 다시 시도해주세요.",
+    "blocked": "브라우저 설정에서 이 사이트의 알림 차단을 해제해주세요."
+  }
+}

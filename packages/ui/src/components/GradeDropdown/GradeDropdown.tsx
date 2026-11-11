@@ -1,14 +1,12 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useTranslations } from "next-intl";
 
 import Chevron from "../../svg/Chevron";
 import type { Grade } from "../GradeSelector/GradeSelector";
 
-const GRADE_OPTIONS: { value: Grade; label: string }[] = [
-  { value: 1, label: "1학년" },
-  { value: 2, label: "2학년" },
-];
+const GRADE_OPTIONS: Grade[] = [1, 2];
 
 interface GradeDropdownProps {
   grade: Grade;
@@ -19,6 +17,7 @@ export default function GradeDropdown({
   grade,
   onGradeChange,
 }: GradeDropdownProps) {
+  const t = useTranslations("grade");
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -36,8 +35,7 @@ export default function GradeDropdown({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [dropdownOpen]);
 
-  const selectedLabel =
-    GRADE_OPTIONS.find((o) => o.value === grade)?.label ?? "1학년";
+  const selectedLabel = t("label", { grade });
 
   return (
     <div className="relative" ref={dropdownRef}>
@@ -52,7 +50,7 @@ export default function GradeDropdown({
       </button>
       {dropdownOpen && (
         <ul className="absolute top-full left-0 z-20 mt-1 min-w-[100px] overflow-hidden rounded-lg bg-white shadow-[var(--shadow-new)]">
-          {GRADE_OPTIONS.map(({ value, label }) => (
+          {GRADE_OPTIONS.map((value) => (
             <li key={value}>
               <button
                 onClick={() => {
@@ -65,7 +63,7 @@ export default function GradeDropdown({
                     : "text-[var(--color-gray-600)] dark:text-gray-400"
                 }`}
               >
-                {label}
+                {t("label", { grade: value })}
               </button>
             </li>
           ))}

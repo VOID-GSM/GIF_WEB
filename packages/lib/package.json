@@ -5,11 +5,13 @@
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./cookie-keys": "./src/cookie-keys.ts"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.0.0",
     "axios": "^1.7.0",
+    "next-intl": "4.4.0",
     "sonner": "^2.0.7"
   },
   "devDependencies": {

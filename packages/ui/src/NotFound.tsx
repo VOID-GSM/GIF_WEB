@@ -1,9 +1,11 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 export default function NotFound() {
   const router = useRouter();
+  const t = useTranslations("notFound");
 
   return (
     <div className="fixed inset-0 flex flex-col items-center justify-center gap-4 px-6 text-center">
@@ -11,7 +13,7 @@ export default function NotFound() {
         404 ERROR
       </span>
       <p className="text-lg font-medium text-gray-700 sm:text-2xl">
-        죄송합니다. 페이지를 찾을 수 없습니다
+        {t("message")}
       </p>
       <div className="flex items-center">
         <button
@@ -19,7 +21,7 @@ export default function NotFound() {
           className="cursor-pointer border-none bg-transparent text-orange-600 underline"
           type="button"
         >
-          이전 페이지로 이동하기
+          {t("back")}
         </button>
       </div>
     </div>

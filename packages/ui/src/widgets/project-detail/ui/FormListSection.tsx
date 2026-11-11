@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import Chevron from "../../../svg/Chevron";
 
 interface FormListSectionForm {
@@ -56,17 +57,18 @@ export default function FormListSection({
   forms,
   onFormClick,
 }: FormListSectionProps) {
+  const t = useTranslations("projectDetail");
   const announced = forms.filter((form) => form.announced);
 
   return (
     <section className="flex flex-col gap-3 lg:min-h-0 lg:flex-1">
       <span className="text-xl font-semibold tracking-tight text-gray-600">
-        양식 제출 목록
+        {t("formList")}
       </span>
 
       {announced.length === 0 ? (
         <div className="rounded-xl bg-white px-6 py-10 text-center text-sm text-gray-500 shadow-[0_2px_8px_rgba(0,0,0,0.08)]">
-          아직 공지된 양식이 없습니다.
+          {t("noForms")}
         </div>
       ) : (
         // lg: 목록을 absolute로 띄워 좌측 컬럼 높이 계산에서 제외 → 우측 컬럼이 높이를 결정
@@ -104,10 +106,10 @@ export default function FormListSection({
                         }`}
                         aria-label={
                           form.deadlineComplied
-                            ? "준수"
+                            ? t("met")
                             : isOverdue(form.deadline)
-                              ? "미준수"
-                              : "대기"
+                              ? t("notMet")
+                              : t("pending")
                         }
                       />
                     </span>

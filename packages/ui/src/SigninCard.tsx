@@ -1,12 +1,20 @@
 "use client";
 
 import { ReactNode } from "react";
+import { useTranslations } from "next-intl";
 
 type SigninProvider = "datagsm" | "google";
 
 interface SigninCardProps {
   onLogin: () => void;
   provider?: SigninProvider;
+  // 두 번째 로그인 수단 (예: client 의 외부 방문객용 Google 로그인)
+  secondary?: {
+    provider: SigninProvider;
+    onLogin: () => void;
+    // 버튼 위에 붙는 안내 문구
+    caption?: string;
+  };
 }
 
 const GoogleLogo = () => (
@@ -39,34 +47,35 @@ const GoogleLogo = () => (
 const PROVIDER_CONFIG: Record<
   SigninProvider,
   {
-    description: string;
-    buttonLabel: string;
     buttonClassName: string;
     logo: ReactNode;
   }
 > = {
   datagsm: {
-    description: "DataGSM으로 안전하게 로그인하세요!",
-    buttonLabel: "DataGsm으로 로그인",
     buttonClassName:
       "bg-black text-white shadow-sm transition hover:bg-gray-800 active:scale-[0.99]",
     logo: <span className="datagsm-logo">D</span>,
   },
   google: {
-    description: "Google 계정으로 안전하게 로그인하세요!",
-    buttonLabel: "Google로 로그인",
     buttonClassName:
       "bg-white text-gray-700 border border-gray-200 shadow-[0_1px_3px_rgba(0,0,0,0.12)] transition hover:bg-gray-50 dark:hover:bg-gray-800 hover:shadow-[0_2px_6px_rgba(0,0,0,0.16)] active:scale-[0.99]",
     logo: <GoogleLogo />,
   },
 };
 
+const buttonBaseClassName =
+  "w-full md:w-[250px] h-7 rounded flex items-center justify-center gap-2.5 overflow-hidden cursor-pointer";
+
 export default function SigninCard({
   onLogin,
   provider = "datagsm",
+  secondary,
 }: SigninCardProps) {
-  const { description, buttonLabel, buttonClassName, logo } =
-    PROVIDER_CONFIG[provider];
+  const t = useTranslations("signin");
+  const { buttonClassName, logo } = PROVIDER_CONFIG[provider];
+  const description = t(`${provider}.description`);
+  const buttonLabel = t(`${provider}.button`);
+  const secondaryConfig = secondary && PROVIDER_CONFIG[secondary.provider];
 
   return (
     <div className="flex flex-col md:flex-row shadow-new rounded-[20px] overflow-hidden w-full max-w-[360px] md:max-w-none md:w-auto">
@@ -83,17 +92,13 @@ export default function SigninCard({
           />
           <div className="flex flex-col gap-3 md:gap-5">
             <p className="text-[12px] text-[#000000] dark:text-white">
-              GSM IdeaFestival 관리 시스템
+              {t("system")}
             </p>
             <p className="text-base font-semibold leading-normal text-[#000000] dark:text-white">
-              GIF를 통해 아이디어 페스티벌을
-              <br />
-              원할하게 진행하세요!
+              {t.rich("headline", { br: () => <br /> })}
             </p>
             <p className="hidden md:block text-[12px] text-[#7b7b7b] dark:text-gray-300 leading-normal">
-              프로젝트 보고서 제출부터 점수 관리, AI 요약 기능까지
-              <br />
-              아이디어 페스티벌 모든 진행을 GIF와 함께해요.
+              {t.rich("description", { br: () => <br /> })}
             </p>
           </div>
           <p className="text-[10px] text-[#9d9d9d] dark:text-gray-500 font-medium">Team.VOID</p>
@@ -103,17 +108,34 @@ export default function SigninCard({
       <div className="bg-white flex flex-col justify-center px-8 py-8 md:w-[333px] md:px-10 md:py-[50px]">
         <div className="flex flex-col gap-4 md:h-[252px] md:w-[253px] justify-center">
           <div className="flex flex-col gap-3">
-            <p className="text-base text-black">로그인</p>
+            <p className="text-base text-black">{t("title")}</p>
             <p className="text-[12px] text-gray-800">{description}</p>
           </div>
           <button
             type="button"
             onClick={onLogin}
-            className={`w-full md:w-[250px] h-7 rounded flex items-center justify-center gap-2.5 overflow-hidden cursor-pointer ${buttonClassName}`}
+            className={`${buttonBaseClassName} ${buttonClassName}`}
           >
             {logo}
             <span className="text-[12px] font-medium">{buttonLabel}</span>
           </button>
+          {secondary && secondaryConfig && (
+            <div className="flex flex-col gap-2 border-t border-gray-100 pt-4">
+              {secondary.caption && (
+                <p className="text-[11px] text-gray-500">{secondary.caption}</p>
+              )}
+              <button
+                type="button"
+                onClick={secondary.onLogin}
+                className={`${buttonBaseClassName} ${secondaryConfig.buttonClassName}`}
+              >
+                {secondaryConfig.logo}
+                <span className="text-[12px] font-medium">
+                  {t(`${secondary.provider}.button`)}
+                </span>
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>

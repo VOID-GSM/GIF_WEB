@@ -67,6 +67,13 @@
   --color-purple: #a991ff;
   --color-gray: var(--color-gray-400);
 
+  /* calendar ui */
+  --color-calendar-highlight: #fff2c2;
+  --color-calendar-accent: #695c4a;
+  --color-calendar-guide-bg: #fffae8;
+  --color-calendar-guide-border: #f0d98a;
+  --color-calendar-step-bg: #f5e4a8;
+
   /* font */
   --font-sans: "Pretendard", -apple-system, BlinkMacSystemFont, sans-serif;
   --font-righteous: "Righteous", cursive;

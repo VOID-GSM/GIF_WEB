@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import type { RelatedWork } from "@/entities/retrospective";
 
 interface RelatedWorkCardProps {
@@ -10,6 +11,7 @@ export default function RelatedWorkCard({
   work,
   onRemove,
 }: RelatedWorkCardProps) {
+  const t = useTranslations("retrospective.relatedWork");
   const badgeColor =
     work.type === "PR"
       ? "bg-purple-50 text-purple-700"
@@ -43,7 +45,7 @@ export default function RelatedWorkCard({
       href={work.url}
       target="_blank"
       rel="noreferrer noopener"
-      title="GitHub에서 열기"
+      title={t("openGithub")}
       className={`${cardClassName} cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-600`}
     >
       {info}
@@ -55,7 +57,7 @@ export default function RelatedWorkCard({
         <button
           type="button"
           onClick={onRemove}
-          aria-label={`#${work.number} ${work.title} 삭제`}
+          aria-label={t("remove", { number: work.number, title: work.title })}
           className="flex h-5 w-5 shrink-0 cursor-pointer items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-700 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-yellow-600"
         >
           ×

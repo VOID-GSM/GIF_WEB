@@ -1,3 +1,5 @@
+import { useTranslations } from "next-intl";
+
 interface DeadlineSummary {
   total: number;
   met: number;
@@ -32,24 +34,25 @@ function StatCard({ label, value, valueClassName }: StatCardProps) {
 export default function DeadlineStatusSection({
   summary,
 }: DeadlineStatusSectionProps) {
+  const t = useTranslations("projectDetail");
   return (
     <section className="flex flex-col gap-3">
       <span className="text-xl font-semibold tracking-tight text-gray-600">
-        마감 현황
+        {t("deadlineStatus")}
       </span>
       <div className="flex gap-3">
         <StatCard
-          label="전체"
+          label={t("total")}
           value={summary.total}
           valueClassName="text-gray-900"
         />
         <StatCard
-          label="준수"
+          label={t("met")}
           value={summary.met}
           valueClassName="text-success"
         />
         <StatCard
-          label="미준수"
+          label={t("notMet")}
           value={summary.notMet}
           valueClassName="text-orange-900"
         />

@@ -1,3 +1,5 @@
+import type { EngagementFields, RawEngagement } from "./engagement";
+
 export interface CreateProjectRequest {
   name: string;
   teamName: string;
@@ -39,7 +41,12 @@ export type GetMyProjectResponse = Project[];
 export const GRADES = [1, 2] as const;
 export type Grade = (typeof GRADES)[number];
 
-export interface FilteredProject {
+// 학년 필터 값 — "all"(전체 보기)은 필터 전용이라 프로젝트 생성용 Grade 타입과 분리한다.
+export type GradeFilterValue = Grade | "all";
+
+// isLiked: 비로그인 요청은 항상 false
+export interface FilteredProject
+  extends Pick<EngagementFields, "likeCount" | "isLiked" | "commentCount"> {
   id: number;
   name: string;
   teamName: string;
@@ -47,8 +54,8 @@ export interface FilteredProject {
   grade: Grade;
 }
 
-// GET /api/project/filter?grade= — 학년별 프로젝트 목록
-export type GetFilteredProjectsResponse = FilteredProject[];
+// GET /api/project/filter?grade= — 학년별 프로젝트 목록 (참여 지표 누락 가능)
+export type GetFilteredProjectsResponse = RawEngagement<FilteredProject>[];
 
 export interface ProjectMember {
   userId: number;
@@ -57,16 +64,33 @@ export interface ProjectMember {
   role: string;
 }
 
-// GET /api/project/{projectId} — 프로젝트 상세
-export interface ProjectDetail {
+// 비로그인·외부 사용자용 공개 응답의 팀원 — userId·학번이 빠진다.
+export interface PublicProjectMember {
+  name: string | null;
+  role: string;
+}
+
+interface ProjectDetailBase extends EngagementFields {
   id: number;
   name: string;
   teamName: string;
   description: string;
   logo: string;
   grade: number;
+}
+
+// GET /api/project/{projectId} — 교내 사용자(재학생·선생님)가 받는 프로젝트 상세
+export interface ProjectDetail extends ProjectDetailBase {
   members: ProjectMember[];
 }
+
+// GET /api/project/{projectId} — 비로그인·외부 사용자가 받는 공개 응답
+export interface PublicProjectDetail extends ProjectDetailBase {
+  members: PublicProjectMember[];
+}
+
+// 같은 API가 요청자에 따라 둘 중 하나로 응답한다.
+export type ProjectDetailResponse = ProjectDetail | PublicProjectDetail;
 
 // GET /api/project/{projectId}/summary — AI가 생성한 프로젝트 요약 (응답은 요약 문자열)
 export type ProjectSummaryResponse = string;
@@ -96,4 +120,3 @@ export interface UpdateProjectRequest {
   removeMemberIds: number[];
   logo?: File;
 }
-

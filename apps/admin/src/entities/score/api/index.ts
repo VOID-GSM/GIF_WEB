@@ -50,3 +50,4 @@ export const getAllProjectFieldAverages = () =>
 
 export const postScorePeriod = (body: PostScorePeriodRequest) =>
   apiClient.post<void>("/api/score/period", body);
+export * from "./criteria";

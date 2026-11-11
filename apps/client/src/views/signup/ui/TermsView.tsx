@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -12,16 +13,21 @@ import {
   usePostClientInfo,
   type ClientRole,
 } from "@/entities/signup";
-import { COOKIE_KEYS } from "@/shared/constants";
-import { setCookie } from "@/shared/utils";
+import { COOKIE_KEYS, SEARCH_PARAM_KEYS } from "@/shared/constants";
+import { buildSignupPath, sanitizeReturnPath, setCookie } from "@/shared/utils";
 
 export default function TermsView() {
+  const t = useTranslations("auth.signup");
   const router = useRouter();
   const searchParams = useSearchParams();
   const { mutate, isPending } = usePostClientInfo();
   const [agreed, setAgreed] = useState(false);
 
   const clientRole = searchParams.get("role") as ClientRole | null;
+  // 로그인 전에 보던 페이지 — 가입을 마치면 이곳으로 돌아간다.
+  const returnTo = sanitizeReturnPath(
+    searchParams.get(SEARCH_PARAM_KEYS.REDIRECT),
+  );
 
   const { data: me, isLoading: isMeLoading } = useGetMe();
   const alreadySignedUp = !!me?.clientRole;
@@ -29,11 +35,11 @@ export default function TermsView() {
   // 이미 가입한 사용자는 홈으로, 역할 정보 없이 직접 접근하면 회원가입으로 돌려보낸다.
   useEffect(() => {
     if (alreadySignedUp) {
-      router.replace("/");
+      router.replace(returnTo ?? "/");
     } else if (!clientRole) {
-      router.replace("/signup");
+      router.replace(buildSignupPath(returnTo));
     }
-  }, [alreadySignedUp, clientRole, router]);
+  }, [alreadySignedUp, clientRole, returnTo, router]);
 
   const handleSubmit = () => {
     if (!clientRole || !agreed) return;
@@ -42,9 +48,9 @@ export default function TermsView() {
       {
         onSuccess: () => {
           setCookie(COOKIE_KEYS.CLIENT_ROLE, clientRole);
-          router.replace("/");
+          router.replace(returnTo ?? "/");
         },
-        onError: () => toast.error("회원가입에 실패했습니다. 다시 시도해주세요."),
+        onError: () => toast.error(t("error")),
       },
     );
   };
@@ -78,7 +84,7 @@ export default function TermsView() {
                 : "bg-gray-400 cursor-not-allowed"
             }`}
           >
-            완료
+            {t("complete")}
           </button>
         </div>
       </div>

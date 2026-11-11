@@ -68,6 +68,7 @@ export { default as Plus } from "./svg/Plus";
 export { default as Upload } from "./svg/Upload";
 export { default as File } from "./svg/File";
 export { default as Color } from "./svg/Color";
+export { default as Coin } from "./svg/Coin";
 export { default as Crown } from "./svg/Crown";
 export { default as Festival } from "./svg/Festival";
 export { default as GeneralSubject } from "./svg/GeneralSubject";
@@ -100,6 +101,7 @@ export type { StyleOption } from "./components/Dropdown/StyleDropdown";
 export { ThemeProvider, useTheme } from "./widgets/Theme/model/ThemeContext";
 export { default as ThemeScript } from "./widgets/Theme/ui/ThemeScript";
 export { default as ThemeToggle } from "./widgets/Theme/ui/ThemeToggle";
+export { default as LanguageToggle } from "./widgets/Language/ui/LanguageToggle";
 export type { ThemeMode, ResolvedTheme } from "./widgets/Theme/model/type";
 
 export { default as RankView } from "./views/RankView";

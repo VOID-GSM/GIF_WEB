@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 
 import { useGetMe } from "@/entities/auth";
@@ -13,6 +14,7 @@ interface ProjectEditViewProps {
 
 // 수정 페이지 — 생성 페이지와 동일한 폼 레이아웃, 완료 시 상세로 복귀
 export default function ProjectEditView({ projectId }: ProjectEditViewProps) {
+  const t = useTranslations("project.detail");
   const router = useRouter();
 
   const { data: project, isPending, isError } = useGetProject(projectId);
@@ -23,7 +25,7 @@ export default function ProjectEditView({ projectId }: ProjectEditViewProps) {
     return (
       <div className="flex min-h-dvh items-center justify-center bg-background px-4">
         <p className="text-[14px] text-gray-600">
-          {isError ? "프로젝트를 불러오지 못했습니다." : "불러오는 중..."}
+          {isError ? t("loadError") : t("loading")}
         </p>
       </div>
     );

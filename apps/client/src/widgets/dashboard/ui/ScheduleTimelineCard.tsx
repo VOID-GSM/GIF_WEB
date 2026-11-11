@@ -1,11 +1,13 @@
+import { useTranslations } from "next-intl";
 interface ScheduleStep {
   id: string;
   date: string;
   /** 상태 계산용 ISO 날짜 (하루짜리 일정이면 endDate와 동일). */
   startDate: string;
   endDate: string;
+  /** intro.about.schedule.* 번역 키 */
   label: string;
-  /** 집중 기간처럼 안내 문구가 필요한 항목에만 채운다. 강조 중일 때만 노출된다. */
+  /** intro.about.* 번역 키. 집중 기간처럼 안내 문구가 필요한 항목에만 채운다. 강조 중일 때만 노출된다. */
   description?: string;
 }
 
@@ -15,58 +17,62 @@ const SCHEDULE_STEPS: ScheduleStep[] = [
     date: "5.27 - 6.13",
     startDate: "2026-05-27",
     endDate: "2026-06-13",
-    label: "팀 조직",
+    label: "teamBuilding",
   },
   {
     id: "2",
     date: "7.06 - 7.10",
     startDate: "2026-07-06",
     endDate: "2026-07-10",
-    label: "1차 집중 기간",
-    description: "수업 없이 페스티벌 준비에만 집중하는 기간",
+    label: "focus1",
+    description: "focusNote",
   },
   {
     id: "3",
     date: "7.15",
     startDate: "2026-07-15",
     endDate: "2026-07-15",
-    label: "중간 발표",
+    label: "midterm",
   },
   {
     id: "4",
     date: "12.21 - 12.25",
     startDate: "2026-12-21",
     endDate: "2026-12-25",
-    label: "2차 집중 기간",
-    description: "수업 없이 페스티벌 준비에만 집중하는 기간",
+    label: "focus2",
+    description: "focusNote",
   },
   {
     id: "5",
     date: "12.28",
     startDate: "2026-12-28",
     endDate: "2026-12-28",
-    label: "최종 발표",
+    label: "final",
   },
   {
     id: "6",
     date: "12.28 - 12.29",
     startDate: "2026-12-28",
     endDate: "2026-12-29",
-    label: "아이디어페스티벌 전시",
+    label: "exhibition",
   },
 ];
 
 export default function ScheduleTimelineCard() {
   const todayStr = new Date().toLocaleDateString("sv-SE");
+  const t = useTranslations("intro.about");
 
   return (
     <section className="w-full rounded-xl bg-white p-6 shadow-[0_2px_6px_rgba(0,0,0,0.15)]">
       <h2 className="flex items-center gap-1.5 text-[15px] font-bold text-gray-900">
-        전체
-        <span className="rounded-md bg-yellow-200 px-1.5 py-0.5 dark:text-yellow-200">일정</span>
+        {t.rich("scheduleTitle", {
+          hl: (chunks) => (
+            <span className="rounded-md bg-yellow-200 px-1.5 py-0.5 dark:text-yellow-200">{chunks}</span>
+          ),
+        })}
       </h2>
       <p className="mt-1.5 text-[12px] text-gray-400">
-        집중 기간에는 정규 수업 없이 페스티벌 준비에만 집중해요.
+        {t("scheduleDesc")}
       </p>
 
       <ol className="mt-4 flex flex-col">
@@ -101,11 +107,11 @@ export default function ScheduleTimelineCard() {
                       : "font-medium text-gray-600"
                   }`}
                 >
-                  {step.label}
+                  {t(`schedule.${step.label}`)}
                 </span>
                 {highlighted && step.description && (
                   <span className="text-[12px] text-gray-400">
-                    {step.description}
+                    {t(step.description)}
                   </span>
                 )}
               </div>

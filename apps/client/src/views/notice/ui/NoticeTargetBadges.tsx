@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import { getNoticeTargetLabels } from "@/entities/notice";
 
 interface NoticeTargetBadgesProps {
@@ -9,7 +10,11 @@ export default function NoticeTargetBadges({
   targetGrades,
   targetTeamNames,
 }: NoticeTargetBadgesProps) {
-  const labels = getNoticeTargetLabels(targetGrades, targetTeamNames);
+  const t = useTranslations("notice.target");
+  const labels = getNoticeTargetLabels(targetGrades, targetTeamNames, {
+    grade: (grade) => t("grade", { grade }),
+    all: t("all"),
+  });
 
   return (
     <div className="flex flex-wrap items-center gap-1">

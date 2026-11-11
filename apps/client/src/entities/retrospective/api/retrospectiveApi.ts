@@ -60,7 +60,7 @@ interface ServerBookmarkToggleResponse {
   isBookmarked: boolean;
 }
 
-const categoryToServer: Record<RetrospectiveCategory, ServerCategory> = {
+export const categoryToServer: Record<RetrospectiveCategory, ServerCategory> = {
   FEATURE: "FEATURE_DEV",
   IMPROVEMENT: "FEATURE_IMPROVEMENT",
   REFACTORING: "REFACTORING",
