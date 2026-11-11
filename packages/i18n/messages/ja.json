@@ -51,8 +51,9 @@
     "titlePlaceholder": "フォームのタイトルを入力してください",
     "contentPlaceholder": "内容を入力してください"
   },
-  "grade": {
-    "label": "{grade}年生"
+    "grade": {
+    "label": "{grade}年生",
+    "all": "全体"
   },
   "fileUpload": {
     "upload": "ファイルをアップロード"

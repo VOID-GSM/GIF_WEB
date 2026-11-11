@@ -14,6 +14,7 @@ import {
   useStoredGrade,
 } from "@/entities/project";
 import GradeFilter from "@/features/project-filter/ui/GradeFilter";
+import { getEmptyMessageKey } from "@/features/project-filter/lib/getEmptyMessage";
 import {
   PUBLIC_HOME_PATH,
   REDIRECT_REASONS,
@@ -50,10 +51,10 @@ export default function PublicProjectListView() {
     isPending,
     isError,
   } = useGetFilteredProjects(grade ?? GRADES[0], grade !== null);
-  // 서버가 grade로 거르지 않고 전체를 반환하므로 선택 학년으로 한 번 더 거른다
-  const visibleProjects = projects?.filter(
-    (project) => project.grade === grade,
-  );
+  // 서버가 선택한 학년으로 거른 목록을 내려준다 (전체는 grade 없이 요청해 모든 학년을 받는다)
+  // 전체를 볼 때 학년이 섞이므로 학년 순으로 정렬한다
+  const visibleProjects = projects?.slice().sort((a, b) => a.grade - b.grade);
+  const emptyKey = getEmptyMessageKey(grade);
 
   const sideCard = isGuest ? (
     <SigninPromptCard />
@@ -88,7 +89,7 @@ export default function PublicProjectListView() {
               <p className="text-gray-600">{t("loadError")}</p>
             ) : !visibleProjects || visibleProjects.length === 0 ? (
               <p className="w-full py-20 text-center text-gray-600">
-                {t("emptyGrade")}
+                {t(emptyKey)}
               </p>
             ) : (
               <div className="grid w-full max-w-[1000px] grid-cols-[repeat(auto-fill,224px)] justify-start gap-6">

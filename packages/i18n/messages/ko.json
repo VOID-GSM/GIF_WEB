@@ -51,8 +51,9 @@
     "titlePlaceholder": "양식의 제목을 입력하세요",
     "contentPlaceholder": "내용을 입력하세요"
   },
-  "grade": {
-    "label": "{grade}학년"
+    "grade": {
+    "label": "{grade}학년",
+    "all": "전체"
   },
   "fileUpload": {
     "upload": "파일 업로드"

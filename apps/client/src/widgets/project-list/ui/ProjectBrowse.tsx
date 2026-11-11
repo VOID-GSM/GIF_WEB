@@ -11,6 +11,7 @@ import {
   useStoredGrade,
 } from "@/entities/project";
 import GradeFilter from "@/features/project-filter/ui/GradeFilter";
+import { getEmptyMessageKey } from "@/features/project-filter/lib/getEmptyMessage";
 import DeadlineCountdownCard from "@/widgets/dashboard/ui/DeadlineCountdownCard";
 import NoticeBanner from "@/widgets/dashboard/ui/NoticeBanner";
 import ScheduleTimelineCard from "@/widgets/dashboard/ui/ScheduleTimelineCard";
@@ -30,19 +31,17 @@ export default function ProjectBrowse() {
     isPending,
     isError,
   } = useGetFilteredProjects(grade ?? GRADES[0], grade !== null);
-  // 서버가 grade로 거르지 않고 전체를 반환하므로 선택 학년으로 한 번 더 거른다
-  // 내가 속한 팀(프로젝트)을 맨 앞으로 정렬한다
-  const visibleProjects = projects
-    ?.filter((project) => project.grade === grade)
-    .slice()
-    .sort((a, b) => {
-      const aMine = a.id === myProjectId ? 0 : 1;
-      const bMine = b.id === myProjectId ? 0 : 1;
-      return aMine - bMine;
-    });
+  // 서버가 선택한 학년으로 거른 목록을 내려준다 (전체는 grade 없이 요청해 모든 학년을 받는다)
+  // 내가 속한 팀(프로젝트)을 맨 앞에 두고, 나머지는 학년 순으로 정렬한다
+  const visibleProjects = projects?.slice().sort((a, b) => {
+    const aMine = a.id === myProjectId ? 0 : 1;
+    const bMine = b.id === myProjectId ? 0 : 1;
+    return aMine - bMine || a.grade - b.grade;
+  });
   const myProject = visibleProjects?.find(
     (project) => project.id === myProjectId,
   );
+  const emptyKey = getEmptyMessageKey(grade);
 
   if (grade === null) {
     return (
@@ -84,9 +83,7 @@ export default function ProjectBrowse() {
 
             {showAll &&
               (!visibleProjects || visibleProjects.length === 0 ? (
-                <p className="text-gray-600">
-                  {t("emptyGrade")}
-                </p>
+                <p className="text-gray-600">{t(emptyKey)}</p>
               ) : (
                 <div className="grid w-full grid-cols-[repeat(auto-fill,224px)] justify-start gap-6">
                   {visibleProjects.map((project) => (
@@ -114,7 +111,7 @@ export default function ProjectBrowse() {
           <p className="text-gray-600">{t("loadError")}</p>
         ) : !visibleProjects || visibleProjects.length === 0 ? (
           <p className="w-full pt-70 text-center text-gray-600">
-            {t("emptyGrade")}
+            {t(emptyKey)}
           </p>
         ) : (
           <div className="grid w-full max-w-[1000px] grid-cols-[repeat(auto-fill,224px)] justify-start gap-6">
