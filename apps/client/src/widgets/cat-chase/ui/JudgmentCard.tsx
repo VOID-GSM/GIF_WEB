@@ -23,8 +23,8 @@ const CAT_IMAGE: Record<CatColor, string> = {
   blue: `${ASSET}/question-cat-blue.svg`,
 };
 
-// 남은 시간 표시를 갱신하는 간격(ms)
-const TICK_MS = 100;
+// 남은 초 표시를 갱신하는 간격(ms). 막대는 CSS 애니메이션으로 줄어든다.
+const TICK_MS = 250;
 
 interface JudgmentCardProps {
   cat: CatColor;
@@ -49,42 +49,43 @@ export default function JudgmentCard({
   const [confidence, setConfidence] = useState<CatChaseConfidence | null>(
     null,
   );
-  const [remainingMs, setRemainingMs] = useState(timeLimitMs);
+  const [isTimeUp, setIsTimeUp] = useState(false);
   // 제출이나 시간 초과 중 먼저 일어난 쪽만 처리한다.
   const settledRef = useRef(false);
+  const deadlineRef = useRef(0);
   const onTimeoutRef = useRef(onTimeout);
 
   useEffect(() => {
     onTimeoutRef.current = onTimeout;
   });
 
+  const settleTimeout = () => {
+    setIsTimeUp(true);
+    if (settledRef.current) return;
+    settledRef.current = true;
+    onTimeoutRef.current();
+  };
+
   useEffect(() => {
-    const startedAt = Date.now();
-    const timer = setInterval(() => {
-      const left = Math.max(0, timeLimitMs - (Date.now() - startedAt));
-      setRemainingMs(left);
-      if (left > 0) return;
-      clearInterval(timer);
-      if (settledRef.current) return;
-      settledRef.current = true;
-      onTimeoutRef.current();
-    }, TICK_MS);
-    return () => clearInterval(timer);
+    deadlineRef.current = Date.now() + timeLimitMs;
+    const timer = setTimeout(settleTimeout, timeLimitMs);
+    return () => clearTimeout(timer);
   }, [timeLimitMs]);
 
-  const isTimeUp = remainingMs <= 0;
   const canSubmit = !!judgment && !!confidence && !disabled && !isTimeUp;
   const catLabel = CAT_COLOR_LABELS[cat];
 
   const handleSubmit = () => {
     if (!judgment || !confidence || settledRef.current) return;
+    // 탭이 가려져 타이머가 늦게 돌아도, 제한 시간이 지났으면 시간 초과로 처리한다.
+    if (Date.now() >= deadlineRef.current) return settleTimeout();
     settledRef.current = true;
     onSubmit(judgment, confidence);
   };
 
   return (
     <section className="animate-pop-in flex w-full max-w-[800px] flex-col items-center rounded-[20px] border border-gray-300 bg-white px-5 py-[clamp(16px,3dvh,32px)] md:px-10">
-      <AnswerTimer remainingMs={remainingMs} timeLimitMs={timeLimitMs} />
+      <AnswerTimer timeLimitMs={timeLimitMs} paused={!!disabled} />
 
       <h2 className="mt-[2dvh] text-center text-[clamp(20px,3.2dvh,34px)] font-medium leading-none tracking-[-0.03em] text-black">
         {catLabel}는 쥐를 잡았을까요?
@@ -191,15 +192,29 @@ export default function JudgmentCard({
 }
 
 // 남은 시간을 막대와 초로 보여준다. 3초 이하로 남으면 빨갛게 바꿔 알린다.
+// 제출 중(paused)에는 시간 초과로 오해하지 않도록 그 자리에서 멈춘다.
 function AnswerTimer({
-  remainingMs,
   timeLimitMs,
+  paused,
 }: {
-  remainingMs: number;
   timeLimitMs: number;
+  paused: boolean;
 }) {
-  const seconds = Math.ceil(remainingMs / 1000);
-  const ratio = timeLimitMs > 0 ? remainingMs / timeLimitMs : 0;
+  const [seconds, setSeconds] = useState(Math.ceil(timeLimitMs / 1000));
+  const startedAtRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    startedAtRef.current ??= Date.now();
+    if (paused) return;
+    const startedAt = startedAtRef.current;
+    const timer = setInterval(() => {
+      const left = Math.max(0, timeLimitMs - (Date.now() - startedAt));
+      setSeconds(Math.ceil(left / 1000));
+      if (left <= 0) clearInterval(timer);
+    }, TICK_MS);
+    return () => clearInterval(timer);
+  }, [timeLimitMs, paused]);
+
   const isUrgent = seconds <= 3;
 
   return (
@@ -213,10 +228,13 @@ function AnswerTimer({
         className="h-2 flex-1 overflow-hidden rounded-full bg-gray-200"
       >
         <div
-          className={`h-full rounded-full transition-[width] duration-100 ease-linear ${
+          className={`animate-timer-shrink h-full rounded-full ${
             isUrgent ? "bg-red" : "bg-yellow-600"
           }`}
-          style={{ width: `${ratio * 100}%` }}
+          style={{
+            animationDuration: `${timeLimitMs}ms`,
+            animationPlayState: paused ? "paused" : "running",
+          }}
         />
       </div>
       <span
