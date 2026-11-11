@@ -16,6 +16,7 @@
     "retrospective": "振り返り",
     "assessment": "能力検査",
     "thyn": "Thynカスタマイズ",
+    "mypage": "マイページ",
     "projects": "プロジェクト",
     "signin": "ログイン",
     "logout": "ログアウト"
@@ -53,7 +54,7 @@
     "titlePlaceholder": "フォームのタイトルを入力してください",
     "contentPlaceholder": "内容を入力してください"
   },
-    "grade": {
+  "grade": {
     "label": "{grade}年生",
     "all": "全体"
   },
@@ -143,7 +144,8 @@
     "noForms": "まだ公開されたフォームはありません。",
     "projectName": "プロジェクト名",
     "teamName": "チーム名",
-    "members": "メンバー"
+    "members": "メンバー",
+    "aiTranslated": "AI翻訳"
   },
   "calendarEvent": {
     "titlePlaceholder": "予定を入力してください",

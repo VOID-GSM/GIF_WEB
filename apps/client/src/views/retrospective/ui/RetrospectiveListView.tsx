@@ -30,7 +30,7 @@ export default function RetrospectiveListView() {
     keyword: debouncedKeyword,
     sort,
     bookmarkedOnly,
-    mineOnly,
+    mine: mineOnly,
   });
 
   return (

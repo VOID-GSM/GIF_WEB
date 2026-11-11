@@ -815,10 +815,104 @@
         "label": "역할"
       },
       "myProfile": "내 프로필",
+      "mypage": "마이페이지",
       "loading": "불러오는 중...",
       "loadError": "프로필 정보를 불러오지 못했습니다.",
       "team": "소속 팀",
       "logout": "로그아웃"
+    }
+  },
+  "mypage": {
+    "title": "마이페이지",
+    "loading": "불러오는 중...",
+    "loadError": "마이페이지 정보를 불러오지 못했어요.",
+    "toast": {
+      "profileSaved": "프로필을 저장했어요.",
+      "profileSaveError": "프로필을 저장하지 못했어요.",
+      "imageChanged": "프로필 이미지를 바꿨어요.",
+      "imageUploadError": "프로필 이미지를 올리지 못했어요.",
+      "imageDeleted": "프로필 이미지를 삭제했어요.",
+      "imageDeleteError": "프로필 이미지를 삭제하지 못했어요.",
+      "linkAdded": "링크를 추가했어요.",
+      "linkAddError": "링크를 추가하지 못했어요.",
+      "linkUpdated": "링크를 수정했어요.",
+      "linkUpdateError": "링크를 수정하지 못했어요.",
+      "linkDeleted": "링크를 삭제했어요.",
+      "linkDeleteError": "링크를 삭제하지 못했어요."
+    },
+    "profile": {
+      "imageAlt": "{name} 프로필 이미지",
+      "changeImage": "이미지 변경",
+      "uploading": "올리는 중...",
+      "deleteImage": "삭제",
+      "invalidImageType": "png, jpg, webp 이미지만 올릴 수 있어요.",
+      "imageTooLarge": "{size}MB 이하 이미지만 올릴 수 있어요.",
+      "gradeClass": "{grade}학년 {classNo}반",
+      "teams": "소속 팀",
+      "noTeams": "소속된 팀이 없어요.",
+      "role": {
+        "LEADER": "팀장",
+        "MEMBER": "팀원"
+      }
+    },
+    "detail": {
+      "title": "전공 · 기술 스택",
+      "edit": "수정",
+      "major": "전공",
+      "majorPlaceholder": "예: 백엔드",
+      "techStacks": "기술 스택",
+      "techStackCount": "기술 스택 ({count}/{max})",
+      "stackPlaceholder": "예: Spring, React",
+      "add": "추가",
+      "cancel": "취소",
+      "save": "저장",
+      "saving": "저장 중...",
+      "stackTooLong": "기술 스택은 {max}자 이하여야 해요.",
+      "stackLimit": "기술 스택은 최대 {max}개까지 등록할 수 있어요.",
+      "removeStack": "{stack} 삭제"
+    },
+    "links": {
+      "title": "개인 링크",
+      "add": "+ 추가",
+      "empty": "포트폴리오, 블로그 같은 개인 사이트를 추가해 보세요.",
+      "name": "이름",
+      "optional": "(선택)",
+      "namePlaceholder": "예: 블로그, 포트폴리오",
+      "url": "주소",
+      "invalidUrl": "http:// 또는 https:// 로 시작하는 주소를 입력해 주세요.",
+      "cancel": "취소",
+      "save": "저장",
+      "edit": "수정",
+      "delete": "삭제",
+      "deleteConfirm": "이 링크를 삭제할까요?"
+    },
+    "activity": {
+      "tabs": {
+        "retrospective": "내 회고록",
+        "bookmark": "북마크",
+        "assessment": "역량검사",
+        "thyn": "Thyn 꾸미기",
+        "comment": "작성한 댓글",
+        "like": "좋아요"
+      },
+      "loading": "불러오는 중...",
+      "retrospectiveError": "회고록을 불러오지 못했어요.",
+      "noMine": "아직 작성한 회고록이 없어요.",
+      "noBookmark": "북마크한 회고록이 없어요.",
+      "assessmentError": "역량검사 기록을 불러오지 못했어요.",
+      "noAssessment": "아직 응시한 역량검사가 없어요.",
+      "catChase": "고양이 술래잡기",
+      "viewAllRecords": "전체 기록 보기",
+      "correctCount": "{correct} / {total} 정답",
+      "inProgress": "진행 중",
+      "earnedCoin": "+{coin}코인",
+      "stopped": "중단",
+      "thynError": "Thyn 아이템을 불러오지 못했어요.",
+      "goDecorate": "꾸미러 가기",
+      "ownedCount": "구매한 아이템 {count}개",
+      "noOwned": "아직 구매한 아이템이 없어요.",
+      "commentComingSoon": "작성한 댓글 목록은 준비 중이에요.",
+      "likeComingSoon": "좋아요한 프로젝트 목록은 준비 중이에요."
     }
   }
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { Logout } from "@repo/ui";
 import { useGetMyInfo } from "@/entities/mypage";
@@ -37,7 +38,15 @@ export default function ProfileSummaryCard() {
 
   return (
     <section className="w-full rounded-xl bg-white p-6 shadow-[0_2px_6px_rgba(0,0,0,0.15)]">
-      <span className="text-[13px] font-medium text-gray-400">{t("myProfile")}</span>
+      <div className="flex items-center justify-between">
+        <span className="text-[13px] font-medium text-gray-400">{t("myProfile")}</span>
+        <Link
+          href="/mypage"
+          className="text-[13px] font-medium text-gray-400 transition-colors hover:text-gray-700"
+        >
+          {t("mypage")}
+        </Link>
+      </div>
 
       {loading ? (
         <p className="mt-4 text-[14px] text-gray-500">{t("loading")}</p>

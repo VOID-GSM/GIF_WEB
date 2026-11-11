@@ -13,6 +13,7 @@ import {
   useStartAssessmentRound,
   type AssessmentType,
 } from "@/entities/assessment";
+import { useAuthSession } from "@/entities/auth";
 import {
   AssessmentRankingCard,
   AssessmentTypeCard,
@@ -24,6 +25,7 @@ import {
 export default function AssessmentView() {
   const t = useTranslations("assessment.setup");
   const router = useRouter();
+  const { isExternal } = useAuthSession();
   const [type, setType] = useState<AssessmentType | null>(null);
   const [count, setCount] = useState(DEFAULT_QUESTION_COUNT);
 
@@ -113,7 +115,8 @@ export default function AssessmentView() {
 
           {/* 사이드 */}
           <aside className="flex flex-col gap-5">
-            <GithubCoinCard />
+            {/* GitHub 연동은 재학생 전용 — 외부 사용자는 역량검사로만 코인을 얻는다 */}
+            {!isExternal && <GithubCoinCard />}
             <AssessmentRankingCard questionCount={count} selectedType={type} />
           </aside>
         </div>

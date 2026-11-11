@@ -14,7 +14,7 @@ interface AuthSessionValue {
 export interface AuthSession extends AuthSessionValue {
   // 비로그인 사용자
   isGuest: boolean;
-  // 외부 사용자(Google 로그인) — 공개 페이지·좋아요·댓글만 이용
+  // 외부 사용자(Google 로그인) — 공개 페이지·좋아요·댓글·역량검사·Thyn 꾸미기만 이용
   isExternal: boolean;
   // 팀 프로젝트 관리·양식 작성 등 교내 기능을 쓸 수 있는 사용자
   canManageTeam: boolean;

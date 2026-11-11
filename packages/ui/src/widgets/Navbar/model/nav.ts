@@ -23,4 +23,5 @@ export const CLIENT_NAV_ITEMS: NavItem[] = [
   { labelKey: "inquiry", path: "/inquiry" },
   { labelKey: "assessment", path: "/assessment" },
   { labelKey: "thyn", path: "/thyn" },
+  { labelKey: "mypage", path: "/mypage" },
 ];

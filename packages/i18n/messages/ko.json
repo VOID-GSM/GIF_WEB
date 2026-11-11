@@ -16,6 +16,7 @@
     "retrospective": "회고록",
     "assessment": "역량검사",
     "thyn": "Thyn 꾸미기",
+    "mypage": "마이페이지",
     "projects": "프로젝트",
     "signin": "로그인",
     "logout": "로그아웃"
@@ -53,7 +54,7 @@
     "titlePlaceholder": "양식의 제목을 입력하세요",
     "contentPlaceholder": "내용을 입력하세요"
   },
-    "grade": {
+  "grade": {
     "label": "{grade}학년",
     "all": "전체"
   },
@@ -143,7 +144,8 @@
     "noForms": "아직 공지된 양식이 없습니다.",
     "projectName": "프로젝트명",
     "teamName": "팀명",
-    "members": "팀원"
+    "members": "팀원",
+    "aiTranslated": "AI 번역"
   },
   "calendarEvent": {
     "titlePlaceholder": "일정을 입력해 주세요",

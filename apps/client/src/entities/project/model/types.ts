@@ -75,6 +75,9 @@ interface ProjectDetailBase extends EngagementFields {
   name: string;
   teamName: string;
   description: string;
+  // ?lang=ja 로 조회했을 때 description 이 AI 일본어 번역문이면 true.
+  // 번역이 아직 없거나 실패하면 한국어 원문과 함께 false 로 온다.
+  descriptionTranslated?: boolean;
   logo: string;
   grade: number;
 }
