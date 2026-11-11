@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import { Close } from "@repo/ui";
 import { resolveColor, type CalendarEvent } from "../model/type";
 
@@ -21,6 +22,7 @@ export default function EventViewModal({
   onEdit,
   onDelete,
 }: EventViewModalProps) {
+  const t = useTranslations("calendarEvent");
   const colorVar = resolveColor(event.color);
   const isSameDay = event.startDate === event.endDate;
 
@@ -52,8 +54,11 @@ export default function EventViewModal({
 
           <div className="text-right text-gray-500 text-[10px]">
             {isSameDay
-              ? `날짜: ${formatMonthDay(event.startDate)}`
-              : `기간: ${formatMonthDay(event.startDate)} ~ ${formatMonthDay(event.endDate)}`}
+              ? t("date", { date: formatMonthDay(event.startDate) })
+              : t("period", {
+                  start: formatMonthDay(event.startDate),
+                  end: formatMonthDay(event.endDate),
+                })}
           </div>
 
           {editable && (
@@ -63,14 +68,14 @@ export default function EventViewModal({
                 onClick={onDelete}
                 className="flex-1 py-[7px] rounded-[4px] text-[12px] font-semibold text-red-500 border border-red-500 cursor-pointer"
               >
-                삭제
+                {t("delete")}
               </button>
               <button
                 type="button"
                 onClick={onEdit}
                 className="flex-1 py-[7px] rounded-[4px] text-[12px] font-semibold text-black border border-yellow-600 cursor-pointer"
               >
-                수정
+                {t("edit")}
               </button>
             </div>
           )}

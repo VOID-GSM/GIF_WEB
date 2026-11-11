@@ -4,11 +4,13 @@ import { AREA_LABELS, type ScoreArea } from "@/entities/score";
 interface Props {
   onBack: () => void;
   teamName?: string;
-  area: string;
+  area?: string;
+  /** 영역 배지 문구를 직접 지정 (항목 기반 채점 등 기존 3개 영역이 아닌 화면) */
+  label?: string;
 }
 
-export default function ScoreAreaHeader({ onBack, teamName, area }: Props) {
-  const areaLabel = AREA_LABELS[area as ScoreArea];
+export default function ScoreAreaHeader({ onBack, teamName, area, label }: Props) {
+  const areaLabel = label ?? AREA_LABELS[area as ScoreArea];
   return (
     <div className="w-full max-w-[980px] mx-auto flex flex-col gap-1">
       <button

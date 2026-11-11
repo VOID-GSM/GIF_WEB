@@ -29,6 +29,7 @@ export { useGetFilteredProjects } from "./hooks/useGetFilteredProjects";
 export { useStoredGrade } from "./hooks/useStoredGrade";
 export { default as ProjectCard } from "./ui/ProjectCard";
 export { GRADES } from "./model/types";
+export type { EngagementFields } from "./model/engagement";
 export { projectQueryKeys } from "./model/queryKeys";
 export type {
   CreateProjectRequest,

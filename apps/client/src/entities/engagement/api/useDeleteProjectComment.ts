@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { isAxiosError } from "axios";
 import { toast } from "sonner";
@@ -9,12 +10,11 @@ import { engagementQueryKeys } from "../model/queryKeys";
 import type { ProjectEngagementFields } from "../model/types";
 import { deleteProjectComment } from "./engagementApi";
 
-const getErrorMessage = (error: unknown) =>
-  isAxiosError(error) && error.response?.status === 403
-    ? "본인 댓글만 삭제할 수 있습니다."
-    : "댓글 삭제에 실패했습니다.";
+const isForbidden = (error: unknown) =>
+  isAxiosError(error) && error.response?.status === 403;
 
 export function useDeleteProjectComment(projectId: number) {
+  const t = useTranslations("comment.toast");
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -35,10 +35,10 @@ export function useDeleteProjectComment(projectId: number) {
         ...project,
         commentCount: Math.max(0, project.commentCount - 1),
       }));
-      toast.success("댓글이 삭제되었습니다.");
+      toast.success(t("deleted"));
     },
     onError: (error) => {
-      toast.error(getErrorMessage(error));
+      toast.error(isForbidden(error) ? t("deleteForbidden") : t("deleteError"));
     },
   });
 }

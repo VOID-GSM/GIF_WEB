@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { isAxiosError } from "axios";
 import { toast } from "sonner";
@@ -12,20 +13,21 @@ import type {
 } from "../model/types";
 import { createProjectComment } from "./engagementApi";
 
-const RATE_LIMIT_MESSAGE =
-  "댓글을 너무 자주 작성하고 있습니다. 잠시 후 다시 시도해주세요.";
-
-const getErrorMessage = (error: unknown) => {
+const getErrorMessage = (
+  error: unknown,
+  messages: { rateLimit: string; fallback: string },
+) => {
   if (
     isAxiosError<{ message?: string }>(error) &&
     error.response?.status === 429
   ) {
-    return error.response.data?.message || RATE_LIMIT_MESSAGE;
+    return error.response.data?.message || messages.rateLimit;
   }
-  return "댓글 등록에 실패했습니다.";
+  return messages.fallback;
 };
 
 export function useCreateProjectComment(projectId: number) {
+  const t = useTranslations("comment.toast");
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -43,10 +45,15 @@ export function useCreateProjectComment(projectId: number) {
         ...project,
         commentCount: project.commentCount + 1,
       }));
-      toast.success("댓글이 등록되었습니다.");
+      toast.success(t("created"));
     },
     onError: (error) => {
-      toast.error(getErrorMessage(error));
+      toast.error(
+        getErrorMessage(error, {
+          rateLimit: t("rateLimit"),
+          fallback: t("createError"),
+        }),
+      );
     },
   });
 }

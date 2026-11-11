@@ -5,6 +5,7 @@ import {
   useMutation,
   useQueryClient,
 } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 
 import { patchNotificationRead } from "./api";
@@ -18,6 +19,7 @@ const NOTIFICATION_UNREAD_COUNT_KEY = [...NOTIFICATION_QUERY_KEY, "unread-count"
 
 export function useReadNotification() {
   const queryClient = useQueryClient();
+  const t = useTranslations("notification");
 
   return useMutation({
     mutationFn: patchNotificationRead,
@@ -52,7 +54,7 @@ export function useReadNotification() {
       context?.previous.forEach(([queryKey, data]) => {
         queryClient.setQueryData(queryKey, data);
       });
-      toast.error("알림을 읽음 처리하지 못했어요.");
+      toast.error(t("readError"));
     },
     // 배지 숫자는 서버 기준이어야 해서 안 읽은 개수만 다시 불러온다.
     onSettled: () => {

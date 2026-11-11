@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { ChangeEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -30,6 +31,7 @@ interface MyInquiryEditViewProps {
 export default function MyInquiryEditView({
   inquiryId,
 }: MyInquiryEditViewProps) {
+  const t = useTranslations("inquiry.form");
   const router = useRouter();
   const { data, isPending: isLoading, isError } =
     useGetMyInquiryDetail(inquiryId);
@@ -52,7 +54,7 @@ export default function MyInquiryEditView({
     const selected = e.target.files?.[0];
     if (!selected) return;
     if (selected.size > MAX_FILE_SIZE) {
-      toast.error("파일 용량이 커서 업로드할 수 없습니다. (최대 10MB)");
+      toast.error(t("tooLarge"));
       e.target.value = "";
       return;
     }
@@ -67,7 +69,7 @@ export default function MyInquiryEditView({
     const trimmedContent = content.trim();
 
     if (!trimmedTitle || !trimmedContent) {
-      toast.error("제목과 내용을 입력해주세요.");
+      toast.error(t("titleContentRequired"));
       return;
     }
 
@@ -100,28 +102,28 @@ export default function MyInquiryEditView({
             direction="left"
             className="h-3.5 w-3.5 transition-transform group-hover:-translate-x-0.5"
           />
-          문의 상세
+          {t("detail")}
         </button>
 
         {isLoading ? (
           <p className="py-16 text-center text-[13px] font-medium text-gray-400">
-            불러오는 중
+            {t("loading")}
           </p>
         ) : isError || !data ? (
           <p className="py-16 text-center text-[13px] font-medium text-red-500">
-            문의 내용을 불러오지 못했습니다.
+            {t("loadError")}
           </p>
         ) : data.status !== "PENDING" ? (
           <div className="flex flex-col items-center gap-4 py-16">
             <p className="text-center text-[13px] font-medium text-gray-500">
-              답변이 완료된 문의는 수정할 수 없습니다.
+              {t("answeredLocked")}
             </p>
             <button
               type="button"
               onClick={() => router.push(`/inquiry/my/${inquiryId}`)}
               className="h-10 cursor-pointer rounded-[10px] bg-yellow-600 px-5 text-[13px] font-semibold text-gray-900 transition-all hover:bg-yellow-400 active:scale-[0.98]"
             >
-              상세로 돌아가기
+              {t("backToDetail")}
             </button>
           </div>
         ) : (
@@ -129,10 +131,10 @@ export default function MyInquiryEditView({
             {/* 헤더 */}
             <div className="mt-2.5 border-b border-gray-200 pb-4">
               <h1 className="text-[19px] font-semibold tracking-[-0.3px] text-gray-900">
-                문의 수정하기
+                {t("editTitle")}
               </h1>
               <p className="mt-1 text-[13px] leading-relaxed text-gray-500">
-                등록한 문의 내용을 수정할 수 있습니다.
+                {t("editDesc")}
               </p>
             </div>
 
@@ -142,7 +144,7 @@ export default function MyInquiryEditView({
               <div className="flex flex-col gap-1.5">
                 <div className="flex items-center justify-between">
                   <label className="text-[13px] font-medium text-gray-700">
-                    제목
+                    {t("title")}
                   </label>
                   <span
                     className={`text-[11px] font-medium ${
@@ -155,7 +157,7 @@ export default function MyInquiryEditView({
                   </span>
                 </div>
                 <Input
-                  title="제목을 입력하세요"
+                  title={t("titlePlaceholder")}
                   value={title}
                   onChange={(e) =>
                     setTitle(e.target.value.slice(0, MAX_TITLE_LENGTH))
@@ -177,7 +179,7 @@ export default function MyInquiryEditView({
                           : "text-gray-400 hover:text-gray-600"
                       }`}
                     >
-                      작성
+                      {t("write")}
                     </button>
                     <button
                       type="button"
@@ -188,7 +190,7 @@ export default function MyInquiryEditView({
                           : "text-gray-400 hover:text-gray-600"
                       }`}
                     >
-                      미리보기
+                      {t("preview")}
                     </button>
                   </div>
                   <span
@@ -207,13 +209,13 @@ export default function MyInquiryEditView({
                       <Markdown content={content} />
                     ) : (
                       <p className="text-[13px] text-gray-400">
-                        미리볼 내용이 없습니다.
+                        {t("emptyPreview")}
                       </p>
                     )}
                   </div>
                 ) : (
                   <Textarea
-                    title="문의 내용을 자세히 입력해주세요 (마크다운 문법 지원)"
+                    title={t("contentPlaceholder")}
                     value={content}
                     onChange={(e) =>
                       setContent(e.target.value.slice(0, MAX_CONTENT_LENGTH))
@@ -227,19 +229,19 @@ export default function MyInquiryEditView({
               {/* 첨부파일 */}
               <div className="flex flex-col gap-1.5">
                 <label className="text-[13px] font-medium text-gray-700">
-                  첨부파일
+                  {t("attachment")}
                   <span className="ml-1 text-[12px] font-normal text-gray-400">
-                    (선택)
+                    {t("optional")}
                   </span>
                 </label>
                 {/* 기존 첨부파일 안내 (새 파일을 고르지 않은 경우) */}
                 {!file && data.filePath && (
                   <p className="text-[12px] text-gray-500">
-                    기존 첨부파일:{" "}
+                    {t("existingAttachment")}{" "}
                     <span className="font-medium text-gray-700">
                       {data.originalFileName ??
                         data.filePath.split("/").pop() ??
-                        "첨부파일"}
+                        t("attachment")}
                     </span>
                   </p>
                 )}
@@ -260,7 +262,7 @@ export default function MyInquiryEditView({
                       type="button"
                       onClick={() => setFile(null)}
                       disabled={isPending}
-                      aria-label="첨부파일 제거"
+                      aria-label={t("removeAttachment")}
                       className="shrink-0 cursor-pointer text-gray-400 transition-colors hover:text-gray-700 disabled:cursor-not-allowed disabled:opacity-50"
                     >
                       <Close width={13} height={13} />
@@ -283,8 +285,8 @@ export default function MyInquiryEditView({
                     <Upload className="h-4 w-4 text-gray-400 transition-colors group-hover:text-yellow-700" />
                     <span className="text-[12px] font-medium text-gray-500 transition-colors group-hover:text-gray-700 dark:group-hover:text-gray-200">
                       {data.filePath
-                        ? "클릭하여 새 파일로 교체 (최대 10MB)"
-                        : "클릭하여 파일 첨부 (최대 10MB)"}
+                        ? t("replaceHint")
+                        : t("attachHint")}
                     </span>
                   </label>
                 )}
@@ -298,7 +300,7 @@ export default function MyInquiryEditView({
                 onClick={() => router.push(`/inquiry/my/${inquiryId}`)}
                 className="h-10 cursor-pointer rounded-[10px] px-4 text-[13px] font-medium text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-800"
               >
-                취소
+                {t("cancel")}
               </button>
               <button
                 type="button"
@@ -306,7 +308,7 @@ export default function MyInquiryEditView({
                 disabled={isPending}
                 className="h-10 cursor-pointer rounded-[10px] bg-yellow-600 px-5 text-[13px] font-semibold text-gray-900 transition-all hover:bg-yellow-400 active:scale-[0.98] disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400 disabled:active:scale-100"
               >
-                {isPending ? "수정 중..." : "수정 완료"}
+                {isPending ? t("updating") : t("update")}
               </button>
             </div>
           </>

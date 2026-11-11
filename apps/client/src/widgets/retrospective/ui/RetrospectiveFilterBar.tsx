@@ -1,8 +1,9 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import {
-  CATEGORY_FILTER_OPTIONS,
-  SORT_OPTIONS,
+  CATEGORY_FILTER_VALUES,
+  SORT_VALUES,
   type RetrospectiveCategoryFilter,
   type RetrospectiveSort,
 } from "@/entities/retrospective";
@@ -33,30 +34,36 @@ export default function RetrospectiveFilterBar({
   mineOnly,
   onMineOnlyChange,
 }: RetrospectiveFilterBarProps) {
+  const t = useTranslations("retrospective.filter");
+  const tr = useTranslations("retrospective");
+  const sortOptions = SORT_VALUES.map((value) => ({
+    value,
+    label: tr(`sort.${value}`),
+  }));
   return (
     <div className="flex flex-col gap-3">
       {/* 카테고리 필터 */}
       <div
         role="group"
-        aria-label="카테고리 필터"
+        aria-label={t("categoryLabel")}
         className="flex flex-wrap gap-1.5"
       >
-        {CATEGORY_FILTER_OPTIONS.map((option) => {
-          const isActive = option.value === category;
+        {CATEGORY_FILTER_VALUES.map((value) => {
+          const isActive = value === category;
 
           return (
             <button
-              key={option.value}
+              key={value}
               type="button"
               aria-pressed={isActive}
-              onClick={() => onCategoryChange(option.value)}
+              onClick={() => onCategoryChange(value)}
               className={`cursor-pointer rounded-full border px-3 py-1.5 text-[13px] font-medium transition-all duration-150 hover:scale-105 active:brightness-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-600 ${
                 isActive
                   ? "border-yellow-600 bg-yellow-50 text-yellow-700"
                   : "border-gray-200 bg-white text-gray-500 hover:border-gray-300 hover:text-gray-700"
               }`}
             >
-              {option.label}
+              {tr(`category.${value}`)}
             </button>
           );
         })}
@@ -66,28 +73,28 @@ export default function RetrospectiveFilterBar({
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
         <div className="flex-1">
           <label htmlFor="retrospective-search" className="sr-only">
-            회고록 검색
+            {t("searchLabel")}
           </label>
           <input
             id="retrospective-search"
             type="search"
             value={keyword}
             onChange={(e) => onKeywordChange(e.target.value)}
-            placeholder="제목이나 내용으로 검색하세요"
+            placeholder={t("searchPlaceholder")}
             className="w-full rounded-[10px] border border-gray-200 bg-white px-4 py-2.5 text-[13px] font-medium text-black outline-none transition-colors placeholder:text-gray-400 focus:border-yellow-600"
           />
         </div>
 
         <div className="shrink-0 sm:w-[130px]">
           <label htmlFor="retrospective-sort" className="sr-only">
-            정렬 기준
+            {t("sortLabel")}
           </label>
           <CustomSelect
             id="retrospective-sort"
             value={sort}
-            options={SORT_OPTIONS}
+            options={sortOptions}
             onChange={onSortChange}
-            ariaLabel="정렬 기준"
+            ariaLabel={t("sortLabel")}
             size="lg"
           />
         </div>
@@ -114,7 +121,7 @@ export default function RetrospectiveFilterBar({
           >
             <path d="M6 4h12v16l-6-4-6 4V4z" />
           </svg>
-          북마크만
+          {t("bookmarkedOnly")}
         </button>
 
         <button
@@ -127,7 +134,7 @@ export default function RetrospectiveFilterBar({
               : "border-gray-200 bg-white text-gray-500 hover:border-gray-300 hover:text-gray-700"
           }`}
         >
-          내 회고
+          {t("mineOnly")}
         </button>
       </div>
     </div>

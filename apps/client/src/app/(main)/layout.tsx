@@ -10,7 +10,7 @@ import Script from "next/script";
 
 // 비로그인·외부 사용자는 공개 프로젝트 목록만 이용한다.
 const PUBLIC_NAV_ITEMS: NavItem[] = [
-  { label: "프로젝트", path: PUBLIC_HOME_PATH },
+  { labelKey: "projects", path: PUBLIC_HOME_PATH },
 ];
 
 export default async function MainLayout({
@@ -57,6 +57,7 @@ export default async function MainLayout({
         navItems={isPublicOnly ? PUBLIC_NAV_ITEMS : CLIENT_NAV_ITEMS}
         isGuest={!isLoggedIn}
         homePath={isPublicOnly ? PUBLIC_HOME_PATH : "/"}
+        showLanguageToggle
       />
       <main className="md:pl-[220px]">{children}</main>
     </AuthSessionProvider>

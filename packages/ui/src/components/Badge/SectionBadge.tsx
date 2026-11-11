@@ -1,3 +1,5 @@
+import { useTranslations } from "next-intl";
+
 type SectionType = "major" | "report" | "social";
 type SectionVariant = "active" | "inactive" | "unscored";
 
@@ -19,19 +21,14 @@ const sizeStyles: Record<"md" | "sm", { wrap: string; text: string }> = {
   sm: { wrap: "py-[2px] px-[10px]", text: "text-[12px]" },
 };
 
-const DEFAULT_LABELS: Record<SectionType, string> = {
-  major: "전공 중심 영역",
-  report: "보고서 영역",
-  social: "사회 중심 영역",
-};
-
 export default function SectionBadge({ status, variant, label, size = "md" }: SectionBadgeProps) {
+  const t = useTranslations("badge.section");
   const { wrap, text } = variantStyles[variant];
   const sizeCx = sizeStyles[size];
   return (
     <div className={`flex items-center w-fit border rounded-full ${sizeCx.wrap} ${wrap}`}>
       <span className={`font-semibold whitespace-nowrap ${sizeCx.text} ${text}`}>
-        {label ?? DEFAULT_LABELS[status]}
+        {label ?? t(status)}
       </span>
     </div>
   );

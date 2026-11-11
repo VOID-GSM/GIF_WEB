@@ -1,14 +1,16 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const TABS = [
-  { label: "문의하기", href: "/inquiry" },
-  { label: "내 문의 내역", href: "/inquiry/my" },
+  { labelKey: "create", href: "/inquiry" },
+  { labelKey: "my", href: "/inquiry/my" },
 ];
 
 export default function InquiryTabs() {
+  const t = useTranslations("inquiry.tabs");
   const pathname = usePathname();
 
   return (
@@ -29,7 +31,7 @@ export default function InquiryTabs() {
                 : "text-gray-400 hover:text-gray-600"
             }`}
           >
-            {tab.label}
+            {t(tab.labelKey)}
             {isActive && (
               // 라우트 이동마다 새로 마운트되므로 CSS 애니메이션이 매번 자동 재생된다.
               <span className="animate-tab-underline absolute inset-x-0 -bottom-px h-[2px] origin-center rounded-full bg-yellow-600" />

@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { Markdown } from "@repo/ui";
@@ -22,6 +23,7 @@ export default function RetrospectiveEditor({
   onChange,
   onModeChange,
 }: RetrospectiveEditorProps) {
+  const t = useTranslations("retrospective.editor");
   const [mode, setMode] = useState<EditorMode>("write");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -35,7 +37,7 @@ export default function RetrospectiveEditor({
 
   const applyItem = (item: ToolbarItem) => {
     if (item.disabled) {
-      toast.info("이미지 추가 기능은 아직 준비 중이에요.");
+      toast.info(t("imageComingSoon"));
       return;
     }
 
@@ -85,14 +87,14 @@ export default function RetrospectiveEditor({
         {mode !== "preview" && (
           <div>
             <label htmlFor="retrospective-content" className="sr-only">
-              회고록 내용
+              {t("contentLabel")}
             </label>
             <textarea
               id="retrospective-content"
               ref={textareaRef}
               value={value}
               onChange={(e) => onChange(e.target.value)}
-              placeholder="마크다운으로 자유롭게 기록해보세요."
+              placeholder={t("contentPlaceholder")}
               className={`thin-scrollbar w-full resize-none rounded-[10px] border border-gray-200 bg-white px-4 py-3 text-[13px] leading-relaxed font-medium text-black outline-none transition-colors placeholder:text-gray-400 focus:border-yellow-600 ${
                 mode === "split" ? "h-[420px]" : "h-[560px]"
               }`}
@@ -110,7 +112,7 @@ export default function RetrospectiveEditor({
               <Markdown content={value} />
             ) : (
               <p className="text-[13px] text-gray-400">
-                미리볼 내용이 없습니다.
+                {t("emptyPreview")}
               </p>
             )}
           </div>

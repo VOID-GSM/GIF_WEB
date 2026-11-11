@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 
 import { formatTimestamp } from "@/entities/form/lib/formatDeadline";
@@ -25,6 +26,7 @@ function toTime(createdAt: unknown) {
 }
 
 export default function NoticeBanner() {
+  const t = useTranslations("dashboard.notice");
   // 내 학년·팀이 대상인 공지만 대상으로 한다 (서버는 전체 목록을 내려준다)
   const { data } = useVisibleNotices();
 
@@ -46,7 +48,7 @@ export default function NoticeBanner() {
         className="flex min-w-0 flex-1 flex-col gap-0.5"
       >
         <span className="text-[12px] text-gray-500">
-          공지 · {formatDate(latestNotice.createdAt)}
+          {t("label", { date: formatDate(latestNotice.createdAt) })}
         </span>
         <span className="truncate text-[15px] font-semibold text-gray-900">
           {latestNotice.title}
@@ -57,7 +59,7 @@ export default function NoticeBanner() {
         href="/notice"
         className="shrink-0 self-center text-[12px] text-gray-500 transition-colors hover:text-gray-700"
       >
-        전체 보기 ›
+        {t("showAll")}
       </Link>
     </section>
   );

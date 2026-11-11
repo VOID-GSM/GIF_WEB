@@ -2,9 +2,6 @@ export type AssessmentType = "cat-chase" | "road-making";
 
 export interface AssessmentMeta {
   type: AssessmentType;
-  title: string;
-  ability: string;
-  description: string;
   image: string;
   tone: "yellow" | "orange";
   // 검사 진행 페이지(/assessment/[type])가 준비됐는지

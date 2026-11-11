@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 
 import type { TermsSection } from "../model/terms";
@@ -14,6 +15,7 @@ export default function TermsAgreement({
   terms,
   onRequiredAgreedChange,
 }: TermsAgreementProps) {
+  const t = useTranslations("auth.terms");
   const [checked, setChecked] = useState<Record<string, boolean>>({});
 
   const allChecked = terms.every((term) => checked[term.id]);
@@ -53,7 +55,7 @@ export default function TermsAgreement({
           onChange={toggleAll}
           className="w-[14px] h-[14px] accent-[#ffee30]"
         />
-        <span className="text-[12px] font-medium text-black">전체 동의</span>
+        <span className="text-[12px] font-medium text-black">{t("agreeAll")}</span>
       </label>
 
       <div className="h-px w-full bg-gray-200" />
@@ -69,14 +71,14 @@ export default function TermsAgreement({
                 className="w-[14px] h-[14px] accent-[#ffee30]"
               />
               <span className="text-[12px] text-black">
-                {term.title}{" "}
+                {t(`${term.id}.title`)}{" "}
                 <span className="text-gray-500">
-                  ({term.required ? "필수" : "선택"})
+                  ({term.required ? t("required") : t("optional")})
                 </span>
               </span>
             </label>
             <div className="max-h-[120px] overflow-y-auto rounded border border-gray-200 p-2 text-[10px] leading-[15px] text-gray-600 whitespace-pre-line">
-              {term.content}
+              {t(`${term.id}.content`)}
             </div>
           </div>
         ))}

@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
@@ -7,6 +8,7 @@ import type { ProjectLinkRequest } from "../model/types";
 import { createProjectLink } from "./projectLinkApi";
 
 export function useCreateProjectLink(projectId: number) {
+  const t = useTranslations("project.toast");
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -16,10 +18,10 @@ export function useCreateProjectLink(projectId: number) {
       queryClient.invalidateQueries({
         queryKey: ["project", "links", projectId],
       });
-      toast.success("링크가 추가되었습니다.");
+      toast.success(t("linkCreated"));
     },
     onError: () => {
-      toast.error("링크 추가에 실패했습니다.");
+      toast.error(t("linkCreateError"));
     },
   });
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, type ReactNode } from "react";
+import { useTranslations } from "next-intl";
 
 import {
   AI_ASSIST_MAX_CONTENT_LENGTH,
@@ -48,17 +49,14 @@ function SparkleIcon() {
   );
 }
 
-const AI_ACTIONS: {
-  key: RetrospectiveAiAction;
-  label: string;
-  icon: ReactNode;
-}[] = [
-  { key: "polish", label: "내용 다듬기", icon: <PencilIcon /> },
-  { key: "structure", label: "구조 추천", icon: <StructureIcon /> },
-  { key: "portfolio", label: "포트폴리오로 변환", icon: <PortfolioIcon /> },
+const AI_ACTIONS: { key: RetrospectiveAiAction; icon: ReactNode }[] = [
+  { key: "polish", icon: <PencilIcon /> },
+  { key: "structure", icon: <StructureIcon /> },
+  { key: "portfolio", icon: <PortfolioIcon /> },
 ];
 
 interface AiAssistPanelProps {
+  /** 좁고 긴 세로 카드 대신, 넓은 폭에서 버튼을 가로로 나열한다 (같이 보기 모드용) */
   compact?: boolean;
   content: string;
   /** 작성 화면에서 한 번만 만든 AI 도움 상태 (보기 모드가 바뀌어도 유지) */
@@ -70,6 +68,7 @@ export default function AiAssistPanel({
   content,
   assist,
 }: AiAssistPanelProps) {
+  const t = useTranslations("retrospective.ai");
   const {
     isPending,
     result,
@@ -93,19 +92,27 @@ export default function AiAssistPanel({
     >
       <div className={compact ? "sm:mr-1 sm:shrink-0" : ""}>
         <div className="flex items-center gap-2">
-          <span className="animate-sparkle inline-block text-yellow-500"><SparkleIcon /></span>
-          <h2 className="text-[15px] font-bold text-gray-900">AI 도움받기</h2>
+          <span className="animate-sparkle inline-block text-yellow-500">
+            <SparkleIcon />
+          </span>
+          <h2 className="text-[15px] font-bold text-gray-900">
+            {t("title")}
+          </h2>
         </div>
         {!compact && (
           <p className="mt-2 text-[12px] leading-relaxed font-medium text-gray-600">
-            AI가 작성한 초안을 확인하고
-            <br />
-            원하는 경우 본문에 적용할 수 있어요.
+            {t.rich("description", { br: () => <br /> })}
           </p>
         )}
       </div>
 
-      <div className={compact ? "flex flex-1 flex-wrap gap-1.5" : "mt-1 flex flex-col gap-2"}>
+      <div
+        className={
+          compact
+            ? "flex flex-1 flex-wrap gap-1.5"
+            : "mt-1 flex flex-col gap-2"
+        }
+      >
         {AI_ACTIONS.map((action) => {
           const disabled = isPending || isAiContentTooShort(action.key, content);
           return (
@@ -114,10 +121,12 @@ export default function AiAssistPanel({
               type="button"
               onClick={() => requestAssist(action.key)}
               disabled={disabled}
-              className={`flex items-center gap-2 rounded-[10px] border border-gray-200 bg-white font-medium text-gray-800 shadow-sm transition-all duration-150 hover:border-yellow-600 hover:bg-yellow-50 hover:text-yellow-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-600 disabled:cursor-not-allowed disabled:opacity-50 ${compact ? "px-3 py-1.5 text-[13px]" : "px-3.5 py-3 text-[13px]"}`}
+              className={`flex cursor-pointer items-center gap-2 rounded-[10px] border border-gray-200 bg-white font-medium text-gray-800 shadow-sm transition-all duration-150 hover:-translate-y-0.5 hover:border-yellow-600 hover:bg-yellow-50 hover:text-yellow-700 hover:shadow active:brightness-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-600 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0 ${
+                compact ? "px-3 py-1.5 text-[13px]" : "px-3.5 py-3 text-[13px]"
+              }`}
             >
               <span className="text-gray-500">{action.icon}</span>
-              {isPending ? "생성 중…" : action.label}
+              {isPending ? t("generating") : t(`actions.${action.key}`)}
             </button>
           );
         })}
@@ -125,19 +134,23 @@ export default function AiAssistPanel({
 
       {hasShortContentAction && !isPending && (
         <p className="text-[12px] text-gray-500">
-          본문을 {AI_ASSIST_MIN_CONTENT_LENGTH}자 이상 쓰면 다듬기와 포트폴리오 변환을 쓸 수 있어요.
+          {t("minContentHint", { min: AI_ASSIST_MIN_CONTENT_LENGTH })}
         </p>
       )}
       {isContentTooLong && (
         <p className="text-[12px] text-red-600" role="alert">
-          본문이 {AI_ASSIST_MAX_CONTENT_LENGTH.toLocaleString()}자를 넘었습니다. 분량을 줄여 주세요.
+          {t("tooLong", { max: AI_ASSIST_MAX_CONTENT_LENGTH })}
         </p>
       )}
-      {isPending && <p className="text-[12px] text-gray-500" role="status">AI가 결과를 만들고 있습니다…</p>}
+      {isPending && (
+        <p className="text-[12px] text-gray-500" role="status">
+          {t("pending")}
+        </p>
+      )}
 
       {result && (
         <AiResultModal
-          title={`${AI_ACTIONS.find((action) => action.key === result.action)?.label} 결과 미리보기`}
+          title={t("result.title", { action: t(`actions.${result.action}`) })}
           sections={result.data.sections}
           content={result.data.content}
           isContentChanged={isContentChangedSinceRequest}
@@ -167,6 +180,8 @@ function AiResultModal({
   onClose,
   onApply,
 }: AiResultModalProps) {
+  const t = useTranslations("retrospective.ai.result");
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
@@ -195,7 +210,7 @@ function AiResultModal({
         <div className="thin-scrollbar mt-4 flex-1 overflow-y-auto">
           {sections && sections.length > 0 && (
             <div className="mb-4">
-              <p className="text-[13px] font-semibold text-gray-600">추천 목차</p>
+              <p className="text-[13px] font-semibold text-gray-600">{t("sections")}</p>
               <ol className="mt-2 list-inside list-decimal space-y-1 text-[15px] text-gray-800">
                 {sections.map((section, index) => <li key={`${section}-${index}`}>{section}</li>)}
               </ol>
@@ -208,13 +223,15 @@ function AiResultModal({
 
         {isContentChanged && (
           <p className="mt-3 text-[13px] text-red-600" role="alert">
-            요청 후 본문이 수정되었습니다. 적용하면 그 뒤에 쓴 내용이 이 결과로 바뀝니다.
+            {t("contentChanged")}
           </p>
         )}
         <div className="mt-4 flex justify-end gap-2">
-          <button type="button" onClick={onClose} className="rounded-[10px] border border-gray-200 px-4 py-2.5 text-[14px] font-medium text-gray-700 hover:bg-gray-100">취소</button>
+          <button type="button" onClick={onClose} className="rounded-[10px] border border-gray-200 px-4 py-2.5 text-[14px] font-medium text-gray-700 hover:bg-gray-100">
+            {t("cancel")}
+          </button>
           <button type="button" onClick={onApply} className="rounded-[10px] bg-yellow-500 px-4 py-2.5 text-[14px] font-semibold text-gray-900 hover:bg-yellow-400">
-            {isContentChanged ? "그래도 적용" : "본문에 적용"}
+            {isContentChanged ? t("applyAnyway") : t("apply")}
           </button>
         </div>
       </section>

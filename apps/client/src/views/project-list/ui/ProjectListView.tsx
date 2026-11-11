@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 
 import { useGetMyProject } from "@/entities/project";
@@ -10,6 +11,7 @@ import ProjectBrowse from "@/widgets/project-list/ui/ProjectBrowse";
 import ProjectListEmpty from "@/widgets/project-list/ui/ProjectListEmpty";
 
 export default function ProjectListView() {
+  const t = useTranslations("project.list");
   const router = useRouter();
   const role = (getCookie(COOKIE_KEYS.CLIENT_ROLE) as ClientRole) ?? "MEMBER";
   const { data: myProjects, isPending, isError } = useGetMyProject();
@@ -19,10 +21,10 @@ export default function ProjectListView() {
     return (
       <div className="flex min-h-dvh flex-col items-center justify-center bg-background px-4">
         {isPending ? (
-          <p className="py-20 text-center text-gray-500">불러오는 중...</p>
+          <p className="py-20 text-center text-gray-500">{t("loading")}</p>
         ) : isError ? (
           <p className="py-20 text-center text-gray-500">
-            프로젝트 정보를 불러오지 못했습니다.
+            {t("infoLoadError")}
           </p>
         ) : (
           <ProjectListEmpty

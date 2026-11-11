@@ -15,7 +15,7 @@ export function useIncreaseProjectView(projectId: number) {
     onSuccess: ({ views }) => {
       queryClient.setQueriesData<ProjectEngagementFields>(
         { queryKey: engagementQueryKeys.projectDetail(projectId) },
-        (old) => (old ? { ...old, viewCount: views } : old),
+        (old) => (old ? { ...old, viewCount: views ?? old.viewCount } : old),
       );
     },
     onError: () => {},
