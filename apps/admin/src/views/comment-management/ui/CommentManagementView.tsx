@@ -24,7 +24,12 @@ const SELECT_CLASS =
   "h-9 max-w-full cursor-pointer rounded-[8px] border border-gray-300 bg-white px-2.5 text-[13px] text-gray-700 outline-none focus:border-yellow-600 dark:bg-gray-900 dark:text-gray-200";
 
 export default function CommentManagementView() {
-  const { data: myInfo, isLoading: isMyInfoLoading } = useGetMyInfo();
+  const {
+    data: myInfo,
+    isLoading: isMyInfoLoading,
+    isError: isMyInfoError,
+    refetch: refetchMyInfo,
+  } = useGetMyInfo();
   // 댓글 관리는 VOID 권한 계정(또는 운영 계정)만 사용한다.
   const isVoid =
     myInfo?.adminRole === "VOID" || myInfo?.email === PRIVILEGED_ADMIN_EMAIL;
@@ -94,6 +99,24 @@ export default function CommentManagementView() {
     return (
       <div className="flex min-h-dvh items-center justify-center bg-background">
         <p className="text-[13px] font-medium text-gray-400">불러오는 중</p>
+      </div>
+    );
+  }
+
+  // 내 정보 조회가 실패하면 권한을 판단할 수 없으므로 권한 없음 대신 재시도를 안내한다.
+  if (isMyInfoError) {
+    return (
+      <div className="flex min-h-dvh flex-col items-center justify-center gap-3 bg-background px-4">
+        <p className="text-[13px] font-medium text-red-500">
+          계정 정보를 불러오지 못했습니다.
+        </p>
+        <button
+          type="button"
+          onClick={() => refetchMyInfo()}
+          className="h-8 cursor-pointer rounded-[8px] border border-gray-300 px-3 text-[12px] font-medium text-gray-700 transition-colors hover:bg-gray-50"
+        >
+          다시 시도
+        </button>
       </div>
     );
   }
