@@ -5,6 +5,8 @@ export {
   deleteComment,
 } from "./api/commentApi";
 
+export { commentMutationKeys, commentQueryKeys } from "./model/queryKeys";
+
 export { useGetAdminComments } from "./hooks/useGetAdminComments";
 export { useHideComment } from "./hooks/useHideComment";
 export { useUnhideComment } from "./hooks/useUnhideComment";

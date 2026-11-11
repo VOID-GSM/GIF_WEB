@@ -3,17 +3,21 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
+import { projectStatsQueryKeys } from "@/entities/project-stats";
+
 import { hideComment } from "../api/commentApi";
+import { commentMutationKeys, commentQueryKeys } from "../model/queryKeys";
 
 export function useHideComment() {
   const queryClient = useQueryClient();
 
   return useMutation({
+    mutationKey: commentMutationKeys.hide,
     mutationFn: hideComment,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["admin-comments"] });
-      // 숨김 댓글은 댓글 수에서 빠지므로 통계도 다시 받는다.
-      queryClient.invalidateQueries({ queryKey: ["project-stats"] });
+      queryClient.invalidateQueries({ queryKey: commentQueryKeys.all });
+      // 숨김·삭제된 댓글은 댓글 수에서 빠지므로 통계도 다시 받는다.
+      queryClient.invalidateQueries({ queryKey: projectStatsQueryKeys.all });
       toast.success("댓글을 숨겼습니다.");
     },
     onError: () => {
