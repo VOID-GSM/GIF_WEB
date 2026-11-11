@@ -17,6 +17,8 @@ interface ProjectInfoProps<TMember extends ProjectInfoMember> {
     name: string;
     teamName: string;
     description: string;
+    // true 면 description 이 AI 번역문 — 설명 위에 "AI 번역" 표시를 붙인다.
+    descriptionTranslated?: boolean;
     logo: string;
     members: TMember[];
   };
@@ -114,13 +116,16 @@ export default function ProjectInfo<TMember extends ProjectInfoMember>({
       {summary && <div className="mt-[33px]">{summary}</div>}
 
       {/* 프로젝트 설명 — 요약이 있으면 16px, 없으면 로고 영역과 56px 간격 */}
-      <p
-        className={`w-full break-words whitespace-pre-wrap font-medium leading-relaxed text-gray-700 ${
-          summary ? "mt-4" : "mt-14"
-        }`}
-      >
-        {project.description}
-      </p>
+      <div className={`flex w-full flex-col gap-2 ${summary ? "mt-4" : "mt-14"}`}>
+        {project.descriptionTranslated && (
+          <span className="w-fit rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-600">
+            {t("aiTranslated")}
+          </span>
+        )}
+        <p className="w-full break-words whitespace-pre-wrap font-medium leading-relaxed text-gray-700">
+          {project.description}
+        </p>
+      </div>
     </div>
   );
 }

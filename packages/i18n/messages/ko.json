@@ -144,7 +144,8 @@
     "noForms": "아직 공지된 양식이 없습니다.",
     "projectName": "프로젝트명",
     "teamName": "팀명",
-    "members": "팀원"
+    "members": "팀원",
+    "aiTranslated": "AI 번역"
   },
   "calendarEvent": {
     "titlePlaceholder": "일정을 입력해 주세요",

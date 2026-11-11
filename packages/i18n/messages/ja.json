@@ -144,7 +144,8 @@
     "noForms": "まだ公開されたフォームはありません。",
     "projectName": "プロジェクト名",
     "teamName": "チーム名",
-    "members": "メンバー"
+    "members": "メンバー",
+    "aiTranslated": "AI翻訳"
   },
   "calendarEvent": {
     "titlePlaceholder": "予定を入力してください",

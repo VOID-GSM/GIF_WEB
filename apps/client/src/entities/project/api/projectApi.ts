@@ -1,3 +1,4 @@
+import type { Locale } from "@repo/i18n";
 import { apiClient } from "@repo/lib";
 
 import type { RawEngagement } from "../model/engagement";
@@ -47,14 +48,27 @@ export const getProject = async (
   return data;
 };
 
+// 서버가 번역 시 고유명사를 지키려고 붙인 <keep> 표시가 번역문에 남아 오는 경우가 있다.
+// 맨 앞의 <keep> 블록은 프로젝트명·팀명을 반복한 것이라 통째로 지우고,
+// 문장 중간의 <keep> 은 태그만 지우고 안의 글자는 남긴다.
+const stripKeepMarkers = (text: string) =>
+  text
+    .replace(/^\s*<keep>[\s\S]*?<\/keep>\s*/, "")
+    .replace(/<\/?keep>/g, "");
+
 // 공개 상세 — 비로그인·외부 사용자는 팀원 userId·학번이 빠진 응답을 받는다.
+// lang=ja 면 서버가 소개(description)를 AI 일본어 번역문으로 준다 (descriptionTranslated 로 구분).
+// 수정 화면은 원문이 필요하므로 getProject 에는 lang 을 넘기지 않는다.
 export const getPublicProject = async (
   projectId: number,
+  lang: Locale,
 ): Promise<RawEngagement<ProjectDetailResponse>> => {
   const { data } = await apiClient.get<RawEngagement<ProjectDetailResponse>>(
     `/api/project/${projectId}`,
+    { params: { lang } },
   );
-  return data;
+  if (!data.descriptionTranslated) return data;
+  return { ...data, description: stripKeepMarkers(data.description) };
 };
 
 export const updateProject = async (
