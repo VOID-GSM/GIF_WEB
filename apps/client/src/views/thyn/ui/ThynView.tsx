@@ -68,7 +68,8 @@ export default function ThynView() {
 
   return (
     // 다른 페이지들과 같이 화면 세로 가운데에 배치한다
-    <div className="flex min-h-dvh w-full flex-col justify-center bg-background px-6 py-8 lg:px-[93px]">
+    // 모바일(md 미만)은 고정 상단 바(h-14)에 제목이 가리지 않도록 위 여백을 더 둔다
+    <div className="flex min-h-dvh w-full flex-col justify-center bg-background px-6 py-8 pt-20 md:pt-8 lg:px-[93px]">
       <div className="flex w-full flex-col gap-6">
         {/* 헤더 */}
         <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
