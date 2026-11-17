@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import {
   THYN_CATEGORIES,
@@ -45,12 +45,21 @@ export default function ThynClosetPanel({
     () => new Set<ThynCategory>(["hair"]),
   );
   const sectionRefs = useRef<Partial<Record<ThynCategory, HTMLElement | null>>>({});
+  // 탭을 누른 뒤 스크롤할 카테고리. 펼침 상태가 DOM에 반영된 뒤에 스크롤해야 위치가 어긋나지 않는다.
+  const pendingScrollRef = useRef<ThynCategory | null>(null);
+
+  useEffect(() => {
+    const category = pendingScrollRef.current;
+    if (!category) return;
+    pendingScrollRef.current = null;
+    sectionRefs.current[category]?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [openCategories]);
 
   // 왼쪽 탭으로 고르면 그 카테고리만 펼쳐서 아래로 길게 내리지 않아도 되게 한다
   const handleCategoryClick = (category: ThynCategory) => {
+    pendingScrollRef.current = category;
     setActiveCategory(category);
     setOpenCategories(new Set([category]));
-    sectionRefs.current[category]?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
   const toggleCategory = (category: ThynCategory) => {
