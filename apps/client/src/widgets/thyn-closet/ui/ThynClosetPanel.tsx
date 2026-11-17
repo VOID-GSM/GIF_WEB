@@ -40,11 +40,26 @@ export default function ThynClosetPanel({
   const t = useTranslations("thyn.closet");
   const tc = useTranslations("thyn.category");
   const [activeCategory, setActiveCategory] = useState<ThynCategory>("hair");
+  // 좁은 화면(lg 미만)에서 펼쳐 둔 카테고리. 넓은 화면에서는 항상 모두 펼친다.
+  const [openCategories, setOpenCategories] = useState<Set<ThynCategory>>(
+    () => new Set<ThynCategory>(["hair"]),
+  );
   const sectionRefs = useRef<Partial<Record<ThynCategory, HTMLElement | null>>>({});
 
+  // 왼쪽 탭으로 고르면 그 카테고리만 펼쳐서 아래로 길게 내리지 않아도 되게 한다
   const handleCategoryClick = (category: ThynCategory) => {
     setActiveCategory(category);
+    setOpenCategories(new Set([category]));
     sectionRefs.current[category]?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  const toggleCategory = (category: ThynCategory) => {
+    setOpenCategories((prev) => {
+      const next = new Set(prev);
+      if (next.has(category)) next.delete(category);
+      else next.add(category);
+      return next;
+    });
   };
 
   return (
@@ -86,6 +101,8 @@ export default function ThynClosetPanel({
             mode === "shop"
               ? [...categoryItems].sort((a, b) => Number(isOwned(a)) - Number(isOwned(b)))
               : categoryItems;
+          const isOpen = openCategories.has(key);
+          const contentId = `thyn-closet-${mode}-${key}`;
 
           return (
             <div
@@ -93,43 +110,78 @@ export default function ThynClosetPanel({
               ref={(el) => {
                 sectionRefs.current[key] = el;
               }}
-              className="flex scroll-mt-[18px] flex-col gap-6"
+              className={`flex scroll-mt-[18px] flex-col lg:gap-6 ${isOpen ? "gap-6" : ""}`}
             >
-              <h2 className="flex gap-1 text-[13px] font-semibold leading-[1.2] tracking-[-0.3px]">
-                <span className="text-gray-700">{tc(key)}</span>
-                <span className="text-gray-500">
-                  ({ownedCount}/{categoryItems.length})
-                </span>
+              <h2 className="text-[13px] font-semibold leading-[1.2] tracking-[-0.3px]">
+                {/* 접기·펴기는 좁은 화면에서만 동작한다 */}
+                <button
+                  type="button"
+                  onClick={() => toggleCategory(key)}
+                  aria-expanded={isOpen}
+                  aria-controls={contentId}
+                  className="flex w-full cursor-pointer items-center gap-1 text-left lg:pointer-events-none lg:cursor-default"
+                >
+                  <span className="text-gray-700">{tc(key)}</span>
+                  <span className="text-gray-500">
+                    ({ownedCount}/{categoryItems.length})
+                  </span>
+                  <ChevronIcon
+                    className={`ml-auto h-4 w-4 text-gray-500 transition-transform lg:hidden ${
+                      isOpen ? "rotate-180" : ""
+                    }`}
+                  />
+                </button>
               </h2>
 
-              {isLoading ? (
-                <p className="text-[13px] text-gray-500">{t("loading")}</p>
-              ) : categoryItems.length === 0 ? (
-                <p className="text-[13px] text-gray-500">{t("empty")}</p>
-              ) : (
-                <ul className={ITEM_GRID}>
-                  {visibleItems.map((item) => (
-                    <li key={item.id}>
-                      <ThynItemCard
-                        item={item}
-                        mode={mode}
-                        selected={equipped[item.category] === item.id}
-                        // 옷장은 보유 아이템만 입을 수 있고, 상점은 모두 입혀 볼 수 있다.
-                        // 상점에서 입혀 본 미보유 아이템은 옷장에서도 눌러서 벗을 수 있다.
-                        onClick={
-                          mode === "shop" || isOwned(item) || equipped[item.category] === item.id
-                            ? () => onToggleItem(item)
-                            : undefined
-                        }
-                      />
-                    </li>
-                  ))}
-                </ul>
-              )}
+              <div id={contentId} className={isOpen ? "" : "max-lg:hidden"}>
+                {isLoading ? (
+                  <p className="text-[13px] text-gray-500">{t("loading")}</p>
+                ) : categoryItems.length === 0 ? (
+                  <p className="text-[13px] text-gray-500">{t("empty")}</p>
+                ) : (
+                  <ul className={ITEM_GRID}>
+                    {visibleItems.map((item) => (
+                      <li key={item.id}>
+                        <ThynItemCard
+                          item={item}
+                          mode={mode}
+                          selected={equipped[item.category] === item.id}
+                          // 옷장은 보유 아이템만 입을 수 있고, 상점은 모두 입혀 볼 수 있다.
+                          // 상점에서 입혀 본 미보유 아이템은 옷장에서도 눌러서 벗을 수 있다.
+                          onClick={
+                            mode === "shop" || isOwned(item) || equipped[item.category] === item.id
+                              ? () => onToggleItem(item)
+                              : undefined
+                          }
+                        />
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
             </div>
           );
         })}
       </div>
     </section>
+  );
+}
+
+function ChevronIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 16 16"
+      fill="none"
+      aria-hidden="true"
+      className={className}
+    >
+      <path
+        d="M4 6l4 4 4-4"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
   );
 }
